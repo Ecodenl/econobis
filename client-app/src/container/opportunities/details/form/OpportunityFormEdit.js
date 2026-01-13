@@ -34,9 +34,9 @@ class OpportunityFormEdit extends Component {
             amount,
             belowWozLimit,
             exceptionDebtRelief,
+            opportunityCode,
         } = props.opportunity;
-        console.log('belowWozLimit ' + belowWozLimit);
-        console.log('exceptionDebtRelief ' + exceptionDebtRelief);
+
         this.state = {
             status: props.status.filter(item => item.active == 1),
             yesNoOptions: [
@@ -64,6 +64,7 @@ class OpportunityFormEdit extends Component {
                 amount: amount ? amount : '',
                 belowWozLimit: belowWozLimit,
                 exceptionDebtRelief: exceptionDebtRelief,
+                opportunityCode: opportunityCode ? opportunityCode : '',
                 // evaluationIsRealised: props.opportunity ? props.opportunity.evaluationIsRealised : 1,
                 // evaluationIsStatisfied: props.opportunity ? props.opportunity.evaluationIsStatisfied : 1,
                 // evaluationWouldRecommendOrganisation: props.opportunity
@@ -173,8 +174,8 @@ class OpportunityFormEdit extends Component {
             amount,
             belowWozLimit,
             exceptionDebtRelief,
+            opportunityCode,
         } = this.state.opportunity;
-        console.log(this.state.opportunity);
         const { intake, measureCategory } = this.props.opportunity;
         const measuresMatchToCategory = MeasuresOfCategory(this.props.measures, measureCategory.id);
 
@@ -187,7 +188,12 @@ class OpportunityFormEdit extends Component {
 
                 <div className="row">
                     <div className="form-group col-sm-6"></div>
-                    <InputText label={'Postcode'} name={''} value={(intake && intake.address) && intake.address.postalCode} readOnly={true} />
+                    <InputText
+                        label={'Postcode'}
+                        name={''}
+                        value={intake && intake.address && intake.address.postalCode}
+                        readOnly={true}
+                    />
                 </div>
 
                 <div className="row">
@@ -251,6 +257,13 @@ class OpportunityFormEdit extends Component {
                         error={this.state.errors.amount}
                         allowZero={true}
                         textToolTip={`aantal, m2 of Wattpiek`}
+                    />
+                    <ViewText
+                        className={'col-sm-6 form-group'}
+                        label="Kans code"
+                        size={'col-sm-5'}
+                        value={opportunityCode}
+                        textToolTip={`Deze waarde kan alleen gevuld worden via de api/webhook zie handleiding API voor details`}
                     />
                 </div>
 

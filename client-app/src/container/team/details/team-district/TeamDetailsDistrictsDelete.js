@@ -2,11 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Modal from '../../../../components/modal/Modal';
-import { deleteTeamDocumentCreatedFrom } from '../../../../actions/team/TeamDetailsActions';
+import { deleteTeamDistrict } from '../../../../actions/team/TeamDetailsActions';
 
-const TeamDetailsDocumentCreatedFormsDelete = props => {
+const TeamDetailsDistrictsDelete = props => {
     const confirmAction = () => {
-        props.deleteTeamDocumentCreatedFrom(props.teamId, props.documentCreatedFromId);
+        props.deleteTeamDistrict(props.teamId, props.districtId);
         props.toggleDelete();
     };
 
@@ -18,7 +18,7 @@ const TeamDetailsDocumentCreatedFormsDelete = props => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-            <p>Wil je dit document gemaakt vanuit ontkoppelen van dit team?</p>
+            <p>Wil je deze afspraakkalender ontkoppelen van dit team?</p>
         </Modal>
     );
 };
@@ -30,9 +30,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    deleteTeamDocumentCreatedFrom: (teamId, documentCreatedFromId) => {
-        dispatch(deleteTeamDocumentCreatedFrom(teamId, documentCreatedFromId));
+    deleteTeamDistrict: (teamId, districtId) => {
+        dispatch(deleteTeamDistrict(teamId, districtId));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TeamDetailsDocumentCreatedFormsDelete);
+export default connect(mapStateToProps, mapDispatchToProps)(TeamDetailsDistrictsDelete);

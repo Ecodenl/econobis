@@ -3,21 +3,23 @@ import { connect } from 'react-redux';
 import validator from 'validator';
 
 import TeamDetailsAPI from '../../../../api/team/TeamDetailsAPI';
-import { newTeamUser } from '../../../../actions/team/TeamDetailsActions';
+import { newTeamDistrict } from '../../../../actions/team/TeamDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from '../../../../components/form/InputSelect';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
+import DistrictAPI from '../../../../api/district/DistrictAPI';
 
-class TeamDetailsUsersNew extends Component {
+class TeamDetailsDistrictsNew extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            userId: '',
+            districtId: '',
+            districtsToSelect: [],
             errors: {
-                userId: false,
+                districtId: false,
                 hasErrors: true,
             },
         };
@@ -30,32 +32,38 @@ class TeamDetailsUsersNew extends Component {
         const target = event.target;
         const value = target.value;
 
-        this.setState({ userId: value });
+        this.setState({ districtId: value });
+    }
+
+    componentDidMount() {
+        DistrictAPI.peekDistricts().then(payload => {
+            this.setState({ districtsToSelect: payload });
+        });
     }
 
     handleSubmit(event) {
         event.preventDefault();
 
-        const teamUser = {
+        const teamDistrict = {
             teamId: this.props.teamId,
-            userId: this.state.userId,
+            districtId: this.state.districtId,
         };
 
         // Validation
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(teamUser.userId)) {
-            errors.userId = true;
+        if (validator.isEmpty(teamDistrict.districtId)) {
+            errors.districtId = true;
             hasErrors = true;
         }
 
         this.setState({ ...this.state, errors: errors });
 
         if (!hasErrors) {
-            TeamDetailsAPI.newTeamUser(teamUser)
+            TeamDetailsAPI.newTeamDistrict(teamDistrict)
                 .then(payload => {
-                    this.props.newTeamUser(payload.data.data);
+                    this.props.newTeamDistrict(payload.data.data);
                     this.props.toggleShowNew();
                 })
                 .catch(error => {
@@ -65,9 +73,11 @@ class TeamDetailsUsersNew extends Component {
     }
 
     render() {
-        const selectedIds = (this.props.selectedUsers || []).map(d => String(d.id));
+        const selectedIds = (this.props.selectedDistricts || []).map(d => String(d.id));
 
-        const usersToSelectFiltered = (this.props.usersToSelect || []).filter(d => !selectedIds.includes(String(d.id)));
+        const districtsToSelectFiltered = (this.state.districtsToSelect || []).filter(
+            d => !selectedIds.includes(String(d.id))
+        );
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -76,15 +86,15 @@ class TeamDetailsUsersNew extends Component {
                         <div className="row">
                             <InputText label={'Team'} name={'team'} value={this.props.teamName} readOnly={true} />
                             <InputSelect
-                                label={'Gebruiker'}
+                                label={'Afspraakkalender'}
                                 size={'col-sm-6'}
-                                name={'userId'}
-                                options={usersToSelectFiltered}
-                                optionName={'fullName'}
-                                value={this.state.userId}
+                                name={'districtId'}
+                                options={districtsToSelectFiltered}
+                                optionName={'name'}
+                                value={this.state.districtId}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
-                                error={this.state.errors.userId}
+                                error={this.state.errors.districtId}
                             />
                         </div>
 
@@ -112,15 +122,14 @@ const mapStateToProps = state => {
     return {
         teamId: state.teamDetails.id,
         teamName: state.teamDetails.name,
-        usersToSelect: state.systemData.users,
-        selectedUsers: state.teamDetails.users,
+        selectedDistricts: state.teamDetails.districts,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    newTeamUser: teamUser => {
-        dispatch(newTeamUser(teamUser));
+    newTeamDistrict: teamDistrict => {
+        dispatch(newTeamDistrict(teamDistrict));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TeamDetailsUsersNew);
+export default connect(mapStateToProps, mapDispatchToProps)(TeamDetailsDistrictsNew);

@@ -6,9 +6,10 @@ import { fetchTeamDetails } from '../../../actions/team/TeamDetailsActions';
 import TeamDetailsFormGeneral from './general/TeamDetailsFormGeneral';
 import TeamDetailsUsers from './team-users/TeamDetailsUsers';
 import TeamDetailsContactGroups from './team-contact-groups/TeamDetailsContactGroups';
-import TeamDetailsDocumentCreatedForms from './team-document-created-from/TeamDetailsDocumentCreatedForms';
+import TeamDetailsDistricts from './team-district/TeamDetailsDistricts';
+import TeamDetailsDocumentCreatedFroms from './team-document-created-from/TeamDetailsDocumentCreatedFroms';
 
-class TeamDetailsForm extends Component {
+class TeamDetailsFrom extends Component {
     constructor(props) {
         super(props);
     }
@@ -34,7 +35,8 @@ class TeamDetailsForm extends Component {
                 <TeamDetailsFormGeneral />
                 <TeamDetailsUsers />
                 <TeamDetailsContactGroups />
-                <TeamDetailsDocumentCreatedForms />
+                <TeamDetailsDocumentCreatedFroms />
+                <TeamDetailsDistricts />
             </div>
         );
     }
@@ -54,4 +56,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TeamDetailsForm);
+export default connect(mapStateToProps, mapDispatchToProps)(TeamDetailsFrom);

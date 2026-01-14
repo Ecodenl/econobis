@@ -24,6 +24,7 @@ function ContactDetailsToolbar({
     cooperation,
     isLoading,
     occupations,
+    allowInterimFinancialOverview,
     oldestFinancialOverviewContactConceptId,
 }) {
     const navigate = useNavigate();
@@ -73,14 +74,15 @@ function ContactDetailsToolbar({
                                         disabled={Boolean(hoomAccountId)}
                                     />
                                 ) : null}
-
-                                {!!oldestFinancialOverviewContactConceptId && (
+                            </div>
+                            {allowInterimFinancialOverview && !!oldestFinancialOverviewContactConceptId && (
+                                <div className="btn-group btn-group-flex margin-small" role="group">
                                     <ButtonText
                                         onClickAction={() => setShowInterimModal(true)}
                                         buttonText={'Tussentijdse waardestaat'}
                                     />
-                                )}
-                            </div>
+                                </div>
+                            )}
                         </div>
                         {!isLoading && (
                             <>
@@ -148,6 +150,7 @@ const mapStateToProps = state => {
         permissions: state.meDetails.permissions,
         isLoading: state.loadingData.isLoading,
         occupations: state.contactDetails.occupations,
+        allowInterimFinancialOverview: state.contactDetails.allowInterimFinancialOverview,
         oldestFinancialOverviewContactConceptId: state.contactDetails.oldestFinancialOverviewContactConceptId,
     };
 };

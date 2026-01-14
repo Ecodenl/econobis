@@ -80,6 +80,8 @@ class ContactController extends Controller
             $contact->relatedDocuments = $contact->documents()->get();
         }
 
+        $contact->allowInterimFinancialOverview = self::getAllowInterimFinancialOverview($contact);
+
         return new FullContactWithGroups($contact);
     }
 
@@ -263,6 +265,19 @@ class ContactController extends Controller
         $contacts = $contacts->get();
 
         return ContactWithAddressPeek::collection($contacts);
+    }
+
+    public function getAllowInterimFinancialOverview(Contact $contact)
+    {
+        $oldestFinancialOverviewContactConcept = $contact->oldestFinancialOverviewContactConcept;
+
+        // All participations for the oldest financial overview contact (concept) must be terminated
+        return $oldestFinancialOverviewContactConcept
+            && !$oldestFinancialOverviewContactConcept->contact->participations()
+                ->whereNull('date_terminated')
+                ->exists()
+            && ($oldestFinancialOverviewContactConcept?->status_id === 'concept' ?? false)
+            && ($oldestFinancialOverviewContactConcept?->financialOverview?->administration?->uses_interim_financial_overviews ?? false);
     }
 
     public function getContactWithAddresses(Contact $contact, Request $request)

@@ -26,7 +26,9 @@ class ParticipantExcelHelper
     {
         set_time_limit(300);
 
-        $completeData = [];
+//        $completeData = [];
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
 
         $headerData = [];
 // [0]
@@ -180,7 +182,9 @@ class ParticipantExcelHelper
             $headerData[] = 'Obligatienummer(s)';
         }
 
-        $completeData[] = $headerData;
+//        $completeData[] = $headerData;
+        $sheet->fromArray($headerData, null, 'A1');
+        $rowIndex = 2; // we gaan vanaf rij 2 data schrijven
 
         foreach ($this->participants->chunk(500) as $chunk) {
             foreach ($chunk as $participant) {
@@ -631,25 +635,29 @@ class ParticipantExcelHelper
                         $rowData[128] = $participant->obligationNumbersAsString;
                     }
 
-                    $completeData[] = $rowData;
+//                    $completeData[] = $rowData;
+                    $sheet->fromArray($rowData, null, 'A' . $rowIndex);
+                    $rowIndex++;
                 }
-
             }
+            // kleine hint om GC te helpen
+            unset($chunk);
         }
 
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
+//        $spreadsheet = new Spreadsheet();
+//        $sheet = $spreadsheet->getActiveSheet();
 
-        for ($col = 'A'; $col !== 'DZ'; $col++) {
-            $spreadsheet->getActiveSheet()
-                ->getColumnDimension($col)
-                ->setAutoSize(true);
-        }
+//        autoSize uitgezet, kost voor deze excel download met potentieel heel veel cellen enorm veel geheugen.
+//        for ($col = 'A'; $col !== 'DZ'; $col++) {
+//            $spreadsheet->getActiveSheet()
+//                ->getColumnDimension($col)
+//                ->setAutoSize(true);
+//        }
 
         $sheet->getStyle('1:1')->getFont()->setBold(true);
 
         // Load all data in worksheet
-        $sheet->fromArray($completeData);
+//        $sheet->fromArray($completeData);
 
         $writer = new Xlsx($spreadsheet);
         $document = $writer->save('php://output');

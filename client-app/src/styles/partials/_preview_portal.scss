@@ -223,6 +223,10 @@ color: red;
 font-size: 18px;
 }
 /* ----------------- BUTTON STYLING -----------------*/
+.preview-portal .btn-group .btn {
+  margin: 5px;
+}
+
 .preview-portal .w-button-group {
 margin-bottom: 10px;
 }
@@ -232,7 +236,7 @@ float: left !important;
 left: 15px;
 }
 
-.preview-portal .w-button.w-button {
+.preview-portal button.w-button {
 background-color: var(--button-primary-color);
 border-color: var(--button-primary-color);
 color: var(--button-primary-text-color);

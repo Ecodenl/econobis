@@ -7,7 +7,8 @@ const TeamDetailsUsersList = props => {
     return (
         <div>
             <div className="row border header">
-                <div className="col-sm-11">Naam</div>
+                <div className="col-sm-9">Naam</div>
+                <div className="col-sm-2">Status</div>
                 <div className="col-sm-1" />
             </div>
             {props.users.length > 0 ? (

@@ -6,6 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class HousingFileHoomLink extends Model
 {
+    // Laat je niet foppen:
+    // building-contract-type is hoomdossier naam voor wat in econobis is_house_for_sale heet
+    // (en monument heet in econobis is_monument)
+    const SELECT_NO_YES_UNKNOWN_FIELDS =
+        [
+            'building-contract-type',
+            'monument',
+        ];
     const SELECT_DROPDOWN_FIELDS =
         [
             'building-type-category',

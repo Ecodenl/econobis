@@ -88,8 +88,8 @@ class DataCleanupListApp extends Component {
             switch (dataCleanupType) {
                 case 'items':
                     return 'items';
-                case 'e-mail':
-                    return 'e-mailcorrespondentie';
+                // case 'e-mail':
+                //     return 'e-mailcorrespondentie';
                 case 'contacten':
                     return 'contacten';
                 default:
@@ -153,6 +153,7 @@ class DataCleanupListApp extends Component {
                     <div className="col-md-12 margin-10-top">
                         <DataCleanupListToolbar
                             handleDataCleanupUpdateAmounts={this.handleDataCleanupUpdateAmounts}
+                            dataCleanupType={dataCleanupType}
                             title={dataCleanupTypeText}
                             setLoading={this.setLoading}
                         />

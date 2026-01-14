@@ -197,7 +197,7 @@ class CleanupItemHelper
                     ->whereDoesntHave('invoices')
                     ->whereDoesntHave('orders')
                     ->whereDoesntHave('intakes')
-//                ->whereDoesntHave('opportunities') // gaan via intakes
+                    ->whereDoesntHave('opportunities') // gaan via intakes
                     ->whereDoesntHave('quotationRequests')
                     ->whereDoesntHave('participations')
                     ->whereNotIn('id', $exceptionContactIds)
@@ -206,6 +206,9 @@ class CleanupItemHelper
                 break;
 
             case "contactsSoftDeleted":
+//                $contactsSoftDeletedCleanupYears = $cleanupItem->years_for_delete;
+//                $contactsSoftDeletedCleanupOlderThen = $dateToday->copy()->subYears($contactsSoftDeletedCleanupYears);
+//                $numberItemsToDelete = Contact::onlyTrashed()->whereDate('created_at', '<', $contactsSoftDeletedCleanupOlderThen)->count();
                 $numberItemsToDelete = Contact::onlyTrashed()->count();
                 break;
 

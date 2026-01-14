@@ -187,12 +187,12 @@ class AddNewCleanupItems extends Migration
             [
                 'name' => 'Verplaats binnengekomen e-mailcorrespondentie naar de e-mailarchief map',
                 'code_ref' => 'incomingEmails',
-                'date_ref' => ''
+                'date_ref' => 'Datum ontvangen'
             ],
             [
                 'name' => 'Verplaats uitgaande e-mailcorrespondentie naar de e-mailarchief map',
                 'code_ref' => 'outgoingEmails',
-                'date_ref' => ''
+                'date_ref' => 'Datum verzonden'
             ],
             [
                 'name' => 'Contacten die reeds handmatig verwijderd zijn',
@@ -202,7 +202,7 @@ class AddNewCleanupItems extends Migration
             [
                 'name' => 'Contacten',
                 'code_ref' => 'contactsToDelete',
-                'date_ref' => ''
+                'date_ref' => 'Aanmaakdatum'
             ],
         ];
 

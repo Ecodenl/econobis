@@ -46,7 +46,7 @@ class DeleteOrder implements DeleteInterface
      * @return array
      * @throws
      */
-    public function cleanup($cleanupType)
+    public function cleanup()
     {
         try{
             $this->delete();

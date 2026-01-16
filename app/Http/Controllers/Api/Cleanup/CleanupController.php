@@ -2,18 +2,8 @@
 
 namespace App\Http\Controllers\Api\Cleanup;
 
-use App\Eco\Contact\Contact;
-use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Cooperation\Cooperation;
-use App\Eco\Cooperation\CooperationCleanupItem;
-use App\Eco\Email\Email;
-use App\Eco\Intake\Intake;
-use App\Eco\Invoice\Invoice;
-use App\Eco\Opportunity\Opportunity;
-use App\Eco\Order\Order;
-use App\Eco\ParticipantMutation\ParticipantMutationStatus;
-use App\Eco\ParticipantProject\ParticipantProject;
-use App\Eco\Product\Product;
+use App\Exceptions\CleanupItemFailed;
 use App\Helpers\CleanupItem\CleanupItemHelper;
 use App\Helpers\Delete\Models\DeleteContact;
 use App\Helpers\Delete\Models\DeleteIntake;
@@ -22,12 +12,11 @@ use App\Helpers\Delete\Models\DeleteMail;
 use App\Helpers\Delete\Models\DeleteOpportunity;
 use App\Helpers\Delete\Models\DeleteOrder;
 use App\Helpers\Delete\Models\DeleteParticipation;
-use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class CleanupController extends Controller
 {
@@ -76,143 +65,53 @@ class CleanupController extends Controller
 
         switch ($cleanupType) {
             case "invoices":
-
                 $invoices = $cleanupItemHelper->getInvoicesToDelete()->get();
-                foreach($invoices as $invoice) {
-                    $deleteInvoice = new DeleteInvoice($invoice);
-                    $errorMessage = $deleteInvoice->cleanup();
-
-                    if(is_array($errorMessage)) {
-                        $errorMessageArray = array_merge($errorMessageArray, $errorMessage);
-                    }
-                }
+                $this->runCleanup($invoices, fn ($invoice) => new DeleteInvoice($invoice), $errorMessageArray);
                 break;
 
             case "ordersOneoff":
                 $ordersOneoff = $cleanupItemHelper->getOrdersOneoffToDelete()->get();
-
-                foreach($ordersOneoff as $order) {
-                    $deleteOrder = new DeleteOrder($order);
-                    $errorMessage = $deleteOrder->cleanup();
-                    if(is_array($errorMessage)) {
-                        $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
-                    }
-                }
+                $this->runCleanup($ordersOneoff, fn ($order) => new DeleteOrder($order), $errorMessageArray);
                 break;
 
             case "ordersPeriodic":
                 $ordersPeriodic = $cleanupItemHelper->getOrdersPeriodicToDelete()->get();
-
-                foreach($ordersPeriodic as $order) {
-                    $deleteOrder = new DeleteOrder($order);
-                    $errorMessage = $deleteOrder->cleanup();
-                    if(is_array($errorMessage)) {
-                        $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
-                    }
-                }
+                $this->runCleanup($ordersPeriodic, fn ($order) => new DeleteOrder($order), $errorMessageArray);
                 break;
 
             case "intakes":
                 $intakes = $cleanupItemHelper->getIntakesToDelete()->get();
-
-                foreach($intakes as $intake) {
-                    $deleteIntake = new DeleteIntake($intake);
-                    $errorMessage = $deleteIntake->cleanup();
-                    if(is_array($errorMessage)) {
-                        $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
-                    }
-                }
+                $this->runCleanup($intakes, fn ($intake) => new DeleteIntake($intake), $errorMessageArray);
                 break;
 
             case "opportunities":
                 $opportunities = $cleanupItemHelper->getOpportunitiesToDelete()->get();
-
-                foreach($opportunities as $opportunity) {
-                    $deleteOpportunity = new DeleteOpportunity($opportunity);
-                    $errorMessage = $deleteOpportunity->cleanup();
-                    print_r($errorMessage);
-                    if(is_array($errorMessage)) {
-                        $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
-                    }
-                }
+                $this->runCleanup($opportunities, fn ($opportunity) => new DeleteOpportunity($opportunity), $errorMessageArray);
                 break;
 
             case "participationsWithoutStatusDefinitive":
                 $participantProjects = $cleanupItemHelper->getParticipationsWithoutStatusDefinitiveToDelete()->get();
-
-                foreach($participantProjects as $participantProject) {
-                    $deleteParticipation = new DeleteParticipation($participantProject);
-                    $errorMessage = $deleteParticipation->cleanup();
-                    if(is_array($errorMessage)) {
-                        $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
-                    }
-                }
+                $this->runCleanup($participantProjects, fn ($participantProject) => new DeleteParticipation($participantProject), $errorMessageArray);
                 break;
 
             case "participationsFinished":
                 $participantProjects = $cleanupItemHelper->getParticipationsFinishedToDelete()->get();
-
-                foreach($participantProjects as $participantProject) {
-                    $deleteParticipation = new DeleteParticipation($participantProject);
-                    $errorMessage = $deleteParticipation->cleanup();
-                    if(is_array($errorMessage)) {
-                        $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
-                    }
-                }
+                $this->runCleanup($participantProjects, fn ($participantProject) => new DeleteParticipation($participantProject), $errorMessageArray);
                 break;
 
             case "incomingEmails":
                 $mails = $cleanupItemHelper->getIncomingEmailsToDelete()->get();
-
-                foreach($mails as $mail) {
-                    $deleteMail = new DeleteMail($mail);
-                    $errorMessage = $deleteMail->cleanup();
-                    if(is_array($errorMessage)) {
-                        $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
-                    }
-                }
+                $this->runCleanup($mails, fn ($mail) => new DeleteMail($mail), $errorMessageArray);
                 break;
 
             case "outgoingEmails":
                 $mails = $cleanupItemHelper->getOutgoingEmailsToDelete()->get();
-
-                foreach($mails as $mail) {
-                    $deleteMail = new DeleteMail($mail);
-                    $errorMessage = $deleteMail->cleanup();
-                    if(is_array($errorMessage)) {
-                        $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
-                    }
-                }
+                $this->runCleanup($mails, fn ($mail) => new DeleteMail($mail), $errorMessageArray);
                 break;
 
             case "contactsToDelete":
                 $contacts = $cleanupItemHelper->getContactsToDeleteToDelete()->get();
-
-                foreach($contacts as $contact) {
-
-                    try {
-                        DB::beginTransaction();
-
-                        $deleteContact = new DeleteContact($contact);
-                        $errorMessage = $deleteContact->cleanup();
-                        if(is_array($errorMessage)) {
-                            $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
-                        }
-
-                        if(count($errorMessage) > 0){
-                            DB::rollBack();
-                            abort(412, implode(";", array_unique($errorMessage)));
-                        }
-
-                        DB::commit();
-                    } catch (\PDOException $e) {
-                        DB::rollBack();
-                        Log::error($e->getMessage());
-                        abort(501, 'Er is helaas een fout opgetreden.');
-                    }
-
-                }
-
+                $this->runCleanup($contacts, fn ($contact) => new DeleteContact($contact), $errorMessageArray);
                 break;
 
             case "contactsSoftDeleted":
@@ -228,18 +127,53 @@ class CleanupController extends Controller
 
         }
 
+        $errorMessageArray = array_values(array_unique($errorMessageArray));
+
         Log::info('errorMessageArray');
         Log::info($errorMessageArray);
 
         $cleanupItem->date_cleaned_up = $dateToday;
-//        number_of_items_to_delete opnieuw bepalen via helper
-//        $cleanupItem->number_of_items_to_delete = 0;
         $cleanupItem->save();
 
         $cleanupItemHelper->updateAmountsPerType();
 
-        return $errorMessageArray;
+        if (!empty($errorMessageArray)) {
+            abort(412, implode(';', array_unique($errorMessageArray)));
+        }
+
+        return [];
     }
 
+    private function runCleanup(iterable $items, callable $makeDeleter, array &$errorMessageArray = []): void
+    {
+        foreach ($items as $item) {
+            try {
+                DB::transaction(function () use ($item, $makeDeleter, &$errorMessageArray) {
+                    $deleter = $makeDeleter($item);
+                    $errorMessage = $deleter->cleanup();
 
+                    $errors = is_array($errorMessage)
+                        ? $errorMessage
+                        : (empty($errorMessage) ? [] : [(string) $errorMessage]);
+
+                    if (!empty($errors)) {
+                        $errorMessageArray = array_merge($errorMessageArray, $errors);
+
+                        // rollback voor dit item
+                        throw new CleanupItemFailed();
+                    }
+                });
+            } catch (\PDOException $e) {
+                Log::error($e->getMessage());
+                abort(501, 'Er is helaas een fout opgetreden.');
+            } catch (CleanupItemFailed $e) {
+                // expected: rollback gedaan, ga door met volgende item
+                continue;
+            } catch (Throwable $e) {
+                // onverwacht -> loggen + stoppen (mijn advies)
+                Log::error($e->getMessage(), ['exception' => $e]);
+                abort(501, 'Er is helaas een fout opgetreden.');
+            }
+        }
+    }
 }

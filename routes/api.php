@@ -280,9 +280,8 @@ Route::namespace('Api')
         Route::get('contact-group/{contactGroup}/tasks', 'ContactGroup\ContactGroupController@tasks');
 
         Route::get('cleanup/items', 'Cleanup\CleanupController@getCleanupItems');
-        Route::post('cleanup/item/{cooperationCleanupItem}', 'Cleanup\CleanupController@updateCleanupItem');
         Route::post('cleanup/update-amounts/all', 'Cleanup\CleanupController@updateAmountsAll');
-        Route::post('cleanup/update-amounts/{cleanupType}', 'Cleanup\CleanupController@updateAmounts');
+        Route::post('cleanup/update-amounts/{cleanupType}', 'Cleanup\CleanupController@updateAmountsPerType');
 
         Route::post('cleanup/cleanup-items/{cleanupType}', 'Cleanup\CleanupController@cleanupItems');
 
@@ -768,6 +767,7 @@ Route::namespace('Api')
         Route::post('cooperation-hoom-campaign', 'Cooperation\CooperationController@storeHoomCampaign');
         Route::post('cooperation-hoom-campaign/{cooperationHoomCampaign}', 'Cooperation\CooperationController@updateHoomCampaign');
         Route::post('cooperation-hoom-campaign/{cooperationHoomCampaign}/delete', 'Cooperation\CooperationController@destroyHoomCampaign');
+        Route::post('cooperation-cleanup-item/{cooperationCleanupItem}', 'Cooperation\CooperationController@updateCleanupItem');
         Route::get('cooperation-cleanup-contacts-excluded-groups', 'Cooperation\CooperationController@getExcludedGroups');
         Route::post('cooperation-cleanup-contacts-excluded-group', 'Cooperation\CooperationController@storeCleanupContactsExcludedGroup');
         Route::post('cooperation-cleanup-contacts-excluded-group/{excludedGroup}/delete', 'Cooperation\CooperationController@destroyCleanupContactsExcludedGroup');

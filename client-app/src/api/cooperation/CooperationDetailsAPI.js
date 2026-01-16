@@ -38,7 +38,7 @@ export default {
     },
 
     updateCleanupItem: (cleanupItemId, payload) => {
-        const requestUrl = `${getApiUrl()}/api/cleanup/item/${cleanupItemId}`;
+        const requestUrl = `cooperation-cleanup-item/${cleanupItemId}`;
 
         return getAxiosInstance().post(requestUrl, payload);
     },

@@ -32,6 +32,15 @@ class DeleteOrder implements DeleteInterface
     private $order;
 
 
+    /** Sets the model to delete
+     *
+     * @param Model $order the model to delete
+     */
+    public function __construct(Model $order)
+    {
+        $this->order = $order;
+    }
+
     /** If it's called by the cleanup functionality, we land on this function, else on the delete function
      *
      * @return array
@@ -51,24 +60,6 @@ class DeleteOrder implements DeleteInterface
             ]);
             abort(501, 'Fout bij opschonen Orders. (meld dit bij Econobis support)');
         }
-
-        $dateToday = Carbon::now();
-        $cooperation = Cooperation::first();
-
-        $cleanupItem = $cooperation->cleanupItems()->where('code_ref', $cleanupType)->first();
-
-        $cleanupItem->number_of_items_to_delete = 0;
-        $cleanupItem->date_cleaned_up = $dateToday;
-        $cleanupItem->save();
-    }
-
-    /** Sets the model to delete
-     *
-     * @param Model $order the model to delete
-     */
-    public function __construct(Model $order)
-    {
-        $this->order = $order;
     }
 
     /** Main method for deleting this model and all it's relations

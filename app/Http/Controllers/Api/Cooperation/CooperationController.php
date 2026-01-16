@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api\Cooperation;
 
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\Cooperation\CooperationCleanupContactsExcludedGroup;
+use App\Eco\Cooperation\CooperationCleanupItem;
 use App\Eco\Cooperation\CooperationHoomCampaign;
 use App\Helpers\Laposta\LapostaHelper;
 use App\Http\Controllers\Api\ApiController;
@@ -17,6 +18,7 @@ use App\Http\Requests\Cooperation\CreateCooperation;
 use App\Http\Requests\Cooperation\CreateCooperationCleanupContactsExcludedGroup;
 use App\Http\Requests\Cooperation\CreateCooperationHoomCampaign;
 use App\Http\Requests\Cooperation\UpdateCooperation;
+use App\Http\Requests\Cooperation\UpdateCooperationCleanupItem;
 use App\Http\Requests\Cooperation\UpdateCooperationHoomCampaign;
 use App\Http\Resources\Cooperation\FullCooperation;
 use App\Http\Resources\Cooperation\FullCooperationCleanupContactsExcludedGroup;
@@ -169,6 +171,20 @@ class CooperationController extends ApiController
 
         $cooperationHoomCampaign->delete();
     }
+
+    public function updateCleanupItem(UpdateCooperationCleanupItem $request, CooperationCleanupItem $cooperationCleanupItem)
+    {
+        $this->authorize('manage', Cooperation::class);
+
+        $cooperationCleanupItem->fill($request->validatedSnake());
+        if(!is_numeric($cooperationCleanupItem->years_for_delete) || $cooperationCleanupItem->years_for_delete < 1) {
+            $cooperationCleanupItem->years_for_delete = 99;
+        }
+        $cooperationCleanupItem->save();
+
+        return $cooperationCleanupItem;
+    }
+
 
     public function storeCleanupContactsExcludedGroup(CreateCooperationCleanupContactsExcludedGroup $request)
     {

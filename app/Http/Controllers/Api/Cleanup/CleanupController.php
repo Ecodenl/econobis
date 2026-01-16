@@ -26,6 +26,7 @@ use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class CleanupController extends Controller
@@ -35,18 +36,13 @@ class CleanupController extends Controller
         $helper = new CleanupItemHelper();
         $helper->updateAmountsAll();
     }
-    public function updateAmounts($cleanupType)
+    public function updateAmountsPerType($cleanupType)
     {
-        $helper = new CleanupItemHelper();
-        $helper->updateAmounts($cleanupType);
-    }
+        $cooperation = Cooperation::first();
+        $cleanupItem = $cooperation?->cleanupItems()->where('code_ref', $cleanupType)->first() ?? null;
 
-    public function updateCleanupItem(Request $request, RequestInput $requestInput, CooperationCleanupItem $cooperationCleanupItem)
-    {
-        $cooperationCleanupItem->years_for_delete = $request->yearsForDelete;
-        $cooperationCleanupItem->save();
-
-        return $cooperationCleanupItem;
+        $helper = new CleanupItemHelper($cleanupItem);
+        $helper->updateAmountsPerType();
     }
 
     // todo WM: opsplitsen naar items, emails en contacts ?
@@ -71,194 +67,176 @@ class CleanupController extends Controller
     public function cleanupItems($cleanupType){
         $dateToday = Carbon::now();
         $cooperation = Cooperation::first();
+        $cleanupItem = $cooperation?->cleanupItems()->where('code_ref', $cleanupType)->first() ?? null;
+        $cleanupDate = $dateToday->copy()->subYears($cleanupItem->years_for_delete);
+
+        $cleanupItemHelper = new CleanupItemHelper($cleanupItem);
 
         $errorMessageArray = [];
 
-        $cleanupItem = $cooperation->cleanupItems()->where('code_ref', $cleanupType)->first();
-        $cleanupDate = $dateToday->copy()->subYears($cleanupItem->years_for_delete);
+        switch ($cleanupType) {
+            case "invoices":
 
-        if($cleanupType === 'invoices') {
-            $invoices = Invoice::whereDate('date_sent', '<', $cleanupDate)->get();
+                $invoices = $cleanupItemHelper->getInvoicesToDelete()->get();
+                foreach($invoices as $invoice) {
+                    $deleteInvoice = new DeleteInvoice($invoice);
+                    $errorMessage = $deleteInvoice->cleanup();
 
-            foreach($invoices as $invoice) {
-                $deleteInvoice = new DeleteInvoice($invoice);
-                $errorMessage = $deleteInvoice->cleanup('invoices');
-
-                if(is_array($errorMessage)) {
-                    $errorMessageArray = array_merge($errorMessageArray, $errorMessage);
+                    if(is_array($errorMessage)) {
+                        $errorMessageArray = array_merge($errorMessageArray, $errorMessage);
+                    }
                 }
-            }
-        }
+                break;
 
-        if($cleanupType === 'intakes') {
-            $intakes = Intake::whereDate('updated_at', '<', $cleanupDate)->get();
+            case "ordersOneoff":
+                $ordersOneoff = $cleanupItemHelper->getOrdersOneoffToDelete()->get();
 
-            foreach($intakes as $intake) {
-                $deleteIntake = new DeleteIntake($intake);
-                $errorMessage = $deleteIntake->cleanup('intakes');
-                if(is_array($errorMessage)) {
-                    $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
+                foreach($ordersOneoff as $order) {
+                    $deleteOrder = new DeleteOrder($order);
+                    $errorMessage = $deleteOrder->cleanup();
+                    if(is_array($errorMessage)) {
+                        $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
+                    }
                 }
-            }
-        }
+                break;
 
-        if($cleanupType === 'opportunities') {
-            $opportunities = Opportunity::whereDate('updated_at', '<', $cleanupDate)->get();
+            case "ordersPeriodic":
+                $ordersPeriodic = $cleanupItemHelper->getOrdersPeriodicToDelete()->get();
 
-            foreach($opportunities as $opportunity) {
-                $deleteOpportunity = new DeleteOpportunity($opportunity);
-                $errorMessage = $deleteOpportunity->cleanup('opportunities');
-                print_r($errorMessage);
-                if(is_array($errorMessage)) {
-                    $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
+                foreach($ordersPeriodic as $order) {
+                    $deleteOrder = new DeleteOrder($order);
+                    $errorMessage = $deleteOrder->cleanup();
+                    if(is_array($errorMessage)) {
+                        $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
+                    }
                 }
-            }
-        }
+                break;
 
-        if($cleanupType === 'participationsFinished') {
-            $participantProjects = ParticipantProject::whereNotNull('date_terminated')
-                ->whereDate('date_terminated', '<', $cleanupDate)
-                // participation mag niet voorkomen in projectRevenue die nog geen status processed heeft.
-                ->whereDoesntHave('projectRevenues', function ($query) {
-                    $query->where('project_revenues.status', '!=', 'processed');
-                })
-                // participation mag niet voorkomen in revenuesKwh die nog geen status processed heeft.
-                ->whereDoesntHave('revenuesKwh', function ($query) {
-                    $query->where('revenues_kwh.status', '!=', 'processed');
-                })
-                // ToDo: moet anders:
-                //  dit is momenteel nog een harde check in deleteParticipation, dus zetten we hem ook nog even hier
-                ->whereDoesntHave('mutations')
-                ->get();
+            case "intakes":
+                $intakes = $cleanupItemHelper->getIntakesToDelete()->get();
 
-
-            foreach($participantProjects as $participantProject) {
-                $deleteParticipation = new DeleteParticipation($participantProject);
-                $errorMessage = $deleteParticipation->cleanup('participationsFinished');
-                if(is_array($errorMessage)) {
-                    $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
+                foreach($intakes as $intake) {
+                    $deleteIntake = new DeleteIntake($intake);
+                    $errorMessage = $deleteIntake->cleanup();
+                    if(is_array($errorMessage)) {
+                        $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
+                    }
                 }
-            }
-        }
+                break;
 
-        if($cleanupType === 'participationsWithoutStatusDefinitive') {
-            $participantProjects = ParticipantProject::whereDoesntHave('mutationsDefinitive')
-                ->whereDate('updated_at', '<', $cleanupDate)->get();
+            case "opportunities":
+                $opportunities = $cleanupItemHelper->getOpportunitiesToDelete()->get();
 
-            foreach($participantProjects as $participantProject) {
-                $deleteParticipation = new DeleteParticipation($participantProject);
-                $errorMessage = $deleteParticipation->cleanup('participationsWithoutStatusDefinitive');
-                if(is_array($errorMessage)) {
-                    $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
+                foreach($opportunities as $opportunity) {
+                    $deleteOpportunity = new DeleteOpportunity($opportunity);
+                    $errorMessage = $deleteOpportunity->cleanup();
+                    print_r($errorMessage);
+                    if(is_array($errorMessage)) {
+                        $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
+                    }
                 }
-            }
-        }
+                break;
 
-        if($cleanupType === 'ordersOneoff') {
-            $cleanupYearsOrdersOneoff = $cooperation->cleanup_years_oneoff_orders_start_date;
+            case "participationsWithoutStatusDefinitive":
+                $participantProjects = $cleanupItemHelper->getParticipationsWithoutStatusDefinitiveToDelete()->get();
 
-            $cleanupDateOrdersOneoff = $dateToday->copy()->subYears($cleanupYearsOrdersOneoff);
-
-            $exceptionProductIds = Product::where('cleanup_exception', 1)->pluck('id');
-
-            // alle eenmalige orders zonder die met producten die uitgezonderd zijn voor opschonen
-            $ordersOneoff = Order::where('collection_frequency_id', 'once')
-                ->whereDate('date_next_invoice', '<', $cleanupDateOrdersOneoff)
-                ->whereDoesntHave('orderProducts', function($query) use ($exceptionProductIds) {
-                    $query->whereIn('id', $exceptionProductIds);
-                })->get();
-
-            foreach($ordersOneoff as $order) {
-                $deleteOrder = new DeleteOrder($order);
-                $errorMessage = $deleteOrder->cleanup('ordersOneoff');
-                if(is_array($errorMessage)) {
-                    $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
+                foreach($participantProjects as $participantProject) {
+                    $deleteParticipation = new DeleteParticipation($participantProject);
+                    $errorMessage = $deleteParticipation->cleanup();
+                    if(is_array($errorMessage)) {
+                        $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
+                    }
                 }
-            }
-        }
+                break;
 
-        if($cleanupType === 'ordersPeriodic') {
-            $cleanupYearsOrdersPeriodic = $cooperation->cleanup_years_periodic_orders_termination_date;
+            case "participationsFinished":
+                $participantProjects = $cleanupItemHelper->getParticipationsFinishedToDelete()->get();
 
-            $cleanupDateOrdersPeriodic = $dateToday->copy()->subYears($cleanupYearsOrdersPeriodic);
-
-            $exceptionProductIds = Product::where('cleanup_exception', 1)->pluck('id');
-
-            // alle periodieke orders zonder die met producten die uitgezonderd zijn voor opschonen
-            $ordersPeriodic = Order::whereNot('collection_frequency_id', 'once')
-                ->where('status_id', 'closed')
-                ->whereDate('date_next_invoice', '<', $cleanupDateOrdersPeriodic)
-                ->whereDoesntHave('orderProducts', function($query) use ($exceptionProductIds) {
-                    $query->whereIn('id', $exceptionProductIds);
-                })->get();
-
-            foreach($ordersPeriodic as $order) {
-                $deleteOrder = new DeleteOrder($order);
-                $errorMessage = $deleteOrder->cleanup('ordersPeriodic');
-                if(is_array($errorMessage)) {
-                    $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
+                foreach($participantProjects as $participantProject) {
+                    $deleteParticipation = new DeleteParticipation($participantProject);
+                    $errorMessage = $deleteParticipation->cleanup();
+                    if(is_array($errorMessage)) {
+                        $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
+                    }
                 }
-            }
-        }
+                break;
 
-        if($cleanupType === 'incomingEmails') {
-            $mails = Email::whereNull('date_removed')->where('folder', 'inbox')->whereDate('created_at', '<', $cleanupDate)->get();
+            case "incomingEmails":
+                $mails = $cleanupItemHelper->getIncomingEmailsToDelete()->get();
 
-            foreach($mails as $mail) {
-                $deleteMail = new DeleteMail($mail);
-                $errorMessage = $deleteMail->cleanup($cleanupType);
-                if(is_array($errorMessage)) {
-                    $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
+                foreach($mails as $mail) {
+                    $deleteMail = new DeleteMail($mail);
+                    $errorMessage = $deleteMail->cleanup();
+                    if(is_array($errorMessage)) {
+                        $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
+                    }
                 }
-            }
-        }
+                break;
 
-        if($cleanupType === 'outgoingEmails') {
-            $mails = Email::whereNull('date_removed')->where('folder', 'sent')->whereDate('created_at', '<', $cleanupDate)->get();
+            case "outgoingEmails":
+                $mails = $cleanupItemHelper->getOutgoingEmailsToDelete()->get();
 
-            foreach($mails as $mail) {
-                $deleteMail = new DeleteMail($mail);
-                $errorMessage = $deleteMail->cleanup($cleanupType);
-                if(is_array($errorMessage)) {
-                    $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
+                foreach($mails as $mail) {
+                    $deleteMail = new DeleteMail($mail);
+                    $errorMessage = $deleteMail->cleanup();
+                    if(is_array($errorMessage)) {
+                        $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
+                    }
                 }
-            }
-        }
+                break;
 
-        if($cleanupType === 'contactsToDelete') {
+            case "contactsToDelete":
+                $contacts = $cleanupItemHelper->getContactsToDeleteToDelete()->get();
 
-            $exceptionContactIds = [];
-            foreach ($cooperation->cleanupContactsExcludedGroups as $cleanupContactsExcludedGroup) {
-                $exceptionContactIds = array_unique( array_merge($exceptionContactIds, $cleanupContactsExcludedGroup->contactGroup->getAllContacts(true)) );
-            }
+                foreach($contacts as $contact) {
 
-            $contacts = Contact::whereDate('created_at', '<', $cleanupDate)
-                ->whereDoesntHave('invoices')
-                ->whereDoesntHave('orders')
-                ->whereDoesntHave('intakes')
-//                ->whereDoesntHave('opportunities') // gaan via intakes
-                ->whereDoesntHave('quotationRequests')
-                ->whereDoesntHave('participations')
-                ->whereNotIn('id', $exceptionContactIds)
-                ->get();
+                    try {
+                        DB::beginTransaction();
 
-            foreach($contacts as $contact) {
-                $deleteContact = new DeleteContact($contact);
-//                Log::info('hier softdeleten van contact: ' . $contact->id . ' ' . $contact->full_name);
-                $errorMessage = $deleteContact->cleanup('contactsToDelete');
-                if(is_array($errorMessage)) {
-                    $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
+                        $deleteContact = new DeleteContact($contact);
+                        $errorMessage = $deleteContact->cleanup();
+                        if(is_array($errorMessage)) {
+                            $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
+                        }
+
+                        if(count($errorMessage) > 0){
+                            DB::rollBack();
+                            abort(412, implode(";", array_unique($errorMessage)));
+                        }
+
+                        DB::commit();
+                    } catch (\PDOException $e) {
+                        DB::rollBack();
+                        Log::error($e->getMessage());
+                        abort(501, 'Er is helaas een fout opgetreden.');
+                    }
+
                 }
-            }
 
-        }
+                break;
 
-        if($cleanupType === 'contactsSoftDeleted') {
-            // TODO Hier komt dan het echte verwijderen van contact uit database!!!
+            case "contactsSoftDeleted":
+                // TODO Hier komt dan het echte verwijderen van contact uit database!!!
+//                $contacts = $cleanupItemHelper->getContactsSoftDeletedToDelete()->get();
+//                foreach($contacts as $contact) {
+//                    //
+//                }
+
+                break;
+
+            default:
+
         }
 
         Log::info('errorMessageArray');
         Log::info($errorMessageArray);
+
+        $cleanupItem->date_cleaned_up = $dateToday;
+//        number_of_items_to_delete opnieuw bepalen via helper
+//        $cleanupItem->number_of_items_to_delete = 0;
+        $cleanupItem->save();
+
+        $cleanupItemHelper->updateAmountsPerType();
 
         return $errorMessageArray;
     }

@@ -27,6 +27,9 @@ class DeleteInvoice implements DeleteInterface
 {
     private $errorMessage = [];
     private $invoice;
+    private $yearsForDelete;
+    private $dateAllowedToDelete;
+    private $cooperation;
 
     /** Sets the model to delete
      *
@@ -36,6 +39,10 @@ class DeleteInvoice implements DeleteInterface
     public function __construct(Model $invoice)
     {
         $this->invoice = $invoice;
+        $this->cooperation = Cooperation::first();
+        $cleanupItemInvoice = $this->cooperation->cleanupItems()->where('code_ref', 'invoices')->first();
+        $this->yearsForDelete = $cleanupItemInvoice?->years_for_delete ?? 99;
+        $this->dateAllowedToDelete = Carbon::now()->subYears($this->yearsForDelete)->format('Y-m-d');
     }
 
     /** If it's called by the cleanup functionality, we land on this function, else on the delete function
@@ -43,7 +50,7 @@ class DeleteInvoice implements DeleteInterface
      * @return array
      * @throws
      */
-    public function cleanup($cleanupType)
+    public function cleanup()
     {
         try{
             $this->delete();
@@ -57,15 +64,6 @@ class DeleteInvoice implements DeleteInterface
             ]);
             array_push($this->errorMessage, "Fout bij opschonen Nota's'. '(meld dit bij Econobis support)");
         }
-
-        $dateToday = Carbon::now();
-        $cooperation = Cooperation::first();
-
-        $cleanupItem = $cooperation->cleanupItems()->where('code_ref', $cleanupType)->first();
-
-        $cleanupItem->number_of_items_to_delete = 0;
-        $cleanupItem->date_cleaned_up = $dateToday;
-        $cleanupItem->save();
     }
 
     /** Main method for deleting this model and all it's relations
@@ -93,7 +91,9 @@ class DeleteInvoice implements DeleteInterface
     public function canDelete()
     {
         if(!($this->invoice->status_id == 'to-send') || $this->invoice->invoice_number != 0 ){
-            array_push($this->errorMessage, "Er is al een nota aangemaakt. Een nota kan niet worden verwijderd vanwege de bewaarplicht.");
+            if($this->invoice->date_sent >= $this->dateAllowedToDelete){
+                array_push($this->errorMessage, "Er is al een nota aangemaakt. Nota kan niet worden verwijderd vanwege de bewaarplicht: " . $this->yearsForDelete . " jaar.");
+            }
         }
     }
 

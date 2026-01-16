@@ -54,7 +54,7 @@ class DeleteContact implements DeleteInterface
      * @return array
      * @throws
      */
-    public function cleanup($cleanupType)
+    public function cleanup()
     {
         try{
             $this->delete();
@@ -69,14 +69,6 @@ class DeleteContact implements DeleteInterface
             abort(501, 'Fout bij opschonen Contacten. (meld dit bij Econobis support)');
         }
 
-        $dateToday = Carbon::now();
-        $cooperation = Cooperation::first();
-
-        $cleanupItem = $cooperation->cleanupItems()->where('code_ref', $cleanupType)->first();
-
-        $cleanupItem->number_of_items_to_delete = 0;
-        $cleanupItem->date_cleaned_up = $dateToday;
-        $cleanupItem->save();
     }
 
     /** Main method for deleting this model and all it's relations

@@ -121,7 +121,7 @@ function SubsidyRequestOccupant({ redirectBack, initialQuotationRequest, handleS
                                     {initialQuotationRequest.hasExternalParty ? (
                                         <>
                                             <FormLabel htmlFor="date_recorded" className={'field-label'}>
-                                                Afspraak gedaan op
+                                                Afspraak afgerond
                                             </FormLabel>
                                             <Field name="dateRecorded">
                                                 {({ field }) => (
@@ -129,7 +129,7 @@ function SubsidyRequestOccupant({ redirectBack, initialQuotationRequest, handleS
                                                         field={field}
                                                         type="datetime-local"
                                                         id="date_recorded"
-                                                        placeholder={'Afspraak gedaan op'}
+                                                        placeholder={'Afspraak afgerond'}
                                                         readOnly={true}
                                                     />
                                                 )}

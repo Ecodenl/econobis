@@ -3,11 +3,14 @@
 namespace App\Eco\RevenuesKwh;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 //use Venturecraft\Revisionable\RevisionableTrait;
 
 class RevenueValuesKwh extends Model
 {
 //    use RevisionableTrait;
+    use SoftDeletes;
 
     protected $table = 'revenue_values_kwh';
 

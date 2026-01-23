@@ -53,7 +53,8 @@ class DeleteMail implements DeleteInterface
                 'exception' => $exception->getMessage(),
                 'errormessages' => implode(' | ', $this->errorMessage),
             ]);
-            abort(501, 'Fout bij opschonen Emails. (meld dit bij Econobis support)');
+            array_push($this->errorMessage, "Fout bij opschonen Emails. (meld dit bij Econobis support)");
+            return $this->errorMessage;
         }
     }
 

@@ -77,8 +77,14 @@ class DataCleanupListItems extends Component {
             'invoices',
             'ordersOneoff',
             'ordersPeriodic',
+            'financialOverviews',
+            'tasks',
             'opportunities',
             'intakes',
+            'housingFiles',
+            'paymentInvoices',
+            'revenues',
+            'revenuesKwh',
             'participationsWithoutStatusDefinitive',
             'participationsFinished',
             'incomingEmails',
@@ -86,7 +92,7 @@ class DataCleanupListItems extends Component {
         ];
 
         const data = this.props.data;
-        console.log(data);
+        // console.log(data);
 
         return (
             <div>

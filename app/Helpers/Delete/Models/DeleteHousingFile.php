@@ -10,6 +10,7 @@ namespace App\Helpers\Delete\Models;
 
 use App\Helpers\Delete\DeleteInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class DeleteHousingFile
@@ -32,6 +33,30 @@ class DeleteHousingFile implements DeleteInterface
     public function __construct(Model $housingFile)
     {
         $this->housingFile = $housingFile;
+    }
+
+    /** If it's called by the cleanup functionality, we land on this function, else on the delete function
+     *
+     * @return array
+     * @throws
+     */
+    public function cleanup()
+    {
+        try{
+            $this->delete();
+            if(!empty($this->errorMessage)) {
+                return $this->errorMessage;
+            }
+        }catch (\Exception $exception){
+            Log::error('Fout bij opschonen Woningdossiers', [
+                'exception' => $exception->getMessage(),
+                'errormessages' => implode(' | ', $this->errorMessage),
+            ]);
+            array_push($this->errorMessage, "Fout bij opschonen Woningdossiers. (meld dit bij Econobis support)");
+            return $this->errorMessage;
+
+        }
+
     }
 
     /** Main method for deleting this model and all it's relations

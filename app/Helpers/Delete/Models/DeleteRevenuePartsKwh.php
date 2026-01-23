@@ -9,8 +9,11 @@
 namespace App\Helpers\Delete\Models;
 
 
+use App\Eco\Cooperation\Cooperation;
 use App\Helpers\Delete\DeleteInterface;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class DeleteRevenuePartsKwh
@@ -19,9 +22,12 @@ use Illuminate\Database\Eloquent\Model;
  */
 class DeleteRevenuePartsKwh implements DeleteInterface
 {
-
+    private bool $force = true;
     private $errorMessage = [];
     private $revenuePartsKwh;
+    private $yearsForDelete;
+    private $dateAllowedToDelete;
+    private $cooperation;
 
     /** Sets the model to delete
      *
@@ -30,6 +36,25 @@ class DeleteRevenuePartsKwh implements DeleteInterface
     public function __construct(Model $revenuePartsKwh)
     {
         $this->revenuePartsKwh = $revenuePartsKwh;
+        $this->cooperation = Cooperation::first();
+        $cleanupItemRevenueKwh = $this->cooperation->cleanupItems()->where('code_ref', 'revenuesKwh')->first();
+        $this->yearsForDelete = $cleanupItemRevenueKwh?->years_for_delete ?? 99;
+        $this->dateAllowedToDelete = Carbon::now()->subYears($this->yearsForDelete)->format('Y-m-d');
+    }
+
+    public function cleanup()
+    {
+        try {
+            $this->force = false;
+            return $this->delete();
+        }catch (\Exception $exception){
+            Log::error('Fout bij opschonen Opbrengsten Kwh deelperioden', [
+                'exception' => $exception->getMessage(),
+                'errormessages' => implode(' | ', $this->errorMessage),
+            ]);
+            $this->errorMessage[] = "Fout bij opschonen Opbrengsten Kwh deelperioden. (meld dit bij Econobis support)";
+            return $this->errorMessage;
+        }
     }
 
     /** Main method for deleting this model and all it's relations
@@ -39,14 +64,18 @@ class DeleteRevenuePartsKwh implements DeleteInterface
      */
     public function delete()
     {
-        $this->canDelete();
+        if (! $this->canDelete()) {
+            return $this->errorMessage;
+        }
+
         $this->deleteModels();
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        if( !sizeof($this->errorMessage)>0 )
-        {
-            $this->revenuePartsKwh->forceDelete();
+
+        if (count($this->errorMessage) === 0) {
+            $this->force ? $this->revenuePartsKwh->forceDelete()
+                : $this->revenuePartsKwh->delete();
         }
 
         return $this->errorMessage;
@@ -54,11 +83,26 @@ class DeleteRevenuePartsKwh implements DeleteInterface
 
     /** Checks if the model can be deleted and sets error messages
      */
-    public function canDelete()
+    public function canDelete(): bool
     {
-        if($this->revenuePartsKwh->confirmed){
-            array_push($this->errorMessage, "Er is al minimaal 1 definitieve deelperiode");
+        $revenues = $this->revenuePartsKwh?->revenuesKwh;
+
+        // bewaarplicht cases (confirmed+processed)
+        if ($revenues?->confirmed && $revenues->status === 'processed') {
+            if ($revenues->date_end < $this->dateAllowedToDelete) {
+                return true;
+            }
+
+            $this->errorMessage[] =
+                "Er is al een verwerkte opbrengstverdeling Kwh aangemaakt. Opbrengstverdeling Kwh kan niet worden verwijderd vanwege de bewaarplicht: {$this->yearsForDelete} jaar.";
+            return false;
         }
+
+        if($this->revenuePartsKwh->confirmed){
+            $this->errorMessage[] = "Er is al minimaal 1 definitieve deelperiode";
+            return false;
+        }
+        return true;
     }
 
     /** Deletes models recursive
@@ -85,7 +129,26 @@ class DeleteRevenuePartsKwh implements DeleteInterface
      */
     public function customDeleteActions()
     {
-        $this->revenuePartsKwh->newOrConceptDistributionPartsKwh()->delete();
+        $revenues = $this->revenuePartsKwh?->revenuesKwh;
+
+        $processedBeforeRetention =
+            $revenues?->confirmed &&
+            $revenues->status === 'processed' &&
+            $revenues->date_end < $this->dateAllowedToDelete;
+
+        if ($processedBeforeRetention) {
+            if ($this->force) {
+                $this->revenuePartsKwh->distributionPartsKwh()->withTrashed()->forceDelete();
+            } else {
+                $this->revenuePartsKwh->distributionPartsKwh()->delete();
+            }
+        } else {
+            if ($this->force) {
+                $this->revenuePartsKwh->newOrConceptDistributionPartsKwh()->withTrashed()->forceDelete();
+            } else {
+                $this->revenuePartsKwh->newOrConceptDistributionPartsKwh()->delete();
+            }
+        }
     }
 
 

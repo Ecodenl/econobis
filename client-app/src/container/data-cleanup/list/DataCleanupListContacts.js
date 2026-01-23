@@ -147,7 +147,15 @@ class DataCleanupListContacts extends Component {
                                     </td>
                                     <td>{data[item]?.number_of_items_to_delete}</td>
                                     <td>
+                                        <a
+                                            role="button"
+                                            onClick={() => this.props.handleDataCleanupUpdateAmounts(item)}
+                                            title={`herbereken op te schonen ${data[item]?.name}`}
+                                        >
+                                            <Icon size={14} icon={refresh} />
+                                        </a>
                                         {/*{item === 'contactsSoftDeleted' ? (*/}
+                                        &nbsp;&nbsp;&nbsp;
                                         <a
                                             role="button"
                                             onClick={() => this.openModal(item)}
@@ -156,14 +164,6 @@ class DataCleanupListContacts extends Component {
                                             <Icon size={14} icon={trash} />
                                         </a>
                                         {/*) : null}*/}
-                                        &nbsp;&nbsp;&nbsp;
-                                        <a
-                                            role="button"
-                                            onClick={() => this.props.handleDataCleanupUpdateAmounts(item)}
-                                            title={`herbereken op te schonen ${data[item]?.name}`}
-                                        >
-                                            <Icon size={14} icon={refresh} />
-                                        </a>
                                     </td>
                                     <td>{data[item]?.date_determined}</td>
                                     <td>{data[item]?.date_cleaned_up}</td>

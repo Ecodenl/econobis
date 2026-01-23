@@ -11,6 +11,7 @@ namespace App\Helpers\Delete\Models;
 
 use App\Helpers\Delete\DeleteInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class DeleteFinancialOverview
@@ -35,6 +36,28 @@ class DeleteFinancialOverview implements DeleteInterface
     public function __construct(Model $financialOverview)
     {
         $this->financialOverview = $financialOverview;
+    }
+
+    /** If it's called by the cleanup functionality, we land on this function, else on the delete function
+     *
+     * @return array
+     * @throws
+     */
+    public function cleanup()
+    {
+        try{
+            $this->delete();
+            if(!empty($this->errorMessage)) {
+                return $this->errorMessage;
+            }
+        }catch (\Exception $exception){
+            Log::error('Fout bij opschonen Waardestaten', [
+                'exception' => $exception->getMessage(),
+                'errormessages' => implode(' | ', $this->errorMessage),
+            ]);
+            array_push($this->errorMessage, "Fout bij opschonen Waardestaten. (meld dit bij Econobis support)");
+            return $this->errorMessage;
+        }
     }
 
     /** Main method for deleting this model and all it's relations
@@ -67,6 +90,9 @@ class DeleteFinancialOverview implements DeleteInterface
         if($this->financialOverview->financialOverviewContacts->where('status_id', '!=', 'concept')->count() > 0){
             array_push($this->errorMessage, "Er zijn al contacten in behandeling voor deze waardestaat.");
         }
+        if($this->financialOverview->financialOverviewPosts->count() > 0){
+            array_push($this->errorMessage, "Er zijn al bestanden waardestaten post gemaakt.");
+        }
     }
 
     /** Deletes models recursive
@@ -81,6 +107,11 @@ class DeleteFinancialOverview implements DeleteInterface
         foreach ($this->financialOverview->financialOverviewContacts as $financialOverviewContact){
             $deleteFinancialOverviewContact = new DeleteFinancialOverviewContact($financialOverviewContact);
             $this->errorMessage = array_merge($this->errorMessage, ( $deleteFinancialOverviewContact->delete() ?? [] ) );
+        }
+
+        foreach ($this->financialOverview->financialOverviewPosts as $financialOverviewPost){
+            $deleteFinancialOverviewPost = new DeleteFinancialOverviewPost($financialOverviewPost);
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteFinancialOverviewPost->delete() ?? [] ) );
         }
 
     }

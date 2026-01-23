@@ -62,7 +62,8 @@ class DeleteInvoice implements DeleteInterface
                 'exception' => $exception->getMessage(),
                 'errormessages' => implode(' | ', $this->errorMessage),
             ]);
-            array_push($this->errorMessage, "Fout bij opschonen Nota's'. '(meld dit bij Econobis support)");
+            array_push($this->errorMessage, "Fout bij opschonen Nota's. (meld dit bij Econobis support)");
+            return $this->errorMessage;
         }
     }
 

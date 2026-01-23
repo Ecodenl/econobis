@@ -6,12 +6,18 @@ use App\Eco\Cooperation\Cooperation;
 use App\Exceptions\CleanupItemFailed;
 use App\Helpers\CleanupItem\CleanupItemHelper;
 use App\Helpers\Delete\Models\DeleteContact;
+use App\Helpers\Delete\Models\DeleteFinancialOverview;
+use App\Helpers\Delete\Models\DeleteHousingFile;
 use App\Helpers\Delete\Models\DeleteIntake;
 use App\Helpers\Delete\Models\DeleteInvoice;
 use App\Helpers\Delete\Models\DeleteMail;
 use App\Helpers\Delete\Models\DeleteOpportunity;
 use App\Helpers\Delete\Models\DeleteOrder;
 use App\Helpers\Delete\Models\DeleteParticipation;
+use App\Helpers\Delete\Models\DeletePaymentInvoice;
+use App\Helpers\Delete\Models\DeleteRevenue;
+use App\Helpers\Delete\Models\DeleteRevenuesKwh;
+use App\Helpers\Delete\Models\DeleteTask;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -79,14 +85,44 @@ class CleanupController extends Controller
                 $this->runCleanup($ordersPeriodic, fn ($order) => new DeleteOrder($order), $errorMessageArray);
                 break;
 
-            case "intakes":
-                $intakes = $cleanupItemHelper->getIntakesToDelete()->get();
-                $this->runCleanup($intakes, fn ($intake) => new DeleteIntake($intake), $errorMessageArray);
+            case "financialOverviews":
+                $financialOverviews = $cleanupItemHelper->getFinancialOverviewsToDelete()->get();
+                $this->runCleanup($financialOverviews, fn ($financialOverview) => new DeleteFinancialOverview($financialOverview), $errorMessageArray);
+                break;
+
+            case "tasks":
+                $tasks = $cleanupItemHelper->getTasksToDelete()->get();
+                $this->runCleanup($tasks, fn ($task) => new DeleteTask($task), $errorMessageArray);
                 break;
 
             case "opportunities":
                 $opportunities = $cleanupItemHelper->getOpportunitiesToDelete()->get();
                 $this->runCleanup($opportunities, fn ($opportunity) => new DeleteOpportunity($opportunity), $errorMessageArray);
+                break;
+
+            case "intakes":
+                $intakes = $cleanupItemHelper->getIntakesToDelete()->get();
+                $this->runCleanup($intakes, fn ($intake) => new DeleteIntake($intake), $errorMessageArray);
+                break;
+
+            case "housingFiles":
+                $housingFiles = $cleanupItemHelper->getHousingFilesToDelete()->get();
+                $this->runCleanup($housingFiles, fn ($housingFile) => new DeleteHousingFile($housingFile), $errorMessageArray);
+                break;
+
+            case "paymentInvoices":
+                $paymentInvoices = $cleanupItemHelper->getPaymentInvoicesToDelete()->get();
+                $this->runCleanup($paymentInvoices, fn ($paymentInvoice) => new DeletePaymentInvoice($paymentInvoice), $errorMessageArray);
+                break;
+
+            case "revenues":
+                $revenues = $cleanupItemHelper->getRevenuesToDelete()->get();
+                $this->runCleanup($revenues, fn ($revenue) => new DeleteRevenue($revenue), $errorMessageArray);
+                break;
+
+            case "revenuesKwh":
+                $revenuesKwh = $cleanupItemHelper->getRevenuesKwhToDelete()->get();
+                $this->runCleanup($revenuesKwh, fn ($revenueKwh) => new DeleteRevenuesKwh($revenueKwh), $errorMessageArray);
                 break;
 
             case "participationsWithoutStatusDefinitive":

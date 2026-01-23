@@ -12,13 +12,19 @@ namespace App\Helpers\CleanupItem;
 use App\Eco\Contact\Contact;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\Email\Email;
+use App\Eco\FinancialOverview\FinancialOverview;
+use App\Eco\HousingFile\HousingFile;
 use App\Eco\Intake\Intake;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Order\Order;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantProject\ParticipantProject;
+use App\Eco\PaymentInvoice\PaymentInvoice;
 use App\Eco\Product\Product;
+use App\Eco\Project\ProjectRevenue;
+use App\Eco\RevenuesKwh\RevenuesKwh;
+use App\Eco\Task\Task;
 use App\Helpers\Settings\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -44,8 +50,14 @@ class CleanupItemHelper
             'invoices',
             'ordersOneoff',
             'ordersPeriodic',
-            'intakes',
+            'financialOverviews',
+            'tasks',
             'opportunities',
+            'intakes',
+            'housingFiles',
+            'paymentInvoices',
+            'revenues',
+            'revenuesKwh',
             'participationsWithoutStatusDefinitive',
             'participationsFinished',
             'incomingEmails',
@@ -105,14 +117,44 @@ class CleanupItemHelper
                 $numberItemsToDelete = $ordersPeriodicToDelete->count();
                 break;
 
-            case "intakes":
-                $intakesToDelete = $this->getIntakesToDelete();
-                $numberItemsToDelete = $intakesToDelete->count();
+            case "financialOverviews":
+                $financialOverviewsToDelete = $this->getFinancialOverviewsToDelete();
+                $numberItemsToDelete = $financialOverviewsToDelete->count();
+                break;
+
+            case "tasks":
+                $tasksToDelete = $this->getTasksToDelete();
+                $numberItemsToDelete = $tasksToDelete->count();
                 break;
 
             case "opportunities":
                 $opportunitiesToDelete = $this->getOpportunitiesToDelete();
                 $numberItemsToDelete = $opportunitiesToDelete->count();
+                break;
+
+            case "intakes":
+                $intakesToDelete = $this->getIntakesToDelete();
+                $numberItemsToDelete = $intakesToDelete->count();
+                break;
+
+            case "housingFiles":
+                $housingFilesToDelete = $this->getHousingFilesToDelete();
+                $numberItemsToDelete = $housingFilesToDelete->count();
+                break;
+
+            case "paymentInvoices":
+                $paymentInvoicesToDelete = $this->getPaymentInvoicesToDelete();
+                $numberItemsToDelete = $paymentInvoicesToDelete->count();
+                break;
+
+            case "revenues":
+                $revenuesToDelete = $this->getRevenuesToDelete();
+                $numberItemsToDelete = $revenuesToDelete->count();
+                break;
+
+            case "revenuesKwh":
+                $revenuesKwhToDelete = $this->getRevenuesKwhToDelete();
+                $numberItemsToDelete = $revenuesKwhToDelete->count();
                 break;
 
             case "participationsWithoutStatusDefinitive":
@@ -204,13 +246,24 @@ class CleanupItemHelper
     /**
      * @return mixed
      */
-    public function getIntakesToDelete(): mixed
+    public function getFinancialOverviewsToDelete(): mixed
     {
-        $intakesCleanupYears = $this->cleanupItem->years_for_delete;
-        $intakesCleanupOlderThen = $this->cleanupDate->copy()->subYears($intakesCleanupYears);
+        $financialOverviewsCleanupYears = $this->cleanupItem->years_for_delete;
+        $financialOverviewsCleanupOlderThen = $this->cleanupDate->copy()->subYears($financialOverviewsCleanupYears);
+        $financialOverviewsToDelete = FinancialOverview::where('year', '<', $financialOverviewsCleanupOlderThen);
+        return $financialOverviewsToDelete;
+    }
 
-        $intakesToDelete = Intake::whereDate('updated_at', '<', $intakesCleanupOlderThen);
-        return $intakesToDelete;
+    /**
+     * @return mixed
+     */
+    public function getTasksToDelete(): mixed
+    {
+        $tasksCleanupYears = $this->cleanupItem->years_for_delete;
+        $tasksCleanupOlderThen = $this->cleanupDate->copy()->subYears($tasksCleanupYears);
+
+        $tasksToDelete = Task::whereDate('updated_at', '<', $tasksCleanupOlderThen);
+        return $tasksToDelete;
     }
 
     /**
@@ -223,6 +276,64 @@ class CleanupItemHelper
 
         $opportunitiesToDelete = Opportunity::whereDate('updated_at', '<', $opportunitiesCleanupOlderThen);
         return $opportunitiesToDelete;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIntakesToDelete(): mixed
+    {
+        $intakesCleanupYears = $this->cleanupItem->years_for_delete;
+        $intakesCleanupOlderThen = $this->cleanupDate->copy()->subYears($intakesCleanupYears);
+
+        $intakesToDelete = Intake::whereDate('updated_at', '<', $intakesCleanupOlderThen);
+        return $intakesToDelete;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHousingFilesToDelete(): mixed
+    {
+        $housingFilesCleanupYears = $this->cleanupItem->years_for_delete;
+        $housingFilesCleanupOlderThen = $this->cleanupDate->copy()->subYears($housingFilesCleanupYears);
+        $housingFilesToDelete = HousingFile::whereDate('updated_at', '<', $housingFilesCleanupOlderThen);
+        return $housingFilesToDelete;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPaymentInvoicesToDelete(): mixed
+    {
+        $paymentInvoicesCleanupYears = $this->cleanupItem->years_for_delete;
+        $paymentInvoicesCleanupOlderThen = $this->cleanupDate->copy()->subYears($paymentInvoicesCleanupYears);
+        $paymentInvoicesToDelete = PaymentInvoice::whereDate('created_at', '<', $paymentInvoicesCleanupOlderThen);
+        return $paymentInvoicesToDelete;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRevenuesToDelete(): mixed
+    {
+        $revenuesCleanupYears = $this->cleanupItem->years_for_delete;
+        $revenuesCleanupOlderThen = $this->cleanupDate->copy()->subYears($revenuesCleanupYears);
+        $revenuesToDelete = ProjectRevenue::whereDate('date_end', '<', $revenuesCleanupOlderThen)
+        ->where('status', 'processed');
+        return $revenuesToDelete;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRevenuesKwhToDelete(): mixed
+    {
+        $revenuesKwhCleanupYears = $this->cleanupItem->years_for_delete;
+        $revenuesKwhCleanupOlderThen = $this->cleanupDate->copy()->subYears($revenuesKwhCleanupYears);
+        $revenuesKwhToDelete = RevenuesKwh::whereDate('date_end', '<', $revenuesKwhCleanupOlderThen)
+        ->where('status', 'processed');
+        return $revenuesKwhToDelete;
     }
 
     /**

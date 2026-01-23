@@ -56,7 +56,9 @@ class DeleteOpportunity implements DeleteInterface
                 'exception' => $exception->getMessage(),
                 'errormessages' => implode(' | ', $this->errorMessage),
             ]);
-            abort(501, 'Fout bij opschonen Kansen. (meld dit bij Econobis support)');
+            array_push($this->errorMessage, "Fout bij opschonen Kansen. (meld dit bij Econobis support)");
+            return $this->errorMessage;
+
         }
     }
 

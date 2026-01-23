@@ -49,18 +49,19 @@ class DeleteParticipation implements DeleteInterface
     {
         try{
             $this->delete();
-            $this->delete();
+            if(!empty($this->errorMessage)) {
+                return $this->errorMessage;
+            }
         }catch (\Exception $exception){
             Log::error('Fout bij opschonen Deelnames', [
                 'exception' => $exception->getMessage(),
-                'errorMessages' => implode(' | ', $this->errorMessage),
+                'errormessages' => implode(' | ', $this->errorMessage),
             ]);
-
-        }
-
-        if(!empty($this->errorMessage)) {
+            array_push($this->errorMessage, "Fout bij opschonen Deelnames. (meld dit bij Econobis support)");
             return $this->errorMessage;
+
         }
+
     }
 
     /** Main method for deleting this model and all it's relations

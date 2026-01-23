@@ -165,6 +165,16 @@ class AddNewCleanupItems extends Migration
                 'date_ref' => 'Beëindigingsdatum'
             ],
             [
+                'name' => 'Waardestaten',
+                'code_ref' => 'financialOverviews',
+                'date_ref' => 'Datum einde jaar'
+            ],
+            [
+                'name' => 'Taken',
+                'code_ref' => 'tasks',
+                'date_ref' => 'Mutatiedatum'
+            ],
+            [
                 'name' => 'Intakes',
                 'code_ref' => 'intakes',
                 'date_ref' => 'Mutatiedatum'
@@ -173,6 +183,26 @@ class AddNewCleanupItems extends Migration
                 'name' => 'Kansen',
                 'code_ref' => 'opportunities',
                 'date_ref' => 'Mutatiedatum'
+            ],
+            [
+                'name' => 'Woningdossiers',
+                'code_ref' => 'housingFiles',
+                'date_ref' => 'Mutatiedatum'
+            ],
+            [
+                'name' => 'Uitkeringsnota\'s',
+                'code_ref' => 'paymentInvoices',
+                'date_ref' => 'Export/Aanmaakdatum'
+            ],
+            [
+                'name' => 'Opbrengsten Euro / Aflossing',
+                'code_ref' => 'revenues',
+                'date_ref' => 'Datum einde periode'
+            ],
+            [
+                'name' => 'Opbrengsten Kwh',
+                'code_ref' => 'revenuesKwh',
+                'date_ref' => 'Datum einde periode'
             ],
             [
                 'name' => 'Deelnames zonder status Definitief',
@@ -197,7 +227,7 @@ class AddNewCleanupItems extends Migration
             [
                 'name' => 'Contacten die reeds handmatig verwijderd zijn',
                 'code_ref' => 'contactsSoftDeleted',
-                'date_ref' => ''
+                'date_ref' => 'Datum verwijderd'
             ],
             [
                 'name' => 'Contacten',

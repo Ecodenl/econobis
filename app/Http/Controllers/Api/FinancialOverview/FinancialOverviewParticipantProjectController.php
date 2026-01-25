@@ -6,10 +6,8 @@ use App\Eco\FinancialOverview\FinancialOverviewContact;
 use App\Eco\FinancialOverview\FinancialOverviewParticipantProject;
 use App\Eco\FinancialOverview\FinancialOverviewProject;
 use App\Eco\ParticipantProject\ParticipantProject;
-use App\Eco\Project\ProjectType;
 use App\Eco\Project\ProjectValueCourse;
 use App\Helpers\Delete\Models\DeleteFinancialOverviewParticipantProject;
-use App\Helpers\Delete\Models\DeleteFinancialOverviewProject;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -63,7 +61,7 @@ class FinancialOverviewParticipantProjectController extends Controller
                     } catch (\PDOException $e) {
                         DB::rollBack();
                         Log::error($e->getMessage());
-                        abort(501, 'Er is helaas een fout opgetreden.');
+                        abort(500, 'Er is helaas een fout opgetreden.');
                     }
                 }
             } else {
@@ -80,9 +78,13 @@ class FinancialOverviewParticipantProjectController extends Controller
      */
     protected function createFinancialOverviewParticipantProjects(ParticipantProject $participant, Carbon $startDate, Carbon $endDate, FinancialOverviewProject $financialOverviewProject)
     {
-        $startValue = $this->calculateParticipationsValue($participant, $startDate, $startDate);
+        // stand per 1-1 (peildatum 1-1)
+        $startValue = $this->calculateParticipationsValue($participant, $startDate);
+
+        // stand per 31-12 (peildatum 1-1 volgend jaar)
         $cloneEndDate = clone $endDate;
-        $endValue = $this->calculateParticipationsValue($participant, $endDate, $cloneEndDate->addDay());
+        $endPeil = $cloneEndDate->addDay();
+        $endValue = $this->calculateParticipationsValue($participant, $endPeil);
 
         if ($startValue['quantity'] != 0 || $startValue['bookworth'] != 0 || $startValue['amount'] != 0
             || $endValue['quantity'] != 0 || $endValue['bookworth'] != 0 || $endValue['amount'] != 0) {
@@ -134,36 +136,43 @@ class FinancialOverviewParticipantProjectController extends Controller
 
     }
 
-    protected function calculateParticipationsValue($participant, $dateReference1, $dateReference2)
+    protected function calculateParticipationsValue(ParticipantProject $participant, Carbon $dateReference): array
     {
-        $projectTypeCodeRef = (ProjectType::where('id', $participant->project->project_type_id)->first())->code_ref;
-        $projectValueCourse = ProjectValueCourse::where('project_id', $participant->project->id)->where('date', '<=', $dateReference1->format('Y-m-d'))->orderBy('date', 'DESC')->first();
+        $projectTypeCodeRef = $participant?->project?->projectType?->code_ref ?? '';
+        $projectValueCourse = ProjectValueCourse::where('project_id', $participant->project_id)
+            ->where('date', '<', $dateReference->format('Y-m-d'))
+            ->latest('date')
+            ->first();
         $projectBookWorth = $projectValueCourse ? $projectValueCourse->book_worth : 0;
 
-        $mutations = $participant->mutationsDefinitive()
-            ->whereDate('date_entry', '<', $dateReference2->format('Y-m-d'))
-            ->get();
+        $mutationsQuery = $participant->mutationsDefinitive()
+            ->whereDate('date_entry', '<', $dateReference->format('Y-m-d'));
 
         $participationsQBA['quantity'] = 0;
         $participationsQBA['bookworth'] = 0;
         $participationsQBA['amount'] = 0;
-        if(count($mutations) == 0) {
+
+        if (!$mutationsQuery->exists()) {
             return $participationsQBA;
         }
 
-        $participationsValue = 0;
+        $measureType = match ($projectTypeCodeRef) {
+            'obligation', 'capital', 'postalcode_link_capital' => 'quantity',
+            'loan' => 'amount',
+            default => null,
+        };
 
-        if($projectTypeCodeRef === 'obligation' || $projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital') {
-            $measureType = 'quantity';
+        if ($measureType === null) {
+            Log::warning('Unknown project type code_ref in calculateParticipationsValue', [
+                'participant_project_id' => $participant->id ?? null,
+                'project_id' => $participant->project_id ?? ($participant->project->id ?? null),
+                'code_ref' => $projectTypeCodeRef,
+                'peildatum' => $dateReference->format('Y-m-d'),
+            ]);
+            return $participationsQBA;
         }
 
-        if($projectTypeCodeRef === 'loan') {
-            $measureType = 'amount';
-        }
-
-        foreach ($mutations as $mutation) {
-            $participationsValue += $mutation[$measureType] ;
-        }
+        $participationsValue = (float) $mutationsQuery->sum($measureType);
 
         if($projectTypeCodeRef === 'obligation' || $projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital') {
             $participationsQBA['quantity'] = $participationsValue;

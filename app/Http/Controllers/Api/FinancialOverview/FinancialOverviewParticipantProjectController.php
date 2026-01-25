@@ -6,10 +6,8 @@ use App\Eco\FinancialOverview\FinancialOverviewContact;
 use App\Eco\FinancialOverview\FinancialOverviewParticipantProject;
 use App\Eco\FinancialOverview\FinancialOverviewProject;
 use App\Eco\ParticipantProject\ParticipantProject;
-use App\Eco\Project\ProjectType;
 use App\Eco\Project\ProjectValueCourse;
 use App\Helpers\Delete\Models\DeleteFinancialOverviewParticipantProject;
-use App\Helpers\Delete\Models\DeleteFinancialOverviewProject;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -157,12 +155,15 @@ class FinancialOverviewParticipantProjectController extends Controller
 
         $participationsValue = 0;
 
-        if($projectTypeCodeRef === 'obligation' || $projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital') {
-            $measureType = 'quantity';
-        }
+        $measureType = match ($projectTypeCodeRef) {
+            'obligation', 'capital', 'postalcode_link_capital' => 'quantity',
+            'loan' => 'amount',
+            default => null,
+        };
 
-        if($projectTypeCodeRef === 'loan') {
-            $measureType = 'amount';
+        if ($measureType === null) {
+            // evt loggen
+            return $participationsQBA;
         }
 
         foreach ($mutations as $mutation) {

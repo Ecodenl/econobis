@@ -17,5 +17,10 @@ return [
         'wim-test@mosmania.nl',
         // evt later meer:
     ],
+    // oauth client naming:
+    'client_names' => [
+        'client_credentials' => 'Rest-API ClientCredentials Grant Client',
+        'auth_code'          => 'Rest-API AuthCode Client',
+    ],
 
 ];

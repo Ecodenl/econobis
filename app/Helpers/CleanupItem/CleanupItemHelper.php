@@ -44,7 +44,7 @@ class CleanupItemHelper
         $this->cooperation = Cooperation::first();
     }
 
-    public function updateAmountsAll()
+    public function updateItemsAll()
     {
         $cleanupTypes = [
             'invoices',
@@ -74,7 +74,7 @@ class CleanupItemHelper
 
     }
 
-    public function updateAmountsPerType()
+    public function updateItemsPerType()
     {
         if(!$this->cleanupItem) {
             return false;

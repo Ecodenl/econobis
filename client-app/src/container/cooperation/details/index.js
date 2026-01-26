@@ -125,10 +125,6 @@ function CooperationDetailsApp({ permissions }) {
         });
     }
 
-    // function handleDataCleanupUpdateAmounts() {
-    //     DataCleanupAPI.updateAmounts('all');
-    // }
-
     return (
         <div className="row">
             <div className="col-md-9">
@@ -153,14 +149,9 @@ function CooperationDetailsApp({ permissions }) {
                                         formData={state.result}
                                         toggleEdit={toggleEdit}
                                         updateResult={updateResult}
-                                        // handleDataCleanupUpdateAmounts={handleDataCleanupUpdateAmounts}
                                     />
                                 ) : (
-                                    <CooperationDetailsFormView
-                                        formData={state.result}
-                                        toggleEdit={toggleEdit}
-                                        // handleDataCleanupUpdateAmounts={handleDataCleanupUpdateAmounts}
-                                    />
+                                    <CooperationDetailsFormView formData={state.result} toggleEdit={toggleEdit} />
                                 )}
                             </>
                         </div>

@@ -40,6 +40,6 @@ class updateCleanupItems extends Command
     public function handle()
     {
         $cleanupItemHelper = new CleanupItemHelper();
-        $cleanupItemHelper->updateAmountsAll();
+        $cleanupItemHelper->updateItemsAll();
     }
 }

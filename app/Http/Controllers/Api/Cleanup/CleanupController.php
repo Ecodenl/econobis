@@ -19,6 +19,7 @@ use App\Helpers\Delete\Models\DeleteRevenue;
 use App\Helpers\Delete\Models\DeleteRevenuesKwh;
 use App\Helpers\Delete\Models\DeleteTask;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\DataCleanup\DataCleanupContacts;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -26,37 +27,56 @@ use Throwable;
 
 class CleanupController extends Controller
 {
-    public function updateAmountsAll()
+    public function getCleanupItems(){
+        $cleanupItemTypes = [
+            'invoices',
+            'ordersOneoff',
+            'ordersPeriodic',
+            'financialOverviews',
+            'tasks',
+            'opportunities',
+            'intakes',
+            'housingFiles',
+            'paymentInvoices',
+            'revenues',
+            'revenuesKwh',
+            'participationsWithoutStatusDefinitive',
+            'participationsFinished',
+            'incomingEmails',
+            'outgoingEmails',
+        ];
+        $cooperation = Cooperation::first();
+        $cleanupItems = $cooperation->cleanupItems()->whereIn('code_ref', $cleanupItemTypes)->get();
+
+        return $cleanupItems;
+    }
+
+    public function getCleanupContacts(){
+        $cooperation = Cooperation::first();
+        $cleanupContactsExcludedGroups = $cooperation->cleanupContactsExcludedGroups;
+        $contactsToDelete = $cooperation->cleanupItems()->where('code_ref', 'contactsToDelete')->first();
+        $contactsSoftDeleted = $cooperation->cleanupItems()->where('code_ref', 'contactsSoftDeleted')->first();
+
+       return response()->json([
+            'contactsToDelete' => $contactsToDelete,
+            'contactsSoftDeleted' => $contactsSoftDeleted,
+            'cleanupContactsExcludedGroups' => $cleanupContactsExcludedGroups,
+        ]);
+
+    }
+
+    public function updatItemsAll()
     {
         $helper = new CleanupItemHelper();
-        $helper->updateAmountsAll();
+        $helper->updatItemsAll();
     }
-    public function updateAmountsPerType($cleanupType)
+    public function updateItemsPerType($cleanupType)
     {
         $cooperation = Cooperation::first();
         $cleanupItem = $cooperation?->cleanupItems()->where('code_ref', $cleanupType)->first() ?? null;
 
         $helper = new CleanupItemHelper($cleanupItem);
-        $helper->updateAmountsPerType();
-    }
-
-    // todo WM: opsplitsen naar items, emails en contacts ?
-    public function getCleanupItems(){
-
-        $cooperation = Cooperation::first();
-
-        $cleanupItems = [];
-
-        foreach($cooperation->cleanupItems as $cleanupItem) {
-            $cleanupItems[$cleanupItem->code_ref]['name'] = $cleanupItem->name;
-            $cleanupItems[$cleanupItem->code_ref]['years_for_delete'] = $cleanupItem->years_for_delete;
-            $cleanupItems[$cleanupItem->code_ref]['code_ref'] = $cleanupItem->code_ref;
-            $cleanupItems[$cleanupItem->code_ref]['number_of_items_to_delete'] = $cleanupItem->number_of_items_to_delete;
-            $cleanupItems[$cleanupItem->code_ref]['date_cleaned_up'] = $cleanupItem->date_cleaned_up;
-            $cleanupItems[$cleanupItem->code_ref]['date_determined'] = $cleanupItem->date_determined;
-        }
-
-        return $cleanupItems;
+        $helper->updateItemsPerType();
     }
 
     public function cleanupItems($cleanupType){
@@ -171,7 +191,7 @@ class CleanupController extends Controller
         $cleanupItem->date_cleaned_up = $dateToday;
         $cleanupItem->save();
 
-        $cleanupItemHelper->updateAmountsPerType();
+        $cleanupItemHelper->updateItemsPerType();
 
         if (!empty($errorMessageArray)) {
             abort(412, implode(';', array_unique($errorMessageArray)));

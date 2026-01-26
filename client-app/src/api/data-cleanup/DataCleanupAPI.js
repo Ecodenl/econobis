@@ -13,8 +13,8 @@ export default {
             });
     },
 
-    updateAmounts: cleanupType => {
-        const requestUrl = `${getApiUrl()}/api/cleanup/update-amounts/${cleanupType}`;
+    updateItems: cleanupType => {
+        const requestUrl = `${getApiUrl()}/api/cleanup/update-items/${cleanupType}`;
 
         return getAxiosInstance()
             .post(requestUrl)
@@ -29,6 +29,17 @@ export default {
 
         return getAxiosInstance()
             .post(requestUrl)
+            .then(response => response.data)
+            .catch(error => {
+                console.log(error);
+            });
+    },
+
+    getCleanupContacts: netContacts => {
+        const requestUrl = `${getApiUrl()}/api/cleanup/contacts`;
+
+        return getAxiosInstance()
+            .get(requestUrl)
             .then(response => response.data)
             .catch(error => {
                 console.log(error);

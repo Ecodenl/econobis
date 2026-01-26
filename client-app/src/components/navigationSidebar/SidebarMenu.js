@@ -160,23 +160,15 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongle
                     <NavText>Opschonen</NavText>
                     <Nav id="data-cleanup-participations">
                         <NavText>
-                            <Link className="sidebar-link" to="data-opschonen/items">
+                            <Link className="sidebar-link" to="data-opschonen-items">
                                 Items
                             </Link>
                         </NavText>
                     </Nav>
 
-                    {/*<Nav id="data-cleanup-email">*/}
-                    {/*    <NavText>*/}
-                    {/*        <Link className="sidebar-link" to="data-opschonen/e-mail">*/}
-                    {/*            E-mailcorrespondentie*/}
-                    {/*        </Link>*/}
-                    {/*    </NavText>*/}
-                    {/*</Nav>*/}
-
                     <Nav id="data-cleanup-contacts">
                         <NavText>
-                            <Link className="sidebar-link" to="data-opschonen/contacten">
+                            <Link className="sidebar-link" to="data-opschonen-contacten">
                                 Contacten
                             </Link>
                         </NavText>

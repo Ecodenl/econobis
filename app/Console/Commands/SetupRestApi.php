@@ -21,8 +21,8 @@ class SetupRestApi extends Command
         $appName = (string) config('app.name', 'Econobis');
         $names = (array) config('rest-api-oauth.client_names', []);
 
-        $ccName = "Econobis {$appName} " . ($names['client_credentials'] ?? 'Rest-API ClientCredentials Grant Client');
-        $acName = "Econobis {$appName} " . ($names['auth_code'] ?? 'Rest-API AuthCode Client');
+        $ccName = "{$appName} " . ($names['client_credentials'] ?? 'Rest-API ClientCredentials Grant Client');
+        $acName = "{$appName} " . ($names['auth_code'] ?? 'Rest-API AuthCode Client');
 
         $redirect = $this->option('redirect')
             ?: (string) config('rest-api-oauth.redirect_url');

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
-import TeamDetailsDocumentCreatedFromsView from './TeamDetailsDocumentCreatedFormsView';
-import TeamDetailsDocumentCreatedFromsItemDelete from './TeamDetailsDocumentCreatedFormsDelete';
+import TeamDetailsDocumentCreatedFromsView from './TeamDetailsDocumentCreatedFromsView';
+import TeamDetailsDocumentCreatedFromsItemDelete from './TeamDetailsDocumentCreatedFromsDelete';
 
-class TeamDetailsDocumentCreatedFormsItem extends Component {
+class TeamDetailsDocumentCreatedFromsItem extends Component {
     constructor(props) {
         super(props);
 
@@ -63,4 +63,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(TeamDetailsDocumentCreatedFormsItem);
+export default connect(mapStateToProps)(TeamDetailsDocumentCreatedFromsItem);

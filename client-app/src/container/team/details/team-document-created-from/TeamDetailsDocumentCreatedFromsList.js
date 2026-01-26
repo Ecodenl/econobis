@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import TeamDetailsDocumentCreatedFromsItem from './TeamDetailsDocumentCreatedFormsItem';
+import TeamDetailsDocumentCreatedFromsItem from './TeamDetailsDocumentCreatedFromsItem';
 
-const TeamDetailsDocumentCreatedFormsList = props => {
+const TeamDetailsDocumentCreatedFromsList = props => {
     return (
         <div>
             <div className="row border header">
@@ -34,4 +34,4 @@ const mapStateToProps = state => {
         documentCreatedFroms: state.teamDetails.documentCreatedFroms,
     };
 };
-export default connect(mapStateToProps)(TeamDetailsDocumentCreatedFormsList);
+export default connect(mapStateToProps)(TeamDetailsDocumentCreatedFromsList);

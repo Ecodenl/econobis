@@ -43,6 +43,19 @@ export const deleteTeamContactGroup = (teamId, contactGroupId) => {
     };
 };
 
+export const newTeamDistrict = teamDistrict => {
+    return {
+        type: 'NEW_TEAM_DISTRICT',
+        teamDistrict,
+    };
+};
+export const deleteTeamDistrict = (teamId, districtId) => {
+    return {
+        type: 'DELETE_TEAM_DISTRICT',
+        teamId,
+        districtId,
+    };
+};
 export const newTeamDocumentCreatedFrom = teamDocumentCreatedFrom => {
     return {
         type: 'NEW_TEAM_DOCUMENT_CREATED_FROM',

@@ -1,11 +1,11 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\Demo;
 
-use App\Eco\Person\Person;
+use App\Eco\Organisation\Organisation;
 use Illuminate\Database\Seeder;
 
-class PersonSeeder extends Seeder
+class OrganisationsSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,7 +14,7 @@ class PersonSeeder extends Seeder
      */
     public function run()
     {
-        Person::factory()->count(5)
+        Organisation::factory()->count(5)
             ->create();
     }
 }

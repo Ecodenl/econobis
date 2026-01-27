@@ -124,8 +124,7 @@ class SetupRestApi extends Command
         $id = DB::table('oauth_clients')->insertGetId([
             'user_id' => null,
             'name' => $name,
-            // Passport verwacht bcrypt-hash in de DB
-            'secret' => password_hash($plain, PASSWORD_BCRYPT),
+            'secret' => $plain,
             'provider' => 'users',
             'redirect' => '',
             'personal_access_client' => false,
@@ -167,7 +166,7 @@ class SetupRestApi extends Command
         $id = DB::table('oauth_clients')->insertGetId([
             'user_id' => null,
             'name' => $name,
-            'secret' => password_hash($plain, PASSWORD_BCRYPT),
+            'secret' => $plain,
             'provider' => 'users',
             'redirect' => $redirect,
             'personal_access_client' => false,

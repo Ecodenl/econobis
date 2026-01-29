@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
 import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 import DataCleanupItemsItem from './DataCleanupItemsItem';
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableBody from '../../../components/dataTable/DataTableBody';
-import DataCleanupItemsToolbar from './DataCleanupItemsToolbar';
 
 export default function DataCleanupItemsList({
     cleanupData,
-    handleDataCleanupUpdateItems,
+    handleDataCleanupUpdateItem,
     confirmCleanup,
     isLoading,
     loadingText,
@@ -36,7 +35,7 @@ export default function DataCleanupItemsList({
                                 <DataCleanupItemsItem
                                     key={item.id}
                                     cleanupDataItem={item}
-                                    handleDataCleanupUpdateItems={handleDataCleanupUpdateItems}
+                                    handleDataCleanupUpdateItem={handleDataCleanupUpdateItem}
                                     confirmCleanup={confirmCleanup}
                                 />
                             );

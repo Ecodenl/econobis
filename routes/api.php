@@ -279,12 +279,12 @@ Route::namespace('Api')
 
         Route::get('contact-group/{contactGroup}/tasks', 'ContactGroup\ContactGroupController@tasks');
 
-        Route::get('cleanup/items', 'Cleanup\CleanupController@getCleanupItems');
-        Route::post('cleanup/update-items/all', 'Cleanup\CleanupController@updateItemsAll');
-        Route::post('cleanup/update-items/{cleanupType}', 'Cleanup\CleanupController@updateItemsPerType');
-        Route::post('cleanup/cleanup-items/{cleanupType}', 'Cleanup\CleanupController@cleanupItems');
+        Route::get('cleanup/items', 'DataCleanup\CleanupController@getCleanupItems');
+        Route::post('cleanup/update-items-all', 'DataCleanup\CleanupController@updateItemsAll');
+        Route::post('cleanup/update-item/{cleanupType}', 'DataCleanup\CleanupController@updateItem');
+        Route::post('cleanup/cleanup-item/{cleanupType}', 'DataCleanup\CleanupController@cleanupItem');
 
-        Route::get('cleanup/contacts', 'Cleanup\CleanupController@getCleanupContacts');
+        Route::get('cleanup/contacts', 'DataCleanup\CleanupController@getCleanupContacts');
 
         Route::get('task/grid/tasks', 'Task\TaskController@gridTask');
         Route::get('task/grid/notes', 'Task\TaskController@gridNote');

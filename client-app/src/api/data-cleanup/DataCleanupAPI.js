@@ -1,48 +1,45 @@
 import getAxiosInstance from '../default-setup/AxiosInstance';
 import { getApiUrl } from '../utils/ApiUrl';
 
-export default {
-    getCleanupItems: netContacts => {
-        const requestUrl = `${getApiUrl()}/api/cleanup/items`;
+const baseUrl = () => `${getApiUrl()}/api/cleanup`;
+const api = () => getAxiosInstance();
+const unwrap = res => res.data.data;
 
-        return getAxiosInstance()
-            .get(requestUrl)
-            .then(response => response.data)
-            .catch(error => {
-                console.log(error);
-            });
+const DataCleanupAPI = {
+    // GET /api/cleanup/items
+    getCleanupItems() {
+        return api()
+            .get(`${baseUrl()}/items`)
+            .then(unwrap);
     },
 
-    updateItems: cleanupType => {
-        const requestUrl = `${getApiUrl()}/api/cleanup/update-items/${cleanupType}`;
-
-        return getAxiosInstance()
-            .post(requestUrl)
-            .then(response => response.data)
-            .catch(error => {
-                console.log(error);
-            });
+    // POST /api/cleanup/update-items-all
+    updateItemsAll() {
+        return api()
+            .post(`${baseUrl()}/update-items-all`)
+            .then(unwrap);
     },
 
-    executeCleanupItems: cleanupType => {
-        const requestUrl = `${getApiUrl()}/api/cleanup/cleanup-items/${cleanupType}`;
-
-        return getAxiosInstance()
-            .post(requestUrl)
-            .then(response => response.data)
-            .catch(error => {
-                console.log(error);
-            });
+    // POST /api/cleanup/update-item/{cleanupType}
+    updateItem(cleanupType) {
+        return api()
+            .post(`${baseUrl()}/update-item/${cleanupType}`)
+            .then(unwrap);
     },
 
-    getCleanupContacts: netContacts => {
-        const requestUrl = `${getApiUrl()}/api/cleanup/contacts`;
+    // POST /api/cleanup/cleanup-item/{cleanupType}
+    executeCleanupItem(cleanupType) {
+        return api()
+            .post(`${baseUrl()}/cleanup-item/${cleanupType}`)
+            .then(unwrap);
+    },
 
-        return getAxiosInstance()
-            .get(requestUrl)
-            .then(response => response.data)
-            .catch(error => {
-                console.log(error);
-            });
+    // GET /api/cleanup/contacts
+    getCleanupContacts() {
+        return api()
+            .get(`${baseUrl()}/contacts`)
+            .then(unwrap);
     },
 };
+
+export default DataCleanupAPI;

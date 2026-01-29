@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Cleanup;
+namespace App\Http\Controllers\Api\DataCleanup;
 
 use App\Eco\Cooperation\Cooperation;
 use App\Exceptions\CleanupItemFailed;
@@ -20,6 +20,7 @@ use App\Helpers\Delete\Models\DeleteRevenuesKwh;
 use App\Helpers\Delete\Models\DeleteTask;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DataCleanup\DataCleanupContacts;
+use App\Http\Resources\DataCleanup\FullCleanupItem;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -48,7 +49,7 @@ class CleanupController extends Controller
         $cooperation = Cooperation::first();
         $cleanupItems = $cooperation->cleanupItems()->whereIn('code_ref', $cleanupItemTypes)->get();
 
-        return $cleanupItems;
+        return FullCleanupItem::collection($cleanupItems);
     }
 
     public function getCleanupContacts(){
@@ -65,25 +66,24 @@ class CleanupController extends Controller
 
     }
 
-    public function updatItemsAll()
+    public function updateItemsAll()
     {
-        $helper = new CleanupItemHelper();
-        $helper->updatItemsAll();
+        $cleanupItemHelper = new CleanupItemHelper();
+        $cleanupItemHelper->updateItemsAll();
     }
-    public function updateItemsPerType($cleanupType)
+    public function updateItem($cleanupType)
     {
         $cooperation = Cooperation::first();
         $cleanupItem = $cooperation?->cleanupItems()->where('code_ref', $cleanupType)->first() ?? null;
 
-        $helper = new CleanupItemHelper($cleanupItem);
-        $helper->updateItemsPerType();
+        $cleanupItemHelper = new CleanupItemHelper($cleanupItem);
+        return FullCleanupItem::make($cleanupItemHelper->updateItem());
     }
 
-    public function cleanupItems($cleanupType){
+    public function cleanupItem($cleanupType){
         $dateToday = Carbon::now();
         $cooperation = Cooperation::first();
         $cleanupItem = $cooperation?->cleanupItems()->where('code_ref', $cleanupType)->first() ?? null;
-        $cleanupDate = $dateToday->copy()->subYears($cleanupItem->years_for_delete);
 
         $cleanupItemHelper = new CleanupItemHelper($cleanupItem);
 
@@ -191,13 +191,12 @@ class CleanupController extends Controller
         $cleanupItem->date_cleaned_up = $dateToday;
         $cleanupItem->save();
 
-        $cleanupItemHelper->updateItemsPerType();
-
         if (!empty($errorMessageArray)) {
             abort(412, implode(';', array_unique($errorMessageArray)));
         }
 
-        return [];
+        $cleanupItemHelper = new CleanupItemHelper($cleanupItem);
+        return FullCleanupItem::make($cleanupItemHelper->updateItem());
     }
 
     private function runCleanup(iterable $items, callable $makeDeleter, array &$errorMessageArray = []): void

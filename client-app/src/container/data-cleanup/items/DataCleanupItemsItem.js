@@ -4,9 +4,8 @@ import { refresh } from 'react-icons-kit/fa/refresh';
 import { trash } from 'react-icons-kit/fa/trash';
 
 import Modal from '../../../components/modal/Modal';
-import DataCleanupItemsToolbar from './DataCleanupItemsToolbar';
 
-export default function DataCleanupItemsItem({ cleanupDataItem, handleDataCleanupUpdateItems, confirmCleanup }) {
+export default function DataCleanupItemsItem({ cleanupDataItem, handleDataCleanupUpdateItem, confirmCleanup }) {
     const [showModal, setShowModal] = useState(false);
     const [showActionButtons, setShowActionButtons] = useState(true);
     const [modalErrorMessage, setModalErrorMessage] = useState([]);
@@ -15,10 +14,11 @@ export default function DataCleanupItemsItem({ cleanupDataItem, handleDataCleanu
         setShowActionButtons(false);
         setModalErrorMessage([]);
         try {
-            await confirmCleanup(cleanupDataItem.code_ref);
+            await confirmCleanup(cleanupDataItem);
             setShowModal(false);
         } catch (e) {
             setModalErrorMessage(['Er ging iets mis tijdens opschonen.']);
+        } finally {
             setShowActionButtons(true);
         }
     };
@@ -27,18 +27,28 @@ export default function DataCleanupItemsItem({ cleanupDataItem, handleDataCleanu
         <>
             <tr>
                 <td>
-                    {cleanupDataItem.name} ouder dan {cleanupDataItem.years_for_delete} jaar
+                    {cleanupDataItem.name} ouder dan {cleanupDataItem.yearsForDelete} jaar
                 </td>
-                <td>{cleanupDataItem.number_of_items_to_delete}</td>
-                <td>{cleanupDataItem.date_determined}</td>
-                <td>{cleanupDataItem.date_cleaned_up}</td>
+                <td>{cleanupDataItem.numberOfItemsToDelete}</td>
+                <td>{cleanupDataItem?.dateDetermined}</td>
+                <td>{cleanupDataItem.dateCleanedUp}</td>
                 <td>
                     {showActionButtons && (
                         <>
-                            <a role="button" onClick={() => handleDataCleanupUpdateItems(cleanupDataItem.code_ref)}>
+                            <a
+                                role="button"
+                                title={`Herbereken ${cleanupDataItem.name}`}
+                                onClick={() => {
+                                    handleDataCleanupUpdateItem(cleanupDataItem);
+                                }}
+                            >
                                 <Icon className="mybtn-success" size={14} icon={refresh} />
                             </a>{' '}
-                            <a role="button" onClick={() => setShowModal(true)}>
+                            <a
+                                role="button"
+                                title={`Opschonen ${cleanupDataItem.name}`}
+                                onClick={() => setShowModal(true)}
+                            >
                                 <Icon className="mybtn-success" size={14} icon={trash} />
                             </a>
                         </>
@@ -47,15 +57,18 @@ export default function DataCleanupItemsItem({ cleanupDataItem, handleDataCleanu
             </tr>
             {showModal ? (
                 <Modal
-                    closeModal={() => setShowModal(false)}
+                    closeModal={() => {
+                        setShowModal(false);
+                    }}
                     confirmAction={onConfirm}
                     buttonConfirmText="Opschonen"
                     buttonClassName={'btn-danger'}
                     title={`Bevestig opschonen ${cleanupDataItem.name}`}
+                    loading={!showActionButtons}
                 >
                     <div>
                         Weet u zeker dat u <strong>{cleanupDataItem.name}</strong>,{' '}
-                        <strong>ouder dan {cleanupDataItem.years_for_delete} jaar</strong> wilt opschonen?
+                        <strong>ouder dan {cleanupDataItem.yearsForDelete} jaar</strong> wilt opschonen?
                         <br />
                         <br />
                         Deze verwijderactie is niet terug te draaien.

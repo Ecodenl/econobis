@@ -26,10 +26,10 @@ export default function DataCleanupContactsApp() {
         setLoading(true);
 
         DataCleanupAPI.getCleanupContacts()
-            .then(data => {
-                setContactsToDeleteData(data?.contactsToDeleteData ?? []);
-                setContactsSoftDeletedData(data?.contactsSoftDeletedData ?? []);
-                setCleanupContactsExcludedGroupsData(data?.cleanupContactsExcludedGroups ?? []);
+            .then(payload => {
+                setContactsToDeleteData(payload?.data?.contactsToDeleteData ?? []);
+                setContactsSoftDeletedData(payload?.data?.contactsSoftDeletedData ?? []);
+                setCleanupContactsExcludedGroupsData(payload?.data?.cleanupContactsExcludedGroups ?? []);
                 setLoading(false);
             })
             .catch(() => {
@@ -38,10 +38,10 @@ export default function DataCleanupContactsApp() {
             });
     };
 
-    const handleDataCleanupUpdateItems = cleanupType => {
+    const handleDataCleanupUpdateItemAll = () => {
         setLoading(true);
 
-        DataCleanupAPI.updateItems(cleanupType)
+        DataCleanupAPI.updateItemsAll()
             .then(data => {
                 fetchCleanupData();
                 setLoading(false);
@@ -51,10 +51,24 @@ export default function DataCleanupContactsApp() {
                 setLoading(false);
             });
     };
+    const handleDataCleanupUpdateItem = cleanupType => {
+        setLoading(true);
+
+        DataCleanupAPI.updateItem(cleanupType)
+            .then(data => {
+                fetchCleanupData();
+                setLoading(false);
+            })
+            .catch(() => {
+                setErrorText('Er is iets misgegaan met herberekenen van de opschoon gegevens.');
+                setLoading(false);
+            });
+    };
+
     const confirmCleanup = cleanupType => {
         setLoading(true);
 
-        DataCleanupAPI.executeCleanupItems(cleanupType)
+        DataCleanupAPI.executeCleanupItem(cleanupType)
             .then(data => {
                 fetchCleanupData();
                 setLoading(false);
@@ -88,7 +102,7 @@ export default function DataCleanupContactsApp() {
                     <DataCleanupContactsToolbar
                         setLoading={setLoading}
                         fetchCleanupData={fetchCleanupData}
-                        handleDataCleanupUpdateItems={handleDataCleanupUpdateItems}
+                        handleDataCleanupUpdateItemAll={handleDataCleanupUpdateItemAll}
                     />
                 </div>
                 <div className="col-md-12 margin-10-top">

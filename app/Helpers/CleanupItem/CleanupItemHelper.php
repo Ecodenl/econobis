@@ -74,7 +74,7 @@ class CleanupItemHelper
 
     }
 
-    public function updateItemsPerType()
+    public function updateItem()
     {
         if(!$this->cleanupItem) {
             return false;
@@ -82,7 +82,7 @@ class CleanupItemHelper
 
         $this->updateCleanupItem($this->getNumberItemsToDelete());
 
-        return true;
+        return $this->cleanupItem;
     }
 
     /**

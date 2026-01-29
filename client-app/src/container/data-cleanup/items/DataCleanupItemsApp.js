@@ -12,54 +12,84 @@ import DataCleanupAPI from '../../../api/data-cleanup/DataCleanupAPI';
 export default function DataCleanupItemsApp() {
     const navigate = useNavigate();
 
-    const [isLoading, setLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
     const [cleanupData, setCleanupData] = useState([]);
     const [errorText, setErrorText] = useState('');
+
+    const isBusyUpdateItem = isBusyItem => {
+        setCleanupData(prev =>
+            prev.map(item => (item.id === isBusyItem.id ? { ...item, dateDetermined: 'Bezig...' } : item))
+        );
+    };
+
+    const isBusyCleanupItem = isBusyItem => {
+        setCleanupData(prev =>
+            prev.map(item => (item.id === isBusyItem.id ? { ...item, dateCleanedUp: 'Bezig...' } : item))
+        );
+    };
+    const replaceCleanupItem = updatedItem => {
+        setCleanupData(prev => prev.map(item => (item.id === updatedItem.id ? updatedItem : item)));
+    };
 
     useEffect(() => {
         fetchCleanupData();
     }, []);
 
     const fetchCleanupData = () => {
-        setLoading(true);
+        setIsLoading(true);
 
         DataCleanupAPI.getCleanupItems()
-            .then(data => {
-                setCleanupData(data);
-                setLoading(false);
+            .then(payload => {
+                setErrorText('');
+                setCleanupData(payload ?? []);
+                setIsLoading(false);
             })
             .catch(() => {
                 setErrorText('Er is iets misgegaan met ophalen van de opschoon gegevens.');
-                setLoading(false);
+                setIsLoading(false);
             });
     };
 
-    const handleDataCleanupUpdateItems = cleanupType => {
-        console.log('cleanupType');
-        console.log(cleanupType);
-        setLoading(true);
+    const handleDataCleanupUpdateItemsAll = () => {
+        setIsLoading(true);
 
-        DataCleanupAPI.updateItems(cleanupType)
+        DataCleanupAPI.updateItemsAll()
             .then(data => {
                 fetchCleanupData();
-                setLoading(false);
             })
             .catch(() => {
                 setErrorText('Er is iets misgegaan met herberekenen van de opschoon gegevens.');
-                setLoading(false);
             });
     };
-    const confirmCleanup = cleanupType => {
-        setLoading(true);
 
-        DataCleanupAPI.executeCleanupItems(cleanupType)
-            .then(data => {
-                fetchCleanupData();
-                setLoading(false);
+    const handleDataCleanupUpdateItem = cleanupItem => {
+        isBusyUpdateItem(cleanupItem);
+        return DataCleanupAPI.updateItem(cleanupItem.codeRef)
+            .then(updatedItem => {
+                setErrorText('');
+                if (updatedItem) {
+                    replaceCleanupItem(updatedItem);
+                }
+                return updatedItem;
             })
-            .catch(() => {
+            .catch(err => {
+                setErrorText('Er is iets misgegaan met herberekenen van de opschoon gegevens.');
+                throw err;
+            });
+    };
+    const confirmCleanup = cleanupItem => {
+        isBusyCleanupItem(cleanupItem);
+        return DataCleanupAPI.executeCleanupItem(cleanupItem.codeRef)
+            .then(updatedItem => {
+                setErrorText('');
+                if (updatedItem) {
+                    replaceCleanupItem(updatedItem);
+                }
+                return updatedItem;
+            })
+            .catch(err => {
                 setErrorText('Er is iets misgegaan met opschonen van de gegevens.');
-                setLoading(false);
+                throw err;
             });
     };
 
@@ -84,15 +114,14 @@ export default function DataCleanupItemsApp() {
             <PanelBody>
                 <div className="col-md-12 margin-10-top">
                     <DataCleanupItemsToolbar
-                        setLoading={setLoading}
                         fetchCleanupData={fetchCleanupData}
-                        handleDataCleanupUpdateItems={handleDataCleanupUpdateItems}
+                        handleDataCleanupUpdateItemsAll={handleDataCleanupUpdateItemsAll}
                     />
                 </div>
                 <div className="col-md-12 margin-10-top">
                     <DataCleanupItemsList
                         cleanupData={cleanupData}
-                        handleDataCleanupUpdateItems={handleDataCleanupUpdateItems}
+                        handleDataCleanupUpdateItem={handleDataCleanupUpdateItem}
                         confirmCleanup={confirmCleanup}
                         isLoading={isLoading}
                         loadingText={loadingText}

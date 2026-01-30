@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Helpers\CleanupItem\CleanupItemHelper;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 
 class updateCleanupItems extends Command
 {
@@ -39,7 +38,11 @@ class updateCleanupItems extends Command
      */
     public function handle()
     {
-        $cleanupItemHelper = new CleanupItemHelper();
-        $cleanupItemHelper->updateItemsAll();
+//        $cleanupItemHelper = new CleanupItemHelper();
+//        $cleanupItemHelper->updateItemsAll(CleanupRegistry::types());
+        (new CleanupItemHelper())->updateItemsAll();
+
+        return Command::SUCCESS;
+
     }
 }

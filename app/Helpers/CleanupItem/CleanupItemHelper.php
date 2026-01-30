@@ -9,8 +9,11 @@
 namespace App\Helpers\CleanupItem;
 
 
+
 use App\Eco\Contact\Contact;
 use App\Eco\Cooperation\Cooperation;
+use App\Eco\DataCleanup\CleanupItemSelection;
+use App\Eco\DataCleanup\CleanupRegistry;
 use App\Eco\Email\Email;
 use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\HousingFile\HousingFile;
@@ -25,9 +28,9 @@ use App\Eco\Product\Product;
 use App\Eco\Project\ProjectRevenue;
 use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Eco\Task\Task;
-use App\Helpers\Settings\Request;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class CleanupItemHelper
 {
@@ -44,43 +47,107 @@ class CleanupItemHelper
         $this->cooperation = Cooperation::first();
     }
 
-    public function updateItemsAll()
+    public function updateItemsAll(array $cleanupTypes = null): bool
     {
-        $cleanupTypes = [
-            'invoices',
-            'ordersOneoff',
-            'ordersPeriodic',
-            'financialOverviews',
-            'tasks',
-            'opportunities',
-            'intakes',
-            'housingFiles',
-            'paymentInvoices',
-            'revenues',
-            'revenuesKwh',
-            'participationsWithoutStatusDefinitive',
-            'participationsFinished',
-            'incomingEmails',
-            'outgoingEmails',
-        ];
-        $cleanupItems = $this->cooperation->cleanupItems()->whereIn('code_ref', $cleanupTypes)->get();
+        if ($cleanupTypes === null) {
+            $cleanupTypes = CleanupRegistry::types();
+        }
+        $cleanupItems = $this->cooperation
+            ->cleanupItems()
+            ->whereIn('code_ref', $cleanupTypes)
+            ->get();
 
-        foreach($cleanupItems as $cleanupItem) {
+        foreach ($cleanupItems as $cleanupItem) {
             $this->cleanupItem = $cleanupItem;
-            $this->updateCleanupItem($this->getNumberItemsToDelete());
+            $this->updateItem();
         }
 
         return true;
-
     }
 
     public function updateItem()
     {
-        if(!$this->cleanupItem) {
+        if (! $this->cleanupItem) {
             return false;
         }
 
-        $this->updateCleanupItem($this->getNumberItemsToDelete());
+        $codeRef = $this->cleanupItem->code_ref;
+
+        // Specials buiten registry: laat oude gedrag staan
+        if (! CleanupRegistry::has($codeRef)) {
+            $this->updateCleanupItem($this->getNumberItemsToDelete());
+            return $this->cleanupItem;
+        }
+
+        $cooperationId = $this->cooperation->id;
+        $cleanupItemId = $this->cleanupItem->id;
+
+        $batchId = (string) Str::uuid();
+        $determinedAt = now();
+
+        $query = CleanupRegistry::queryFor($codeRef, $this)->orderBy('id');
+        $labeler = CleanupRegistry::labelerFor($codeRef);
+
+        // Optie 1: oude "determined" weg, nieuwe batch bepalen
+        DB::transaction(function () use (
+            $query,
+            $labeler,
+            $cooperationId,
+            $cleanupItemId,
+            $codeRef,
+            $batchId,
+            $determinedAt
+        ) {
+            // 1) oude selectie weg (alleen determined)
+            CleanupItemSelection::where('cooperation_id', $cooperationId)
+                ->where('cleanup_item_id', $cleanupItemId)
+                ->where('status', 'determined')
+                ->delete();
+            // 2) nieuwe selectie vullen
+            $query->chunkById(1000, function ($models) use (
+                $cooperationId,
+                $cleanupItemId,
+                $codeRef,
+                $batchId,
+                $determinedAt,
+                $labeler
+            ) {
+                $now = now();
+                $rows = [];
+
+                foreach ($models as $m) {
+                    $rows[] = [
+                        'cooperation_id' => $cooperationId,
+                        'cleanup_item_id' => $cleanupItemId,
+                        'code_ref' => $codeRef,
+                        'model' => get_class($m),
+                        'model_id' => $m->id,
+                        'label' => $labeler ? $labeler($m) : null,
+                        'batch_id' => $batchId,
+                        'determined_at' => $determinedAt,
+                        'status' => 'determined',
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ];
+                }
+
+                if ($rows) {
+                    CleanupItemSelection::insert($rows);
+                }
+            });
+
+            // 3) tellen = truth
+            $count = CleanupItemSelection::where('cleanup_item_id', $cleanupItemId)
+                ->where('batch_id', $batchId)
+                ->where('status', 'determined')
+                ->count();
+
+            // 4) cleanup item bijwerken
+            $this->cleanupItem->current_batch_id = $batchId;
+            $this->cleanupItem->number_of_items_to_delete = $count;
+            $this->cleanupItem->date_determined = $determinedAt;
+            $this->cleanupItem->save();
+        });
 
         return $this->cleanupItem;
     }
@@ -101,97 +168,19 @@ class CleanupItemHelper
      */
     private function getNumberItemsToDelete(): int
     {
-        switch ($this->cleanupItem->code_ref) {
-            case "invoices":
-                $invoicesToDelete = $this->getInvoicesToDelete();
-                $numberItemsToDelete = $invoicesToDelete->count();
-                break;
+        $codeRef = $this->cleanupItem->code_ref;
 
-            case "ordersOneoff":
-                $ordersOneoffToDelete = $this->getOrdersOneoffToDelete();
-                $numberItemsToDelete = $ordersOneoffToDelete->count();
-                break;
-
-            case "ordersPeriodic":
-                $ordersPeriodicToDelete = $this->getOrdersPeriodicToDelete();
-                $numberItemsToDelete = $ordersPeriodicToDelete->count();
-                break;
-
-            case "financialOverviews":
-                $financialOverviewsToDelete = $this->getFinancialOverviewsToDelete();
-                $numberItemsToDelete = $financialOverviewsToDelete->count();
-                break;
-
-            case "tasks":
-                $tasksToDelete = $this->getTasksToDelete();
-                $numberItemsToDelete = $tasksToDelete->count();
-                break;
-
-            case "opportunities":
-                $opportunitiesToDelete = $this->getOpportunitiesToDelete();
-                $numberItemsToDelete = $opportunitiesToDelete->count();
-                break;
-
-            case "intakes":
-                $intakesToDelete = $this->getIntakesToDelete();
-                $numberItemsToDelete = $intakesToDelete->count();
-                break;
-
-            case "housingFiles":
-                $housingFilesToDelete = $this->getHousingFilesToDelete();
-                $numberItemsToDelete = $housingFilesToDelete->count();
-                break;
-
-            case "paymentInvoices":
-                $paymentInvoicesToDelete = $this->getPaymentInvoicesToDelete();
-                $numberItemsToDelete = $paymentInvoicesToDelete->count();
-                break;
-
-            case "revenues":
-                $revenuesToDelete = $this->getRevenuesToDelete();
-                $numberItemsToDelete = $revenuesToDelete->count();
-                break;
-
-            case "revenuesKwh":
-                $revenuesKwhToDelete = $this->getRevenuesKwhToDelete();
-                $numberItemsToDelete = $revenuesKwhToDelete->count();
-                break;
-
-            case "participationsWithoutStatusDefinitive":
-                $participationsWithoutStatusDefinitiveToDelete = $this->getParticipationsWithoutStatusDefinitiveToDelete();
-                $numberItemsToDelete = $participationsWithoutStatusDefinitiveToDelete->count();
-                break;
-
-            case "participationsFinished":
-                $participationsFinishedToDelete = $this->getParticipationsFinishedToDelete();
-                $numberItemsToDelete = $participationsFinishedToDelete->count();
-                break;
-
-            case "incomingEmails":
-                $incomingEmailsToDelete = $this->getIncomingEmailsToDelete();
-                $numberItemsToDelete = $incomingEmailsToDelete->count();
-                break;
-
-            case "outgoingEmails":
-                $outgoingEmailsToDelete = $this->getOutgoingEmailsToDelete();
-                $numberItemsToDelete = $outgoingEmailsToDelete->count();
-                break;
-
-            case "contactsToDelete":
-                $contactsToDeleteToDelete = $this->getContactsToDeleteToDelete();
-                $numberItemsToDelete = $contactsToDeleteToDelete->count();
-                break;
-
-            case "contactsSoftDeleted":
-                $contactsSoftDeletedToDelete = $this->getContactsSoftDeletedToDelete();
-                $numberItemsToDelete = $contactsSoftDeletedToDelete->count();
-                break;
-
-            default:
-                abort(501, 'Fout bij opschonen items, onbekend item: '. $this->cleanupItem->code_ref);
-
+        // Registry items
+        if (CleanupRegistry::has($codeRef)) {
+            return CleanupRegistry::queryFor($codeRef, $this)->count();
         }
-        return $numberItemsToDelete;
+
+        // Specials (voorlopig buiten registry)
+        return match ($codeRef) {
+            'contactsToDelete' => $this->getContactsToDeleteToDelete()->count(),
+            'contactsSoftDeleted' => $this->getContactsSoftDeletedToDelete()->count(),
+            default => abort(501, "Onbekend opschoon item: {$codeRef}"),
+        };
     }
 
     /**
@@ -431,6 +420,7 @@ class CleanupItemHelper
      * @return mixed
      */
 //    private function getContactsSoftDeletedToDelete(): \Illuminate\Database\Eloquent\Builder
+
     public function getContactsSoftDeletedToDelete(): mixed
     {
 //                $contactsSoftDeletedCleanupYears = $this->cleanupItem->years_for_delete;

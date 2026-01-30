@@ -3,57 +3,34 @@
 namespace App\Http\Controllers\Api\DataCleanup;
 
 use App\Eco\Cooperation\Cooperation;
+use App\Eco\DataCleanup\CleanupItemSelection;
+use App\Eco\DataCleanup\CleanupRegistry;
 use App\Exceptions\CleanupItemFailed;
 use App\Helpers\CleanupItem\CleanupItemHelper;
-use App\Helpers\Delete\Models\DeleteContact;
-use App\Helpers\Delete\Models\DeleteFinancialOverview;
-use App\Helpers\Delete\Models\DeleteHousingFile;
-use App\Helpers\Delete\Models\DeleteIntake;
-use App\Helpers\Delete\Models\DeleteInvoice;
-use App\Helpers\Delete\Models\DeleteMail;
-use App\Helpers\Delete\Models\DeleteOpportunity;
-use App\Helpers\Delete\Models\DeleteOrder;
-use App\Helpers\Delete\Models\DeleteParticipation;
-use App\Helpers\Delete\Models\DeletePaymentInvoice;
-use App\Helpers\Delete\Models\DeleteRevenue;
-use App\Helpers\Delete\Models\DeleteRevenuesKwh;
-use App\Helpers\Delete\Models\DeleteTask;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DataCleanup\FullCleanupContact;
 use App\Http\Resources\DataCleanup\FullCleanupItem;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class CleanupController extends Controller
 {
-    public function getCleanupItems(){
-        $cleanupItemTypes = [
-            'invoices',
-            'ordersOneoff',
-            'ordersPeriodic',
-            'financialOverviews',
-            'tasks',
-            'opportunities',
-            'intakes',
-            'housingFiles',
-            'paymentInvoices',
-            'revenues',
-            'revenuesKwh',
-            'participationsWithoutStatusDefinitive',
-            'participationsFinished',
-            'incomingEmails',
-            'outgoingEmails',
-        ];
-        $cooperation = Cooperation::first();
-        $cleanupItems = $cooperation->cleanupItems()->whereIn('code_ref', $cleanupItemTypes)->get();
+    public function getCleanupItems()
+    {
+        $cooperation = Cooperation::firstOrFail();
+
+        $cleanupItems = $cooperation
+            ->cleanupItems()
+            ->whereIn('code_ref', CleanupRegistry::types())
+            ->get();
 
         return FullCleanupItem::collection($cleanupItems);
     }
-
     public function getCleanupContacts(){
-        $cooperation = Cooperation::first();
+        $cooperation = Cooperation::firstOrFail();
 
         $cleanupContactsExcludedGroups = $cooperation->cleanupContactsExcludedGroups;
         $contactsToDelete = $cooperation->cleanupItems()->where('code_ref', 'contactsToDelete')->first();
@@ -65,178 +42,182 @@ class CleanupController extends Controller
         ];
 
         return FullCleanupContact::make($cleanupContact);
-
-//       return response()->json([
-//            'contactsToDelete' => $contactsToDelete,
-//            'contactsSoftDeleted' => $contactsSoftDeleted,
-//            'cleanupContactsExcludedGroups' => $cleanupContactsExcludedGroups,
-//        ]);
-
     }
 
     public function updateItemsAll()
     {
-        $cleanupItemHelper = new CleanupItemHelper();
-        $cleanupItemHelper->updateItemsAll();
+        (new CleanupItemHelper())->updateItemsAll();
+        return response()->noContent();
     }
-    public function updateItem($cleanupType)
+
+    public function updateItem(string $cleanupType)
     {
-        $cooperation = Cooperation::first();
-        $cleanupItem = $cooperation?->cleanupItems()->where('code_ref', $cleanupType)->first() ?? null;
+        $cooperation = Cooperation::firstOrFail();
 
-        $cleanupItemHelper = new CleanupItemHelper($cleanupItem);
-        return FullCleanupItem::make($cleanupItemHelper->updateItem());
+        if (! CleanupRegistry::has($cleanupType)) {
+            abort(404, "Onbekend opschoon type: {$cleanupType}");
+        }
+
+        $cleanupItem = $cooperation->cleanupItems()->where('code_ref', $cleanupType)->first();
+        if (! $cleanupItem) {
+            abort(500, "Opschoon type '{$cleanupType}' is niet geconfigureerd (cleanup_items ontbreekt).");
+        }
+
+        return FullCleanupItem::make((new CleanupItemHelper($cleanupItem))->updateItem());
     }
 
-    public function cleanupItem($cleanupType){
-        $dateToday = Carbon::now();
-        $cooperation = Cooperation::first();
-        $cleanupItem = $cooperation?->cleanupItems()->where('code_ref', $cleanupType)->first() ?? null;
+    public function cleanupItem(string $cleanupType)
+    {
+        $cooperation = Cooperation::firstOrFail();
 
-        $cleanupItemHelper = new CleanupItemHelper($cleanupItem);
+        // 1) Is dit type bekend in code (registry)?
+        if (! CleanupRegistry::has($cleanupType)) {
+            // specials (contacts...) zitten bewust nog niet in registry
+            abort(404, "Onbekend opschoon item: {$cleanupType}");
+        }
+
+        // 2) Is dit type geconfigureerd in DB?
+        $cleanupItem = $cooperation->cleanupItems()->where('code_ref', $cleanupType)->first();
+        if (! $cleanupItem) {
+            // configuratiefout: code kent het type maar cleanup_items record ontbreekt
+            abort(500, "Opschoon type '{$cleanupType}' is niet geconfigureerd (cleanup_items ontbreekt).");
+        }
+
+//        $helper = new CleanupItemHelper($cleanupItem);
 
         $errorMessageArray = [];
 
-        switch ($cleanupType) {
-            case "invoices":
-                $invoices = $cleanupItemHelper->getInvoicesToDelete()->get();
-                $this->runCleanup($invoices, fn ($invoice) => new DeleteInvoice($invoice), $errorMessageArray);
-                break;
-
-            case "ordersOneoff":
-                $ordersOneoff = $cleanupItemHelper->getOrdersOneoffToDelete()->get();
-                $this->runCleanup($ordersOneoff, fn ($order) => new DeleteOrder($order), $errorMessageArray);
-                break;
-
-            case "ordersPeriodic":
-                $ordersPeriodic = $cleanupItemHelper->getOrdersPeriodicToDelete()->get();
-                $this->runCleanup($ordersPeriodic, fn ($order) => new DeleteOrder($order), $errorMessageArray);
-                break;
-
-            case "financialOverviews":
-                $financialOverviews = $cleanupItemHelper->getFinancialOverviewsToDelete()->get();
-                $this->runCleanup($financialOverviews, fn ($financialOverview) => new DeleteFinancialOverview($financialOverview), $errorMessageArray);
-                break;
-
-            case "tasks":
-                $tasks = $cleanupItemHelper->getTasksToDelete()->get();
-                $this->runCleanup($tasks, fn ($task) => new DeleteTask($task), $errorMessageArray);
-                break;
-
-            case "opportunities":
-                $opportunities = $cleanupItemHelper->getOpportunitiesToDelete()->get();
-                $this->runCleanup($opportunities, fn ($opportunity) => new DeleteOpportunity($opportunity), $errorMessageArray);
-                break;
-
-            case "intakes":
-                $intakes = $cleanupItemHelper->getIntakesToDelete()->get();
-                $this->runCleanup($intakes, fn ($intake) => new DeleteIntake($intake), $errorMessageArray);
-                break;
-
-            case "housingFiles":
-                $housingFiles = $cleanupItemHelper->getHousingFilesToDelete()->get();
-                $this->runCleanup($housingFiles, fn ($housingFile) => new DeleteHousingFile($housingFile), $errorMessageArray);
-                break;
-
-            case "paymentInvoices":
-                $paymentInvoices = $cleanupItemHelper->getPaymentInvoicesToDelete()->get();
-                $this->runCleanup($paymentInvoices, fn ($paymentInvoice) => new DeletePaymentInvoice($paymentInvoice), $errorMessageArray);
-                break;
-
-            case "revenues":
-                $revenues = $cleanupItemHelper->getRevenuesToDelete()->get();
-                $this->runCleanup($revenues, fn ($revenue) => new DeleteRevenue($revenue), $errorMessageArray);
-                break;
-
-            case "revenuesKwh":
-                $revenuesKwh = $cleanupItemHelper->getRevenuesKwhToDelete()->get();
-                $this->runCleanup($revenuesKwh, fn ($revenueKwh) => new DeleteRevenuesKwh($revenueKwh), $errorMessageArray);
-                break;
-
-            case "participationsWithoutStatusDefinitive":
-                $participantProjects = $cleanupItemHelper->getParticipationsWithoutStatusDefinitiveToDelete()->get();
-                $this->runCleanup($participantProjects, fn ($participantProject) => new DeleteParticipation($participantProject), $errorMessageArray);
-                break;
-
-            case "participationsFinished":
-                $participantProjects = $cleanupItemHelper->getParticipationsFinishedToDelete()->get();
-                $this->runCleanup($participantProjects, fn ($participantProject) => new DeleteParticipation($participantProject), $errorMessageArray);
-                break;
-
-            case "incomingEmails":
-                $mails = $cleanupItemHelper->getIncomingEmailsToDelete()->get();
-                $this->runCleanup($mails, fn ($mail) => new DeleteMail($mail), $errorMessageArray);
-                break;
-
-            case "outgoingEmails":
-                $mails = $cleanupItemHelper->getOutgoingEmailsToDelete()->get();
-                $this->runCleanup($mails, fn ($mail) => new DeleteMail($mail), $errorMessageArray);
-                break;
-
-            case "contactsToDelete":
-                $contacts = $cleanupItemHelper->getContactsToDeleteToDelete()->get();
-                $this->runCleanup($contacts, fn ($contact) => new DeleteContact($contact), $errorMessageArray);
-                break;
-
-            case "contactsSoftDeleted":
-                // TODO Hier komt dan het echte verwijderen van contact uit database!!!
-//                $contacts = $cleanupItemHelper->getContactsSoftDeletedToDelete()->get();
-//                foreach($contacts as $contact) {
-//                    //
-//                }
-
-                break;
-
-            default:
-
+        /** @var Builder $query */
+//        $query = CleanupRegistry::queryFor($cleanupType, $helper);
+        $batchId = $cleanupItem->current_batch_id;
+        if (! $batchId) {
+            abort(412, "Opschonen kan niet: er is nog geen selectie bepaald voor '{$cleanupType}'.");
         }
+
+        $modelClass = CleanupRegistry::modelFor($cleanupType);
+        $def = CleanupRegistry::get($cleanupType);
+
+        // Alleen bepaald (determined) van de actieve batch
+        CleanupItemSelection::where('cooperation_id', $cooperation->id)
+            ->where('cleanup_item_id', $cleanupItem->id)
+            ->where('batch_id', $batchId)
+            ->where('status', 'determined')
+            ->chunkById(500, function ($selections) use ($modelClass, $def, &$errorMessageArray) {
+
+                $ids = $selections->pluck('model_id')->all();
+
+                // haal models in bulk op (eventueel withTrashed als relevant)
+                $modelQuery = $modelClass::query();
+                $models = $modelQuery->whereIn('id', $ids)->get()->keyBy('id');
+
+                foreach ($selections as $sel) {
+                    $model = $models->get($sel->model_id);
+
+                    // model kan intussen al weg zijn -> markeer cleaned
+//                    if (! $model) {
+//                        $sel->update([
+//                            'status' => 'cleaned',
+//                            'cleaned_at' => now(),
+//                            'error' => null,
+//                        ]);
+//                        continue;
+//                    }
+                    // model kan intussen al weg zijn -> markeer failed (wel cleaned_at vullen voor zekerheid om aan te geven
+                    // dat hij al weg is, dit is verder geen showstopper nu nl.
+                    if (! $model) {
+                        $sel->update([
+                            'status' => 'failed',
+                            'cleaned_at' => now(),
+                            'error' => 'Model niet gevonden (mogelijk al verwijderd).',
+                        ]);
+//                        $errorMessageArray[] = 'Model niet gevonden (mogelijk al verwijderd).';
+                        continue;
+                    }
+
+                    try {
+                        DB::transaction(function () use ($model, $def) {
+                            $deleter = ($def['deleter'])($model);
+                            $errors = $deleter->cleanup();
+
+                            $errors = is_array($errors) ? $errors : (empty($errors) ? [] : [(string)$errors]);
+
+                            if (!empty($errors)) {
+                                throw new CleanupItemFailed(implode(' | ', $errors));
+                            }
+                        });
+
+                        $sel->update([
+                            'status' => 'cleaned',
+                            'cleaned_at' => now(),
+                            'error' => null,
+                        ]);
+                    } catch (CleanupItemFailed $e) {
+                        $sel->update([
+                            'status' => 'failed',
+                            'error' => $e->getMessage(),
+                        ]);
+                        $errorMessageArray[] = $e->getMessage();
+                        continue;
+                    } catch (Throwable $e) {
+                        Log::error($e->getMessage(), ['exception' => $e]);
+                        $sel->update([
+                            'status' => 'failed',
+                            'error' => $e->getMessage(),
+                        ]);
+                        $errorMessageArray[] = 'Er is helaas een fout opgetreden.';
+                        continue;
+                    }
+                }
+            });
 
         $errorMessageArray = array_values(array_unique($errorMessageArray));
+        if (! empty($errorMessageArray)) {
+            abort(412, implode(';', $errorMessageArray));
+        }
 
-        Log::info('errorMessageArray');
-        Log::info($errorMessageArray);
-
-        $cleanupItem->date_cleaned_up = $dateToday;
+        // succes -> markeer cleaned up
+        $cleanupItem->date_cleaned_up = Carbon::now();
         $cleanupItem->save();
 
-        if (!empty($errorMessageArray)) {
-            abort(412, implode(';', array_unique($errorMessageArray)));
-        }
-
-        $cleanupItemHelper = new CleanupItemHelper($cleanupItem);
-        return FullCleanupItem::make($cleanupItemHelper->updateItem());
+        // update count + determined date opnieuw na cleanup
+        return FullCleanupItem::make((new CleanupItemHelper($cleanupItem))->updateItem());
     }
-
-    private function runCleanup(iterable $items, callable $makeDeleter, array &$errorMessageArray = []): void
-    {
-        foreach ($items as $item) {
-            try {
-                DB::transaction(function () use ($item, $makeDeleter, &$errorMessageArray) {
-                    $deleter = $makeDeleter($item);
-                    $errorMessage = $deleter->cleanup();
-
-                    $errors = is_array($errorMessage)
-                        ? $errorMessage
-                        : (empty($errorMessage) ? [] : [(string) $errorMessage]);
-
-                    if (!empty($errors)) {
-                        $errorMessageArray = array_merge($errorMessageArray, $errors);
-
-                        // rollback voor dit item
-                        throw new CleanupItemFailed();
-                    }
-                });
-            } catch (\PDOException $e) {
-                Log::error($e->getMessage());
-                abort(501, 'Er is helaas een fout opgetreden.');
-            } catch (CleanupItemFailed $e) {
-                // expected: rollback gedaan, ga door met volgende item
-                continue;
-            } catch (Throwable $e) {
-                // onverwacht -> loggen + stoppen (mijn advies)
-                Log::error($e->getMessage(), ['exception' => $e]);
-                abort(501, 'Er is helaas een fout opgetreden.');
-            }
-        }
-    }
+//    private function runCleanupQuery(Builder $query, callable $makeDeleter, array &$errorMessageArray = []): void
+//    {
+//        $query->chunkById(200, function ($items) use ($makeDeleter, &$errorMessageArray) {
+//            $this->runCleanup($items, $makeDeleter, $errorMessageArray);
+//        });
+//    }
+//    private function runCleanup(iterable $items, callable $makeDeleter, array &$errorMessageArray = []): void
+//    {
+//        foreach ($items as $item) {
+//            try {
+//                DB::transaction(function () use ($item, $makeDeleter, &$errorMessageArray) {
+//                    $deleter = $makeDeleter($item);
+//                    $errorMessage = $deleter->cleanup();
+//
+//                    $errors = is_array($errorMessage)
+//                        ? $errorMessage
+//                        : (empty($errorMessage) ? [] : [(string) $errorMessage]);
+//
+//                    if (!empty($errors)) {
+//                        $errorMessageArray = array_merge($errorMessageArray, $errors);
+//
+//                        // rollback voor dit item
+//                        throw new CleanupItemFailed();
+//                    }
+//                });
+//            } catch (\PDOException $e) {
+//                Log::error($e->getMessage());
+//                abort(501, 'Er is helaas een fout opgetreden.');
+//            } catch (CleanupItemFailed $e) {
+//                // expected: rollback gedaan, ga door met volgende item
+//                continue;
+//            } catch (Throwable $e) {
+//                // onverwacht -> loggen + stoppen (mijn advies)
+//                Log::error($e->getMessage(), ['exception' => $e]);
+//                abort(501, 'Er is helaas een fout opgetreden.');
+//            }
+//        }
+//    }
 }

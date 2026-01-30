@@ -5,13 +5,7 @@ import DataCleanupItemsItem from './DataCleanupItemsItem';
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableBody from '../../../components/dataTable/DataTableBody';
 
-export default function DataCleanupItemsList({
-    cleanupData,
-    handleDataCleanupUpdateItem,
-    confirmCleanup,
-    isLoading,
-    loadingText,
-}) {
+export default function DataCleanupItemsList({ cleanupData, handleDataCleanupUpdateItem, confirmCleanup, isLoading }) {
     return (
         <>
             <DataTable>
@@ -27,7 +21,11 @@ export default function DataCleanupItemsList({
                 <DataTableBody>
                     {isLoading ? (
                         <tr>
-                            <td colSpan={5}>{loadingText()}</td>
+                            <td colSpan={5}>Gegevens aan het laden.</td>
+                        </tr>
+                    ) : cleanupData.length === 0 ? (
+                        <tr>
+                            <td colSpan={5}>Geen opschoon gegevens gevonden!</td>
                         </tr>
                     ) : (
                         cleanupData.map(item => {

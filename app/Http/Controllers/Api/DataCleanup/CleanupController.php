@@ -19,7 +19,7 @@ use App\Helpers\Delete\Models\DeleteRevenue;
 use App\Helpers\Delete\Models\DeleteRevenuesKwh;
 use App\Helpers\Delete\Models\DeleteTask;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\DataCleanup\DataCleanupContacts;
+use App\Http\Resources\DataCleanup\FullCleanupContact;
 use App\Http\Resources\DataCleanup\FullCleanupItem;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -54,15 +54,23 @@ class CleanupController extends Controller
 
     public function getCleanupContacts(){
         $cooperation = Cooperation::first();
+
         $cleanupContactsExcludedGroups = $cooperation->cleanupContactsExcludedGroups;
         $contactsToDelete = $cooperation->cleanupItems()->where('code_ref', 'contactsToDelete')->first();
         $contactsSoftDeleted = $cooperation->cleanupItems()->where('code_ref', 'contactsSoftDeleted')->first();
-
-       return response()->json([
+        $cleanupContact = [
             'contactsToDelete' => $contactsToDelete,
             'contactsSoftDeleted' => $contactsSoftDeleted,
             'cleanupContactsExcludedGroups' => $cleanupContactsExcludedGroups,
-        ]);
+        ];
+
+        return FullCleanupContact::make($cleanupContact);
+
+//       return response()->json([
+//            'contactsToDelete' => $contactsToDelete,
+//            'contactsSoftDeleted' => $contactsSoftDeleted,
+//            'cleanupContactsExcludedGroups' => $cleanupContactsExcludedGroups,
+//        ]);
 
     }
 

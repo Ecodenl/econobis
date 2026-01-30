@@ -4,6 +4,7 @@ import { getApiUrl } from '../utils/ApiUrl';
 const baseUrl = () => `${getApiUrl()}/api/cleanup`;
 const api = () => getAxiosInstance();
 const unwrap = res => res.data.data;
+const unwrapSingleData = res => res.data;
 
 const DataCleanupAPI = {
     // GET /api/cleanup/items

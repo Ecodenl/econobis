@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import DataCleanupItemsToolbar from './DataCleanupItemsToolbar';
 import DataCleanupItemsList from './DataCleanupItemsList';
@@ -10,8 +9,6 @@ import PanelBody from '../../../components/panel/PanelBody';
 import DataCleanupAPI from '../../../api/data-cleanup/DataCleanupAPI';
 
 export default function DataCleanupItemsApp() {
-    const navigate = useNavigate();
-
     const [isLoading, setIsLoading] = useState(true);
     const [cleanupData, setCleanupData] = useState([]);
     const [errorText, setErrorText] = useState('');
@@ -40,6 +37,8 @@ export default function DataCleanupItemsApp() {
 
         DataCleanupAPI.getCleanupItems()
             .then(payload => {
+                console.log(payload);
+
                 setErrorText('');
                 setCleanupData(payload ?? []);
                 setIsLoading(false);
@@ -58,7 +57,7 @@ export default function DataCleanupItemsApp() {
                 fetchCleanupData();
             })
             .catch(() => {
-                setErrorText('Er is iets misgegaan met herberekenen van de opschoon gegevens.');
+                setErrorText('Er is iets misgegaan met herberekenen van alle opschoon items.');
             });
     };
 
@@ -73,7 +72,7 @@ export default function DataCleanupItemsApp() {
                 return updatedItem;
             })
             .catch(err => {
-                setErrorText('Er is iets misgegaan met herberekenen van de opschoon gegevens.');
+                setErrorText('Er is iets misgegaan met herberekenen van opschoon item ' + cleanupItem.name + '.');
                 throw err;
             });
     };
@@ -93,22 +92,6 @@ export default function DataCleanupItemsApp() {
             });
     };
 
-    const loadingText = () => {
-        if (errorText) {
-            return errorText;
-        }
-
-        if (isLoading) {
-            return 'Gegevens aan het laden.';
-        }
-
-        if (cleanupData.length === 0) {
-            return 'Geen opschoon gegevens gevonden!';
-        }
-
-        return '';
-    };
-
     return (
         <Panel>
             <PanelBody>
@@ -118,13 +101,19 @@ export default function DataCleanupItemsApp() {
                         handleDataCleanupUpdateItemsAll={handleDataCleanupUpdateItemsAll}
                     />
                 </div>
+
+                {errorText ? (
+                    <div className="col-md-12 margin-10-top">
+                        <div className="alert alert-danger">{errorText}</div>
+                    </div>
+                ) : null}
+
                 <div className="col-md-12 margin-10-top">
                     <DataCleanupItemsList
                         cleanupData={cleanupData}
                         handleDataCleanupUpdateItem={handleDataCleanupUpdateItem}
                         confirmCleanup={confirmCleanup}
                         isLoading={isLoading}
-                        loadingText={loadingText}
                     />
                 </div>
             </PanelBody>

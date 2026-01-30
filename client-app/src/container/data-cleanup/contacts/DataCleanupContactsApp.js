@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import DataCleanupContactsToolbar from './DataCleanupContactsToolbar';
 
@@ -8,13 +7,12 @@ import PanelBody from '../../../components/panel/PanelBody';
 
 import DataCleanupAPI from '../../../api/data-cleanup/DataCleanupAPI';
 import DataCleanupContactsExcludedGroupList from './DataCleanupContactsExcludedGroupList';
+import DataCleanupContactsDetails from './DataCleanupContactsDetails';
 
 export default function DataCleanupContactsApp() {
-    const navigate = useNavigate();
-
     const [isLoading, setLoading] = useState(true);
-    const [contactsToDeleteData, setContactsToDeleteData] = useState([]);
-    const [contactsSoftDeletedData, setContactsSoftDeletedData] = useState([]);
+    const [contactsToDeleteData, setContactsToDeleteData] = useState({});
+    const [contactsSoftDeletedData, setContactsSoftDeletedData] = useState({});
     const [cleanupContactsExcludedGroupsData, setCleanupContactsExcludedGroupsData] = useState([]);
     const [errorText, setErrorText] = useState('');
 
@@ -27,9 +25,13 @@ export default function DataCleanupContactsApp() {
 
         DataCleanupAPI.getCleanupContacts()
             .then(payload => {
-                setContactsToDeleteData(payload?.data?.contactsToDeleteData ?? []);
-                setContactsSoftDeletedData(payload?.data?.contactsSoftDeletedData ?? []);
-                setCleanupContactsExcludedGroupsData(payload?.data?.cleanupContactsExcludedGroups ?? []);
+                console.log('payload getCleanupContacts');
+                console.log(payload);
+
+                setErrorText('');
+                setContactsToDeleteData(payload?.contactsToDelete ?? {});
+                setContactsSoftDeletedData(payload?.contactsSoftDeleted ?? {});
+                setCleanupContactsExcludedGroupsData(payload?.cleanupContactsExcludedGroups ?? []);
                 setLoading(false);
             })
             .catch(() => {
@@ -38,78 +40,30 @@ export default function DataCleanupContactsApp() {
             });
     };
 
-    const handleDataCleanupUpdateItemAll = () => {
-        setLoading(true);
-
-        DataCleanupAPI.updateItemsAll()
-            .then(data => {
-                fetchCleanupData();
-                setLoading(false);
-            })
-            .catch(() => {
-                setErrorText('Er is iets misgegaan met herberekenen van de opschoon gegevens.');
-                setLoading(false);
-            });
-    };
-    const handleDataCleanupUpdateItem = cleanupType => {
-        setLoading(true);
-
-        DataCleanupAPI.updateItem(cleanupType)
-            .then(data => {
-                fetchCleanupData();
-                setLoading(false);
-            })
-            .catch(() => {
-                setErrorText('Er is iets misgegaan met herberekenen van de opschoon gegevens.');
-                setLoading(false);
-            });
-    };
-
-    const confirmCleanup = cleanupType => {
-        setLoading(true);
-
-        DataCleanupAPI.executeCleanupItem(cleanupType)
-            .then(data => {
-                fetchCleanupData();
-                setLoading(false);
-            })
-            .catch(() => {
-                setErrorText('Er is iets misgegaan met opschonen van de gegevens.');
-                setLoading(false);
-            });
-    };
-
-    const loadingText = () => {
-        if (errorText) {
-            return errorText;
-        }
-
-        if (isLoading) {
-            return 'Gegevens aan het laden.';
-        }
-
-        if (cleanupData.length === 0) {
-            return 'Geen opschoon gegevens gevonden!';
-        }
-
-        return '';
-    };
-
     return (
         <Panel>
             <PanelBody>
                 <div className="col-md-12 margin-10-top">
-                    <DataCleanupContactsToolbar
-                        setLoading={setLoading}
-                        fetchCleanupData={fetchCleanupData}
-                        handleDataCleanupUpdateItemAll={handleDataCleanupUpdateItemAll}
+                    <DataCleanupContactsToolbar fetchCleanupData={fetchCleanupData} />
+                </div>
+
+                {errorText ? (
+                    <div className="col-md-12 margin-10-top">
+                        <div className="alert alert-danger">{errorText}</div>
+                    </div>
+                ) : null}
+
+                <div className="col-md-12 margin-10-top">
+                    <DataCleanupContactsDetails
+                        contactsToDeleteData={contactsToDeleteData}
+                        contactsSoftDeletedData={contactsSoftDeletedData}
+                        isLoading={isLoading}
                     />
                 </div>
                 <div className="col-md-12 margin-10-top">
                     <DataCleanupContactsExcludedGroupList
                         cleanupContactsExcludedGroupsData={cleanupContactsExcludedGroupsData}
                         isLoading={isLoading}
-                        loadingText={loadingText}
                     />
                 </div>
             </PanelBody>

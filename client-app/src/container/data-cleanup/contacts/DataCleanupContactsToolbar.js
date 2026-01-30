@@ -2,20 +2,15 @@ import React from 'react';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import ButtonText from '../../../components/button/ButtonText';
 
-export default function DataCleanupContactsToolbar({ fetchCleanupData, handleDataCleanupUpdateItemsAll }) {
+export default function DataCleanupContactsToolbar({ fetchCleanupData }) {
     return (
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
                     <ButtonIcon
                         iconName={'refresh'}
-                        onClickAction={() => fetchCleanupData}
-                        title={`Herbereken alle op te schonen contacten`}
-                    />
-                    <ButtonText
-                        buttonText={'Herbereken'}
-                        onClickAction={() => handleDataCleanupUpdateItemsAll}
-                        title={`Herbereken alle op te schonen contacten`}
+                        onClickAction={fetchCleanupData}
+                        title={`Haal gegevens opnieuw op`}
                     />
                 </div>
             </div>

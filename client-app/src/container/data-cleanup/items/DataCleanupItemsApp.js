@@ -24,6 +24,9 @@ export default function DataCleanupItemsApp() {
             prev.map(item => (item.id === isBusyItem.id ? { ...item, dateCleanedUp: 'Bezig...' } : item))
         );
     };
+    const clearCleanupItem = isBusyItem => {
+        setCleanupData(prev => prev.map(item => (item.id === isBusyItem.id ? { ...item, dateCleanedUp: '' } : item)));
+    };
     const replaceCleanupItem = updatedItem => {
         setCleanupData(prev => prev.map(item => (item.id === updatedItem.id ? updatedItem : item)));
     };
@@ -78,16 +81,16 @@ export default function DataCleanupItemsApp() {
     };
     const confirmCleanup = cleanupItem => {
         isBusyCleanupItem(cleanupItem);
+
         return DataCleanupAPI.executeCleanupItem(cleanupItem.codeRef)
             .then(updatedItem => {
                 setErrorText('');
-                if (updatedItem) {
-                    replaceCleanupItem(updatedItem);
-                }
+                if (updatedItem) replaceCleanupItem(updatedItem);
                 return updatedItem;
             })
             .catch(err => {
                 setErrorText('Er is iets misgegaan met opschonen van de gegevens.');
+                clearCleanupItem(cleanupItem);
                 throw err;
             });
     };

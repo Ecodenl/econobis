@@ -11,7 +11,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\DataCleanup\FullCleanupContact;
 use App\Http\Resources\DataCleanup\FullCleanupItem;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Throwable;
@@ -70,67 +69,49 @@ class CleanupController extends Controller
     {
         $cooperation = Cooperation::firstOrFail();
 
-        // 1) Is dit type bekend in code (registry)?
         if (! CleanupRegistry::has($cleanupType)) {
-            // specials (contacts...) zitten bewust nog niet in registry
             abort(404, "Onbekend opschoon item: {$cleanupType}");
         }
 
-        // 2) Is dit type geconfigureerd in DB?
         $cleanupItem = $cooperation->cleanupItems()->where('code_ref', $cleanupType)->first();
         if (! $cleanupItem) {
-            // configuratiefout: code kent het type maar cleanup_items record ontbreekt
             abort(500, "Opschoon type '{$cleanupType}' is niet geconfigureerd (cleanup_items ontbreekt).");
         }
 
-//        $helper = new CleanupItemHelper($cleanupItem);
-
-        $errorMessageArray = [];
-
-        /** @var Builder $query */
-//        $query = CleanupRegistry::queryFor($cleanupType, $helper);
         $batchId = $cleanupItem->current_batch_id;
         if (! $batchId) {
             abort(412, "Opschonen kan niet: er is nog geen selectie bepaald voor '{$cleanupType}'.");
         }
 
-        $modelClass = CleanupRegistry::modelFor($cleanupType);
         $def = CleanupRegistry::get($cleanupType);
+        $modelClass = CleanupRegistry::modelFor($cleanupType);
 
-        // Alleen bepaald (determined) van de actieve batch
+        $helper = new CleanupItemHelper($cleanupItem);
+
+        $errorMessageArray = [];
+
         CleanupItemSelection::where('cooperation_id', $cooperation->id)
             ->where('cleanup_item_id', $cleanupItem->id)
             ->where('batch_id', $batchId)
             ->where('status', 'determined')
+            ->orderBy('id')
             ->chunkById(500, function ($selections) use ($modelClass, $def, &$errorMessageArray) {
 
-                $ids = $selections->pluck('model_id')->all();
+                $now = now();
 
-                // haal models in bulk op (eventueel withTrashed als relevant)
-                $modelQuery = $modelClass::query();
-                $models = $modelQuery->whereIn('id', $ids)->get()->keyBy('id');
+                // 1) models in bulk ophalen
+                $ids = $selections->pluck('model_id')->all();
+                $models = $modelClass::whereIn('id', $ids)->get()->keyBy('id');
+
+                // 2) resultaten verzamelen (bulk updates)
+                $cleanedSelectionIds = [];
+                $failed = []; // selection_id => error
 
                 foreach ($selections as $sel) {
                     $model = $models->get($sel->model_id);
 
-                    // model kan intussen al weg zijn -> markeer cleaned
-//                    if (! $model) {
-//                        $sel->update([
-//                            'status' => 'cleaned',
-//                            'cleaned_at' => now(),
-//                            'error' => null,
-//                        ]);
-//                        continue;
-//                    }
-                    // model kan intussen al weg zijn -> markeer failed (wel cleaned_at vullen voor zekerheid om aan te geven
-                    // dat hij al weg is, dit is verder geen showstopper nu nl.
                     if (! $model) {
-                        $sel->update([
-                            'status' => 'failed',
-                            'cleaned_at' => now(),
-                            'error' => 'Model niet gevonden (mogelijk al verwijderd).',
-                        ]);
-//                        $errorMessageArray[] = 'Model niet gevonden (mogelijk al verwijderd).';
+                        $failed[$sel->id] = 'Model niet gevonden (mogelijk al verwijderd).';
                         continue;
                     }
 
@@ -139,85 +120,133 @@ class CleanupController extends Controller
                             $deleter = ($def['deleter'])($model);
                             $errors = $deleter->cleanup();
 
-                            $errors = is_array($errors) ? $errors : (empty($errors) ? [] : [(string)$errors]);
+                            $errors = is_array($errors) ? $errors : (empty($errors) ? [] : [(string) $errors]);
 
-                            if (!empty($errors)) {
+                            if (! empty($errors)) {
                                 throw new CleanupItemFailed(implode(' | ', $errors));
                             }
                         });
 
-                        $sel->update([
-                            'status' => 'cleaned',
-                            'cleaned_at' => now(),
-                            'error' => null,
-                        ]);
+                        $cleanedSelectionIds[] = $sel->id;
                     } catch (CleanupItemFailed $e) {
-                        $sel->update([
-                            'status' => 'failed',
-                            'error' => $e->getMessage(),
-                        ]);
+                        $failed[$sel->id] = $e->getMessage();
                         $errorMessageArray[] = $e->getMessage();
                         continue;
-                    } catch (Throwable $e) {
+                    } catch (\Throwable $e) {
                         Log::error($e->getMessage(), ['exception' => $e]);
-                        $sel->update([
-                            'status' => 'failed',
-                            'error' => $e->getMessage(),
-                        ]);
+                        $failed[$sel->id] = $e->getMessage();
                         $errorMessageArray[] = 'Er is helaas een fout opgetreden.';
                         continue;
                     }
                 }
+
+                // 3) bulk update: cleaned
+                if (! empty($cleanedSelectionIds)) {
+                    CleanupItemSelection::whereIn('id', $cleanedSelectionIds)->update([
+                        'status' => 'cleaned',
+                        'cleaned_at' => $now,
+                        'error' => null,
+                        'updated_at' => $now,
+                    ]);
+                }
+
+                // 4) bulk update: failed
+                // We willen ook error opslaan. Dat kan niet in 1 simpele update (verschillende errors),
+                // dus doen we 1 CASE WHEN update (MySQL) of fallback per stuk.
+                if (! empty($failed)) {
+                    $this->bulkUpdateSelectionErrors($failed, $now);
+                }
             });
 
-        $errorMessageArray = array_values(array_unique($errorMessageArray));
-        if (! empty($errorMessageArray)) {
+//        $errorMessageArray = array_values(array_unique($errorMessageArray));
+//        if (! empty($errorMessageArray)) {
+//            abort(412, implode(';', $errorMessageArray));
+//        }
+        $failedErrors = CleanupItemSelection::where('cooperation_id', $cooperation->id)
+            ->where('cleanup_item_id', $cleanupItem->id)
+            ->where('batch_id', $batchId)
+            ->where('status', 'failed')
+            ->pluck('error')
+            ->filter()
+            ->values()
+            ->all();
+
+        $errorMessageArray = array_values(array_unique(array_merge($errorMessageArray, $failedErrors)));
+
+        $stats = $this->batchStats($cleanupItem->id, $batchId);
+
+        // altijd bijwerken, ook als je daarna 412 returned
+        $cleanupItem->number_of_items_to_delete = $stats['determined'];
+        $cleanupItem->save();
+
+        if (!empty($errorMessageArray)) {
             abort(412, implode(';', $errorMessageArray));
         }
 
-        // succes -> markeer cleaned up
-        $cleanupItem->date_cleaned_up = Carbon::now();
+        // alleen bij succes:
+        $cleanupItem->date_cleaned_up = now();
         $cleanupItem->save();
 
-        // update count + determined date opnieuw na cleanup
-        return FullCleanupItem::make((new CleanupItemHelper($cleanupItem))->updateItem());
+        return FullCleanupItem::make($cleanupItem->fresh());
     }
-//    private function runCleanupQuery(Builder $query, callable $makeDeleter, array &$errorMessageArray = []): void
-//    {
-//        $query->chunkById(200, function ($items) use ($makeDeleter, &$errorMessageArray) {
-//            $this->runCleanup($items, $makeDeleter, $errorMessageArray);
-//        });
-//    }
-//    private function runCleanup(iterable $items, callable $makeDeleter, array &$errorMessageArray = []): void
-//    {
-//        foreach ($items as $item) {
-//            try {
-//                DB::transaction(function () use ($item, $makeDeleter, &$errorMessageArray) {
-//                    $deleter = $makeDeleter($item);
-//                    $errorMessage = $deleter->cleanup();
-//
-//                    $errors = is_array($errorMessage)
-//                        ? $errorMessage
-//                        : (empty($errorMessage) ? [] : [(string) $errorMessage]);
-//
-//                    if (!empty($errors)) {
-//                        $errorMessageArray = array_merge($errorMessageArray, $errors);
-//
-//                        // rollback voor dit item
-//                        throw new CleanupItemFailed();
-//                    }
-//                });
-//            } catch (\PDOException $e) {
-//                Log::error($e->getMessage());
-//                abort(501, 'Er is helaas een fout opgetreden.');
-//            } catch (CleanupItemFailed $e) {
-//                // expected: rollback gedaan, ga door met volgende item
-//                continue;
-//            } catch (Throwable $e) {
-//                // onverwacht -> loggen + stoppen (mijn advies)
-//                Log::error($e->getMessage(), ['exception' => $e]);
-//                abort(501, 'Er is helaas een fout opgetreden.');
-//            }
-//        }
-//    }
+
+    /**
+     * Bulk update failed selections incl. error message.
+     * - MySQL: CASE WHEN is prima.
+     * - Als je DB anders is, kunnen we fallbacken naar per-id update.
+     */
+    private function bulkUpdateSelectionErrors(array $failedBySelectionId, $now): void
+    {
+        $ids = array_keys($failedBySelectionId);
+        if (empty($ids)) {
+            return;
+        }
+
+        $caseSql = "CASE id ";
+        $bindings = [];
+
+        foreach ($failedBySelectionId as $id => $msg) {
+            $caseSql .= "WHEN ? THEN ? ";
+            $bindings[] = (int) $id;
+            $bindings[] = (string) $msg;
+        }
+        $caseSql .= "END";
+
+        $inPlaceholders = implode(',', array_fill(0, count($ids), '?'));
+
+        // placeholders volgorde: (case: 2N) + (updated_at:1) + (IN: N)
+        $sql = "
+        UPDATE cleanup_item_selections
+        SET
+            status = 'failed',
+            error = {$caseSql},
+            updated_at = ?
+        WHERE id IN ({$inPlaceholders})
+    ";
+
+        $bindings[] = $now; // updated_at
+        foreach ($ids as $id) {
+            $bindings[] = (int) $id; // IN (...)
+        }
+
+        DB::update($sql, $bindings);
+    }
+
+    private function batchStats(int $cleanupItemId, string $batchId): array
+    {
+        $rows = CleanupItemSelection::query()
+            ->selectRaw('status, COUNT(*) as cnt')
+            ->where('cleanup_item_id', $cleanupItemId)
+            ->where('batch_id', $batchId)
+            ->groupBy('status')
+            ->pluck('cnt', 'status')
+            ->all();
+
+        return [
+            'determined' => (int)($rows['determined'] ?? 0),
+            'cleaned'    => (int)($rows['cleaned'] ?? 0),
+            'failed'     => (int)($rows['failed'] ?? 0),
+        ];
+    }
+
 }

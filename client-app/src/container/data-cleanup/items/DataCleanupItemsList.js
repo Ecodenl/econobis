@@ -12,23 +12,28 @@ export default function DataCleanupItemsList({ cleanupData, handleDataCleanupUpd
                 <DataTableHead>
                     <tr className="thead-title">
                         <DataTableHeadTitle title={'Onderdeel'} width={'40%'} />
-                        <DataTableHeadTitle title={'Items'} width={'10%'} />
-                        <DataTableHeadTitle title={'Laatst bepaald'} width={'20%'} />
-                        <DataTableHeadTitle title={'Laatst opgeschoond'} width={'20%'} />
-                        <DataTableHeadTitle title={'Acties'} width={'10%'} />
+                        <DataTableHeadTitle title={'Items te verwijderen'} width={'10%'} />
+                        <DataTableHeadTitle title={'Laatst bepaald'} width={'15%'} />
+                        <DataTableHeadTitle title={'Actie'} width={'5%'} />
+                        <DataTableHeadTitle title={'Items verwijderd'} width={'10%'} />
+                        <DataTableHeadTitle title={'Items geweigerd'} width={'10%'} />
+                        <DataTableHeadTitle title={'Laatst opgeschoond'} width={'15%'} />
+                        <DataTableHeadTitle title={'Actie'} width={'5%'} />
                     </tr>
                 </DataTableHead>
                 <DataTableBody>
                     {isLoading ? (
                         <tr>
-                            <td colSpan={5}>Gegevens aan het laden.</td>
+                            <td colSpan={8}>Gegevens aan het laden.</td>
                         </tr>
                     ) : cleanupData.length === 0 ? (
                         <tr>
-                            <td colSpan={5}>Geen opschoon gegevens gevonden!</td>
+                            <td colSpan={8}>Geen opschoon gegevens gevonden!</td>
                         </tr>
                     ) : (
                         cleanupData.map(item => {
+                            console.log('item');
+                            console.log(item);
                             return (
                                 <DataCleanupItemsItem
                                     key={item.id}

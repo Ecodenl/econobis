@@ -26,6 +26,7 @@ use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\PaymentInvoice\PaymentInvoice;
 use App\Eco\Product\Product;
 use App\Eco\Project\ProjectRevenue;
+use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Eco\Task\Task;
 use Carbon\Carbon;
@@ -253,6 +254,18 @@ class CleanupItemHelper
 
         $tasksToDelete = Task::whereDate('updated_at', '<', $tasksCleanupOlderThen);
         return $tasksToDelete;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getQuotationRequestsToDelete(): mixed
+    {
+        $quotationRequestsCleanupYears = $this->cleanupItem->years_for_delete;
+        $quotationRequestsCleanupOlderThen = $this->cleanupDate->copy()->subYears($quotationRequestsCleanupYears);
+
+        $quotationRequestsToDelete = QuotationRequest::whereDate('updated_at', '<', $quotationRequestsCleanupOlderThen);
+        return $quotationRequestsToDelete;
     }
 
     /**

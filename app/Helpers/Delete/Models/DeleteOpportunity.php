@@ -8,9 +8,7 @@
 
 namespace App\Helpers\Delete\Models;
 
-use App\Eco\Cooperation\Cooperation;
 use App\Helpers\Delete\DeleteInterface;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 

@@ -175,13 +175,18 @@ class AddNewCleanupItems extends Migration
                 'date_ref' => 'Mutatiedatum'
             ],
             [
-                'name' => 'Intakes',
-                'code_ref' => 'intakes',
+                'name' => 'Kansacties',
+                'code_ref' => 'quotationRequests',
                 'date_ref' => 'Mutatiedatum'
             ],
             [
                 'name' => 'Kansen',
                 'code_ref' => 'opportunities',
+                'date_ref' => 'Mutatiedatum'
+            ],
+            [
+                'name' => 'Intakes',
+                'code_ref' => 'intakes',
                 'date_ref' => 'Mutatiedatum'
             ],
             [

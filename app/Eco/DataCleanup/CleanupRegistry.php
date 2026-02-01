@@ -13,6 +13,7 @@ use App\Eco\Order\Order;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\PaymentInvoice\PaymentInvoice;
 use App\Eco\Project\ProjectRevenue;
+use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Eco\Task\Task;
 use App\Helpers\CleanupItem\CleanupItemHelper;
@@ -26,6 +27,7 @@ use App\Helpers\Delete\Models\DeleteOpportunity;
 use App\Helpers\Delete\Models\DeleteOrder;
 use App\Helpers\Delete\Models\DeleteParticipation;
 use App\Helpers\Delete\Models\DeletePaymentInvoice;
+use App\Helpers\Delete\Models\DeleteQuotationRequest;
 use App\Helpers\Delete\Models\DeleteRevenue;
 use App\Helpers\Delete\Models\DeleteRevenuesKwh;
 use App\Helpers\Delete\Models\DeleteTask;
@@ -65,6 +67,12 @@ final class CleanupRegistry
                 'query' => fn (CleanupItemHelper $h) => $h->getTasksToDelete(),
                 'deleter' => fn ($model) => new DeleteTask($model),
                 'label' => fn (Task $m) => "Task id {$m->id}",
+            ],
+            'quotationRequests' => [
+                'model' => QuotationRequest::class,
+                'query' => fn (CleanupItemHelper $h) => $h->getQuotationRequestsToDelete(),
+                'deleter' => fn ($model) => new DeleteQuotationRequest($model),
+                'label' => fn (QuotationRequest $m) => "QuotationRequest id {$m->id}",
             ],
             'opportunities' => [
                 'model' => Opportunity::class,

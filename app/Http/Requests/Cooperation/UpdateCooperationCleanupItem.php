@@ -19,15 +19,9 @@ class UpdateCooperationCleanupItem extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        if ($this->has('hasRetentionPeriod')) {
-            $this->merge([
-                'hasRetentionPeriod' => filter_var(
-                    $this->input('hasRetentionPeriod'),
-                    FILTER_VALIDATE_BOOLEAN,
-                    FILTER_NULL_ON_FAILURE
-                ),
-            ]);
-        }
+        $this->normalizeBooleans([
+            'hasRetentionPeriod',
+        ]);
     }
 
     /**

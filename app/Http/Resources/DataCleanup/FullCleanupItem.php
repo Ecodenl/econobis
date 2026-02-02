@@ -23,6 +23,7 @@ class FullCleanupItem extends JsonResource
             'cleanedCount' => (int) $this->cleaned_count,
             'failedCount' => (int) $this->failed_count,
             'hasRetentionPeriod' => (bool) $this->has_retention_period,
+            'retentionMode' => $this->retention_mode,
 
             'dateCleanedUp' => $this->date_cleaned_up?->format('d-m-Y H:i:s'),
             'dateDetermined' => $this->date_determined?->format('d-m-Y H:i:s'),

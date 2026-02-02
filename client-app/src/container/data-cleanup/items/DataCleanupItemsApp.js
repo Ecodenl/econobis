@@ -56,8 +56,9 @@ export default function DataCleanupItemsApp() {
         setIsLoading(true);
 
         DataCleanupAPI.updateItemsAll()
-            .then(data => {
-                fetchCleanupData();
+            .then(payload => {
+                setCleanupData(payload ?? []);
+                setIsLoading(false);
             })
             .catch(() => {
                 setErrorText('Er is iets misgegaan met herberekenen van alle opschoon items.');

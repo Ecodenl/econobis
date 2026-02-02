@@ -48,8 +48,18 @@ class CleanupController extends Controller
 
     public function updateItemsAll()
     {
+        $cooperation = Cooperation::firstOrFail();
+
         (new CleanupItemHelper())->updateItemsAll();
-        return response()->noContent();
+
+        $cleanupItems = $cooperation
+            ->cleanupItems()
+            ->whereIn('code_ref', CleanupRegistry::types())
+            ->get();
+
+        return response()->json([
+            'data' => FullCleanupItem::collection($cleanupItems),
+        ]);
     }
 
     public function updateItem(string $cleanupType)
@@ -87,6 +97,14 @@ class CleanupController extends Controller
         if (! $batchId) {
             abort(412, "Opschonen kan niet: er is nog geen selectie bepaald voor '{$cleanupType}'.");
         }
+
+        $originalBatchId = $cleanupItem->current_batch_id;
+
+        // Guard: aantal selections in deze batch mag niet veranderen tijdens cleanup
+        $beforeSelectionCount = CleanupItemSelection::where('cooperation_id', $cooperation->id)
+            ->where('cleanup_item_id', $cleanupItem->id)
+            ->where('batch_id', $batchId)
+            ->count();
 
         $state = app(CleanupItemStateService::class);
 
@@ -185,6 +203,45 @@ class CleanupController extends Controller
         }
 
         $cleanupItem->save();
+
+        // Guard A: current_batch_id mag niet wijzigen tijdens cleanup
+        $cleanupItem->refresh();
+        if ($cleanupItem->current_batch_id !== $originalBatchId) {
+            Log::error('current_batch_id changed during cleanup', [
+                'cleanup_item_id' => $cleanupItem->id,
+                'original' => $originalBatchId,
+                'current' => $cleanupItem->current_batch_id,
+            ]);
+
+            $state->syncCountsAndStatusAfterCleanup($cleanupItem, true);
+            $cleanupItem->save();
+
+            return $this->respondCleanupItem($cleanupItem, 500, [
+                'Interne fout: batch_id gewijzigd tijdens opschonen.',
+            ]);
+        }
+
+        // Guard B: aantal selections in batch mag niet wijzigen tijdens cleanup (geen inserts/deletes)
+        $afterSelectionCount = CleanupItemSelection::where('cooperation_id', $cooperation->id)
+            ->where('cleanup_item_id', $cleanupItem->id)
+            ->where('batch_id', $batchId)
+            ->count();
+
+        if ($afterSelectionCount !== $beforeSelectionCount) {
+            Log::error('Selection count changed during cleanup', [
+                'cleanup_item_id' => $cleanupItem->id,
+                'batch_id' => $batchId,
+                'before' => $beforeSelectionCount,
+                'after' => $afterSelectionCount,
+            ]);
+
+            $state->syncCountsAndStatusAfterCleanup($cleanupItem, true);
+            $cleanupItem->save();
+
+            return $this->respondCleanupItem($cleanupItem, 500, [
+                'Interne fout: selectie gewijzigd tijdens opschonen.',
+            ]);
+        }
 
         if (!empty($errorMessageArray)) {
             return $this->respondCleanupItem($cleanupItem, 412, $errorMessageArray);

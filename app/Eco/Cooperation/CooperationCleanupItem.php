@@ -2,6 +2,7 @@
 
 namespace App\Eco\Cooperation;
 
+use App\Eco\DataCleanup\CleanupRegistry;
 use Illuminate\Database\Eloquent\Model;
 
 class CooperationCleanupItem extends Model
@@ -37,4 +38,16 @@ class CooperationCleanupItem extends Model
     {
         return $this->belongsTo(Cooperation::class);
     }
+
+
+    public function getRetentionModeAttribute(): string
+    {
+        return CleanupRegistry::retentionModeFor($this->code_ref);
+    }
+
+    public function getHasRetentionPeriodAttribute(): bool
+    {
+        return CleanupRegistry::retentionModeFor($this->code_ref) === CleanupRegistry::RETENTION_FISCAL_DATE;
+    }
+
 }

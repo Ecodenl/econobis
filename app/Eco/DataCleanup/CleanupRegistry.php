@@ -2,7 +2,6 @@
 
 namespace App\Eco\DataCleanup;
 
-//use App\Eco\Contact\Contact;
 use App\Eco\Contact\Contact;
 use App\Eco\Email\Email;
 use App\Eco\FinancialOverview\FinancialOverview;
@@ -36,6 +35,10 @@ use Illuminate\Database\Eloquent\Builder;
 
 final class CleanupRegistry
 {
+    public const RETENTION_DATE = 'date';
+    public const RETENTION_FISCAL_DATE = 'fiscal-date';
+    public const RETENTION_NONE = 'none';
+
     public static function definitions(): array
     {
         return [
@@ -44,6 +47,8 @@ final class CleanupRegistry
                 'query' => fn (CleanupItemHelper $h) => $h->getInvoicesToDelete(),
                 'deleter' => fn ($model) => new DeleteInvoice($model),
                 'label' => fn (Invoice $m) => "Invoice #{$m->number} id {$m->id}",
+                'retentionMode' => self::RETENTION_FISCAL_DATE,
+                'dateRef' => 'date_sent',
             ],
             'ordersOneoff' => [
                 'model' => Order::class,
@@ -62,6 +67,8 @@ final class CleanupRegistry
                 'query' => fn (CleanupItemHelper $h) => $h->getFinancialOverviewsToDelete(),
                 'deleter' => fn ($model) => new DeleteFinancialOverview($model),
                 'label' => fn (FinancialOverview $m) => "FinancialOverview {$m->administration_id}-{$m->year} id {$m->id}",
+                'retentionMode' => self::RETENTION_FISCAL_DATE,
+                'dateRef' => 'year',
             ],
             'tasks' => [
                 'model' => Task::class,
@@ -98,6 +105,8 @@ final class CleanupRegistry
                 'query' => fn (CleanupItemHelper $h) => $h->getPaymentInvoicesToDelete(),
                 'deleter' => fn ($model) => new DeletePaymentInvoice($model),
                 'label' => fn (PaymentInvoice $m) => "PaymentInvoice {$m->number} id {$m->id}",
+                'retentionMode' => self::RETENTION_FISCAL_DATE,
+                'dateRef' => 'created_at',
             ],
             'revenues' => [
                 'model' => ProjectRevenue::class,
@@ -181,6 +190,17 @@ final class CleanupRegistry
         /** @var callable $q */
         $q = self::get($type)['query'];
         return $q($h);
+    }
+    public static function retentionModeFor(string $type): string
+    {
+        $def = self::get($type);
+        return $def['retentionMode'] ?? self::RETENTION_DATE;
+    }
+
+    public static function dateRefFor(string $type): ?string
+    {
+        $def = self::get($type);
+        return $def['dateRef'] ?? null;
     }
 
 }

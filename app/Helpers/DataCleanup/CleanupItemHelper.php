@@ -151,48 +151,13 @@ class CleanupItemHelper
     }
 
     /**
-     * @param int $numberItemsToDelete
-     * @return void
-     */
-    private function updateCleanupItem(int $numberItemsToDelete): void
-    {
-        $this->cleanupItem->determined_count = $numberItemsToDelete;
-        $this->cleanupItem->cleaned_count = $numberItemsToDelete;
-        $this->cleanupItem->failed_count = $numberItemsToDelete;
-        $this->cleanupItem->date_determined = Carbon::now();
-        $this->cleanupItem->save();
-    }
-
-    /**
-     * @return int
-     */
-    private function getNumberItemsToDelete(): int
-    {
-        $codeRef = $this->cleanupItem->code_ref;
-
-        // Registry items
-        if (CleanupRegistry::has($codeRef)) {
-            return CleanupRegistry::queryFor($codeRef, $this)->count();
-        }
-
-        // Specials (voorlopig buiten registry)
-        return match ($codeRef) {
-            'contactsSoftDeleted' => $this->getContactsSoftDeletedToDelete()->count(),
-            default => abort(501, "Onbekend opschoon item: {$codeRef}"),
-        };
-    }
-
-    /**
      * @return mixed
      */
     public function getInvoicesToDelete(): mixed
     {
-        $invoicesCleanupYears = $this->cleanupItem->years_for_delete;
-        $invoicesCleanupOlderThen = $this->cleanupDate->copy()->subYears($invoicesCleanupYears);
-        $invoicesToDelete = Invoice::whereDate('date_sent', '<', $invoicesCleanupOlderThen);
-        return $invoicesToDelete;
+        $cutoff = $this->cutoffDate();
+        return Invoice::whereDate('date_sent', '<', $cutoff);
     }
-
     /**
      * @return mixed
      */
@@ -236,11 +201,10 @@ class CleanupItemHelper
      */
     public function getFinancialOverviewsToDelete(): mixed
     {
-        $financialOverviewsCleanupYears = $this->cleanupItem->years_for_delete;
-        $financialOverviewsCleanupOlderThen = $this->cleanupDate->copy()->subYears($financialOverviewsCleanupYears);
-        $financialOverviewsToDelete = FinancialOverview::where('year', '<', $financialOverviewsCleanupOlderThen);
-        return $financialOverviewsToDelete;
+        $cutoffYear = $this->cutoffYear();
+        return FinancialOverview::where('year', '<', $cutoffYear);
     }
+
 
     /**
      * @return mixed
@@ -306,11 +270,10 @@ class CleanupItemHelper
      */
     public function getPaymentInvoicesToDelete(): mixed
     {
-        $paymentInvoicesCleanupYears = $this->cleanupItem->years_for_delete;
-        $paymentInvoicesCleanupOlderThen = $this->cleanupDate->copy()->subYears($paymentInvoicesCleanupYears);
-        $paymentInvoicesToDelete = PaymentInvoice::whereDate('created_at', '<', $paymentInvoicesCleanupOlderThen);
-        return $paymentInvoicesToDelete;
+        $cutoff = $this->cutoffDate();
+        return PaymentInvoice::whereDate('created_at', '<', $cutoff);
     }
+
 
     /**
      * @return mixed
@@ -435,8 +398,6 @@ class CleanupItemHelper
     /**
      * @return mixed
      */
-//    private function getContactsSoftDeletedToDelete(): \Illuminate\Database\Eloquent\Builder
-
     public function getContactsSoftDeletedToDelete(): mixed
     {
 //                $contactsSoftDeletedCleanupYears = $this->cleanupItem->years_for_delete;
@@ -446,5 +407,42 @@ class CleanupItemHelper
 
         return $contactsSoftDeletedToDelete;
     }
+
+    private function retentionMode(): string
+    {
+        return CleanupRegistry::retentionModeFor($this->cleanupItem->code_ref);
+    }
+
+    /**
+     * Cutoff als echte datum (Carbon) voor whereDate/where
+     * - date: vandaag - years
+     * - fiscal-date: 01-01-(currentYear - years)
+     */
+    protected function cutoffDate(): Carbon
+    {
+        $years = (int) $this->cleanupItem->years_for_delete;
+        $now = $this->cleanupDate instanceof Carbon ? $this->cleanupDate->copy() : now();
+
+        if ($this->retentionMode() === CleanupRegistry::RETENTION_FISCAL_DATE) {
+            $cutoffYear = (int) $now->year - $years;
+            return Carbon::create($cutoffYear, 1, 1, 0, 0, 0, $now->getTimezone());
+        }
+
+        // default: bestaande gedrag (dag-niveau)
+        return $now->subYears($years);
+    }
+
+    /**
+     * CutoffYear voor FinancialOverview->year (MySQL YEAR kolom).
+     * fiscal-date: currentYear - years
+     * date: zou ook kunnen, maar we gebruiken dit alleen voor year-kolommen.
+     */
+    private function cutoffYear(): int
+    {
+        $years = (int) $this->cleanupItem->years_for_delete;
+        $now = $this->cleanupDate instanceof Carbon ? $this->cleanupDate->copy() : now();
+        return (int) $now->year - $years;
+    }
+
 
 }

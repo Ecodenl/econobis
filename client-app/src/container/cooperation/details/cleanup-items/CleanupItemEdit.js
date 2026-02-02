@@ -6,7 +6,7 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import { useFormik } from 'formik';
 import CooperationDetailsAPI from '../../../../api/cooperation/CooperationDetailsAPI';
-import InputToggle from '../../../../components/form/InputToggle';
+import ViewText from '../../../../components/form/ViewText';
 
 function CleanupItemEdit({ cleanupItem, cancelEdit, updateResult }) {
     const formData = {
@@ -70,12 +70,6 @@ function CleanupItemEdit({ cleanupItem, cancelEdit, updateResult }) {
                             ]}
                             emptyOption={false}
                             value={values.yearsForDelete}
-                            onChangeAction={handleChange}
-                        />
-                        <InputToggle
-                            label="Heeft bewaarplicht?"
-                            name={'hasRetentionPeriod'}
-                            value={values.hasRetentionPeriod}
                             onChangeAction={handleChange}
                         />
                     </div>

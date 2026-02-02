@@ -31,7 +31,7 @@ class AddNewCleanupItems extends Migration
             $table->string('date_ref')->nullable();
 
             $table->unsignedInteger('years_for_delete')->default(7);
-            $table->boolean('has_retention_period')->default(false);
+//            $table->boolean('has_retention_period')->default(false);
 
             $table->uuid('current_batch_id')->nullable();
             $table->index('current_batch_id', 'cci_current_batch_id_idx');
@@ -246,11 +246,6 @@ class AddNewCleanupItems extends Migration
                 'name' => 'Contacten',
                 'code_ref' => 'contacts',
                 'date_ref' => 'Aanmaakdatum'
-            ],
-            [
-                'name' => 'Contacten die reeds handmatig verwijderd zijn',
-                'code_ref' => 'contactsSoftDeleted',
-                'date_ref' => 'Datum verwijderd'
             ],
         ];
 

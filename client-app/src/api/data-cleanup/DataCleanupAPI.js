@@ -19,6 +19,12 @@ const DataCleanupAPI = {
             .post(`${baseUrl()}/update-items-all`)
             .then(unwrap);
     },
+    // POST /api/cleanup/cleanup-items-all
+    cleanupItemsAll() {
+        return api()
+            .post(`${baseUrl()}/cleanup-items-all`)
+            .then(res => res.data?.data?.results ?? []);
+    },
 
     // POST /api/cleanup/update-item/{cleanupType}
     updateItem(cleanupType) {

@@ -80,6 +80,59 @@ export default function DataCleanupItemsApp() {
                 throw err;
             });
     };
+
+    const handleDataCleanupCleanupItemsAll = () => {
+        const ok = window.confirm(
+            'Weet je zeker dat je ALLE opschoon-items wilt uitvoeren?\n\nDeze verwijderactie is niet terug te draaien.'
+        );
+
+        if (!ok) return;
+
+        setIsLoading(true);
+
+        DataCleanupAPI.cleanupItemsAll()
+            .then(results => {
+                setErrorText('');
+
+                // results: [{ codeRef, statusCode, errors, item }]
+                (results || []).forEach(r => {
+                    if (r?.item) replaceCleanupItem(r.item);
+                });
+
+                const failed = (results || []).filter(r => r?.statusCode >= 400);
+                if (failed.length) {
+                    setErrorText(
+                        `Opschonen alles is uitgevoerd, maar ${failed.length} item(s) hadden fouten. ` +
+                            `Open een specifiek item voor details (opschoon-knop).`
+                    );
+                    console.log('cleanup-items-all failures:', failed);
+                }
+
+                setIsLoading(false);
+            })
+            .catch(err => {
+                // Bij 412/500 komt axios hier; maar we willen alsnog results verwerken
+                const results = err?.response?.data?.data?.results ?? [];
+                const message = err?.response?.data?.message;
+
+                (results || []).forEach(r => {
+                    if (r?.item) replaceCleanupItem(r.item);
+                });
+
+                const failed = (results || []).filter(r => r?.statusCode >= 400);
+
+                setErrorText(
+                    message ||
+                        (failed.length
+                            ? `Opschonen alles is uitgevoerd, maar ${failed.length} item(s) hadden fouten.`
+                            : 'Er is iets misgegaan met opschonen van alle items.')
+                );
+
+                console.log('cleanup-items-all error response:', err?.response?.data);
+                setIsLoading(false);
+            });
+    };
+
     const confirmCleanup = cleanupItem => {
         isBusyCleanupItem(cleanupItem);
 
@@ -109,6 +162,7 @@ export default function DataCleanupItemsApp() {
                     <DataCleanupItemsToolbar
                         fetchCleanupData={fetchCleanupData}
                         handleDataCleanupUpdateItemsAll={handleDataCleanupUpdateItemsAll}
+                        handleDataCleanupCleanupItemsAll={handleDataCleanupCleanupItemsAll}
                     />
                 </div>
 

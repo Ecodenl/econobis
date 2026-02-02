@@ -19,9 +19,9 @@ class UpdateCooperationCleanupItem extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        $this->normalizeBooleans([
-            'hasRetentionPeriod',
-        ]);
+//        $this->normalizeBooleans([
+//            'hasRetentionPeriod',
+//        ]);
     }
 
     /**
@@ -33,7 +33,7 @@ class UpdateCooperationCleanupItem extends FormRequest
     {
         return [
             'yearsForDelete' => ['required', 'integer', 'min:1'],
-            'hasRetentionPeriod' => ['sometimes', 'boolean'],
+//            'hasRetentionPeriod' => ['sometimes', 'boolean'],
         ];
     }
 }

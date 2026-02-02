@@ -2,7 +2,11 @@ import React from 'react';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import ButtonText from '../../../components/button/ButtonText';
 
-export default function DataCleanupItemsToolbar({ fetchCleanupData, handleDataCleanupUpdateItemsAll }) {
+export default function DataCleanupItemsToolbar({
+    fetchCleanupData,
+    handleDataCleanupUpdateItemsAll,
+    handleDataCleanupCleanupItemsAll,
+}) {
     return (
         <div className="row">
             <div className="col-md-4">
@@ -13,9 +17,14 @@ export default function DataCleanupItemsToolbar({ fetchCleanupData, handleDataCl
                         title={`Herbereken alle op te schonen items`}
                     />
                     <ButtonText
-                        buttonText={'Herbereken'}
+                        buttonText={'Herbereken alles'}
                         onClickAction={handleDataCleanupUpdateItemsAll}
                         title={`Herbereken alle op te schonen items`}
+                    />
+                    <ButtonText
+                        buttonText={'Opschonen alles'}
+                        onClickAction={handleDataCleanupCleanupItemsAll}
+                        title={`Opschonen alle items`}
                     />
                 </div>
             </div>

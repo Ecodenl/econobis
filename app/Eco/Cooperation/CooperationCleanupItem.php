@@ -22,7 +22,7 @@ class CooperationCleanupItem extends Model
         'cooperation_id' => 'integer',
         'years_for_delete' => 'integer',
 
-        'has_retention_period' => 'boolean',
+//        'has_retention_period' => 'boolean',
 
         'determined_count' => 'integer',
         'cleaned_count' => 'integer',

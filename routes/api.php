@@ -282,6 +282,7 @@ Route::namespace('Api')
         Route::get('cleanup/items', 'DataCleanup\CleanupController@getCleanupItems');
         Route::post('cleanup/update-items-all', 'DataCleanup\CleanupController@updateItemsAll');
         Route::post('cleanup/update-item/{cleanupType}', 'DataCleanup\CleanupController@updateItem');
+        Route::post('cleanup/cleanup-items-all', 'DataCleanup\CleanupController@cleanupItemsAll');
         Route::post('cleanup/cleanup-item/{cleanupType}', 'DataCleanup\CleanupController@cleanupItem');
 
         Route::get('cleanup/contacts', 'DataCleanup\CleanupController@getCleanupContacts');

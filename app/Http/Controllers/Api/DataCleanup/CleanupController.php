@@ -80,6 +80,56 @@ class CleanupController extends Controller
         return $this->respondCleanupItem($updated, 200);
     }
 
+    public function cleanupItemsAll()
+    {
+        $cooperation = Cooperation::firstOrFail();
+
+        // Alleen registry types
+        $items = $cooperation->cleanupItems()
+            ->whereIn('code_ref', CleanupRegistry::types())
+            ->get();
+
+        $results = [];
+        $has412 = false;
+        $has500 = false;
+
+        foreach ($items as $item) {
+            // Alleen zinvol als er iets open staat
+            if (! $item->current_batch_id || (int) $item->determined_count <= 0) {
+                $results[] = [
+                    'codeRef' => $item->code_ref,
+                    'statusCode' => 200,
+                    'errors' => [],
+                    'item' => FullCleanupItem::make($item->fresh()),
+                ];
+                continue;
+            }
+
+            $r = $this->runCleanupForItem($cooperation, $item, $item->code_ref);
+
+            if ($r['statusCode'] === 412) $has412 = true;
+            if ($r['statusCode'] >= 500) $has500 = true;
+
+            $results[] = [
+                'codeRef' => $item->code_ref,
+                'statusCode' => $r['statusCode'],
+                'errors' => array_values(array_unique($r['errors'])),
+                'item' => FullCleanupItem::make($r['item']->fresh()),
+            ];
+        }
+
+        $statusCode = $has500 ? 500 : ($has412 ? 412 : 200);
+
+        return response()->json([
+            'data' => [
+                'results' => $results,
+            ],
+            'message' => $has500
+                ? 'Een of meer opschoon-items zijn gestopt door een interne fout.'
+                : ($has412 ? 'Een of meer opschoon-items bevatten fouten.' : null),
+        ], $statusCode);
+    }
+
     public function cleanupItem(string $cleanupType)
     {
         $cooperation = Cooperation::firstOrFail();
@@ -93,20 +143,39 @@ class CleanupController extends Controller
             abort(500, "Opschoon type '{$cleanupType}' is niet geconfigureerd (cleanup_items ontbreekt).");
         }
 
-        $batchId = $cleanupItem->current_batch_id;
-        if (! $batchId) {
-            abort(412, "Opschonen kan niet: er is nog geen selectie bepaald voor '{$cleanupType}'.");
+        $result = $this->runCleanupForItem($cooperation, $cleanupItem, $cleanupType);
+
+        if ($result['statusCode'] >= 400) {
+            return $this->respondCleanupItem($result['item'], $result['statusCode'], $result['errors']);
         }
 
-        $originalBatchId = $cleanupItem->current_batch_id;
+        return $this->respondCleanupItem($result['item'], 200);
+    }
 
-        // Guard: aantal selections in deze batch mag niet veranderen tijdens cleanup
+    /**
+     * Voert cleanup uit voor 1 item (bestaande batch), zonder HTTP aborts voor cleanup-errors.
+     *
+     * @return array{item: CooperationCleanupItem, errors: string[], statusCode: int}
+     */
+    private function runCleanupForItem(Cooperation $cooperation, CooperationCleanupItem $cleanupItem, string $cleanupType): array
+    {
+        $batchId = $cleanupItem->current_batch_id;
+
+        if (! $batchId) {
+            return [
+                'item' => $cleanupItem,
+                'errors' => ["Opschonen kan niet: er is nog geen selectie bepaald voor '{$cleanupType}'."],
+                'statusCode' => 412,
+            ];
+        }
+
+        $state = app(CleanupItemStateService::class);
+
+        $originalBatchId = $batchId;
         $beforeSelectionCount = CleanupItemSelection::where('cooperation_id', $cooperation->id)
             ->where('cleanup_item_id', $cleanupItem->id)
             ->where('batch_id', $batchId)
             ->count();
-
-        $state = app(CleanupItemStateService::class);
 
         $state->setBeforeCleanup($cleanupItem);
         $cleanupItem->save();
@@ -122,14 +191,11 @@ class CleanupController extends Controller
             ->where('status', 'determined')
             ->orderBy('id')
             ->chunkById(500, function ($selections) use ($modelClass, $def, &$errorMessageArray) {
-
                 $now = now();
 
-                // 1) models in bulk ophalen
                 $ids = $selections->pluck('model_id')->all();
                 $models = $modelClass::whereIn('id', $ids)->get()->keyBy('id');
 
-                // 2) resultaten verzamelen (bulk updates)
                 $cleanedSelectionIds = [];
                 $failed = []; // selection_id => error
 
@@ -138,6 +204,7 @@ class CleanupController extends Controller
 
                     if (! $model) {
                         $failed[$sel->id] = 'Model niet gevonden (mogelijk al verwijderd).';
+                        $errorMessageArray[] = 'Model niet gevonden (mogelijk al verwijderd).';
                         continue;
                     }
 
@@ -145,7 +212,6 @@ class CleanupController extends Controller
                         DB::transaction(function () use ($model, $def) {
                             $deleter = ($def['deleter'])($model);
                             $errors = $deleter->cleanup();
-
                             $errors = is_array($errors) ? $errors : (empty($errors) ? [] : [(string) $errors]);
 
                             if (! empty($errors)) {
@@ -166,7 +232,6 @@ class CleanupController extends Controller
                     }
                 }
 
-                // 3) bulk update: cleaned
                 if (! empty($cleanedSelectionIds)) {
                     CleanupItemSelection::whereIn('id', $cleanedSelectionIds)->update([
                         'status' => 'cleaned',
@@ -176,14 +241,12 @@ class CleanupController extends Controller
                     ]);
                 }
 
-                // 4) bulk update: failed
-                // We willen ook error opslaan. Dat kan niet in 1 simpele update (verschillende errors),
-                // dus doen we 1 CASE WHEN update (MySQL) of fallback per stuk.
                 if (! empty($failed)) {
                     $this->bulkUpdateSelectionErrors($failed, $now);
                 }
             });
 
+        // Voeg ook reeds bestaande failed errors toe (van eerdere run)
         $failedErrors = CleanupItemSelection::where('cooperation_id', $cooperation->id)
             ->where('cleanup_item_id', $cleanupItem->id)
             ->where('batch_id', $batchId)
@@ -195,7 +258,8 @@ class CleanupController extends Controller
 
         $errorMessageArray = array_values(array_unique(array_merge($errorMessageArray, $failedErrors)));
 
-        $cleanupItem = $cleanupItem->fresh();
+        // Sync counts/status + date_cleaned_up bij succes
+        $cleanupItem->refresh();
         $state->syncCountsAndStatusAfterCleanup($cleanupItem, false);
 
         if (empty($errorMessageArray) && $cleanupItem->status === CooperationCleanupItem::STATUS_DONE) {
@@ -204,10 +268,10 @@ class CleanupController extends Controller
 
         $cleanupItem->save();
 
-        // Guard A: current_batch_id mag niet wijzigen tijdens cleanup
+        // Guards (PR4)
         $cleanupItem->refresh();
         if ($cleanupItem->current_batch_id !== $originalBatchId) {
-            Log::error('current_batch_id changed during cleanup', [
+            Log::error('current_batch_id changed during cleanup (bulk)', [
                 'cleanup_item_id' => $cleanupItem->id,
                 'original' => $originalBatchId,
                 'current' => $cleanupItem->current_batch_id,
@@ -216,19 +280,20 @@ class CleanupController extends Controller
             $state->syncCountsAndStatusAfterCleanup($cleanupItem, true);
             $cleanupItem->save();
 
-            return $this->respondCleanupItem($cleanupItem, 500, [
-                'Interne fout: batch_id gewijzigd tijdens opschonen.',
-            ]);
+            return [
+                'item' => $cleanupItem,
+                'errors' => ['Interne fout: batch_id gewijzigd tijdens opschonen.'],
+                'statusCode' => 500,
+            ];
         }
 
-        // Guard B: aantal selections in batch mag niet wijzigen tijdens cleanup (geen inserts/deletes)
         $afterSelectionCount = CleanupItemSelection::where('cooperation_id', $cooperation->id)
             ->where('cleanup_item_id', $cleanupItem->id)
             ->where('batch_id', $batchId)
             ->count();
 
         if ($afterSelectionCount !== $beforeSelectionCount) {
-            Log::error('Selection count changed during cleanup', [
+            Log::error('Selection count changed during cleanup (bulk)', [
                 'cleanup_item_id' => $cleanupItem->id,
                 'batch_id' => $batchId,
                 'before' => $beforeSelectionCount,
@@ -238,16 +303,21 @@ class CleanupController extends Controller
             $state->syncCountsAndStatusAfterCleanup($cleanupItem, true);
             $cleanupItem->save();
 
-            return $this->respondCleanupItem($cleanupItem, 500, [
-                'Interne fout: selectie gewijzigd tijdens opschonen.',
-            ]);
+            return [
+                'item' => $cleanupItem,
+                'errors' => ['Interne fout: selectie gewijzigd tijdens opschonen.'],
+                'statusCode' => 500,
+            ];
         }
 
-        if (!empty($errorMessageArray)) {
-            return $this->respondCleanupItem($cleanupItem, 412, $errorMessageArray);
-        }
+        // Result status
+        $statusCode = empty($errorMessageArray) ? 200 : 412;
 
-        return $this->respondCleanupItem($cleanupItem, 200);
+        return [
+            'item' => $cleanupItem,
+            'errors' => $errorMessageArray,
+            'statusCode' => $statusCode,
+        ];
     }
 
     /**

@@ -3,14 +3,16 @@
 namespace App\Http\Controllers\Api\DataCleanup;
 
 use App\Eco\Cooperation\Cooperation;
+use App\Eco\Cooperation\CooperationCleanupItem;
 use App\Eco\DataCleanup\CleanupItemSelection;
 use App\Eco\DataCleanup\CleanupRegistry;
 use App\Exceptions\CleanupItemFailed;
-use App\Helpers\CleanupItem\CleanupItemHelper;
+use App\Helpers\DataCleanup\CleanupItemHelper;
+use App\Services\DataCleanup\CleanupItemStateService;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DataCleanup\FullCleanupContact;
 use App\Http\Resources\DataCleanup\FullCleanupItem;
-use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Throwable;
@@ -26,13 +28,14 @@ class CleanupController extends Controller
             ->whereIn('code_ref', CleanupRegistry::types())
             ->get();
 
-        return FullCleanupItem::collection($cleanupItems);
+        return $this->respondCleanupCollection(FullCleanupItem::collection($cleanupItems));
     }
+
     public function getCleanupContacts(){
         $cooperation = Cooperation::firstOrFail();
 
         $cleanupContactsExcludedGroups = $cooperation->cleanupContactsExcludedGroups;
-        $contactsToDelete = $cooperation->cleanupItems()->where('code_ref', 'contactsToDelete')->first();
+        $contactsToDelete = $cooperation->cleanupItems()->where('code_ref', 'contacts')->first();
         $contactsSoftDeleted = $cooperation->cleanupItems()->where('code_ref', 'contactsSoftDeleted')->first();
         $cleanupContact = [
             'contactsToDelete' => $contactsToDelete,
@@ -62,7 +65,9 @@ class CleanupController extends Controller
             abort(500, "Opschoon type '{$cleanupType}' is niet geconfigureerd (cleanup_items ontbreekt).");
         }
 
-        return FullCleanupItem::make((new CleanupItemHelper($cleanupItem))->updateItem());
+        $updated = (new CleanupItemHelper($cleanupItem))->updateItem();
+
+        return $this->respondCleanupItem($updated, 200);
     }
 
     public function cleanupItem(string $cleanupType)
@@ -83,10 +88,13 @@ class CleanupController extends Controller
             abort(412, "Opschonen kan niet: er is nog geen selectie bepaald voor '{$cleanupType}'.");
         }
 
+        $state = app(CleanupItemStateService::class);
+
+        $state->setBeforeCleanup($cleanupItem);
+        $cleanupItem->save();
+
         $def = CleanupRegistry::get($cleanupType);
         $modelClass = CleanupRegistry::modelFor($cleanupType);
-
-        $helper = new CleanupItemHelper($cleanupItem);
 
         $errorMessageArray = [];
 
@@ -158,10 +166,6 @@ class CleanupController extends Controller
                 }
             });
 
-//        $errorMessageArray = array_values(array_unique($errorMessageArray));
-//        if (! empty($errorMessageArray)) {
-//            abort(412, implode(';', $errorMessageArray));
-//        }
         $failedErrors = CleanupItemSelection::where('cooperation_id', $cooperation->id)
             ->where('cleanup_item_id', $cleanupItem->id)
             ->where('batch_id', $batchId)
@@ -173,21 +177,20 @@ class CleanupController extends Controller
 
         $errorMessageArray = array_values(array_unique(array_merge($errorMessageArray, $failedErrors)));
 
-        $stats = $this->batchStats($cleanupItem->id, $batchId);
+        $cleanupItem = $cleanupItem->fresh();
+        $state->syncCountsAndStatusAfterCleanup($cleanupItem, false);
 
-        // altijd bijwerken, ook als je daarna 412 returned
-        $cleanupItem->number_of_items_to_delete = $stats['determined'];
+        if (empty($errorMessageArray) && $cleanupItem->status === CooperationCleanupItem::STATUS_DONE) {
+            $cleanupItem->date_cleaned_up = now();
+        }
+
         $cleanupItem->save();
 
         if (!empty($errorMessageArray)) {
-            abort(412, implode(';', $errorMessageArray));
+            return $this->respondCleanupItem($cleanupItem, 412, $errorMessageArray);
         }
 
-        // alleen bij succes:
-        $cleanupItem->date_cleaned_up = now();
-        $cleanupItem->save();
-
-        return FullCleanupItem::make($cleanupItem->fresh());
+        return $this->respondCleanupItem($cleanupItem, 200);
     }
 
     /**
@@ -247,6 +250,30 @@ class CleanupController extends Controller
             'cleaned'    => (int)($rows['cleaned'] ?? 0),
             'failed'     => (int)($rows['failed'] ?? 0),
         ];
+    }
+
+    private function respondCleanupCollection($resource, int $statusCode = 200)
+    {
+        return response()->json(['data' => $resource], $statusCode);
+    }
+    private function respondCleanupItem(CooperationCleanupItem $item, int $statusCode = 200, array $errors = [], ?string $message = null): JsonResponse
+    {
+        $resource = FullCleanupItem::make($item->fresh());
+
+        $errors = array_values(array_filter(array_unique(array_map('strval', $errors))));
+        $message = $message ?? implode(';', $errors);
+
+        if ($statusCode < 400 && empty($errors)) {
+            return response()->json([
+                'data' => $resource,
+            ], $statusCode);
+        }
+
+        return response()->json([
+            'message' => $message,
+            'errors' => $errors,
+            'data' => $resource,
+        ], $statusCode);
     }
 
 }

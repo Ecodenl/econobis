@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Helpers\CleanupItem\CleanupItemHelper;
+use App\Helpers\DataCleanup\CleanupItemHelper;
 use Illuminate\Console\Command;
 
 class updateCleanupItems extends Command

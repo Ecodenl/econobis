@@ -22,8 +22,10 @@ use App\Http\Requests\Cooperation\UpdateCooperationCleanupItem;
 use App\Http\Requests\Cooperation\UpdateCooperationHoomCampaign;
 use App\Http\Resources\Cooperation\FullCooperation;
 use App\Http\Resources\Cooperation\FullCooperationCleanupContactsExcludedGroup;
+use App\Http\Resources\Cooperation\FullCooperationCleanupItem;
 use App\Http\Resources\Cooperation\FullCooperationHoomCampaign;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class CooperationController extends ApiController
 {
@@ -182,7 +184,7 @@ class CooperationController extends ApiController
         }
         $cooperationCleanupItem->save();
 
-        return $cooperationCleanupItem;
+        return FullCooperationCleanupItem::make($cooperationCleanupItem);
     }
 
 

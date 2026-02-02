@@ -21,7 +21,7 @@ export default function DataCleanupContactsDetails({ contactsToDeleteData, conta
                                 value={
                                     isLoading
                                         ? 'Bezig...'
-                                        : contactsToDeleteData?.numberOfItemsToDelete ?? 'Geen gegevens gevonden.'
+                                        : contactsToDeleteData?.determinedCount ?? 'Geen gegevens gevonden.'
                                 }
                                 divSize={'col-sm-8'}
                                 className={'col-sm-8 form-group'}
@@ -33,7 +33,7 @@ export default function DataCleanupContactsDetails({ contactsToDeleteData, conta
                                 value={
                                     isLoading
                                         ? 'Bezig...'
-                                        : contactsSoftDeletedData?.numberOfItemsToDelete ?? 'Geen gegevens gevonden.'
+                                        : contactsSoftDeletedData?.determinedCount ?? 'Geen gegevens gevonden.'
                                 }
                                 divSize={'col-sm-8'}
                                 className={'col-sm-8 form-group'}

@@ -6,7 +6,7 @@
  * Time: 15:20
  */
 
-namespace App\Helpers\CleanupItem;
+namespace App\Helpers\DataCleanup;
 
 
 
@@ -29,6 +29,7 @@ use App\Eco\Project\ProjectRevenue;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Eco\Task\Task;
+use App\Services\DataCleanup\CleanupItemStateService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -74,10 +75,8 @@ class CleanupItemHelper
 
         $codeRef = $this->cleanupItem->code_ref;
 
-        // Specials buiten registry: laat oude gedrag staan
         if (! CleanupRegistry::has($codeRef)) {
-            $this->updateCleanupItem($this->getNumberItemsToDelete());
-            return $this->cleanupItem;
+            abort(500, "Opschoon type '{$codeRef}' is niet geregistreerd in CleanupRegistry.");
         }
 
         $cooperationId = $this->cooperation->id;
@@ -137,20 +136,18 @@ class CleanupItemHelper
                 }
             });
 
-            // 3) tellen = truth
-            $count = CleanupItemSelection::where('cleanup_item_id', $cleanupItemId)
-                ->where('batch_id', $batchId)
-                ->where('status', 'determined')
-                ->count();
-
-            // 4) cleanup item bijwerken
+            // 3) cleanup item bijwerken (geen tellingen hier)
             $this->cleanupItem->current_batch_id = $batchId;
-            $this->cleanupItem->number_of_items_to_delete = $count;
             $this->cleanupItem->date_determined = $determinedAt;
             $this->cleanupItem->save();
         });
 
-        return $this->cleanupItem;
+        $state = app(CleanupItemStateService::class);
+        $cleanupItem = $this->cleanupItem->fresh();
+        $state->syncCountsAndStatusAfterDetermine($cleanupItem);
+        $cleanupItem->save();
+
+        return $cleanupItem;
     }
 
     /**
@@ -159,7 +156,9 @@ class CleanupItemHelper
      */
     private function updateCleanupItem(int $numberItemsToDelete): void
     {
-        $this->cleanupItem->number_of_items_to_delete = $numberItemsToDelete;
+        $this->cleanupItem->determined_count = $numberItemsToDelete;
+        $this->cleanupItem->cleaned_count = $numberItemsToDelete;
+        $this->cleanupItem->failed_count = $numberItemsToDelete;
         $this->cleanupItem->date_determined = Carbon::now();
         $this->cleanupItem->save();
     }
@@ -178,7 +177,6 @@ class CleanupItemHelper
 
         // Specials (voorlopig buiten registry)
         return match ($codeRef) {
-            'contactsToDelete' => $this->getContactsToDeleteToDelete()->count(),
             'contactsSoftDeleted' => $this->getContactsSoftDeletedToDelete()->count(),
             default => abort(501, "Onbekend opschoon item: {$codeRef}"),
         };
@@ -408,7 +406,7 @@ class CleanupItemHelper
     /**
      * @return mixed
      */
-    public function getContactsToDeleteToDelete(): mixed
+    public function getContactsToDelete(): mixed
     {
         $contactsToDeleteCleanupYears = $this->cleanupItem->years_for_delete;
         $contactsToDeleteCleanupOlderThen = $this->cleanupDate->copy()->subYears($contactsToDeleteCleanupYears);
@@ -418,15 +416,20 @@ class CleanupItemHelper
             $exceptionContactIds = array_unique(array_merge($exceptionContactIds, $cleanupContactsExcludedGroup->contactGroup->getAllContacts(true)));
         }
 
-        $contactsToDeleteToDelete = Contact::whereDate('created_at', '<', $contactsToDeleteCleanupOlderThen)
-            ->whereDoesntHave('invoices')
+        $contactsToDelete = Contact::whereDate('created_at', '<', $contactsToDeleteCleanupOlderThen)
             ->whereDoesntHave('orders')
+            ->whereDoesntHave('invoices')
+            ->whereDoesntHave('financialOverviewContacts')
+            ->whereDoesntHave('notes')
+            ->whereDoesntHave('tasks')
             ->whereDoesntHave('intakes')
-            ->whereDoesntHave('opportunities') // gaan via intakes
+            ->whereDoesntHave('opportunities')
             ->whereDoesntHave('quotationRequests')
             ->whereDoesntHave('participations')
+            ->whereDoesntHave('projectRevenueDistributions')
+            ->whereDoesntHave('revenueDistributionKwh')
             ->whereNotIn('id', $exceptionContactIds);
-        return $contactsToDeleteToDelete;
+        return $contactsToDelete;
     }
 
     /**

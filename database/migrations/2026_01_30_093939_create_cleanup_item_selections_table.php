@@ -45,19 +45,19 @@ return new class extends Migration {
             // $table->foreign('cleanup_item_id')->references('id')->on('cleanup_items');
         });
 
-        Schema::table('cooperation_cleanup_items', function (Blueprint $table) {
-            $table->uuid('current_batch_id')->nullable()->after('date_determined');
-            $table->index('current_batch_id', 'cci_current_batch_id_idx');
-        });
+//        Schema::table('cooperation_cleanup_items', function (Blueprint $table) {
+//            $table->uuid('current_batch_id')->nullable()->after('date_determined');
+//            $table->index('current_batch_id', 'cci_current_batch_id_idx');
+//        });
 
     }
 
     public function down(): void
     {
-        Schema::table('cooperation_cleanup_items', function (Blueprint $table) {
-            $table->dropIndex('cci_current_batch_id_idx');
-            $table->dropColumn('current_batch_id');
-        });
+//        Schema::table('cooperation_cleanup_items', function (Blueprint $table) {
+//            $table->dropIndex('cci_current_batch_id_idx');
+//            $table->dropColumn('current_batch_id');
+//        });
 
         Schema::dropIfExists('cleanup_item_selections');
     }

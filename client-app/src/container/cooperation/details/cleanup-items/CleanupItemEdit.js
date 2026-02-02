@@ -6,11 +6,14 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import { useFormik } from 'formik';
 import CooperationDetailsAPI from '../../../../api/cooperation/CooperationDetailsAPI';
+import InputToggle from '../../../../components/form/InputToggle';
 
 function CleanupItemEdit({ cleanupItem, cancelEdit, updateResult }) {
     const formData = {
         name: cleanupItem.name,
+        dateRef: cleanupItem.dateRef,
         yearsForDelete: cleanupItem.yearsForDelete,
+        hasRetentionPeriod: cleanupItem.hasRetentionPeriod,
     };
 
     const { values, handleChange, handleSubmit } = useFormik({
@@ -37,8 +40,7 @@ function CleanupItemEdit({ cleanupItem, cancelEdit, updateResult }) {
         // Send form data
         CooperationDetailsAPI.updateCleanupItem(cleanupItem.id, formData)
             .then(payload => {
-                payload.data.yearsForDelete = payload.data.years_for_delete;
-                updateResult(payload.data);
+                updateResult(payload.data.data);
             })
             .catch(error => {
                 alert('Er is iets misgegaan met opslaan. Probeer het nogmaals');
@@ -54,12 +56,12 @@ function CleanupItemEdit({ cleanupItem, cancelEdit, updateResult }) {
                             size={'col-sm-6'}
                             name={'yearsForDelete'}
                             options={[
-                                { id: 1, name: '1 (voor testdoeleinden)' },
-                                { id: 2, name: '2 (voor testdoeleinden)' },
-                                { id: 3, name: '3 (voor testdoeleinden)' },
-                                { id: 4, name: '4 (voor testdoeleinden)' },
-                                { id: 5, name: '5 (voor testdoeleinden)' },
-                                { id: 6, name: '6 (voor testdoeleinden)' },
+                                { id: 1, name: '1' },
+                                { id: 2, name: '2' },
+                                { id: 3, name: '3' },
+                                { id: 4, name: '4' },
+                                { id: 5, name: '5' },
+                                { id: 6, name: '6' },
                                 { id: 7, name: '7' },
                                 { id: 8, name: '8' },
                                 { id: 9, name: '9' },
@@ -68,6 +70,12 @@ function CleanupItemEdit({ cleanupItem, cancelEdit, updateResult }) {
                             ]}
                             emptyOption={false}
                             value={values.yearsForDelete}
+                            onChangeAction={handleChange}
+                        />
+                        <InputToggle
+                            label="Heeft bewaarplicht?"
+                            name={'hasRetentionPeriod'}
+                            value={values.hasRetentionPeriod}
                             onChangeAction={handleChange}
                         />
                     </div>

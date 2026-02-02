@@ -26,10 +26,11 @@ export default function DataCleanupItemsItem({ cleanupDataItem, handleDataCleanu
 
             setShowModal(false);
         } catch (e) {
+            // const apiMsg = e?.response?.data?.message || e?.response?.data?.error || '';
+            // const errors = splitApiMessage(apiMsg);
+            const apiErrors = e?.response?.data?.errors;
             const apiMsg = e?.response?.data?.message || e?.response?.data?.error || '';
-
-            const errors = splitApiMessage(apiMsg);
-
+            const errors = Array.isArray(apiErrors) && apiErrors.length ? apiErrors : splitApiMessage(apiMsg);
             setModalErrorMessage(errors.length ? errors : ['Er ging iets mis tijdens opschonen.']);
         } finally {
             setShowActionButtons(true);
@@ -52,9 +53,9 @@ export default function DataCleanupItemsItem({ cleanupDataItem, handleDataCleanu
         <>
             <tr>
                 <td>
-                    {cleanupDataItem.name} ouder dan {cleanupDataItem.yearsForDelete} jaar
+                    {cleanupDataItem.name} ouder dan {cleanupDataItem.yearsForDelete} jaar op {cleanupDataItem.dateRef}
                 </td>
-                <td>{cleanupDataItem.numberOfItemsToDelete}</td>
+                <td>{cleanupDataItem.determinedCount}</td>
                 <td>{cleanupDataItem?.dateDetermined}</td>
                 <td>
                     {showActionButtons && (
@@ -71,8 +72,8 @@ export default function DataCleanupItemsItem({ cleanupDataItem, handleDataCleanu
                         </>
                     )}
                 </td>
-                <td>{cleanupDataItem.numberOfItemsCleaned}</td>
-                <td>{cleanupDataItem.numberOfItemsFailed}</td>
+                <td>{cleanupDataItem.cleanedCount}</td>
+                <td>{cleanupDataItem.failedCount}</td>
                 <td>{cleanupDataItem.dateCleanedUp}</td>
 
                 <td>
@@ -96,7 +97,8 @@ export default function DataCleanupItemsItem({ cleanupDataItem, handleDataCleanu
                 >
                     <div>
                         Weet u zeker dat u <strong>{cleanupDataItem.name}</strong>,{' '}
-                        <strong>ouder dan {cleanupDataItem.yearsForDelete} jaar</strong> wilt opschonen?
+                        <strong>ouder dan {cleanupDataItem.yearsForDelete} jaar</strong> op{' '}
+                        <strong>{cleanupDataItem.dateRef}</strong> opschonen?
                         <br />
                         <br />
                         Deze verwijderactie is niet terug te draaien.

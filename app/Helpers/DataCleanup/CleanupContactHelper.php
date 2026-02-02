@@ -6,7 +6,7 @@
  * Time: 15:20
  */
 
-namespace App\Helpers\CleanupItem;
+namespace App\Helpers\DataCleanup;
 
 
 use App\Eco\Contact\Contact;

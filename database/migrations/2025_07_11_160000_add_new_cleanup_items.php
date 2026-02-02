@@ -24,13 +24,26 @@ class AddNewCleanupItems extends Migration
             $table->increments('id');
             $table->unsignedInteger('cooperation_id')->nullable();
             $table->foreign('cooperation_id')->references('id')->on('cooperations');
+            $table->index(['cooperation_id', 'code_ref'], 'cci_coop_code_ref_idx');
+
             $table->string('name');
             $table->string('code_ref');
-            $table->unsignedInteger('years_for_delete')->default(7);
             $table->string('date_ref')->nullable();
-            $table->unsignedInteger('number_of_items_to_delete')->default(0);
-            $table->datetime('date_cleaned_up')->nullable();
+
+            $table->unsignedInteger('years_for_delete')->default(7);
+            $table->boolean('has_retention_period')->default(false);
+
+            $table->uuid('current_batch_id')->nullable();
+            $table->index('current_batch_id', 'cci_current_batch_id_idx');
+
+            $table->string('status')->default('idle');;
+
+            $table->unsignedInteger('determined_count')->default(0);
+            $table->unsignedInteger('cleaned_count')->default(0);
+            $table->unsignedInteger('failed_count')->default(0);
+
             $table->datetime('date_determined')->nullable();
+            $table->datetime('date_cleaned_up')->nullable();
 
             $table->timestamps();
         });
@@ -48,7 +61,7 @@ class AddNewCleanupItems extends Migration
         $this->fillCooperationCleanupItems();
 
         Schema::table('cooperations', function (Blueprint $table) {
-            $table->boolean('cleanup_email')->default(0);
+            $table->boolean('cleanup_email')->default(false);
             $table->datetime('cleanup_years_contact_date_last_run_at')->nullable();
         });
 
@@ -110,7 +123,7 @@ class AddNewCleanupItems extends Migration
         });
 
         Schema::table('cooperations', function (Blueprint $table) {
-            $table->dropColumn(['cleanup_excluded_group_ids', 'cleanup_years_contact_date_last_run_at', 'cleanup_email']);
+            $table->dropColumn(['cleanup_years_contact_date_last_run_at', 'cleanup_email']);
         });
 
         Schema::dropIfExists('cooperation_cleanup_contacts_excluded_groups');
@@ -230,14 +243,14 @@ class AddNewCleanupItems extends Migration
                 'date_ref' => 'Datum verzonden'
             ],
             [
+                'name' => 'Contacten',
+                'code_ref' => 'contacts',
+                'date_ref' => 'Aanmaakdatum'
+            ],
+            [
                 'name' => 'Contacten die reeds handmatig verwijderd zijn',
                 'code_ref' => 'contactsSoftDeleted',
                 'date_ref' => 'Datum verwijderd'
-            ],
-            [
-                'name' => 'Contacten',
-                'code_ref' => 'contactsToDelete',
-                'date_ref' => 'Aanmaakdatum'
             ],
         ];
 

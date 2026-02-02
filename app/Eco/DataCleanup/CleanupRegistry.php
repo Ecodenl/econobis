@@ -3,6 +3,7 @@
 namespace App\Eco\DataCleanup;
 
 //use App\Eco\Contact\Contact;
+use App\Eco\Contact\Contact;
 use App\Eco\Email\Email;
 use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\HousingFile\HousingFile;
@@ -16,8 +17,8 @@ use App\Eco\Project\ProjectRevenue;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Eco\Task\Task;
-use App\Helpers\CleanupItem\CleanupItemHelper;
-//use App\Helpers\Delete\Models\DeleteContact;
+use App\Helpers\DataCleanup\CleanupItemHelper;
+use App\Helpers\Delete\Models\DeleteContact;
 use App\Helpers\Delete\Models\DeleteFinancialOverview;
 use App\Helpers\Delete\Models\DeleteHousingFile;
 use App\Helpers\Delete\Models\DeleteIntake;
@@ -134,13 +135,13 @@ final class CleanupRegistry
                 'deleter' => fn ($model) => new DeleteMail($model),
                 'label' => fn (Email $m) => "Email id {$m->id}",
             ],
-            // contactsToDelete/contactsSoftDeleted voorlopig buiten registry laten
-//            'contactsToDelete' => [
-//                'model' => Contact::class,
-//                'query' => fn (CleanupItemHelper $h) => $h->getContactsToDeleteToDelete(),
-//                'deleter' => fn ($model) => new DeleteContact($model),
-//                'label' => fn (Contact $m) => "Contact {$m->number}",
-//            ],
+            'contacts' => [
+                'model' => Contact::class,
+                'query' => fn (CleanupItemHelper $h) => $h->getContactsToDelete(),
+                'deleter' => fn ($model) => new DeleteContact($model),
+                'label' => fn (Contact $m) => "Contact {$m->number}",
+            ],
+            // contactsSoftDeleted voorlopig buiten registry laten
         ];
     }
 

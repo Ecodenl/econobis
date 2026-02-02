@@ -89,8 +89,14 @@ export default function DataCleanupItemsApp() {
                 return updatedItem;
             })
             .catch(err => {
+                const updatedItem = err?.response?.data?.data; // <— A1 payload
+                if (updatedItem) {
+                    replaceCleanupItem(updatedItem);
+                } else {
+                    clearCleanupItem(cleanupItem);
+                }
+
                 setErrorText('Er is iets misgegaan met opschonen van de gegevens.');
-                clearCleanupItem(cleanupItem);
                 throw err;
             });
     };

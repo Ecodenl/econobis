@@ -62,7 +62,7 @@ class Cooperation extends Model
 
     public function cleanupItems()
     {
-        return $this->hasMany(CooperationCleanupItem::class, );
+        return $this->hasMany(CooperationCleanupItem::class, 'cooperation_id');
     }
 
     public function emailTemplate()

@@ -15,15 +15,23 @@ class FullCooperationCleanupItem extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
-            'cooperationId' => $this->cooperation_id ? $this->cooperation_id : '',
+            'id' => (int) $this->id,
+            'cooperationId' => (int) $this->cooperation_id,
+            'codeRef' => $this->code_ref,
+
             'name' => $this->name,
             'dateRef' => $this->date_ref,
-            'yearsForDelete' => $this->years_for_delete,
-            'dateCleanedUp' => $this->date_cleaned_up,
-            'dateDetermined' => $this->date_determined,
-            'codeRef' => $this->code_ref,
-            'numberOfItemsToDelete' => $this->number_of_items_to_delete,
+
+            'yearsForDelete' => (int) $this->years_for_delete,
+            'hasRetentionPeriod' => (bool) $this->has_retention_period,
+
+            'status' => $this->status,
+            'determinedCount' => (int) $this->determined_count,
+            'cleanedCount' => (int) $this->cleaned_count,
+            'failedCount' => (int) $this->failed_count,
+
+            'dateDetermined' => $this->date_determined?->format('d-m-Y H:i:s'),
+            'dateCleanedUp' => $this->date_cleaned_up?->format('d-m-Y H:i:s'),
         ];
     }
 }

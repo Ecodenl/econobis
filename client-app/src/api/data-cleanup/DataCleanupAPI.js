@@ -37,7 +37,7 @@ const DataCleanupAPI = {
     executeCleanupItem(cleanupType) {
         return api()
             .post(`${baseUrl()}/cleanup-item/${cleanupType}`)
-            .then(unwrap);
+            .then(res => res.data);
     },
 
     // GET /api/cleanup/contacts

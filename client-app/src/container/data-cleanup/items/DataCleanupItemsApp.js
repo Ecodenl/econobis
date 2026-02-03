@@ -5,20 +5,24 @@ import DataCleanupItemsList from './DataCleanupItemsList';
 
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
+import Modal from '../../../components/modal/Modal';
 
 import DataCleanupAPI from '../../../api/data-cleanup/DataCleanupAPI';
 
 export default function DataCleanupItemsApp() {
     const [isLoading, setIsLoading] = useState(true);
     const [cleanupData, setCleanupData] = useState([]);
-    const [errorText, setErrorText] = useState('');
+    const [globalAlert, setGlobalAlert] = useState(null);
+    const [cleanupErrorsByItemId, setCleanupErrorsByItemId] = useState({});
+
+    const [showCleanupAllModal, setShowCleanupAllModal] = useState(false);
+    const [cleanupAllBusy, setCleanupAllBusy] = useState(false);
 
     const isBusyUpdateItem = isBusyItem => {
         setCleanupData(prev =>
             prev.map(item => (item.id === isBusyItem.id ? { ...item, dateDetermined: 'Bezig...' } : item))
         );
     };
-
     const isBusyCleanupItem = isBusyItem => {
         setCleanupData(prev =>
             prev.map(item => (item.id === isBusyItem.id ? { ...item, dateCleanedUp: 'Bezig...' } : item))
@@ -30,6 +34,11 @@ export default function DataCleanupItemsApp() {
     const replaceCleanupItem = updatedItem => {
         setCleanupData(prev => prev.map(item => (item.id === updatedItem.id ? updatedItem : item)));
     };
+    const setErrorsForItem = (id, errors) => {
+        setCleanupErrorsByItemId(prev => ({ ...prev, [id]: errors || [] }));
+    };
+
+    const getErrorsForItem = id => cleanupErrorsByItemId[id] || [];
 
     useEffect(() => {
         fetchCleanupData();
@@ -40,14 +49,15 @@ export default function DataCleanupItemsApp() {
 
         DataCleanupAPI.getCleanupItems()
             .then(payload => {
-                console.log(payload);
-
-                setErrorText('');
+                setGlobalAlert(null);
                 setCleanupData(payload ?? []);
                 setIsLoading(false);
             })
             .catch(() => {
-                setErrorText('Er is iets misgegaan met ophalen van de opschoon gegevens.');
+                setGlobalAlert({
+                    type: 'danger',
+                    text: 'Er is iets misgegaan met ophalen van de opschoon gegevens.',
+                });
                 setIsLoading(false);
             });
     };
@@ -55,13 +65,28 @@ export default function DataCleanupItemsApp() {
     const handleDataCleanupUpdateItemsAll = () => {
         setIsLoading(true);
 
+        setGlobalAlert({
+            type: 'info',
+            text: 'Herberekenen alles wordt uitgevoerd…',
+        });
+
         DataCleanupAPI.updateItemsAll()
             .then(payload => {
                 setCleanupData(payload ?? []);
+                setCleanupErrorsByItemId({});
+
+                setGlobalAlert({
+                    type: 'success',
+                    text: 'Herberekenen alles is uitgevoerd.',
+                });
                 setIsLoading(false);
             })
             .catch(() => {
-                setErrorText('Er is iets misgegaan met herberekenen van alle opschoon items.');
+                setGlobalAlert({
+                    type: 'danger',
+                    text: 'Er is iets misgegaan met herberekenen van alle opschoon items.',
+                });
+                setIsLoading(false);
             });
     };
 
@@ -69,67 +94,94 @@ export default function DataCleanupItemsApp() {
         isBusyUpdateItem(cleanupItem);
         return DataCleanupAPI.updateItem(cleanupItem.codeRef)
             .then(updatedItem => {
-                setErrorText('');
+                setGlobalAlert(null);
+
                 if (updatedItem) {
                     replaceCleanupItem(updatedItem);
+                    setErrorsForItem(updatedItem.id, []);
                 }
                 return updatedItem;
             })
             .catch(err => {
-                setErrorText('Er is iets misgegaan met herberekenen van opschoon item ' + cleanupItem.name + '.');
+                setGlobalAlert({
+                    type: 'danger',
+                    text: `Er is iets misgegaan met herberekenen van onderdeel ${cleanupItem.name}.`,
+                });
                 throw err;
             });
     };
 
     const handleDataCleanupCleanupItemsAll = () => {
-        const ok = window.confirm(
-            'Weet je zeker dat je ALLE opschoon-items wilt uitvoeren?\n\nDeze verwijderactie is niet terug te draaien.'
-        );
+        const hasWork = (cleanupData || []).some(i => (i?.determinedCount ?? 0) > 0);
 
-        if (!ok) return;
+        if (!hasWork) {
+            setGlobalAlert({
+                type: 'info',
+                text:
+                    'Er zijn geen items om op te schonen. Herbereken eerst (Herbereken alles) als je een nieuwe selectie wilt maken.',
+            });
+            return;
+        }
 
-        setIsLoading(true);
+        setShowCleanupAllModal(true);
+    };
+
+    const onConfirmCleanupAll = () => {
+        setCleanupAllBusy(true);
+
+        setGlobalAlert({
+            type: 'info',
+            text: 'Opschonen alles wordt uitgevoerd…',
+        });
 
         DataCleanupAPI.cleanupItemsAll()
             .then(results => {
-                setErrorText('');
+                setGlobalAlert(null);
 
-                // results: [{ codeRef, statusCode, errors, item }]
                 (results || []).forEach(r => {
                     if (r?.item) replaceCleanupItem(r.item);
+                    if (r?.item?.id) setErrorsForItem(r.item.id, r.errors || []);
                 });
 
                 const failed = (results || []).filter(r => r?.statusCode >= 400);
                 if (failed.length) {
-                    setErrorText(
-                        `Opschonen alles is uitgevoerd, maar ${failed.length} item(s) hadden fouten. ` +
-                            `Open een specifiek item voor details (opschoon-knop).`
-                    );
-                    console.log('cleanup-items-all failures:', failed);
+                    setGlobalAlert({
+                        type: 'danger',
+                        text: `Opschonen alles uitgevoerd, maar ${failed.length} item(s) hadden fouten. Klik op het waarschuwing-icoon per item voor details.`,
+                    });
+                } else {
+                    setGlobalAlert({
+                        type: 'success',
+                        text: 'Opschonen alles is uitgevoerd.',
+                    });
                 }
 
-                setIsLoading(false);
+                setCleanupAllBusy(false);
+                setShowCleanupAllModal(false);
             })
             .catch(err => {
-                // Bij 412/500 komt axios hier; maar we willen alsnog results verwerken
                 const results = err?.response?.data?.data?.results ?? [];
-                const message = err?.response?.data?.message;
+                const backendMessage = err?.response?.data?.message;
 
                 (results || []).forEach(r => {
                     if (r?.item) replaceCleanupItem(r.item);
+                    if (r?.item?.id) setErrorsForItem(r.item.id, r.errors || []);
                 });
 
-                const failed = (results || []).filter(r => r?.statusCode >= 400);
+                const failed = (results || []).filter(r => (r?.statusCode ?? 0) >= 400);
 
-                setErrorText(
-                    message ||
-                        (failed.length
-                            ? `Opschonen alles is uitgevoerd, maar ${failed.length} item(s) hadden fouten.`
-                            : 'Er is iets misgegaan met opschonen van alle items.')
-                );
+                const text =
+                    failed.length > 0
+                        ? `Opschonen alles uitgevoerd, maar ${failed.length} item(s) hadden fouten. Klik op het waarschuwing-icoon per item voor details.`
+                        : backendMessage || 'Er is iets misgegaan met opschonen van alle items.';
 
-                console.log('cleanup-items-all error response:', err?.response?.data);
-                setIsLoading(false);
+                setGlobalAlert({
+                    type: 'danger',
+                    text,
+                });
+
+                setCleanupAllBusy(false);
+                setShowCleanupAllModal(false);
             });
     };
 
@@ -137,20 +189,36 @@ export default function DataCleanupItemsApp() {
         isBusyCleanupItem(cleanupItem);
 
         return DataCleanupAPI.executeCleanupItem(cleanupItem.codeRef)
-            .then(updatedItem => {
-                setErrorText('');
-                if (updatedItem) replaceCleanupItem(updatedItem);
+            .then(res => {
+                const updatedItem = res?.data;
+                const message = res?.message;
+
+                if (message) {
+                    setGlobalAlert({ type: 'info', text: message });
+                } else {
+                    setGlobalAlert(null);
+                }
+
+                if (updatedItem) {
+                    replaceCleanupItem(updatedItem);
+                    setErrorsForItem(updatedItem.id, []);
+                }
                 return updatedItem;
             })
+
             .catch(err => {
-                const updatedItem = err?.response?.data?.data; // <— A1 payload
+                const updatedItem = err?.response?.data?.data;
                 if (updatedItem) {
                     replaceCleanupItem(updatedItem);
                 } else {
                     clearCleanupItem(cleanupItem);
                 }
 
-                setErrorText('Er is iets misgegaan met opschonen van de gegevens.');
+                setGlobalAlert({
+                    type: 'danger',
+                    text: `Er is iets misgegaan met opschonen van de gegevens van onderdeel ${cleanupItem.name}.`,
+                });
+
                 throw err;
             });
     };
@@ -166,9 +234,29 @@ export default function DataCleanupItemsApp() {
                     />
                 </div>
 
-                {errorText ? (
+                {globalAlert ? (
                     <div className="col-md-12 margin-10-top">
-                        <div className="alert alert-danger">{errorText}</div>
+                        <div className={`alert alert-${globalAlert.type}`} style={{ position: 'relative' }}>
+                            <button
+                                type="button"
+                                onClick={() => setGlobalAlert(null)}
+                                style={{
+                                    position: 'absolute',
+                                    right: 10,
+                                    top: 6,
+                                    border: 0,
+                                    background: 'transparent',
+                                    fontSize: 18,
+                                    lineHeight: '18px',
+                                    cursor: 'pointer',
+                                }}
+                                aria-label="Sluiten"
+                                title="Sluiten"
+                            >
+                                ×
+                            </button>
+                            {globalAlert.text}
+                        </div>
                     </div>
                 ) : null}
 
@@ -178,8 +266,28 @@ export default function DataCleanupItemsApp() {
                         handleDataCleanupUpdateItem={handleDataCleanupUpdateItem}
                         confirmCleanup={confirmCleanup}
                         isLoading={isLoading}
+                        getErrorsForItem={getErrorsForItem}
+                        setErrorsForItem={setErrorsForItem}
                     />
                 </div>
+
+                {showCleanupAllModal ? (
+                    <Modal
+                        closeModal={() => !cleanupAllBusy && setShowCleanupAllModal(false)}
+                        confirmAction={onConfirmCleanupAll}
+                        buttonConfirmText="Opschonen alles"
+                        buttonClassName={'btn-danger'}
+                        title="Bevestig opschonen van alle items"
+                        loading={cleanupAllBusy}
+                    >
+                        <div>
+                            Weet u zeker dat u <strong>alle</strong> opschoon-items wilt uitvoeren?
+                            <br />
+                            <br />
+                            Deze verwijderactie is niet terug te draaien.
+                        </div>
+                    </Modal>
+                ) : null}
             </PanelBody>
         </Panel>
     );

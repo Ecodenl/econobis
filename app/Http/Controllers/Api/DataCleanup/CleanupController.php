@@ -146,16 +146,16 @@ class CleanupController extends Controller
         $result = $this->runCleanupForItem($cooperation, $cleanupItem, $cleanupType);
 
         if ($result['statusCode'] >= 400) {
-            return $this->respondCleanupItem($result['item'], $result['statusCode'], $result['errors']);
+            return $this->respondCleanupItem($result['item'], $result['statusCode'], $result['errors'], $result['message'] ?? null);
         }
 
-        return $this->respondCleanupItem($result['item'], 200);
+        return $this->respondCleanupItem($result['item'], 200, [], $result['message'] ?? null);
     }
 
     /**
      * Voert cleanup uit voor 1 item (bestaande batch), zonder HTTP aborts voor cleanup-errors.
      *
-     * @return array{item: CooperationCleanupItem, errors: string[], statusCode: int}
+     * @return array{item: CooperationCleanupItem, errors: string[], statusCode: int, message?: string}
      */
     private function runCleanupForItem(Cooperation $cooperation, CooperationCleanupItem $cleanupItem, string $cleanupType): array
     {
@@ -170,6 +170,30 @@ class CleanupController extends Controller
         }
 
         $state = app(CleanupItemStateService::class);
+
+        // Als er niets meer "determined" is in deze batch, dan doen we geen cleanup-run.
+        // Belangrijk: we herhalen dan ook niet telkens oude failed-meldingen als 412.
+        // Errors blijven inzichtelijk via failed_count + (frontend) ⚠️-icoon.
+        $statsBefore = $state->batchStats($cleanupItem->id, $batchId, $cleanupItem->cooperation_id);
+
+        if ($statsBefore['determined'] === 0) {
+            $cleanupItem->refresh();
+            $state->syncCountsAndStatusAfterCleanup($cleanupItem, false);
+
+            if ($cleanupItem->status === CooperationCleanupItem::STATUS_DONE && ! $cleanupItem->date_cleaned_up) {
+                $cleanupItem->date_cleaned_up = now();
+            }
+
+            $cleanupItem->save();
+
+            return [
+                'item' => $cleanupItem,
+                'errors' => [],       // geen errors, want we herhalen oude failed niet
+                'statusCode' => 200,
+                'message' => 'Geen items om op te schonen voor onderdeel ' . $cleanupItem->name . '. Herbereken eerst om een nieuwe selectie te maken.',
+            ];
+        }
+
 
         $originalBatchId = $batchId;
         $beforeSelectionCount = CleanupItemSelection::where('cooperation_id', $cooperation->id)
@@ -383,19 +407,29 @@ class CleanupController extends Controller
     {
         return response()->json(['data' => $resource], $statusCode);
     }
-    private function respondCleanupItem(CooperationCleanupItem $item, int $statusCode = 200, array $errors = [], ?string $message = null): JsonResponse
-    {
+    private function respondCleanupItem(
+        CooperationCleanupItem $item,
+        int $statusCode = 200,
+        array $errors = [],
+        ?string $message = null
+    ): JsonResponse {
         $resource = FullCleanupItem::make($item->fresh());
 
         $errors = array_values(array_filter(array_unique(array_map('strval', $errors))));
         $message = $message ?? implode(';', $errors);
 
+        // ✅ Succes: stuur data, en stuur message alleen als die er is.
         if ($statusCode < 400 && empty($errors)) {
-            return response()->json([
-                'data' => $resource,
-            ], $statusCode);
+            $payload = ['data' => $resource];
+
+            if (!empty($message)) {
+                $payload['message'] = $message;
+            }
+
+            return response()->json($payload, $statusCode);
         }
 
+        // Error: altijd message + errors + data
         return response()->json([
             'message' => $message,
             'errors' => $errors,

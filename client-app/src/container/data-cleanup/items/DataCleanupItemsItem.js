@@ -2,14 +2,24 @@ import React, { useState } from 'react';
 import Icon from 'react-icons-kit';
 import { refresh } from 'react-icons-kit/fa/refresh';
 import { trash } from 'react-icons-kit/fa/trash';
+import { exclamationTriangle } from 'react-icons-kit/fa/exclamationTriangle';
 
 import Modal from '../../../components/modal/Modal';
 
-export default function DataCleanupItemsItem({ cleanupDataItem, handleDataCleanupUpdateItem, confirmCleanup }) {
+export default function DataCleanupItemsItem({
+    cleanupDataItem,
+    handleDataCleanupUpdateItem,
+    confirmCleanup,
+    getErrorsForItem,
+    setErrorsForItem,
+}) {
     const [showModal, setShowModal] = useState(false);
+    const [showErrorsModal, setShowErrorsModal] = useState(false);
     const [showActionButtons, setShowActionButtons] = useState(true);
     const [modalErrorMessage, setModalErrorMessage] = useState([]);
 
+    const itemErrors = getErrorsForItem ? getErrorsForItem(cleanupDataItem.id) : [];
+    const hasErrors = itemErrors && itemErrors.length > 0;
     const splitApiMessage = msg =>
         (msg || '')
             .split(';')
@@ -21,9 +31,9 @@ export default function DataCleanupItemsItem({ cleanupDataItem, handleDataCleanu
         setModalErrorMessage([]);
 
         try {
-            console.log('confirmCleanup result', await confirmCleanup(cleanupDataItem));
-            // await confirmCleanup(cleanupDataItem);
-
+            // console.log('confirmCleanup result', await confirmCleanup(cleanupDataItem));
+            await confirmCleanup(cleanupDataItem);
+            setErrorsForItem && setErrorsForItem(cleanupDataItem.id, []);
             setShowModal(false);
         } catch (e) {
             // const apiMsg = e?.response?.data?.message || e?.response?.data?.error || '';
@@ -31,7 +41,11 @@ export default function DataCleanupItemsItem({ cleanupDataItem, handleDataCleanu
             const apiErrors = e?.response?.data?.errors;
             const apiMsg = e?.response?.data?.message || e?.response?.data?.error || '';
             const errors = Array.isArray(apiErrors) && apiErrors.length ? apiErrors : splitApiMessage(apiMsg);
-            setModalErrorMessage(errors.length ? errors : ['Er ging iets mis tijdens opschonen.']);
+
+            const finalErrors = errors.length ? errors : ['Er ging iets mis tijdens opschonen.'];
+
+            setModalErrorMessage(finalErrors);
+            setErrorsForItem && setErrorsForItem(cleanupDataItem.id, finalErrors);
         } finally {
             setShowActionButtons(true);
         }
@@ -74,8 +88,14 @@ export default function DataCleanupItemsItem({ cleanupDataItem, handleDataCleanu
                 </td>
                 <td>{cleanupDataItem.cleanedCount}</td>
                 <td>{cleanupDataItem.failedCount}</td>
+                <td style={{ textAlign: 'center' }}>
+                    {hasErrors ? (
+                        <a role="button" title="Toon fouten" onClick={() => setShowErrorsModal(true)}>
+                            <Icon className="mybtn-danger" size={14} icon={exclamationTriangle} />
+                        </a>
+                    ) : null}
+                </td>
                 <td>{cleanupDataItem.dateCleanedUp}</td>
-
                 <td>
                     {showActionButtons && (
                         <>
@@ -115,6 +135,22 @@ export default function DataCleanupItemsItem({ cleanupDataItem, handleDataCleanu
                                 </div>
                             )}
                         </div>
+                    </div>
+                </Modal>
+            ) : null}
+            {showErrorsModal ? (
+                <Modal
+                    closeModal={() => setShowErrorsModal(false)}
+                    buttonCancelText="Sluiten"
+                    showConfirmAction={false} // als jullie Modal dit ondersteunt; anders: confirmAction noop + hide confirm button
+                    title={`Fouten bij ${cleanupDataItem.name}`}
+                >
+                    <div style={{ maxHeight: 260, overflowY: 'auto' }}>
+                        <ul style={{ marginBottom: 0, paddingLeft: 18 }}>
+                            {itemErrors.map((msg, idx) => (
+                                <li key={idx}>{msg}</li>
+                            ))}
+                        </ul>
                     </div>
                 </Modal>
             ) : null}

@@ -8,18 +8,14 @@
 
 namespace App\Helpers\Delete\Models;
 
-
+use App\Eco\Cooperation\Cooperation;
 use App\Helpers\Delete\DeleteInterface;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 
 /**
  * Class DeleteFinancialOverview
- *
- * Relation: 1-n Emails. Action: dissociate
- * Relation: 1-n Documents. Action: dissociate
- * Relation: 1-n Tasks & notes. Action: call DeleteTask
- * Relation: 1-n Quotation requests. Action: call DeleteQuotationRequest
  *
  * @package App\Helpers\Delete\Models
  */
@@ -27,6 +23,9 @@ class DeleteFinancialOverview implements DeleteInterface
 {
     private $errorMessage = [];
     private $financialOverview;
+    private $yearsForDelete;
+    private $dateAllowedToDelete;
+    private $cooperation;
 
     /** Sets the model to delete
      *
@@ -36,6 +35,10 @@ class DeleteFinancialOverview implements DeleteInterface
     public function __construct(Model $financialOverview)
     {
         $this->financialOverview = $financialOverview;
+        $this->cooperation = Cooperation::first();
+        $cleanupItem = $this->cooperation->cleanupItems()->where('code_ref', 'financialOverviews')->first();
+        $this->yearsForDelete = $cleanupItem?->years_for_delete ?? 99;
+        $this->dateAllowedToDelete = Carbon::now()->subYears($this->yearsForDelete)->format('Y-m-d');
     }
 
     /** If it's called by the cleanup functionality, we land on this function, else on the delete function
@@ -46,10 +49,7 @@ class DeleteFinancialOverview implements DeleteInterface
     public function cleanup()
     {
         try{
-            $this->delete();
-            if(!empty($this->errorMessage)) {
-                return $this->errorMessage;
-            }
+            return $this->delete();
         }catch (\Exception $exception){
             Log::error('Fout bij opschonen Waardestaten', [
                 'exception' => $exception->getMessage(),
@@ -62,17 +62,21 @@ class DeleteFinancialOverview implements DeleteInterface
 
     /** Main method for deleting this model and all it's relations
      *
-     * @return array
+     * @return array errorMessage array
      * @throws
      */
     public function delete()
     {
-        $this->canDelete();
+        if (! $this->canDelete()) {
+            return $this->errorMessage;
+        }
         $this->deleteModels();
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->financialOverview->delete();
+        if( count($this->errorMessage) === 0 ) {
+            $this->financialOverview->delete();
+        }
 
         return $this->errorMessage;
     }
@@ -81,18 +85,28 @@ class DeleteFinancialOverview implements DeleteInterface
      */
     public function canDelete()
     {
+        if( $this->financialOverview->definitive == true && $this->financialOverview->year < Carbon::parse($this->dateAllowedToDelete)->year ){
+            return true;
+        }
+
         if($this->financialOverview->definitive == true){
             array_push($this->errorMessage, "Deze waardestaat is al definitief.");
+            return false;
         }
         if($this->financialOverview->financialOverviewProjects->where('definitive', true)->count() > 0){
             array_push($this->errorMessage, "Er zijn al definitieve projecten gekoppeld aan deze waardestaat.");
+            return false;
         }
         if($this->financialOverview->financialOverviewContacts->where('status_id', '!=', 'concept')->count() > 0){
             array_push($this->errorMessage, "Er zijn al contacten in behandeling voor deze waardestaat.");
+            return false;
         }
         if($this->financialOverview->financialOverviewPosts->count() > 0){
             array_push($this->errorMessage, "Er zijn al bestanden waardestaten post gemaakt.");
+            return false;
         }
+
+        return true;
     }
 
     /** Deletes models recursive

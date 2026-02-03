@@ -9,7 +9,6 @@
 namespace App\Helpers\Delete\Models;
 
 
-use App\Eco\Cooperation\Cooperation;
 use App\Helpers\Delete\DeleteInterface;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -30,7 +29,6 @@ class DeleteMail implements DeleteInterface
      *
      * @param Model $mail the model to delete
      */
-
     public function __construct(Model $mail)
     {
         $this->mail = $mail;
@@ -44,10 +42,7 @@ class DeleteMail implements DeleteInterface
     public function cleanup()
     {
         try{
-            $this->delete();
-            if(!empty($this->errorMessage)) {
-                return $this->errorMessage;
-            }
+            return $this->delete();
         }catch (\Exception $exception){
             Log::error('Fout bij opschonen Emails', [
                 'exception' => $exception->getMessage(),
@@ -65,16 +60,20 @@ class DeleteMail implements DeleteInterface
      */
     public function delete()
     {
-        $this->canDelete();
+        if (! $this->canDelete()) {
+            return $this->errorMessage;
+        }
         $this->deleteModels();
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
 
-        $this->mail->folder = 'removed';
-        $this->mail->removed_by_id = Auth::user()->id;
-        $this->mail->date_removed = new Carbon();
-        $this->mail->save();
+        if( count($this->errorMessage) === 0 ) {
+            $this->mail->folder = 'removed';
+            $this->mail->removed_by_id = Auth::user()->id;
+            $this->mail->date_removed = new Carbon();
+            $this->mail->save();
+        }
 
         return $this->errorMessage;
     }
@@ -84,7 +83,8 @@ class DeleteMail implements DeleteInterface
      */
     public function canDelete()
     {
-
+        // van hier uit altijd true
+        return true;
     }
 
     /** Deletes models recursive

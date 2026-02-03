@@ -114,11 +114,6 @@ class Contact extends Model
             ->whereIn('field_id', $portalFreeFieldIds);
     }
 
-    public function addressesActive()
-    {
-        return $this->addresses()->where('type_id', '!=', 'old')->orWhere('end_date', '>=', Carbon::parse('now')->format('Y-m-d'));
-    }
-
     public function primaryAddress()
     {
         return $this->hasOne(Address::class)->where('primary', true);
@@ -185,20 +180,6 @@ class Contact extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function getStatus()
-    {
-        if (!$this->status_id) return null;
-
-        return ContactStatus::get($this->status_id);
-    }
-
-    public function getInspectionPersonType()
-    {
-        if (!$this->inspection_person_type_id) return null;
-
-        return InspectionPersonType::get($this->inspection_person_type_id);
-    }
-
     public function createdBy()
     {
         return $this->belongsTo(User::class);
@@ -214,91 +195,9 @@ class Contact extends Model
         return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')->withPivot('laposta_member_id', 'laposta_member_state', 'laposta_last_error_message', 'member_created_at', 'member_to_group_since')->orderBy('contact_groups.id', 'desc');
     }
 
-    public function selectedGroups()
-    {
-        return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')
-            ->where('contact_groups.type_id', 'static')
-            ->where('contact_groups.include_into_export_group_report', true)
-            ->withPivot('laposta_member_id', 'laposta_member_state', 'laposta_last_error_message', 'member_created_at', 'member_to_group_since')
-            ->orderBy('contact_groups.id', 'desc');
-    }
-
-    public function isPerson()
-    {
-        return ($this->type_id == ContactType::PERSON);
-    }
-
-    public function isOrganisation()
-    {
-        return ($this->type_id == ContactType::ORGANISATION);
-    }
-
-    public function isCoach()
-    {
-        return $this->inspection_person_type_id == 'coach';
-    }
-    public function isOccupant()
-    {
-        return $this->whereHas('opportunities', function ($query) {
-            $query->whereHas('quotationRequests');
-        })->exists();
-    }
-    public function getIsOccupantAttribute()
-    {
-        return $this->isOccupant();
-    }
-
-    public function getIsOrganisationContactAttribute()
-    {
-        $contactOrganisationOccupations = $this->occupations()
-            ->whereHas('primaryContact', function ($query) {
-                $query->where('type_id', 'organisation')
-                    ->where('primary', true);
-            })->first();
-        if($contactOrganisationOccupations && $contactOrganisationOccupations->primaryContact){
-            return $contactOrganisationOccupations->primaryContact->exists();
-        }
-        return false;
-    }
-
-    public function isProjectManager()
-    {
-        return $this->inspection_person_type_id == 'projectmanager';
-    }
-
-    public function isExternalParty()
-    {
-        return $this->inspection_person_type_id == 'externalparty';
-    }
-
-    public function getOrganisationContact()
-    {
-        $contactOrganisationOccupations = $this->occupations()
-            ->whereHas('primaryContact', function ($query) {
-                $query->where('type_id', 'organisation')
-                    ->where('primary', true);
-            })->first();
-        if($contactOrganisationOccupations && $contactOrganisationOccupations->primaryContact){
-            return $contactOrganisationOccupations->primaryContact;
-        }
-        return false;
-    }
-
-    public function getIsInInspectionPersonTypeGroupAttribute()
-    {
-        return $this->groups()->whereNotNull('inspection_person_type_id')->exists();
-    }
-
     public function availabilities()
     {
         return $this->hasMany(ContactAvailability::class);
-    }
-
-    public function getType()
-    {
-        if (!$this->type_id) return null;
-
-        return ContactType::get($this->type_id);
     }
 
     public function intakes()
@@ -429,37 +328,6 @@ class Contact extends Model
             ->select('contacts.*', 'occupation_contact.*', 'occupation_contact.id as ocid')
             ->orderBy('contacts.full_name');
     }
-    public function occupationsActive()
-    {
-        return $this->occupations()
-            ->where(function ($query) {
-                $query->where('occupation_contact.end_date', '>=', Carbon::today()->format('Y-m-d'))
-                    ->orWhereNull('occupation_contact.end_date');
-            })
-            ->where(function ($query) {
-                $query->where('occupation_contact.start_date', '<=', Carbon::today()->format('Y-m-d'))
-                    ->orWhereNull('occupation_contact.start_date');
-            })
-            ->select('contacts.*', 'occupation_contact.*', 'occupation_contact.id as ocid')
-            ->orderBy('contacts.full_name');
-    }
-
-    public function organisationNamePrimaryOccupation()
-    {
-        return $this->occupations()
-            ->where(function ($query) {
-                $query->where('occupation_contact.end_date', '>=', Carbon::today()->format('Y-m-d'))
-                    ->orWhereNull('occupation_contact.end_date');
-            })
-            ->where(function ($query) {
-                $query->where('occupation_contact.start_date', '<=', Carbon::today()->format('Y-m-d'))
-                    ->orWhereNull('occupation_contact.start_date');
-            })
-            ->where('contacts.type_id', ContactType::ORGANISATION)
-            ->where('occupation_contact.primary', true)
-            ->select('contacts.*', 'occupation_contact.*', 'occupation_contact.id as ocid')
-            ->orderBy('occupation_contact.created_at')->first();
-    }
     public function isPrimaryOccupant()
     {
         return $this->hasMany(OccupationContact::class, 'primary_contact_id');
@@ -523,6 +391,139 @@ class Contact extends Model
     public function twinfieldLogs()
     {
         return $this->hasMany(TwinfieldLog::class);
+    }
+
+    public function selectedGroups()
+    {
+        return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')
+            ->where('contact_groups.type_id', 'static')
+            ->where('contact_groups.include_into_export_group_report', true)
+            ->withPivot('laposta_member_id', 'laposta_member_state', 'laposta_last_error_message', 'member_created_at', 'member_to_group_since')
+            ->orderBy('contact_groups.id', 'desc');
+    }
+
+    public function addressesActive()
+    {
+        return $this->addresses()->where('type_id', '!=', 'old')->orWhere('end_date', '>=', Carbon::parse('now')->format('Y-m-d'));
+    }
+
+    public function getStatus()
+    {
+        if (!$this->status_id) return null;
+
+        return ContactStatus::get($this->status_id);
+    }
+
+    public function getInspectionPersonType()
+    {
+        if (!$this->inspection_person_type_id) return null;
+
+        return InspectionPersonType::get($this->inspection_person_type_id);
+    }
+
+    public function getIsInInspectionPersonTypeGroupAttribute()
+    {
+        return $this->groups()->whereNotNull('inspection_person_type_id')->exists();
+    }
+
+    public function isPerson()
+    {
+        return ($this->type_id == ContactType::PERSON);
+    }
+
+    public function isOrganisation()
+    {
+        return ($this->type_id == ContactType::ORGANISATION);
+    }
+
+    public function isCoach()
+    {
+        return $this->inspection_person_type_id == 'coach';
+    }
+    public function isOccupant()
+    {
+        return $this->whereHas('opportunities', function ($query) {
+            $query->whereHas('quotationRequests');
+        })->exists();
+    }
+    public function getIsOccupantAttribute()
+    {
+        return $this->isOccupant();
+    }
+
+    public function getIsOrganisationContactAttribute()
+    {
+        $contactOrganisationOccupations = $this->occupations()
+            ->whereHas('primaryContact', function ($query) {
+                $query->where('type_id', 'organisation')
+                    ->where('primary', true);
+            })->first();
+        if($contactOrganisationOccupations && $contactOrganisationOccupations->primaryContact){
+            return $contactOrganisationOccupations->primaryContact->exists();
+        }
+        return false;
+    }
+
+    public function isProjectManager()
+    {
+        return $this->inspection_person_type_id == 'projectmanager';
+    }
+
+    public function isExternalParty()
+    {
+        return $this->inspection_person_type_id == 'externalparty';
+    }
+
+    public function getOrganisationContact()
+    {
+        $contactOrganisationOccupations = $this->occupations()
+            ->whereHas('primaryContact', function ($query) {
+                $query->where('type_id', 'organisation')
+                    ->where('primary', true);
+            })->first();
+        if($contactOrganisationOccupations && $contactOrganisationOccupations->primaryContact){
+            return $contactOrganisationOccupations->primaryContact;
+        }
+        return false;
+    }
+
+    public function getType()
+    {
+        if (!$this->type_id) return null;
+
+        return ContactType::get($this->type_id);
+    }
+
+    public function occupationsActive()
+    {
+        return $this->occupations()
+            ->where(function ($query) {
+                $query->where('occupation_contact.end_date', '>=', Carbon::today()->format('Y-m-d'))
+                    ->orWhereNull('occupation_contact.end_date');
+            })
+            ->where(function ($query) {
+                $query->where('occupation_contact.start_date', '<=', Carbon::today()->format('Y-m-d'))
+                    ->orWhereNull('occupation_contact.start_date');
+            })
+            ->select('contacts.*', 'occupation_contact.*', 'occupation_contact.id as ocid')
+            ->orderBy('contacts.full_name');
+    }
+
+    public function organisationNamePrimaryOccupation()
+    {
+        return $this->occupations()
+            ->where(function ($query) {
+                $query->where('occupation_contact.end_date', '>=', Carbon::today()->format('Y-m-d'))
+                    ->orWhereNull('occupation_contact.end_date');
+            })
+            ->where(function ($query) {
+                $query->where('occupation_contact.start_date', '<=', Carbon::today()->format('Y-m-d'))
+                    ->orWhereNull('occupation_contact.start_date');
+            })
+            ->where('contacts.type_id', ContactType::ORGANISATION)
+            ->where('occupation_contact.primary', true)
+            ->select('contacts.*', 'occupation_contact.*', 'occupation_contact.id as ocid')
+            ->orderBy('occupation_contact.created_at')->first();
     }
 
     //Returns addresses array as Type - Streetname - Number

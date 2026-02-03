@@ -37,10 +37,9 @@ class DeleteRevenuesKwh implements DeleteInterface
     {
         $this->revenuesKwh = $revenuesKwh;
         $this->cooperation = Cooperation::first();
-        $cleanupItemRevenueKwh = $this->cooperation->cleanupItems()->where('code_ref', 'revenuesKwh')->first();
-        $this->yearsForDelete = $cleanupItemRevenueKwh?->years_for_delete ?? 99;
+        $cleanupItem = $this->cooperation->cleanupItems()->where('code_ref', 'revenuesKwh')->first();
+        $this->yearsForDelete = $cleanupItem?->years_for_delete ?? 99;
         $this->dateAllowedToDelete = Carbon::now()->subYears($this->yearsForDelete)->format('Y-m-d');
-
     }
 
     /** If it's called by the cleanup functionality, we land on this function, else on the delete function
@@ -63,6 +62,7 @@ class DeleteRevenuesKwh implements DeleteInterface
         }
 
     }
+
     /** Main method for deleting this model and all it's relations
      *
      * @return array errorMessage array

@@ -6,7 +6,6 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import { useFormik } from 'formik';
 import CooperationDetailsAPI from '../../../../api/cooperation/CooperationDetailsAPI';
-import ViewText from '../../../../components/form/ViewText';
 
 function CleanupItemEdit({ cleanupItem, cancelEdit, updateResult }) {
     const formData = {
@@ -71,7 +70,9 @@ function CleanupItemEdit({ cleanupItem, cancelEdit, updateResult }) {
                             emptyOption={false}
                             value={values.yearsForDelete}
                             onChangeAction={handleChange}
+                            readOnly={values.hasRetentionPeriod}
                         />
+                        {values.hasRetentionPeriod ? <div style={{ color: 'red' }}>Heeft bewaarplicht</div> : null}
                     </div>
 
                     <div className="pull-right btn-group" role="group">

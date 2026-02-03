@@ -22,7 +22,6 @@ use Illuminate\Support\Facades\Log;
  */
 class DeleteRevenue implements DeleteInterface
 {
-
     private $errorMessage = [];
     private $projectRevenue;
     private $yearsForDelete;
@@ -37,8 +36,8 @@ class DeleteRevenue implements DeleteInterface
     {
         $this->projectRevenue = $projectRevenue;
         $this->cooperation = Cooperation::first();
-        $cleanupItemRevenue = $this->cooperation->cleanupItems()->where('code_ref', 'revenues')->first();
-        $this->yearsForDelete = $cleanupItemRevenue?->years_for_delete ?? 99;
+        $cleanupItem = $this->cooperation->cleanupItems()->where('code_ref', 'revenues')->first();
+        $this->yearsForDelete = $cleanupItem?->years_for_delete ?? 99;
         $this->dateAllowedToDelete = Carbon::now()->subYears($this->yearsForDelete)->format('Y-m-d');
     }
 
@@ -50,10 +49,7 @@ class DeleteRevenue implements DeleteInterface
     public function cleanup()
     {
         try{
-            $this->delete();
-            if(!empty($this->errorMessage)) {
-                return $this->errorMessage;
-            }
+            return $this->delete();
         }catch (\Exception $exception){
             Log::error('Fout bij opschonen Opbrengsten Euro / Aflossing', [
                 'exception' => $exception->getMessage(),
@@ -61,9 +57,7 @@ class DeleteRevenue implements DeleteInterface
             ]);
             array_push($this->errorMessage, "Fout bij opschonen Opbrengsten Euro / Aflossing. (meld dit bij Econobis support)");
             return $this->errorMessage;
-
         }
-
     }
 
     /** Main method for deleting this model and all it's relations
@@ -73,7 +67,9 @@ class DeleteRevenue implements DeleteInterface
      */
     public function delete()
     {
-        $this->canDelete();
+        if (! $this->canDelete()) {
+            return $this->errorMessage;
+        }
         $this->deleteModels();
         $this->dissociateRelations();
         $this->deleteRelations();

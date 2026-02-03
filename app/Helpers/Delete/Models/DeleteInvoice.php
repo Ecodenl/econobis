@@ -18,9 +18,6 @@ use Illuminate\Support\Facades\Log;
 /**
  * Class DeleteInvoice
  *
- * Relation: 1-n Emails. Action: dissociate.
- * Relation: 1-n Tasks. Action: call DeleteTask.
- *
  * @package App\Helpers\Delete\Models
  */
 class DeleteInvoice implements DeleteInterface
@@ -40,8 +37,8 @@ class DeleteInvoice implements DeleteInterface
     {
         $this->invoice = $invoice;
         $this->cooperation = Cooperation::first();
-        $cleanupItemInvoice = $this->cooperation->cleanupItems()->where('code_ref', 'invoices')->first();
-        $this->yearsForDelete = $cleanupItemInvoice?->years_for_delete ?? 99;
+        $cleanupItem = $this->cooperation->cleanupItems()->where('code_ref', 'invoices')->first();
+        $this->yearsForDelete = $cleanupItem?->years_for_delete ?? 99;
         $this->dateAllowedToDelete = Carbon::now()->subYears($this->yearsForDelete)->format('Y-m-d');
     }
 
@@ -53,10 +50,7 @@ class DeleteInvoice implements DeleteInterface
     public function cleanup()
     {
         try{
-            $this->delete();
-            if(!empty($this->errorMessage)) {
-                return $this->errorMessage;
-            }
+            return $this->delete();
         }catch (\Exception $exception){
             Log::error('Fout bij opschonen Nota\'s', [
                 'exception' => $exception->getMessage(),
@@ -69,33 +63,38 @@ class DeleteInvoice implements DeleteInterface
 
     /** Main method for deleting this model and all it's relations
      *
-     * @return array
+     * @return array errorMessage array
      * @throws
      */
     public function delete()
     {
-        $this->canDelete();
+        if (! $this->canDelete()) {
+            return $this->errorMessage;
+        }
         $this->deleteModels();
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-
-        if(!empty($this->errorMessage)) {
-            return $this->errorMessage;
+        if( count($this->errorMessage) === 0 ) {
+            $this->invoice->delete();
         }
 
-        $this->invoice->delete();
+        return $this->errorMessage;
     }
 
     /** Checks if the model can be deleted and sets error messages
      */
     public function canDelete()
     {
-        if(!($this->invoice->status_id == 'to-send') || $this->invoice->invoice_number != 0 ){
-            if($this->invoice->date_sent >= $this->dateAllowedToDelete){
-                array_push($this->errorMessage, "Er is al een nota aangemaakt. Nota kan niet worden verwijderd vanwege de bewaarplicht: " . $this->yearsForDelete . " jaar.");
-            }
+        if( ( !($this->invoice->status_id == 'to-send') || $this->invoice->invoice_number != 0 ) && $this->invoice->date_sent < $this->dateAllowedToDelete ){
+            return true;
         }
+        if(!($this->invoice->status_id == 'to-send') || $this->invoice->invoice_number != 0 ){
+            array_push($this->errorMessage, "Er is al een nota aangemaakt. Nota kan niet worden verwijderd vanwege de bewaarplicht: " . $this->yearsForDelete . " jaar.");
+            return false;
+        }
+
+        return true;
     }
 
     /** Deletes models recursive

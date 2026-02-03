@@ -17,21 +17,6 @@ use Illuminate\Support\Facades\Log;
 /**
  * Class DeleteContact
  *
- * Relation: 1-1 Organisation. Action: call DeleteOrganisation
- * Relation: 1-1 Person. Action: delete
- * Relation: 1-n Documents. Action: dissociate
- * Relation: 1-n Email address. Action: delete
- * Relation: 1-n Intakes. Action: call DeleteIntake
- * Relation: 1-n Orders. Action: call DeleteOrder
- * Relation: 1-n Participation gifted by contact. Action: detach
- * Relation: 1-n Participation legal rep contact. Action: detach
- * Relation: 1-n Participations. Action: call DeleteParticipation
- * Relation: 1-n RevenueDistributions. Action: call DeleteRevenueDistribution
- * Relation: 1-n Addresses. Action: call DeleteAddress
- * Relation: 1-n Tasks & notes. Action: call DeleteTask
- * Relation: n-n Contact emails. Action: remove pivots
- * Relation: n-n Contact groups. Action: remove pivots
- *
  * @package App\Helpers\Delete
  */
 class DeleteContact implements DeleteInterface
@@ -57,37 +42,34 @@ class DeleteContact implements DeleteInterface
     public function cleanup()
     {
         try{
-            $this->delete();
-            if(!empty($this->errorMessage)) {
-                return $this->errorMessage;
-            }
+            return $this->delete();
         }catch (\Exception $exception){
             Log::error('Fout bij opschonen Contacten', [
                 'exception' => $exception->getMessage(),
                 'errormessages' => implode(' | ', $this->errorMessage),
             ]);
-//            abort(501, 'Fout bij opschonen Contacten. (meld dit bij Econobis support)');
             array_push($this->errorMessage, "Fout bij opschonen Contacten. (meld dit bij Econobis support)");
             return $this->errorMessage;
-
-
         }
-
     }
 
     /** Main method for deleting this model and all it's relations
      *
-     * @return array
+     * @return array errorMessage array
      * @throws
      */
     public function delete()
     {
-        $this->canDelete();
+        if (! $this->canDelete()) {
+            return $this->errorMessage;
+        }
         $this->deleteModels();
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->contact->delete();
+        if( count($this->errorMessage) === 0 ) {
+            $this->contact->delete();
+        }
 
         return $this->errorMessage;
     }
@@ -99,34 +81,42 @@ class DeleteContact implements DeleteInterface
     {
         if($this->contact->primaryOccupations()->count() > 0){
             array_push($this->errorMessage, "Er is nog een verbinding aanwezig, Verwijder de verbinding bij het contact en verwijder dan het contact opnieuw.");
+            return false;
         }
 
         if($this->contact->occupations()->count() > 0){
             array_push($this->errorMessage, "Er is nog een verbinding aanwezig, Verwijder de verbinding bij het contact en verwijder dan het contact opnieuw.");
+            return false;
         }
 
         if($this->contact->portalUser()->count() > 0){
             array_push($this->errorMessage, "Dit contact maakt gebruik van de 'mijn coöperatie portal'. Ga naar het contact en verwijder 'Portal gebruiker gegevens'. Verwijder dan het contact opnieuw.");
+            return false;
         }
 
         if($this->contact->organisation && $this->contact->organisation->campaigns->count() > 0){
             $campaignNumbers = $this->contact->organisation->campaigns->pluck('number')->toArray();
             array_push($this->errorMessage, "Organisatie is nog betrokken bij een of meer campagnes: " . implode(',', $campaignNumbers) . " Verwijder de organisatie als betrokken bedrijf bij campagne(s) en verwijder dan het contact opnieuw.");
+            return false;
         }
 
         if($this->contact->coachCampaigns->count() > 0){
             $campaignNumbers = $this->contact->coachCampaigns->pluck('number')->toArray();
             array_push($this->errorMessage, "Persoon is als coach nog betrokken bij een of meer campagnes: " . implode(',', $campaignNumbers) . " Verwijder de persoon als betrokken coach bij campagne(s) en verwijder dan het contact opnieuw.");
+            return false;
         }
         if($this->contact->projectManagerCampaigns->count() > 0){
             $campaignNumbers = $this->contact->projectManagerCampaigns->pluck('number')->toArray();
             array_push($this->errorMessage, "Persoon is als projectleider nog betrokken bij een of meer campagnes: " . implode(',', $campaignNumbers) . " Verwijder de persoon als betrokken projectleider bij campagne(s) en verwijder dan het contact opnieuw.");
+            return false;
         }
         if($this->contact->externalPartyCampaigns->count() > 0){
             $campaignNumbers = $this->contact->externalPartyCampaigns->pluck('number')->toArray();
             array_push($this->errorMessage, "Persoon is als externe partij nog betrokken bij een of meer campagnes: " . implode(',', $campaignNumbers) . " Verwijder de persoon als betrokken externe partij bij campagne(s) en verwijder dan het contact opnieuw.");
+            return false;
         }
 
+        return true;
     }
 
     /** Deletes models recursive
@@ -191,6 +181,11 @@ class DeleteContact implements DeleteInterface
             $quotationRequest->save();
         }
 
+        foreach ($this->contact->financialOverviewContacts as $financialOverviewContact){
+            $deleteFinancialOverviewContact = new DeleteFinancialOverviewContact($financialOverviewContact);
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteFinancialOverviewContact->delete() ?? [] ) );
+        }
+
     }
 
     /** The relations which should be dissociated
@@ -215,6 +210,9 @@ class DeleteContact implements DeleteInterface
         foreach ($this->contact->responses as $response){
             $response->delete();
         }
+
+        $this->contact->manualEmails()->detach();
+        $this->contact->groups()->detach();
     }
 
     /**
@@ -222,12 +220,14 @@ class DeleteContact implements DeleteInterface
      */
     public function deleteRelations()
     {
-        if($this->contact->isPerson()) {
-            $this->contact->person->delete();
-        }
+        $this->contact->contactEmails()->delete();
 
         foreach ($this->contact->emailAddresses as $emailAddress){
             $emailAddress->delete();
+        }
+
+        if($this->contact->isPerson()) {
+            $this->contact->person->delete();
         }
     }
 

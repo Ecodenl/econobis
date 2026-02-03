@@ -8,10 +8,10 @@ use App\Eco\DataCleanup\CleanupItemSelection;
 use App\Eco\DataCleanup\CleanupRegistry;
 use App\Exceptions\CleanupItemFailed;
 use App\Helpers\DataCleanup\CleanupItemHelper;
-use App\Services\DataCleanup\CleanupItemStateService;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DataCleanup\FullCleanupContact;
 use App\Http\Resources\DataCleanup\FullCleanupItem;
+use App\Services\DataCleanup\CleanupItemStateService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -342,6 +342,46 @@ class CleanupController extends Controller
             'errors' => $errorMessageArray,
             'statusCode' => $statusCode,
         ];
+    }
+
+    public function hardDeleteContacts(): JsonResponse
+    {
+        $cooperation = Cooperation::firstOrFail();
+
+        $helper = new CleanupItemHelper(); // die heeft cooperation + cleanupDate
+        $query = $helper->getSoftDeletedContactsToHardDelete(); // die maak je nieuw
+
+        $deleted = 0;
+        $failed = 0;
+        $errors = [];
+
+        $query->orderBy('id')->chunkById(500, function ($contacts) use (&$deleted, &$failed, &$errors) {
+            foreach ($contacts as $contact) {
+                try {
+                    DB::transaction(function () use ($contact) {
+                        // Als jullie DeleteContact cleanup/hard-delete method hebben: gebruik die
+                        // Anders:
+//                        $contact->forceDelete();
+                    });
+                    $deleted++;
+                } catch (\Throwable $e) {
+                    $failed++;
+                    $errors[] = 'Contact id ' . $contact->id . ': ' . $e->getMessage();
+                    Log::error('Hard delete contact failed', ['contact_id' => $contact->id, 'exception' => $e]);
+                }
+            }
+        });
+
+        return response()->json([
+            'data' => [
+                'deleted' => $deleted,
+                'failed' => $failed,
+                'errors' => array_values(array_unique($errors)),
+            ],
+            'message' => $failed > 0
+                ? "Hard delete uitgevoerd, maar {$failed} contact(en) faalden."
+                : "Hard delete uitgevoerd ({$deleted} contacten).",
+        ], $failed > 0 ? 412 : 200);
     }
 
     /**

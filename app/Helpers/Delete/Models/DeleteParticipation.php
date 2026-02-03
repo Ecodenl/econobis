@@ -8,25 +8,17 @@
 
 namespace App\Helpers\Delete\Models;
 
-
-use App\Eco\Cooperation\Cooperation;
 use App\Helpers\Delete\DeleteInterface;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 
 /**
  * Class DeleteParticipation
  *
- * Relation: 1-n Revenue distribution. Action: call DeleteRevenueDistribution
- * Relation: 1-n Documents. Action: dissociate
- * Relation: 1-n Tasks. Action: call DeleteTask
- *
  * @package App\Helpers\Delete\Models
  */
 class DeleteParticipation implements DeleteInterface
 {
-
     private $errorMessage = [];
     private $participation;
 
@@ -34,7 +26,6 @@ class DeleteParticipation implements DeleteInterface
      *
      * @param Model $participation the model to delete
      */
-
     public function __construct(Model $participation)
     {
         $this->participation = $participation;
@@ -61,22 +52,25 @@ class DeleteParticipation implements DeleteInterface
             return $this->errorMessage;
 
         }
-
     }
 
     /** Main method for deleting this model and all it's relations
      *
-     * @return array
+     * @return array errorMessage array
      * @throws
      */
     public function delete()
     {
-        $this->canDelete();
+        if (! $this->canDelete()) {
+            return $this->errorMessage;
+        }
         $this->deleteModels();
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->participation->delete();
+        if( count($this->errorMessage) === 0 ) {
+            $this->participation->delete();
+        }
 
         return $this->errorMessage;
     }
@@ -87,7 +81,10 @@ class DeleteParticipation implements DeleteInterface
     {
         if($this->participation->mutations()->count() > 0){
             array_push($this->errorMessage, "Er zijn nog deelname mutaties in een project. Verwijder de deelname mutaties eerst.");
+            return false;
         }
+
+        return true;
     }
 
     /** Deletes models recursive

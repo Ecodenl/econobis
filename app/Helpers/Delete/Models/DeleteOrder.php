@@ -9,19 +9,12 @@
 namespace App\Helpers\Delete\Models;
 
 
-use App\Eco\Cooperation\Cooperation;
 use App\Helpers\Delete\DeleteInterface;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 
 /**
  * Class DeleteOrder
- *
- * Relation: 1-n Invoices. Action: call DeleteInvoice
- * Relation: 1-n Emails. Action: dissociate
- * Relation: 1-n Documents. Action: dissociate
- * Relation: 1-n Tasks. Action: call DeleteTask
  *
  * @package App\Helpers\Delete\Models
  */
@@ -30,7 +23,6 @@ class DeleteOrder implements DeleteInterface
 
     private $errorMessage = [];
     private $order;
-
 
     /** Sets the model to delete
      *
@@ -71,12 +63,16 @@ class DeleteOrder implements DeleteInterface
      */
     public function delete()
     {
-        $this->canDelete();
+        if (! $this->canDelete()) {
+            return $this->errorMessage;
+        }
         $this->deleteModels();
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->order->delete();
+        if( count($this->errorMessage) === 0 ) {
+            $this->order->delete();
+        }
 
         return $this->errorMessage;
     }
@@ -85,6 +81,8 @@ class DeleteOrder implements DeleteInterface
      */
     public function canDelete()
     {
+        // van hieruit altijd true
+        return true;
     }
 
     /** Deletes models recursive

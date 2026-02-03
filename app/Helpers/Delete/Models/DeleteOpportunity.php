@@ -15,11 +15,6 @@ use Illuminate\Support\Facades\Log;
 /**
  * Class DeleteOpportunity
  *
- * Relation: 1-n Emails. Action: dissociate
- * Relation: 1-n Documents. Action: dissociate
- * Relation: 1-n Tasks & notes. Action: call DeleteTask
- * Relation: 1-n Quotation requests. Action: call DeleteQuotationRequest
- *
  * @package App\Helpers\Delete\Models
  */
 class DeleteOpportunity implements DeleteInterface
@@ -31,7 +26,6 @@ class DeleteOpportunity implements DeleteInterface
      *
      * @param Model $opportunity the model to delete
      */
-
     public function __construct(Model $opportunity)
     {
         $this->opportunity = $opportunity;
@@ -45,10 +39,7 @@ class DeleteOpportunity implements DeleteInterface
     public function cleanup()
     {
         try{
-            $this->delete();
-            if(!empty($this->errorMessage)) {
-                return $this->errorMessage;
-            }
+            return $this->delete();
         }catch (\Exception $exception){
             Log::error('Fout bij opschonen Kansen', [
                 'exception' => $exception->getMessage(),
@@ -56,7 +47,6 @@ class DeleteOpportunity implements DeleteInterface
             ]);
             array_push($this->errorMessage, "Fout bij opschonen Kansen. (meld dit bij Econobis support)");
             return $this->errorMessage;
-
         }
     }
 
@@ -67,17 +57,22 @@ class DeleteOpportunity implements DeleteInterface
      */
     public function delete()
     {
-        $this->canDelete();
+        if (! $this->canDelete()) {
+            return $this->errorMessage;
+        }
         $this->deleteModels();
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->opportunity->delete();
+        if( count($this->errorMessage) === 0 ) {
+            $this->opportunity->delete();
+        }
 
         return $this->errorMessage;
     }
 
     /** Checks if the model can be deleted and sets error messages
+     *
      */
     public function canDelete()
     {
@@ -88,7 +83,10 @@ class DeleteOpportunity implements DeleteInterface
         // 25-04-2024: Verwijderen mag niet meer als er nog kansacties onder hangen
         if($this->opportunity->quotationRequests()->count() > 0){
             array_push($this->errorMessage, "Onder kans bij contact " . ($this->opportunity->intake && $this->opportunity->intake->contact ? $this->opportunity->intake->contact->full_name : '*contact onbekend*') . " met maatregel " . ($this->opportunity->measureCategory ? $this->opportunity->measureCategory->name : '*maatregel onbekend*') . " hangen nog kansacties, verwijderen kans niet mogelijk.");
+            return false;
         }
+
+        return true;
     }
 
     /** Deletes models recursive

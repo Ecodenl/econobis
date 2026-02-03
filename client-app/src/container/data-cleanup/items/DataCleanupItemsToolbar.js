@@ -23,6 +23,7 @@ export default function DataCleanupItemsToolbar({
                     />
                     <ButtonText
                         buttonText={'Opschonen alles'}
+                        buttonClassName={'btn-danger'}
                         onClickAction={handleDataCleanupCleanupItemsAll}
                         title={`Opschonen alle items`}
                     />

@@ -16,10 +16,6 @@ use Illuminate\Support\Facades\Log;
 /**
  * Class DeleteTask
  *
- * Relation: 1-n Emails. Action: dissociate
- * Relation: 1-n Documents. Action: dissociate
- * Relation: 1-n Task & notes. Action: call DeleteTask
- *
  * @package App\Helpers\Delete\Models
  */
 class DeleteTask implements DeleteInterface
@@ -32,7 +28,6 @@ class DeleteTask implements DeleteInterface
      *
      * @param Model $task the model to delete
      */
-
     public function __construct(Model $task)
     {
         $this->task = $task;
@@ -46,10 +41,7 @@ class DeleteTask implements DeleteInterface
     public function cleanup()
     {
         try{
-            $this->delete();
-            if(!empty($this->errorMessage)) {
-                return $this->errorMessage;
-            }
+            return $this->delete();
         }catch (\Exception $exception){
             Log::error('Fout bij opschonen Taken', [
                 'exception' => $exception->getMessage(),
@@ -57,7 +49,6 @@ class DeleteTask implements DeleteInterface
             ]);
             array_push($this->errorMessage, "Fout bij opschonen Taken. (meld dit bij Econobis support)");
             return $this->errorMessage;
-
         }
 
     }
@@ -69,25 +60,31 @@ class DeleteTask implements DeleteInterface
      */
     public function delete()
     {
-        $this->canDelete();
+        if (! $this->canDelete()) {
+            return $this->errorMessage;
+        }
         $this->deleteModels();
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->task->delete();
+        if( count($this->errorMessage) === 0 ) {
+            $this->task->delete();
+        }
 
         return $this->errorMessage;
     }
 
     /** Checks if the model can be deleted and sets error messages
-     *
      */
     public function canDelete()
     {
         // 22-04-2024: Verwijderen 1 voor 1 mag ook ongeacht de status van de taak
 //        if(!$this->task->finished){
 //            array_push($this->errorMessage, "Er is nog een taak die niet is afgerond. Zet de taak op afgehandeld en verwijder dan opnieuw.");
+//            return false;
 //        }
+        // van hieruit altijd true
+        return true;
     }
 
     /** Deletes models recursive

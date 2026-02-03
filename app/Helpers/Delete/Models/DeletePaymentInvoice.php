@@ -37,8 +37,8 @@ class DeletePaymentInvoice implements DeleteInterface
     {
         $this->paymentInvoice = $paymentInvoice;
         $this->cooperation = Cooperation::first();
-        $cleanupItemPaymentInvoice = $this->cooperation->cleanupItems()->where('code_ref', 'paymentInvoices')->first();
-        $this->yearsForDelete = $cleanupItemPaymentInvoice?->years_for_delete ?? 99;
+        $cleanupItem = $this->cooperation->cleanupItems()->where('code_ref', 'paymentInvoices')->first();
+        $this->yearsForDelete = $cleanupItem?->years_for_delete ?? 99;
         $this->dateAllowedToDelete = Carbon::now()->subYears($this->yearsForDelete)->format('Y-m-d');
     }
 
@@ -50,10 +50,7 @@ class DeletePaymentInvoice implements DeleteInterface
     public function cleanup()
     {
         try{
-            $this->delete();
-            if(!empty($this->errorMessage)) {
-                return $this->errorMessage;
-            }
+            return $this->delete();
         }catch (\Exception $exception){
             Log::error('Fout bij opschonen Uitkeringsnota\'s', [
                 'exception' => $exception->getMessage(),
@@ -66,31 +63,35 @@ class DeletePaymentInvoice implements DeleteInterface
 
     /** Main method for deleting this model and all it's relations
      *
-     * @return array
+     * @return array errorMessage array
      * @throws
      */
     public function delete()
     {
-        $this->canDelete();
+        if (! $this->canDelete()) {
+            return $this->errorMessage;
+        }
         $this->deleteModels();
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-
-        if(!empty($this->errorMessage)) {
-            return $this->errorMessage;
+        if( count($this->errorMessage) === 0 ) {
+            $this->paymentInvoice->delete();
         }
 
-        $this->paymentInvoice->delete();
+        return $this->errorMessage;
     }
 
     /** Checks if the model can be deleted and sets error messages
      */
     public function canDelete()
     {
-        if($this->paymentInvoice->created_at >= $this->dateAllowedToDelete){
-            array_push($this->errorMessage, "Er is al een uitkeringsnota aangemaakt. Uitkeringsnota kan niet worden verwijderd vanwege de bewaarplicht: " . $this->yearsForDelete . " jaar.");
+        if($this->paymentInvoice->created_at < $this->dateAllowedToDelete){
+            return true;
         }
+
+        array_push($this->errorMessage, "Er is al een uitkeringsnota aangemaakt. Uitkeringsnota kan niet worden verwijderd vanwege de bewaarplicht: " . $this->yearsForDelete . " jaar.");
+        return false;
     }
 
     /** Deletes models recursive

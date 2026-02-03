@@ -15,9 +15,6 @@ use Illuminate\Support\Facades\Log;
 /**
  * Class DeleteHousingFile
  *
- * Relation: 1-n Documents. Action: dissociate
- * Relation: 1-n Tasks & notes. Action: call DeleteTask
- *
  * @package App\Helpers\Delete
  */
 class DeleteHousingFile implements DeleteInterface
@@ -43,10 +40,7 @@ class DeleteHousingFile implements DeleteInterface
     public function cleanup()
     {
         try{
-            $this->delete();
-            if(!empty($this->errorMessage)) {
-                return $this->errorMessage;
-            }
+            return $this->delete();
         }catch (\Exception $exception){
             Log::error('Fout bij opschonen Woningdossiers', [
                 'exception' => $exception->getMessage(),
@@ -54,24 +48,26 @@ class DeleteHousingFile implements DeleteInterface
             ]);
             array_push($this->errorMessage, "Fout bij opschonen Woningdossiers. (meld dit bij Econobis support)");
             return $this->errorMessage;
-
         }
-
     }
 
     /** Main method for deleting this model and all it's relations
      *
-     * @return array
+     * @return array errorMessage array
      * @throws
      */
     public function delete()
     {
-        $this->canDelete();
+        if (! $this->canDelete()) {
+            return $this->errorMessage;
+        }
         $this->deleteModels();
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->housingFile->delete();
+        if( count($this->errorMessage) === 0 ) {
+            $this->housingFile->delete();
+        }
 
         return $this->errorMessage;
     }
@@ -81,7 +77,8 @@ class DeleteHousingFile implements DeleteInterface
      */
     public function canDelete()
     {
-
+        // van hier uit altijd true
+        return true;
     }
 
     /** Deletes models recursive

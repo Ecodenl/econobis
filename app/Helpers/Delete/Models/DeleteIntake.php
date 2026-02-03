@@ -8,20 +8,12 @@
 
 namespace App\Helpers\Delete\Models;
 
-
-use App\Eco\Cooperation\Cooperation;
 use App\Helpers\Delete\DeleteInterface;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 
 /**
  * Class DeleteIntake
- *
- * Relation: 1-n Documents. Action: dissociate
- * Relation: 1-n Emails. Action: dissociate
- * Relation: 1-n Opportunities. Action: call DeleteOpportunity
- * Relation: 1-n Tasks & notes. Action: call DeleteTask
  *
  * @package App\Helpers\Delete\Models
  */
@@ -47,10 +39,7 @@ class DeleteIntake implements DeleteInterface
     public function cleanup()
     {
         try{
-            $this->delete();
-            if(!empty($this->errorMessage)) {
-                return $this->errorMessage;
-            }
+            return $this->delete();
         }catch (\Exception $exception){
             Log::error('Fout bij opschonen Intakes', [
                 'exception' => $exception->getMessage(),
@@ -68,12 +57,16 @@ class DeleteIntake implements DeleteInterface
      */
     public function delete()
     {
-        $this->canDelete();
+        if (! $this->canDelete()) {
+            return $this->errorMessage;
+        }
         $this->deleteModels();
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->intake->delete();
+        if( count($this->errorMessage) === 0 ) {
+            $this->intake->delete();
+        }
 
         return $this->errorMessage;
     }
@@ -86,12 +79,15 @@ class DeleteIntake implements DeleteInterface
         // 25-04-2024: Verwijderen 1 voor 1 mag ook ongeacht de status van de intake
 //        if(!($this->intake->intake_status_id === 2 || $this->intake->intake_status_id === 3)){
 //            array_push($this->errorMessage, "Er is nog een intake die niet gesloten is.");
+//            return false;
 //        }
         // 25-04-2024: Verwijderen mag niet meer als er nog kansen onder hangen
         if($this->intake->opportunities()->count() > 0){
             array_push($this->errorMessage, "Onder intake " . ($this->intake->address ? $this->intake->address->fullAddress : '*adres onbekend*') . " hangen nog kansen, verwijderen intake niet mogelijk.");
+            return false;
         }
 
+        return true;
     }
 
     /** Deletes models recursive

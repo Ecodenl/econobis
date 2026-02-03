@@ -8,16 +8,12 @@
 
 namespace App\Helpers\Delete\Models;
 
-
 use App\Helpers\Delete\DeleteInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 
 /**
  * Class DeleteQuotationRequest
- *
- * Relation: 1-n Emails. Action: dissociate
- * Relation: 1-n Documents. Action: dissociate
  *
  * @package App\Helpers\Delete\Models
  */
@@ -30,11 +26,11 @@ class DeleteQuotationRequest implements DeleteInterface
      *
      * @param Model $quotationRequest the model to delete
      */
-
     public function __construct(Model $quotationRequest)
     {
         $this->quotationRequest = $quotationRequest;
     }
+
     /** If it's called by the cleanup functionality, we land on this function, else on the delete function
      *
      * @return array
@@ -43,10 +39,7 @@ class DeleteQuotationRequest implements DeleteInterface
     public function cleanup()
     {
         try{
-            $this->delete();
-            if(!empty($this->errorMessage)) {
-                return $this->errorMessage;
-            }
+            return $this->delete();
         }catch (\Exception $exception){
             Log::error('Fout bij opschonen Kansacties', [
                 'exception' => $exception->getMessage(),
@@ -54,7 +47,6 @@ class DeleteQuotationRequest implements DeleteInterface
             ]);
             array_push($this->errorMessage, "Fout bij opschonen Kansacties. (meld dit bij Econobis support)");
             return $this->errorMessage;
-
         }
     }
 
@@ -65,12 +57,16 @@ class DeleteQuotationRequest implements DeleteInterface
      */
     public function delete()
     {
-        $this->canDelete();
+        if (! $this->canDelete()) {
+            return $this->errorMessage;
+        }
         $this->deleteModels();
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->quotationRequest->delete();
+        if( count($this->errorMessage) === 0 ) {
+            $this->quotationRequest->delete();
+        }
 
         return $this->errorMessage;
     }
@@ -79,6 +75,8 @@ class DeleteQuotationRequest implements DeleteInterface
      */
     public function canDelete()
     {
+        // van hieruit altijd true
+        return true;
     }
 
     /** Deletes models recursive

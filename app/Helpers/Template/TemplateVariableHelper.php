@@ -178,6 +178,8 @@ class TemplateVariableHelper
         switch ($varname) {
             case 'nummer':
                 return $model->number;
+            case 'public_id':
+                return $model->public_id;
             case 'titel':
                 return optional(optional($model->person)->title)->name;
             case 'titel_adres':

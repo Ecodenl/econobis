@@ -162,6 +162,12 @@ class MailFetcherMsOauth
             $from = '';
 //            return;
         }
+        // fromAddress te lang, dan afkappen en melding
+        if (strlen($from) > 191) {
+            Log::error("Deze mail heeft een from die langer is dan 191 karakters en hierdoor ingekort. Origineel:");
+            Log::error($from);
+            $from = substr($from, 0, 191);
+        }
 
         $tos = [];
         if($message->getToRecipients()){

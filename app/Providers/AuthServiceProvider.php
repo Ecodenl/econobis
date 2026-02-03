@@ -196,17 +196,26 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-        Passport::tokensExpireIn(now()->addHours(12));
-        Passport::refreshTokensExpireIn(now()->addHours(12));
+
+        // Access tokens (user-based: portal + auth code)
+        // Tijdelijk even op 7 dagen, later wrs weer terug naar 1 dag
+        Passport::tokensExpireIn(now()->addDays(7));
+
+        // Refresh tokens (user-based flows)
+        Passport::refreshTokensExpireIn(now()->addDays(90));
 
         /**
          * Scopes registreren voor verschillende tokens voor
-         * gebruik van app of portal.
+         * gebruik van econobis app, portal app of rest-api.
          */
         Passport::tokensCan([
             'use-app' => 'Use Econobis app',
             'use-portal' => 'Use Econobis portal',
+            'econobis-rest-api' => 'Use Econobis rest API',
         ]);
+
+        // custom consent scherm
+        Passport::authorizationView('rest-api.authorize');
 
         // Laad de custom Passport routes
         if (! $this->app->routesAreCached()) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\Demo;
 
 use App\Eco\Address\Address;
 use App\Eco\Contact\Contact;

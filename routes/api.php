@@ -360,6 +360,7 @@ Route::namespace('Api')
          * Districts
          */
         Route::get('district', [\App\Http\Controllers\Api\District\DistrictController::class, 'index']);
+        Route::get('district/peek/{active?}', [\App\Http\Controllers\Api\District\DistrictController::class, 'peek']);
         Route::get('district/{district}', [\App\Http\Controllers\Api\District\DistrictController::class, 'show']);
         Route::get('district/{district}/calendar-items', [\App\Http\Controllers\Api\District\DistrictController::class, 'getCalendarItems']);
         Route::post('district', [\App\Http\Controllers\Api\District\DistrictController::class, 'create']);
@@ -480,6 +481,8 @@ Route::namespace('Api')
         Route::post('team/{team}/{user}/detach', 'Team\TeamController@detachUser');
         Route::post('team/{team}/{contactGroup}/attach-contact-group', 'Team\TeamController@attachContactGroup');
         Route::post('team/{team}/{contactGroup}/detach-contact-group', 'Team\TeamController@detachContactGroup');
+        Route::post('team/{team}/{district}/attach-district', 'Team\TeamController@attachDistrict');
+        Route::post('team/{team}/{district}/detach-district', 'Team\TeamController@detachDistrict');
         Route::post('team/{team}/{documentCreatedFrom}/attach-document-created-from', 'Team\TeamController@attachDocumentCreatedFrom');
         Route::post('team/{team}/{documentCreatedFrom}/detach-document-created-from', 'Team\TeamController@detachDocumentCreatedFrom');
 

@@ -36,11 +36,6 @@ class checkSoftDeletedContactsInContactEmail extends Command
         parent::__construct();
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
     public function handle()
     {
         // met of zonder herstel?
@@ -85,13 +80,6 @@ class checkSoftDeletedContactsInContactEmail extends Command
         $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody));
     }
 
-    /**
-     * @param \Illuminate\Database\Eloquent\Collection $emails
-     * @param string $emailRecipientType
-     * @param array $emailsWithDeletedEmailAddressesIds
-     * @param int $counter
-     * @return array
-     */
     private function getContactEmailsWithDeletedContactIds(bool $doRecover): array
     {
         $counter = 0;

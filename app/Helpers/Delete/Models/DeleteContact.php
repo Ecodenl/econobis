@@ -8,9 +8,7 @@
 
 namespace App\Helpers\Delete\Models;
 
-use App\Eco\Cooperation\Cooperation;
 use App\Helpers\Delete\DeleteInterface;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 
@@ -129,11 +127,6 @@ class DeleteContact implements DeleteInterface
             $this->errorMessage = array_merge($this->errorMessage, ( $deleteAddress->delete() ?? [] ) );
         }
 
-        foreach ($this->contact->phoneNumbers as $phoneNumber){
-            $deletePhoneNumber = new DeletePhoneNumber($phoneNumber);
-            $this->errorMessage = array_merge($this->errorMessage, ( $deletePhoneNumber->delete() ?? [] ) );
-        }
-
         foreach ($this->contact->tasks as $task){
             $deleteTask = new DeleteTask($task);
             $this->errorMessage = array_merge($this->errorMessage, ( $deleteTask->delete() ?? [] ) );
@@ -212,10 +205,6 @@ class DeleteContact implements DeleteInterface
             $document->save();
         }
 
-        foreach ($this->contact->responses as $response){
-            $response->delete();
-        }
-
         $this->contact->manualEmails()->detach();
         $this->contact->groups()->detach();
     }
@@ -225,13 +214,23 @@ class DeleteContact implements DeleteInterface
      */
     public function deleteRelations()
     {
-        $this->contact->contactEmails()->delete();
-
-//        $this->contact->emailAddresses()->delete();
-
+        // softdeletable
+        $this->contact->phoneNumbers()->delete();
+        $this->contact->emailAddresses()->delete();
+        $this->contact->contactNotes()->delete();
+        $this->contact->freeFieldsFieldRecords()->delete();
+        $this->contact->portalFreeFieldsFieldRecords()->delete();
         if($this->contact->isPerson()) {
             $this->contact->person->delete();
         }
+
+        // hard delete
+        $this->contact->contactEmails()->delete(); //// contact_email is een echte tabel met model ContactEmail (niet-softdeletable)
+        $this->contact->responses()->delete();
+        $this->contact->twinfieldNumbers()->delete();
+        $this->contact->twinfieldLogs()->delete();
+        $this->contact->availabilities()->delete();
+
     }
 
 

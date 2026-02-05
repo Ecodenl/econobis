@@ -106,7 +106,7 @@ final class CleanupRegistry
                 'deleter' => fn ($model) => new DeletePaymentInvoice($model),
                 'label' => fn (PaymentInvoice $m) => "PaymentInvoice {$m->number} id {$m->id}",
                 'retentionMode' => self::RETENTION_FISCAL_DATE,
-                'dateRef' => 'created_at',
+                'dateRef' => 'date_paid',
             ],
             'revenues' => [
                 'model' => ProjectRevenue::class,

@@ -285,7 +285,9 @@ Route::namespace('Api')
         Route::post('cleanup/cleanup-items-all', 'DataCleanup\CleanupController@cleanupItemsAll');
         Route::post('cleanup/cleanup-item/{cleanupType}', 'DataCleanup\CleanupController@cleanupItem');
 
-        Route::post('cleanup/contacts/hard-delete', 'DataCleanup\CleanupController@hardDeleteContacts');
+        Route::get('cleanup/force-delete-contacts-stats', 'DataCleanup\CleanupController@getForceDeleteContactsStats');
+        Route::post('cleanup/force-delete-contacts', 'DataCleanup\CleanupController@forceDeleteSoftDeletedContacts');
+
         Route::get('cleanup/contacts', 'DataCleanup\CleanupController@getCleanupContacts');
 
         Route::get('task/grid/tasks', 'Task\TaskController@gridTask');

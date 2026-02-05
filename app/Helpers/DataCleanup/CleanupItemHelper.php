@@ -156,7 +156,8 @@ class CleanupItemHelper
     public function getInvoicesToDelete(): mixed
     {
         $cutoff = $this->cutoffDate();
-        return Invoice::whereDate('date_sent', '<', $cutoff);
+        return Invoice::with('order')
+            ->whereDate('date_sent', '<', $cutoff);
     }
     /**
      * @return mixed
@@ -271,7 +272,8 @@ class CleanupItemHelper
     public function getPaymentInvoicesToDelete(): mixed
     {
         $cutoff = $this->cutoffDate();
-        return PaymentInvoice::whereDate('created_at', '<', $cutoff);
+        return PaymentInvoice::with('revenueDistribution')
+            ->whereDate('date_paid', '<', $cutoff);
     }
 
 

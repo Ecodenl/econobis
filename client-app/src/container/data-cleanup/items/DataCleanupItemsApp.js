@@ -18,6 +18,11 @@ export default function DataCleanupItemsApp() {
     const [showCleanupAllModal, setShowCleanupAllModal] = useState(false);
     const [cleanupAllBusy, setCleanupAllBusy] = useState(false);
 
+    const [hasDeterminedItems, setHasDeterminedItems] = useState(false);
+    const [softDeletedContactsCount, setSoftDeletedContactsCount] = useState(null);
+    const [showForceDeleteContactsModal, setShowForceDeleteContactsModal] = useState(false);
+    const [forceDeleteBusy, setForceDeleteBusy] = useState(false);
+
     const isBusyUpdateItem = isBusyItem => {
         setCleanupData(prev =>
             prev.map(item => (item.id === isBusyItem.id ? { ...item, dateDetermined: 'Bezig...' } : item))
@@ -42,7 +47,11 @@ export default function DataCleanupItemsApp() {
 
     useEffect(() => {
         fetchCleanupData();
+        fetchForceDeleteContactsStats();
     }, []);
+    useEffect(() => {
+        setHasDeterminedItems((cleanupData || []).some(i => (i?.determinedCount ?? 0) > 0));
+    }, [cleanupData]);
 
     const fetchCleanupData = () => {
         setIsLoading(true);
@@ -59,6 +68,17 @@ export default function DataCleanupItemsApp() {
                     text: 'Er is iets misgegaan met ophalen van de opschoon gegevens.',
                 });
                 setIsLoading(false);
+            });
+    };
+
+    const fetchForceDeleteContactsStats = () => {
+        DataCleanupAPI.getForceDeleteContactsStats()
+            .then(payload => {
+                setSoftDeletedContactsCount(payload?.softDeletedContactsCount ?? 0);
+            })
+            .catch(() => {
+                // stil falen is ok; dan toon je geen count
+                setSoftDeletedContactsCount(null);
             });
     };
 
@@ -223,6 +243,54 @@ export default function DataCleanupItemsApp() {
             });
     };
 
+    const handleForceDeleteContacts = () => {
+        setShowForceDeleteContactsModal(true);
+    };
+
+    const onConfirmForceDeleteContacts = () => {
+        setForceDeleteBusy(true);
+
+        setGlobalAlert({ type: 'info', text: 'Hard verwijderen van soft-verwijderde contacten wordt uitgevoerd…' });
+
+        DataCleanupAPI.forceDeleteContacts()
+            .then(res => {
+                const results = res?.data?.results ?? [];
+                const msg = res?.message;
+
+                const failed = results.filter(r => (r?.statusCode ?? 0) >= 400);
+
+                if (failed.length) {
+                    setGlobalAlert({
+                        type: 'danger',
+                        text:
+                            msg ||
+                            `Hard verwijderen uitgevoerd, maar ${failed.length} contact(en) konden niet worden verwijderd.`,
+                    });
+                    // todo optioneel: toon details in console of maak een “details modal”
+                    console.log(failed);
+                } else {
+                    setGlobalAlert({ type: 'success', text: msg || 'Hard verwijderen is uitgevoerd.' });
+                }
+
+                setForceDeleteBusy(false);
+                setShowForceDeleteContactsModal(false);
+
+                // todo optioneel: refresh data / counters / lijst
+                fetchCleanupData();
+                fetchForceDeleteContactsStats();
+            })
+            .catch(err => {
+                const backendMessage = err?.response?.data?.message;
+                setGlobalAlert({
+                    type: 'danger',
+                    text: backendMessage || 'Er is iets misgegaan bij hard verwijderen.',
+                });
+
+                setForceDeleteBusy(false);
+                setShowForceDeleteContactsModal(false);
+            });
+    };
+
     return (
         <Panel>
             <PanelBody>
@@ -231,6 +299,10 @@ export default function DataCleanupItemsApp() {
                         fetchCleanupData={fetchCleanupData}
                         handleDataCleanupUpdateItemsAll={handleDataCleanupUpdateItemsAll}
                         handleDataCleanupCleanupItemsAll={handleDataCleanupCleanupItemsAll}
+                        handleForceDeleteContacts={handleForceDeleteContacts}
+                        softDeletedContactsCount={softDeletedContactsCount}
+                        isBusy={isLoading || cleanupAllBusy || forceDeleteBusy}
+                        hasDeterminedItems={hasDeterminedItems}
                     />
                 </div>
 
@@ -285,6 +357,24 @@ export default function DataCleanupItemsApp() {
                             <br />
                             <br />
                             Deze verwijderactie is niet terug te draaien.
+                        </div>
+                    </Modal>
+                ) : null}
+
+                {showForceDeleteContactsModal ? (
+                    <Modal
+                        closeModal={() => !forceDeleteBusy && setShowForceDeleteContactsModal(false)}
+                        confirmAction={onConfirmForceDeleteContacts}
+                        buttonConfirmText="Contacten hard verwijderen"
+                        buttonClassName={'btn-danger'}
+                        title="Bevestig hard verwijderen"
+                        loading={forceDeleteBusy}
+                    >
+                        <div>
+                            Weet u zeker dat u <strong>alle</strong> soft-verwijderde contacten hard wilt verwijderen?
+                            <br />
+                            <br />
+                            Deze actie is niet terug te draaien.
                         </div>
                     </Modal>
                 ) : null}

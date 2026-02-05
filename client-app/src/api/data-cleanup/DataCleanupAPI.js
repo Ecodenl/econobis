@@ -46,6 +46,20 @@ const DataCleanupAPI = {
             .get(`${baseUrl()}/contacts`)
             .then(unwrap);
     },
+
+    // GET /api/cleanup/force-delete-contacts-stats
+    getForceDeleteContactsStats() {
+        return api()
+            .get(`${baseUrl()}/force-delete-contacts-stats`)
+            .then(unwrap);
+    },
+
+    // POST /api/cleanup/force-delete-contacts
+    forceDeleteContacts() {
+        return api()
+            .post(`${baseUrl()}/force-delete-contacts`)
+            .then(res => res.data);
+    },
 };
 
 export default DataCleanupAPI;

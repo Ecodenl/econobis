@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Api\DataCleanup;
 
+use App\Eco\Contact\Contact;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\Cooperation\CooperationCleanupItem;
 use App\Eco\DataCleanup\CleanupItemSelection;
 use App\Eco\DataCleanup\CleanupRegistry;
 use App\Exceptions\CleanupItemFailed;
 use App\Helpers\DataCleanup\CleanupItemHelper;
+use App\Helpers\Delete\Models\ForceDeleteContact;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DataCleanup\FullCleanupContact;
 use App\Http\Resources\DataCleanup\FullCleanupItem;
@@ -150,6 +152,96 @@ class CleanupController extends Controller
         }
 
         return $this->respondCleanupItem($result['item'], 200, [], $result['message'] ?? null);
+    }
+
+    public function getForceDeleteContactsStats(): JsonResponse
+    {
+        $count = Contact::onlyTrashed()->count();
+
+        return response()->json([
+            'data' => [
+                'softDeletedContactsCount' => $count,
+            ],
+        ]);
+    }
+
+    public function forceDeleteSoftDeletedContacts(): JsonResponse
+    {
+        $cooperation = Cooperation::firstOrFail();
+
+        $results = [];
+        $has412 = false;
+        $has500 = false;
+
+        // bepaal scope (jullie kunnen later filteren op cooperation_id als contact dat heeft)
+        Contact::onlyTrashed()
+            ->orderBy('id')
+            ->chunkById(200, function ($contacts) use (&$results, &$has412, &$has500) {
+                foreach ($contacts as $contact) {
+                    try {
+                        $errors = (new ForceDeleteContact($contact))->cleanup();
+                        $errors = is_array($errors) ? array_values(array_unique($errors)) : [];
+
+                        if (!empty($errors)) {
+                            // “normale” errors zijn 412; echte exceptions worden in ForceDeleteContact al als support error toegevoegd
+                            $statusCode = $this->containsSupportError($errors) ? 500 : 412;
+                        } else {
+                            $statusCode = 200;
+                        }
+
+                        if ($statusCode === 412) $has412 = true;
+                        if ($statusCode >= 500) $has500 = true;
+
+                        $results[] = [
+                            'contactId' => $contact->id,
+                            'fullName' => $contact->full_name ?? null,
+                            'statusCode' => $statusCode,
+                            'errors' => $errors,
+                        ];
+                    } catch (\Throwable $e) {
+                        Log::error('Force delete contacts failed', [
+                            'contact_id' => $contact->id,
+                            'exception' => $e,
+                        ]);
+
+                        $has500 = true;
+
+                        $results[] = [
+                            'contactId' => $contact->id,
+                            'fullName' => $contact->full_name ?? null,
+                            'statusCode' => 500,
+                            'errors' => ['Er is helaas een fout opgetreden.'],
+                        ];
+                    }
+                }
+            });
+
+        $statusCode = $has500 ? 500 : ($has412 ? 412 : 200);
+
+        return response()->json([
+            'data' => [
+                'results' => $results,
+            ],
+            'message' => $has500
+                ? 'Een of meer contacten zijn niet hard verwijderd door een interne fout.'
+                : ($has412 ? 'Een of meer contacten konden niet hard verwijderd worden.' : 'Hard verwijderen is uitgevoerd.'),
+        ], $statusCode);
+    }
+
+    /**
+     * Kleine helper: onderscheid 412 vs 500 op basis van support-message.
+     * (optioneel, maar handig om statusCode zinnig te houden
+     * Als je liever simpel houdt: laat deze containsSupportError weg en maak alles met errors gewoon 412.
+     * Dan is HTTP 500 alleen voor echte exceptions.)
+     */
+    private function containsSupportError(array $errors): bool
+    {
+        foreach ($errors as $e) {
+            if (is_string($e) && str_contains($e, '(meld dit bij Econobis support)')) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

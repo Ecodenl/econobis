@@ -69,6 +69,9 @@ class AddNewCleanupItems extends Migration
             $table->boolean('cleanup_exception')->default(false);
         });
 
+        Schema::table('contact_notes', function (Blueprint $table) {
+            $table->softDeletes();
+        });
         //create the new role
         $role =  Role::create([
             'name' => 'Data opschoner',
@@ -117,6 +120,10 @@ class AddNewCleanupItems extends Migration
         if ($superuserRole) {
             $superuserRole->syncPermissions(Permission::all());
         }
+
+        Schema::table('contact_notes', function (Blueprint $table) {
+            $table->dropColumn('deleted_at');
+        });
 
         Schema::table('products', function (Blueprint $table) {
             $table->dropColumn('cleanup_exception');
@@ -210,7 +217,7 @@ class AddNewCleanupItems extends Migration
             [
                 'name' => 'Uitkeringsnota\'s',
                 'code_ref' => 'paymentInvoices',
-                'date_ref' => 'Export/Aanmaakdatum'
+                'date_ref' => 'Betaalopdrachtdatum'
             ],
             [
                 'name' => 'Opbrengsten Euro / Aflossing',

@@ -346,7 +346,14 @@ const AppRoutes = () => {
                         <Route path="contact-groep/:id" element={<ContactGroupDetailsApp />} />
                         <Route path="contacten-in-groep/:contactGroup" element={<ContactsInGroupListApp />} />
                         /* Data opschonen */
-                        <Route path="data-opschonen-items" element={<DataCleanupItemsApp />} />
+                        <Route
+                            path="data-opschonen-items"
+                            element={
+                                <PermissionWrapper requiredPermission="menuDataCleanup">
+                                    <DataCleanupItemsApp />
+                                </PermissionWrapper>
+                            }
+                        />
                         /* Campaign */
                         <Route path="campagne/nieuw" element={<CampaignNewApp />} />
                         <Route path="campagne/nieuw/maatregel/:measureId" element={<CampaignNewApp />} />

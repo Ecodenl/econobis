@@ -23,6 +23,8 @@ export default function DataCleanupItemsApp() {
     const [showForceDeleteContactsModal, setShowForceDeleteContactsModal] = useState(false);
     const [forceDeleteBusy, setForceDeleteBusy] = useState(false);
 
+    const [resultDetails, setResultDetails] = useState(null);
+
     const isBusyUpdateItem = isBusyItem => {
         setCleanupData(prev =>
             prev.map(item => (item.id === isBusyItem.id ? { ...item, dateDetermined: 'Bezig...' } : item))
@@ -45,6 +47,9 @@ export default function DataCleanupItemsApp() {
 
     const getErrorsForItem = id => cleanupErrorsByItemId[id] || [];
 
+    const openDetails = details => setResultDetails(details);
+    const closeDetails = () => setResultDetails(null);
+
     useEffect(() => {
         fetchCleanupData();
         fetchForceDeleteContactsStats();
@@ -59,6 +64,7 @@ export default function DataCleanupItemsApp() {
         DataCleanupAPI.getCleanupItems()
             .then(payload => {
                 setGlobalAlert(null);
+                setResultDetails(null);
                 setCleanupData(payload ?? []);
                 setIsLoading(false);
             })
@@ -85,6 +91,8 @@ export default function DataCleanupItemsApp() {
     const handleDataCleanupUpdateItemsAll = () => {
         setIsLoading(true);
 
+        setResultDetails(null);
+
         setGlobalAlert({
             type: 'info',
             text: 'Herberekenen alles wordt uitgevoerd…',
@@ -92,8 +100,9 @@ export default function DataCleanupItemsApp() {
 
         DataCleanupAPI.updateItemsAll()
             .then(payload => {
-                setCleanupData(payload ?? []);
                 setCleanupErrorsByItemId({});
+                setResultDetails(null);
+                setCleanupData(payload ?? []);
 
                 setGlobalAlert({
                     type: 'success',
@@ -164,24 +173,31 @@ export default function DataCleanupItemsApp() {
                 });
 
                 const failed = (results || []).filter(r => r?.statusCode >= 400);
+
                 if (failed.length) {
                     setGlobalAlert({
                         type: 'danger',
-                        text: `Opschonen alles uitgevoerd, maar ${failed.length} item(s) hadden fouten. Klik op het waarschuwing-icoon per item voor details.`,
+                        text: `Opschonen alles uitgevoerd, maar ${failed.length} item(s) hadden fouten. Klik op details voor meer informatie.`,
+                    });
+
+                    openDetails({
+                        title: 'Details opschonen alles',
+                        summary: `Opschonen alles uitgevoerd, maar ${failed.length} item(s) hadden fouten. Klik op details voor meer informatie.`,
+                        rows: failed.map(r => ({
+                            label: r?.item?.name || r?.codeRef || `Item ${r?.item?.id ?? ''}`,
+                            statusCode: r?.statusCode ?? 0,
+                            errors: r?.errors || [],
+                        })),
                     });
                 } else {
-                    setGlobalAlert({
-                        type: 'success',
-                        text: 'Opschonen alles is uitgevoerd.',
-                    });
+                    setGlobalAlert({ type: 'success', text: 'Opschonen alles is uitgevoerd.' });
                 }
-
                 setCleanupAllBusy(false);
                 setShowCleanupAllModal(false);
             })
             .catch(err => {
                 const results = err?.response?.data?.data?.results ?? [];
-                const backendMessage = err?.response?.data?.message;
+                const backendMessage = err?.response?.data?.message ?? 'Onbekende fout bij Opschonen alles';
 
                 (results || []).forEach(r => {
                     if (r?.item) replaceCleanupItem(r.item);
@@ -190,15 +206,27 @@ export default function DataCleanupItemsApp() {
 
                 const failed = (results || []).filter(r => (r?.statusCode ?? 0) >= 400);
 
-                const text =
-                    failed.length > 0
-                        ? `Opschonen alles uitgevoerd, maar ${failed.length} item(s) hadden fouten. Klik op het waarschuwing-icoon per item voor details.`
-                        : backendMessage || 'Er is iets misgegaan met opschonen van alle items.';
+                if (failed.length) {
+                    setGlobalAlert({
+                        type: 'danger',
+                        text: `Opschonen alles uitgevoerd, maar ${failed.length} item(s) hadden fouten. Klik op details voor meer informatie.`,
+                    });
 
-                setGlobalAlert({
-                    type: 'danger',
-                    text,
-                });
+                    openDetails({
+                        title: 'Details opschonen alles',
+                        summary: `Opschonen alles uitgevoerd, maar ${failed.length} item(s) hadden fouten. Klik op details voor meer informatie.`,
+                        rows: failed.map(r => ({
+                            label: r?.item?.name || r?.codeRef || `Item ${r?.item?.id ?? ''}`,
+                            statusCode: r?.statusCode ?? 0,
+                            errors: r?.errors || [],
+                        })),
+                    });
+                } else {
+                    setGlobalAlert({
+                        type: 'danger',
+                        text: backendMessage,
+                    });
+                }
 
                 setCleanupAllBusy(false);
                 setShowCleanupAllModal(false);
@@ -255,21 +283,33 @@ export default function DataCleanupItemsApp() {
         DataCleanupAPI.forceDeleteContacts()
             .then(res => {
                 const results = res?.data?.results ?? [];
-                const msg = res?.message;
+                // const msg = res?.message;
 
                 const failed = results.filter(r => (r?.statusCode ?? 0) >= 400);
 
                 if (failed.length) {
                     setGlobalAlert({
                         type: 'danger',
-                        text:
-                            msg ||
-                            `Hard verwijderen uitgevoerd, maar ${failed.length} contact(en) konden niet worden verwijderd.`,
+                        text: `Hard verwijderen contacten uitgevoerd, maar ${failed.length} contact(en) konden niet worden verwijderd.`,
                     });
-                    // todo optioneel: toon details in console of maak een “details modal”
-                    console.log(failed);
+
+                    openDetails({
+                        title: 'Details hard verwijderen contacten',
+                        summary: `Hard verwijderen contacten uitgevoerd, maar ${failed.length} contact(en) konden niet worden verwijderd.`,
+
+                        rows: failed.map(r => {
+                            const name = r?.fullName || '';
+
+                            return {
+                                label:
+                                    r?.label || (r?.contactId ? `Contact ${name} (${r.contactId})`.trim() : 'Contact'),
+                                statusCode: r?.statusCode ?? 0,
+                                errors: r?.errors || [],
+                            };
+                        }),
+                    });
                 } else {
-                    setGlobalAlert({ type: 'success', text: msg || 'Hard verwijderen is uitgevoerd.' });
+                    setGlobalAlert({ type: 'success', text: 'Hard verwijderen contacten is uitgevoerd.' });
                 }
 
                 setForceDeleteBusy(false);
@@ -280,11 +320,37 @@ export default function DataCleanupItemsApp() {
                 fetchForceDeleteContactsStats();
             })
             .catch(err => {
-                const backendMessage = err?.response?.data?.message;
-                setGlobalAlert({
-                    type: 'danger',
-                    text: backendMessage || 'Er is iets misgegaan bij hard verwijderen.',
-                });
+                const results = err?.response?.data?.data?.results ?? [];
+                const backendMessage = err?.response?.data?.message ?? 'Onbekende fout bij Hard verwijderen contacten';
+
+                const failed = (results || []).filter(r => (r?.statusCode ?? 0) >= 400);
+
+                if (failed.length) {
+                    setGlobalAlert({
+                        type: 'danger',
+                        text: `Hard verwijderen contacten uitgevoerd, maar ${failed.length} contact(en) konden niet worden verwijderd.`,
+                    });
+
+                    openDetails({
+                        title: 'Details hard verwijderen contacten',
+                        summary: `Hard verwijderen contacten uitgevoerd, maar ${failed.length} contact(en) konden niet worden verwijderd.`,
+                        rows: failed.map(r => {
+                            const name = r?.fullName || '';
+
+                            return {
+                                label:
+                                    r?.label || (r?.contactId ? `Contact ${name} (${r.contactId})`.trim() : 'Contact'),
+                                statusCode: r?.statusCode ?? 0,
+                                errors: r?.errors || [],
+                            };
+                        }),
+                    });
+                } else {
+                    setGlobalAlert({
+                        type: 'danger',
+                        text: backendMessage,
+                    });
+                }
 
                 setForceDeleteBusy(false);
                 setShowForceDeleteContactsModal(false);
@@ -367,14 +433,49 @@ export default function DataCleanupItemsApp() {
                         confirmAction={onConfirmForceDeleteContacts}
                         buttonConfirmText="Contacten hard verwijderen"
                         buttonClassName={'btn-danger'}
-                        title="Bevestig hard verwijderen"
+                        title="Bevestig hard verwijderen contacten"
                         loading={forceDeleteBusy}
                     >
                         <div>
-                            Weet u zeker dat u <strong>alle</strong> soft-verwijderde contacten hard wilt verwijderen?
+                            Weet u zeker dat u <strong>alle</strong> soft-verwijderde contacten en alle daar aan
+                            gerelateerde gegevens hard wilt verwijderen?
                             <br />
                             <br />
                             Deze actie is niet terug te draaien.
+                        </div>
+                    </Modal>
+                ) : null}
+
+                {resultDetails ? (
+                    <Modal
+                        closeModal={closeDetails}
+                        showConfirmAction={false}
+                        buttonCancelText="Sluiten"
+                        title={resultDetails.title}
+                        loading={false}
+                        draggableDisabled={false}
+                        modalClassName="modal-lg"
+                    >
+                        {resultDetails.summary ? <div className="alert alert-info">{resultDetails.summary}</div> : null}
+
+                        <div style={{ maxHeight: 400, overflowY: 'auto' }}>
+                            {(resultDetails.rows || []).map((row, idx) => (
+                                <div key={idx} style={{ marginBottom: 10 }}>
+                                    <strong>
+                                        {row.label} ({row.statusCode})
+                                    </strong>
+                                    {row.errors?.length ? (
+                                        <ul style={{ marginTop: 6 }}>
+                                            {row.errors.map((e, i) => (
+                                                <li key={i}>{e}</li>
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        <div style={{ marginTop: 6, fontStyle: 'italic' }}>Geen details</div>
+                                    )}
+                                    <hr />
+                                </div>
+                            ))}
                         </div>
                     </Modal>
                 ) : null}

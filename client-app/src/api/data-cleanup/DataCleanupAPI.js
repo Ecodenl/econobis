@@ -40,13 +40,6 @@ const DataCleanupAPI = {
             .then(res => res.data);
     },
 
-    // GET /api/cleanup/contacts
-    getCleanupContacts() {
-        return api()
-            .get(`${baseUrl()}/contacts`)
-            .then(unwrap);
-    },
-
     // GET /api/cleanup/force-delete-contacts-stats
     getForceDeleteContactsStats() {
         return api()

@@ -288,8 +288,6 @@ Route::namespace('Api')
         Route::get('cleanup/force-delete-contacts-stats', 'DataCleanup\CleanupController@getForceDeleteContactsStats');
         Route::post('cleanup/force-delete-contacts', 'DataCleanup\CleanupController@forceDeleteSoftDeletedContacts');
 
-        Route::get('cleanup/contacts', 'DataCleanup\CleanupController@getCleanupContacts');
-
         Route::get('task/grid/tasks', 'Task\TaskController@gridTask');
         Route::get('task/grid/notes', 'Task\TaskController@gridNote');
         Route::get('task/peek', 'Task\TaskController@peek');

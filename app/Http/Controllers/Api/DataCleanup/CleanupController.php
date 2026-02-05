@@ -11,7 +11,6 @@ use App\Exceptions\CleanupItemFailed;
 use App\Helpers\DataCleanup\CleanupItemHelper;
 use App\Helpers\Delete\Models\ForceDeleteContact;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\DataCleanup\FullCleanupContact;
 use App\Http\Resources\DataCleanup\FullCleanupItem;
 use App\Services\DataCleanup\CleanupItemStateService;
 use Illuminate\Http\JsonResponse;
@@ -31,21 +30,6 @@ class CleanupController extends Controller
             ->get();
 
         return $this->respondCleanupCollection(FullCleanupItem::collection($cleanupItems));
-    }
-
-    public function getCleanupContacts(){
-        $cooperation = Cooperation::firstOrFail();
-
-        $cleanupContactsExcludedGroups = $cooperation->cleanupContactsExcludedGroups;
-        $contactsToDelete = $cooperation->cleanupItems()->where('code_ref', 'contacts')->first();
-        $contactsSoftDeleted = $cooperation->cleanupItems()->where('code_ref', 'contactsSoftDeleted')->first();
-        $cleanupContact = [
-            'contactsToDelete' => $contactsToDelete,
-            'contactsSoftDeleted' => $contactsSoftDeleted,
-            'cleanupContactsExcludedGroups' => $cleanupContactsExcludedGroups,
-        ];
-
-        return FullCleanupContact::make($cleanupContact);
     }
 
     public function updateItemsAll()
@@ -167,8 +151,6 @@ class CleanupController extends Controller
 
     public function forceDeleteSoftDeletedContacts(): JsonResponse
     {
-        $cooperation = Cooperation::firstOrFail();
-
         $results = [];
         $has412 = false;
         $has500 = false;

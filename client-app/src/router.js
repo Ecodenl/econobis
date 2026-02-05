@@ -262,7 +262,6 @@ const EmailSplitView = React.lazy(() => import('./container/email/splitview/Emai
 const OpenEmailModal = React.lazy(() => import('./container/email/OpenEmailModalView'));
 
 const DataCleanupItemsApp = React.lazy(() => import('./container/data-cleanup/items/DataCleanupItemsApp'));
-const DataCleanupContactsApp = React.lazy(() => import('./container/data-cleanup/contacts/DataCleanupContactsApp'));
 
 const ScrollToTop = () => {
     const location = useLocation();
@@ -348,7 +347,6 @@ const AppRoutes = () => {
                         <Route path="contacten-in-groep/:contactGroup" element={<ContactsInGroupListApp />} />
                         /* Data opschonen */
                         <Route path="data-opschonen-items" element={<DataCleanupItemsApp />} />
-                        <Route path="data-opschonen-contacten" element={<DataCleanupContactsApp />} />
                         /* Campaign */
                         <Route path="campagne/nieuw" element={<CampaignNewApp />} />
                         <Route path="campagne/nieuw/maatregel/:measureId" element={<CampaignNewApp />} />

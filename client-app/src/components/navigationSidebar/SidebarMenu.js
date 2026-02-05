@@ -165,14 +165,6 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongle
                             </Link>
                         </NavText>
                     </Nav>
-
-                    <Nav id="data-cleanup-contacts">
-                        <NavText>
-                            <Link className="sidebar-link" to="data-opschonen-contacten">
-                                Contacten
-                            </Link>
-                        </NavText>
-                    </Nav>
                 </Nav>
             )}
 

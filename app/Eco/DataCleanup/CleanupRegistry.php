@@ -5,6 +5,7 @@ namespace App\Eco\DataCleanup;
 use App\Eco\Contact\Contact;
 use App\Eco\Email\Email;
 use App\Eco\FinancialOverview\FinancialOverview;
+use App\Eco\FinancialOverview\FinancialOverviewContact;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Intake\Intake;
 use App\Eco\Invoice\Invoice;
@@ -19,6 +20,7 @@ use App\Eco\Task\Task;
 use App\Helpers\DataCleanup\CleanupItemHelper;
 use App\Helpers\Delete\Models\DeleteContact;
 use App\Helpers\Delete\Models\DeleteFinancialOverview;
+use App\Helpers\Delete\Models\DeleteFinancialOverviewContact;
 use App\Helpers\Delete\Models\DeleteHousingFile;
 use App\Helpers\Delete\Models\DeleteIntake;
 use App\Helpers\Delete\Models\DeleteInvoice;
@@ -62,11 +64,11 @@ final class CleanupRegistry
                 'deleter' => fn ($model) => new DeleteOrder($model),
                 'label' => fn (Order $m) => "Order {$m->number} id {$m->id}",
             ],
-            'financialOverviews' => [
-                'model' => FinancialOverview::class,
-                'query' => fn (CleanupItemHelper $h) => $h->getFinancialOverviewsToDelete(),
-                'deleter' => fn ($model) => new DeleteFinancialOverview($model),
-                'label' => fn (FinancialOverview $m) => "FinancialOverview {$m->administration_id}-{$m->year} id {$m->id}",
+            'financialOverviewContacts' => [
+                'model' => FinancialOverviewContact::class,
+                'query' => fn (CleanupItemHelper $h) => $h->getFinancialOverviewContactsToDelete(),
+                'deleter' => fn ($model) => new DeleteFinancialOverviewContact($model),
+                'label' => fn (FinancialOverviewContact $m) => "FinancialOverviewContact {$m->administration_id}-{$m->year} id {$m->id}",
                 'retentionMode' => self::RETENTION_FISCAL_DATE,
                 'dateRef' => 'year',
             ],

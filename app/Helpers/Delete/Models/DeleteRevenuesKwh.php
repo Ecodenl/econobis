@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: StagiarSoftware
- * Date: 10-8-2018
- * Time: 9:23
- */
 
 namespace App\Helpers\Delete\Models;
-
 
 use App\Eco\Cooperation\Cooperation;
 use App\Helpers\Delete\DeleteInterface;
@@ -47,12 +40,12 @@ class DeleteRevenuesKwh implements DeleteInterface
      * @return array
      * @throws
      */
-    public function cleanup()
+    public function cleanup(): array
     {
-        try{
+        try {
             $this->force = false;   // cleanup = soft
             return $this->delete();
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             Log::error('Fout bij opschonen Opbrengsten Kwh', [
                 'exception' => $exception->getMessage(),
                 'errormessages' => implode(' | ', $this->errorMessage),
@@ -68,7 +61,7 @@ class DeleteRevenuesKwh implements DeleteInterface
      * @return array errorMessage array
      * @throws
      */
-    public function delete()
+    public function delete(): array
     {
         if (! $this->canDelete()) {
             return $this->errorMessage;

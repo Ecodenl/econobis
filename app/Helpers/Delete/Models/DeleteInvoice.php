@@ -71,13 +71,35 @@ class DeleteInvoice implements DeleteInterface
 
     public function canDelete()
     {
-        // 1) Draft/to-send zonder invoice_number: altijd ok (geen "bewaarde" nota)
+        if ($this->invoice->invoicesToSend()->exists()) {
+            $this->errorMessage[] =
+                "Nota kan nu niet worden verwijderd: er staat nog een verzendproces open.";
+            return false;
+        }
+
+        // Draft/to-send zonder invoice_number: altijd ok (geen "bewaarde" nota)
         $isDraft = ($this->invoice->status_id === 'to-send' && (int) $this->invoice->invoice_number === 0);
         if ($isDraft) {
             return true;
         }
 
-        // 2) Extra restrictie voor fiscal-date items:
+        $processingStatuses = [
+            'in-progress',
+            'error-making',
+            'is-sending',
+            'error-sending',
+            'is-resending',
+            'is-exporting',
+            'error-exporting',
+        ];
+
+        if (in_array($this->invoice->status_id, $processingStatuses, true)) {
+            $this->errorMessage[] =
+                "Nota kan nu niet worden verwijderd: status is '{$this->invoice->status_id}' (verwerkingsproces bezig).";
+            return false;
+        }
+
+        // Extra restrictie voor fiscal-date items:
         // gekoppelde contact_id mag niet in excluded groups zitten
         if ($this->isFiscalRetention()) {
             $contactId = $this->invoice->order?->contact_id;
@@ -88,7 +110,7 @@ class DeleteInvoice implements DeleteInterface
             }
         }
 
-        // 3) Bewaarplicht check: date_sent moet ouder zijn dan cutoff
+        // Bewaarplicht check: date_sent moet ouder zijn dan cutoff
         $dateSent = $this->invoice->date_sent ? Carbon::parse($this->invoice->date_sent)->startOfDay() : null;
 
         if (! $dateSent) {
@@ -116,6 +138,17 @@ class DeleteInvoice implements DeleteInterface
             $deleteTask = new DeleteTask($task);
             $this->errorMessage = array_merge($this->errorMessage, ($deleteTask->delete() ?? []));
         }
+
+        // Subtree soft delete (zodra softdeletable)
+        $this->invoice->documents()->delete();
+        $this->invoice->invoiceProducts()->delete();
+        $this->invoice->molliePayments()->delete();
+
+        // invoice_payment is softdeletable -> delete()
+        $this->invoice->payments()->delete();
+
+        // invoices_to_send is NOT softdeletable -> hard delete
+//        $this->invoice->invoicesToSend()->delete();
     }
 
     public function dissociateRelations()
@@ -123,11 +156,6 @@ class DeleteInvoice implements DeleteInterface
         foreach ($this->invoice->emails as $email) {
             $email->invoice()->dissociate();
             $email->save();
-        }
-
-        foreach ($this->invoice->documents as $document) {
-            $document->invoice()->dissociate();
-            $document->save();
         }
     }
 

@@ -89,7 +89,10 @@ class DeleteOrder implements DeleteInterface
      */
     public function deleteModels()
     {
+        $this->order->orderProducts()->delete();
+
         foreach ($this->order->invoices as $invoices){
+
             $deleteInvoice = new DeleteInvoice($invoices);
             $this->errorMessage = array_merge($this->errorMessage, ( $deleteInvoice->delete() ?? [] ) );
         }

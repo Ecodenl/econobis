@@ -8,15 +8,12 @@
 
 namespace App\Helpers\Delete\Models;
 
-
 use App\Helpers\Delete\DeleteInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class DeleteAddress
- *
- * Relation: 1-n Housing files. Action: call DeleteHousingFile
- * Relation: 1-n Intakes. Action: call DeleteIntake
  *
  * @package App\Helpers\Delete\Models
  */
@@ -30,10 +27,29 @@ class DeleteAddress implements DeleteInterface
      *
      * @param Model $address the model to delete
      */
-
     public function __construct(Model $address)
     {
         $this->address = $address;
+    }
+
+    /** If it's called by the cleanup functionality, we land on this function, else on the delete function
+     *
+     * @return array
+     * @throws
+     */
+    public function cleanup()
+    {
+        // gebruiken we nog niet.
+//        try{
+//            return $this->delete();
+//        }catch (\Exception $exception){
+//            Log::error('Fout bij opschonen Adressen', [
+//                'exception' => $exception->getMessage(),
+//                'errormessages' => implode(' | ', $this->errorMessage),
+//            ]);
+//            array_push($this->errorMessage, "Fout bij opschonen Adressen. (meld dit bij Econobis support)");
+//            return $this->errorMessage;
+//        }
     }
 
     /** Main method for deleting this model and all it's relations
@@ -43,12 +59,16 @@ class DeleteAddress implements DeleteInterface
      */
     public function delete()
     {
-        $this->canDelete();
+        if (! $this->canDelete()) {
+            return $this->errorMessage;
+        }
         $this->deleteModels();
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->address->delete();
+        if( count($this->errorMessage) === 0 ) {
+            $this->address->delete();
+        }
 
         return $this->errorMessage;
     }
@@ -56,14 +76,18 @@ class DeleteAddress implements DeleteInterface
     /** Checks if the model can be deleted and sets error messages
      *
      */
-    public function canDelete()
+    public function canDelete(): bool
     {
         if($this->address->participations()->count() > 0){
             array_push($this->errorMessage, "Er zijn nog deelnames.");
+            return false;
         }
         if($this->address->housingFiles()->count() > 0){
             array_push($this->errorMessage, "Er zijn nog woningdossiers.");
+            return false;
         }
+
+        return true;
     }
 
     /** Deletes models recursive

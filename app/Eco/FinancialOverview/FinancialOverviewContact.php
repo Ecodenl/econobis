@@ -4,9 +4,12 @@ namespace App\Eco\FinancialOverview;
 
 use App\Eco\Contact\Contact;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FinancialOverviewContact extends Model
 {
+    use SoftDeletes;
+
     protected $guarded = ['id'];
 
     protected $casts = [

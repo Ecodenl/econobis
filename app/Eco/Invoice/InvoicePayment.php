@@ -2,15 +2,13 @@
 
 namespace App\Eco\Invoice;
 
-use App\Eco\Product\Product;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class InvoicePayment extends Model
 {
-    use RevisionableTrait;
-    use SoftDeletes;
+    use RevisionableTrait, SoftDeletes;
 
     protected $guarded = ['id'];
 

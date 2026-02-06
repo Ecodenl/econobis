@@ -15,7 +15,7 @@ use App\Eco\Cooperation\Cooperation;
 use App\Eco\DataCleanup\CleanupItemSelection;
 use App\Eco\DataCleanup\CleanupRegistry;
 use App\Eco\Email\Email;
-use App\Eco\FinancialOverview\FinancialOverview;
+use App\Eco\FinancialOverview\FinancialOverviewContact;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Intake\Intake;
 use App\Eco\Invoice\Invoice;
@@ -155,8 +155,19 @@ class CleanupItemHelper
      */
     public function getInvoicesToDelete(): mixed
     {
+        $processingStatuses = [
+            'in-progress',
+            'error-making',
+            'is-sending',
+            'error-sending',
+            'is-resending',
+            'is-exporting',
+            'error-exporting',
+        ];
+
         $cutoff = $this->cutoffDate();
         return Invoice::with('order')
+            ->whereNotIn('status_id', $processingStatuses)
             ->whereDate('date_sent', '<', $cutoff);
     }
     /**
@@ -200,12 +211,31 @@ class CleanupItemHelper
     /**
      * @return mixed
      */
-    public function getFinancialOverviewsToDelete(): mixed
-    {
-        $cutoffYear = $this->cutoffYear();
-        return FinancialOverview::where('year', '<', $cutoffYear);
-    }
+//    public function getFinancialOverviewsToDelete(): mixed
+//    {
+//        $cutoffYear = $this->cutoffYear();
+//        return FinancialOverview::where('year', '<', $cutoffYear);
+//    }
 
+    /**
+     * @return mixed
+     */
+    public function getFinancialOverviewContactsToDelete(): mixed
+    {
+        $processingStatuses = [
+            'in-progress',
+            'error-making',
+            'is-sending',
+            'error-sending',
+            'is-resending',
+        ];
+
+        $cutoffYear = $this->cutoffYear();
+        return FinancialOverviewContact::whereNotIn('status_id', $processingStatuses)
+            ->whereHas('financialOverview', function ($query) use ($cutoffYear) {
+                $query->where('year', '<', $cutoffYear);
+            });
+    }
 
     /**
      * @return mixed

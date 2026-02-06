@@ -101,6 +101,7 @@ class DeleteFinancialOverview implements DeleteInterface
                 return false;
             }
 
+
             // Concept zonder blokkades: mag weg (oude gedrag)
             return true;
         }

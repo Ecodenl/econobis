@@ -81,8 +81,12 @@ class AddressEnergySupplierObserver
         $aesMemberSince = $addressEnergySupplier->member_since ? Carbon::parse($addressEnergySupplier->member_since)->format('Y-m-d') : '1900-01-01';
         $aesEndDate = $addressEnergySupplier->end_date ? Carbon::parse($addressEnergySupplier->end_date)->format('Y-m-d') : '9999-12-31';
 
-        $participations = $addressEnergySupplier->address->participations;
-        foreach($participations as $participation) {
+        $address = $addressEnergySupplier->address;
+        if (!$address){
+            return;
+        }
+
+        foreach($address->participations as $participation) {
             $distributionsKwh = $participation->revenueDistributionKwh->whereIn('status', ['concept', 'confirmed']);
             foreach($distributionsKwh as $distributionKwh) {
                 $distributionPartsKwh = $distributionKwh->distributionPartsKwh->whereIn('status', ['concept', 'confirmed']);

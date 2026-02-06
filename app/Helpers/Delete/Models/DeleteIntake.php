@@ -74,7 +74,7 @@ class DeleteIntake implements DeleteInterface
     /** Checks if the model can be deleted and sets error messages
      *
      */
-    public function canDelete()
+    public function canDelete(): bool
     {
         // 25-04-2024: Verwijderen 1 voor 1 mag ook ongeacht de status van de intake
 //        if(!($this->intake->intake_status_id === 2 || $this->intake->intake_status_id === 3)){
@@ -124,6 +124,9 @@ class DeleteIntake implements DeleteInterface
             $document->intake()->dissociate();
             $document->save();
         }
+
+        $this->intake->reasons()->detach();
+        $this->intake->sources()->detach();
     }
 
     /**

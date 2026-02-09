@@ -185,7 +185,7 @@ class AddNewCleanupItems extends Migration
                 'date_ref' => 'Beëindigingsdatum'
             ],
             [
-                'name' => 'Waardestaten',
+                'name' => 'Waardestaten contacten',
                 'code_ref' => 'financialOverviewContacts',
                 'date_ref' => 'Waardestaat einde jaar'
             ],

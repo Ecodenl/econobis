@@ -3,13 +3,22 @@
 namespace App\Helpers\Delete\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class ForceDeleteContact
 {
     private array $errorMessage = [];
     private Model $contact;
+
+    private array $stepStack = [];
+    private array $constraintFixMap = [
+        // voorbeelden (later uitbreiden):
+        // 'project_revenue_distribution_contact_id_foreign' => 'RevenueDistributionHelper (delete revenue distributions vóór contact)',
+        // 'addresses_contact_id_foreign' => 'Addresses moeten vóór contact forceDelete',
+    ];
 
     public function __construct(Model $contact)
     {
@@ -20,6 +29,9 @@ class ForceDeleteContact
     {
         try {
             return $this->forceDelete();
+        } catch (QueryException $exception) {
+            // hier zit parseConstraintName ook bruikbaar als fallback
+
         } catch (\Exception $exception) {
             Log::error('Fout bij hard verwijderen (force delete) Contact', [
                 'exception' => $exception->getMessage(),
@@ -39,13 +51,13 @@ class ForceDeleteContact
         }
 
         DB::transaction(function () {
-            $this->dissociateRelations();
-            $this->deleteModels();
-            $this->deleteRelations();
-            $this->customDeleteActions();
+            $this->runStep('dissociateRelations', fn () => $this->dissociateRelations());
+            $this->runStep('deleteModels',        fn () => $this->deleteModels());
+            $this->runStep('deleteRelations',     fn () => $this->deleteRelations());
+            $this->runStep('customDeleteActions', fn () => $this->customDeleteActions());
 
             if (count($this->errorMessage) === 0) {
-                $this->contact->forceDelete();
+                $this->runStep('contact.forceDelete', fn () => $this->contact->forceDelete());
             }
         });
 
@@ -170,25 +182,30 @@ class ForceDeleteContact
 
             // Invoices die aan deze order hangen eerst weg
             $order->invoices()->withTrashed()->get()->each(function ($inv) {
-                // Guard: open verzendproces? dan eerder al geblokkeerd in canForceDelete, maar extra veiligheid:
-                if ($inv->invoicesToSend()->exists()) {
-                    throw new \RuntimeException("Invoice {$inv->id} heeft open verzendproces (invoices_to_send).");
-                }
+                $this->runStep("orders.invoices[{$inv->id}]", function () use ($inv) {
 
-                // emails dissociate
-                $inv->emails()->withTrashed()->get()->each(function ($email) {
-                    $email->invoice()->dissociate();
-                    $email->save();
+                    // Guard: open verzendproces? dan eerder al geblokkeerd in canForceDelete, maar extra veiligheid:
+                    if ($inv->invoicesToSend()->exists()) {
+                        $this->errorMessage[] = "Nota {$inv->id} heeft open verzendproces. Hard verwijderen niet toegestaan.";
+                        throw new \RuntimeException("Invoice {$inv->id} heeft open verzendproces (invoices_to_send).");
+                    }
+
+                    // emails dissociate
+                    $inv->emails()->withTrashed()->get()->each(function ($email) {
+                        $email->invoice()->dissociate();
+                        $email->save();
+                    });
+
+                    // child records (nu softdeletable bij jou, behalve invoices_to_send)
+                    $inv->documents()->withTrashed()->get()->each->forceDelete();
+                    $inv->invoiceProducts()->withTrashed()->get()->each->forceDelete();
+                    $inv->molliePayments()->withTrashed()->get()->each->forceDelete();
+                    $inv->payments()->withTrashed()->get()->each->forceDelete();
+                    $inv->tasks()->withTrashed()->get()->each->forceDelete();
+
+
+                    $inv->forceDelete();
                 });
-
-                // child records (nu softdeletable bij jou, behalve invoices_to_send)
-                $inv->documents()->withTrashed()->get()->each->forceDelete();
-                $inv->invoiceProducts()->withTrashed()->get()->each->forceDelete();
-                $inv->molliePayments()->withTrashed()->get()->each->forceDelete();
-                $inv->payments()->withTrashed()->get()->each->forceDelete();
-                $inv->tasks()->withTrashed()->get()->each->forceDelete();
-
-                $inv->forceDelete();
             });
 
             $order->emails()->withTrashed()->get()->each(function ($email) {
@@ -238,10 +255,12 @@ class ForceDeleteContact
 //            $address->housingFiles()->withTrashed()->get()->each->forceDelete();
 
             if ($address->housingFiles()->withTrashed()->exists()) {
+                $this->errorMessage[] = "Contact/Adres {$this->contact->id}/{$address->id} heeft woningdossiers; hard verwijderen nog niet toegestaan.";
                 throw new \RuntimeException("Address {$address->id} heeft housingfiles; hard delete contact niet toegestaan (nog niet geïmplementeerd).");
             }
 
             if ($address->participations()->withTrashed()->exists()) {
+                $this->errorMessage[] = "Contact/Adres {$this->contact->id}/{$address->id} heeft deelnames; hard verwijderen nog niet toegestaan.";
                 throw new \RuntimeException("Address {$address->id} heeft participations; hard delete contact niet toegestaan.");
             }
 
@@ -348,6 +367,66 @@ class ForceDeleteContact
 
 
         $intake->forceDelete();
+    }
+
+    private function runStep(string $step, callable $fn): void
+    {
+        $this->stepStack[] = $step;
+
+        try {
+            $fn();
+        } catch (QueryException $e) {
+            $this->logDbException($e, $step);
+            throw $e; // transaction rollback + cleanup() vangt 'm
+        } catch (Throwable $e) {
+            $this->logGenericException($e, $step);
+            throw $e;
+        } finally {
+            array_pop($this->stepStack);
+        }
+    }
+
+    private function logDbException(QueryException $e, string $step): void
+    {
+        $constraint = $this->parseConstraintName($e->getMessage());
+        $sqlState = $e->errorInfo[0] ?? null;
+        $errno    = $e->errorInfo[1] ?? null;
+
+        Log::error('ForceDeleteContact DB exception', [
+            'contact_id'       => $this->contact->id ?? null,
+            'step'             => $step,
+            'stack'            => $this->stepStack,
+            'constraint_name'  => $constraint,
+            'sqlstate'         => $sqlState,
+            'errno'            => $errno,
+            'message'          => $e->getMessage(),
+            // 'sql'           => $e->getSql(),       // kan nuttig zijn, maar soms te noisy
+            // 'bindings'      => $e->getBindings(),  // idem
+            'suggested_fix'    => $constraint ? ($this->constraintFixMap[$constraint] ?? null) : null,
+        ]);
+    }
+
+    private function logGenericException(Throwable $e, string $step): void
+    {
+        Log::error('ForceDeleteContact exception', [
+            'contact_id' => $this->contact->id ?? null,
+            'step'       => $step,
+            'stack'      => $this->stepStack,
+            'message'    => $e->getMessage(),
+        ]);
+    }
+
+    private function parseConstraintName(string $message): ?string
+    {
+        // MySQL/MariaDB geeft vaak: CONSTRAINT `name` FOREIGN KEY ...
+        if (preg_match('/CONSTRAINT `([^`]+)` FOREIGN KEY/i', $message, $m)) {
+            return $m[1];
+        }
+        // Soms: a foreign key constraint fails (`db`.`table`, CONSTRAINT `name` ...)
+        if (preg_match('/constraint fails .* CONSTRAINT `([^`]+)`/i', $message, $m)) {
+            return $m[1];
+        }
+        return null;
     }
 
 }

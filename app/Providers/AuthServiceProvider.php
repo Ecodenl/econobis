@@ -195,8 +195,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         // Access tokens (user-based: portal + auth code)
-        // Tijdelijk even op 7 dagen, later wrs weer terug naar 1 dag
-        Passport::tokensExpireIn(now()->addDays(7));
+        Passport::tokensExpireIn(now()->addDays(1));
 
         // Refresh tokens (user-based flows)
         Passport::refreshTokensExpireIn(now()->addDays(90));

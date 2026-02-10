@@ -82,7 +82,14 @@ class RevenuesKwhController extends ApiController
         $limit = 100;
         $offset = $request->input('page') ? $request->input('page') * $limit : 0;
 
-        $distributionKwh = $revenuesKwh->distributionKwh()->limit($limit)->offset($offset)->orderBy('status')->get();
+        $distributionKwh = $revenuesKwh
+            ->distributionKwh()
+            ->leftJoin('contacts', 'contacts.id', '=', 'contact_id')
+            ->orderBy('contacts.full_name')
+            ->limit($limit)
+            ->offset($offset)
+            ->get();
+
         $distributionKwhIdsTotal = $revenuesKwh->distributionKwh()->pluck('id')->toArray();
         $total = $revenuesKwh->distributionKwh()->count();
 
@@ -405,7 +412,12 @@ class RevenuesKwhController extends ApiController
 
         $ids = $request->input('ids') ? $request->input('ids') : [];
 
-        $distribution = RevenueDistributionKwh::whereIn('id', $ids)->with(['revenuesKwh'])->get();
+        $distribution = RevenueDistributionKwh::whereIn('revenue_distribution_kwh.id', $ids)  // Qualify 'id'
+        ->join('contacts', 'contact_id', '=', 'contacts.id')
+            ->orderBy('contacts.full_name', 'asc')
+            ->select('revenue_distribution_kwh.*')
+            ->with(['revenuesKwh', 'contact'])
+            ->get();
 
         return FullRevenueDistributionKwh::collection($distribution);
     }

@@ -17,7 +17,7 @@ class checkSoftDeletedContactsInAdministrationContactTwinfield extends Command
      * @var string
      */
     protected $signature = 'contact:checkSoftDeletedContactsInAdministrationContactTwinfield {--recover=false}';
-    protected $mailTo = 'patrick.koeman@xaris.nl';
+    protected $mailTo = 'xaris@econobis.nl';
 
     /**
      * The console command description.

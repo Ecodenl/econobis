@@ -17,8 +17,7 @@ class checkSoftDeletedContactsInContactAvailabilities extends Command
      * @var string
      */
     protected $signature = 'contact:checkSoftDeletedContactsInContactAvailabilities {--recover=false}';
-    //protected $mailTo = 'xaris@econobis.nl';
-    protected $mailTo = 'patrick.koeman@xaris.nl';
+    protected $mailTo = 'xaris@econobis.nl';
 
     /**
      * The console command description.

@@ -1413,18 +1413,29 @@ class ExternalWebformController extends Controller
                         'number' => $data['address_number'],
                     ]);
 
-                    try {
-                        $AddressController = app(AddressController::class);
-                        $getLvbagAddress = $AddressController->getLvbagAddress($request);
+                    $AddressController = app(AddressController::class);
+                    $getLvbagAddress = $AddressController->getLvbagAddress($request);
 
-                        if($getLvbagAddress['street'] != "" && $getLvbagAddress['street'] != ''){
-                            $data['address_street'] = $getLvbagAddress['street'];
-                            $data['address_city'] = $getLvbagAddress['city'];
-                            $this->log('Bij postcode ' . $data['address_postal_code'] . ' en huisnummer ' . $data['address_number'] . ' straat en plaats automatisch bepaald via LvBag: ' . $getLvbagAddress['street'] . ' | ' . $getLvbagAddress['city'] . '.');
-                        }
-                    } catch (\Exception $e) {
-                        $this->log('BAG register tijdelijk niet bereikbaar, adres opgeslagen maar niet automatisch aangevuld. error: ' . $e->getMessage());
+                    $street = $getLvbagAddress['street'] ?? null;
+                    $city   = $getLvbagAddress['city'] ?? null;
+
+                    if (!empty($street) && !empty($city)) {
+                        $data['address_street'] = $street;
+                        $data['address_city']   = $city;
+                        $this->log(
+                            'Bij postcode ' . $data['address_postal_code'] .
+                            ' en huisnummer ' . $data['address_number'] .
+                            ' straat en plaats automatisch bepaald via LvBag: ' .
+                            $street . ' | ' . $city . '.'
+                        );
+                    } else {
+                        $this->log(
+                            'Straat/Woonplaats kon niet automatisch bepaald worden bij postcode ' .
+                            $data['address_postal_code'] . ' en huisnummer ' .
+                            $data['address_number'] . '.'
+                        );
                     }
+
                 }
 
                 $address = Address::create([

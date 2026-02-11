@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Ecodenl\LvbagPhpWrapper\Client;
 use Ecodenl\LvbagPhpWrapper\Lvbag;
+use Throwable;
 
 class AddressController extends ApiController
 {
@@ -170,7 +171,7 @@ class AddressController extends ApiController
         $acceptCRS = 'epsg:28992';
 
         // Establish the connection
-        $client = Client::init($secret, $acceptCRS);
+//        $client = Client::init($secret, $acceptCRS);
 
         // Using the production environment endpoint
         $shouldUseProductionEndpoint = config('lvbag.lvbag_production');
@@ -197,18 +198,31 @@ class AddressController extends ApiController
             ];
         }
 
-        $addresses = $lvbag->adresUitgebreid()
-        ->list([
-            'postcode' => $pc,
-            'huisnummer' => $huisnummer,
-        ]);
+        try {
+// Testen van een 500 server error
+//            throw new \Exception('Test 500 simulatie');
 
-        $street = ($addresses && $addresses[0]) ? $addresses[0]['korteNaam'] : "";
-        $city = ($addresses && $addresses[0]) ? $addresses[0]['woonplaatsNaam'] : "";
+            $addresses = $lvbag->adresUitgebreid()->list([
+                'postcode' => $pc,
+                'huisnummer' => $huisnummer,
+            ]);
+        } catch (Throwable $e) {
+            // Niet laten klappen: gewoon leeg teruggeven
+            // Wel loggen/reporten (maar kort)
+            Log::warning('LvBag lookup failed', [
+                'postcode' => $pc,
+                'huisnummer' => $huisnummer,
+                'message' => $e->getMessage(),
+            ]);
+
+            return ['street' => '', 'city' => ''];
+        }
+
+        $first = $addresses[0] ?? null;
 
         return [
-            'street' => $street,
-            'city' => $city
+            'street' => $first['korteNaam'] ?? '',
+            'city'   => $first['woonplaatsNaam'] ?? '',
         ];
     }
 

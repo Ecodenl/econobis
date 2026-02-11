@@ -1087,8 +1087,26 @@ class ParticipationProjectController extends ApiController
 
     public function peekParticipantByIds(Request $request)
     {
-        $participations = ParticipantProject::whereIn('id',
-            $request->input('ids'))->with('contact')->get();
+        $ids = $request->input('ids', []);
+
+        if (empty($ids)) {
+            return ParticipantProjectPeek::collection(collect());
+        }
+
+        $participations = ParticipantProject::query()
+            ->where(function ($q) use ($ids) {
+                foreach (array_chunk($ids, 900) as $chunk) {
+                    $q->orWhereIn('id', $chunk);
+                }
+            })
+            ->with(['contact'])
+            ->orderBy(
+                Contact::select('full_name')
+                    ->whereColumn('contacts.id', 'participation_project.contact_id'),
+                'asc'
+            )
+            ->orderBy('participation_project.id', 'asc')
+            ->get();
 
         return ParticipantProjectPeek::collection($participations);
     }

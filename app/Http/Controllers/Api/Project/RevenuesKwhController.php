@@ -84,8 +84,13 @@ class RevenuesKwhController extends ApiController
 
         $distributionKwh = $revenuesKwh
             ->distributionKwh()
-            ->leftJoin('contacts', 'contacts.id', '=', 'contact_id')
-            ->orderBy('contacts.full_name')
+            ->with(['contact'])
+            ->orderBy(
+                Contact::select('full_name')
+                    ->whereColumn('contacts.id', 'revenue_distribution_kwh.contact_id'),
+                'asc'
+            )
+            ->orderBy('revenue_distribution_kwh.id', 'asc')
             ->limit($limit)
             ->offset($offset)
             ->get();
@@ -410,13 +415,20 @@ class RevenuesKwhController extends ApiController
     {
         $this->authorize('manage', RevenuesKwh::class);
 
-        $ids = $request->input('ids') ? $request->input('ids') : [];
+        $ids = $request->input('ids', []);
 
-        $distribution = RevenueDistributionKwh::whereIn('revenue_distribution_kwh.id', $ids)  // Qualify 'id'
-        ->join('contacts', 'contact_id', '=', 'contacts.id')
-            ->orderBy('contacts.full_name', 'asc')
-            ->select('revenue_distribution_kwh.*')
+        if (empty($ids)) {
+            return FullRevenueDistributionKwh::collection(collect());
+        }
+
+        $distribution = RevenueDistributionKwh::query()->whereIn('revenue_distribution_kwh.id', $ids)
             ->with(['revenuesKwh', 'contact'])
+            ->orderBy(
+                Contact::select('full_name')
+                    ->whereColumn('contacts.id', 'revenue_distribution_kwh.contact_id'),
+                'asc'
+            )
+            ->orderBy('revenue_distribution_kwh.id', 'asc')
             ->get();
 
         return FullRevenueDistributionKwh::collection($distribution);

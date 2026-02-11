@@ -78,8 +78,21 @@ class RevenuePartsKwhController extends ApiController
         $limit = 100;
         $offset = $request->input('page') ? $request->input('page') * $limit : 0;
 
-        $total = $revenuePartsKwh->distributionPartsKwhVisible()->count();
-        $distributionPartsKwh = $revenuePartsKwh->distributionPartsKwhVisible()->limit($limit)->offset($offset)->orderBy('status')->get();
+        $base = $revenuePartsKwh->distributionPartsKwhVisible();
+
+        $total = (clone $base)->count();
+
+        $distributionPartsKwh = (clone $base)
+            ->join('revenue_distribution_kwh', 'revenue_distribution_kwh.id', '=', 'revenue_distribution_parts_kwh.distribution_id')
+            ->join('contacts', 'contacts.id', '=', 'revenue_distribution_kwh.contact_id')
+            ->orderBy('contacts.full_name', 'asc')
+            ->orderBy('revenue_distribution_parts_kwh.id', 'asc')
+            ->select('revenue_distribution_parts_kwh.*')
+            ->with(['distributionKwh.contact'])
+            ->limit($limit)
+            ->offset($offset)
+            ->get();
+
         $distributionPartsKwhTotal = $revenuePartsKwh->distributionPartsKwhVisible()->whereNull('date_participant_report')->get();
         $distributionPartsKwhIdsTotal = [];
         foreach ($distributionPartsKwhTotal as $distributionPartKwhTotal){
@@ -388,10 +401,20 @@ class RevenuePartsKwhController extends ApiController
     {
         $this->authorize('manage', RevenuesKwh::class);
 
-        $ids = $request->input('ids') ? $request->input('ids') : [];
+        $ids = $request->input('ids', []);
 
-        $distributionPartsKwh = RevenueDistributionPartsKwh::whereIn('id', $ids)->with(['partsKwh'])->get();
+        if (empty($ids)) {
+            return FullRevenueDistributionPartsKwh::collection(collect());
+        }
 
+        $distributionPartsKwh = RevenueDistributionPartsKwh::query()->whereIn('revenue_distribution_parts_kwh.id', $ids)
+            ->join('revenue_distribution_kwh', 'revenue_distribution_kwh.id', '=', 'revenue_distribution_parts_kwh.distribution_id')
+            ->join('contacts', 'contacts.id', '=', 'revenue_distribution_kwh.contact_id')
+            ->orderBy('contacts.full_name', 'asc')
+            ->orderBy('revenue_distribution_parts_kwh.id', 'asc')
+            ->select('revenue_distribution_parts_kwh.*')
+            ->with(['partsKwh', 'distributionKwh.contact'])
+            ->get();
         return FullRevenueDistributionPartsKwh::collection($distributionPartsKwh);
     }
 

@@ -201,7 +201,7 @@ class AddressController extends ApiController
         try {
 // Testen van een 500 server error
 //            throw new \Exception('Test 500 simulatie');
-
+//            throw new \RuntimeException('HTTP 500 Internal Server Error');
             $addresses = $lvbag->adresUitgebreid()->list([
                 'postcode' => $pc,
                 'huisnummer' => $huisnummer,

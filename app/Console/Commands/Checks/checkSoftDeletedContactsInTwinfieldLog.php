@@ -71,6 +71,7 @@ class checkSoftDeletedContactsInTwinfieldLog extends Command
         }
         foreach ($twinfieldLogsWithDeletedContactIds as $twinfieldLogsWithDeletedContactId) {
             $twinfieldLogsWithDeletedContactIdsHtml .=
+                "Id: " . $twinfieldLogsWithDeletedContactId['twinfield-log-id'] . " | " .
                 "Factuur: " . $twinfieldLogsWithDeletedContactId['invoice-id'] . " | " .
                 "Contact: " . $twinfieldLogsWithDeletedContactId['contact-id'] . " | " .
                 "Bericht: " . $twinfieldLogsWithDeletedContactId['message-text'] . " | " .
@@ -104,7 +105,7 @@ class checkSoftDeletedContactsInTwinfieldLog extends Command
 
         foreach ($twinfieldLogWithTrashedContact as $twinfieldLogWithTrashedContact) {
             if($doRecover) {
-                Log::info('Delete van twinfieldLog met invoiceId ' . $twinfieldLogWithTrashedContact->invoice_id . ', contactId '.$twinfieldLogWithTrashedContact->contact_id. ', Bericht ' . $twinfieldLogWithTrashedContact->message_text. ', userId ' . $twinfieldLogWithTrashedContact->user_id. ', isError ' . $twinfieldLogWithTrashedContact->is_error. ', createdAt ' . $twinfieldLogWithTrashedContact->created_at. ' en updatedAt ' . $twinfieldLogWithTrashedContact->updated_at);
+                Log::info('Delete van twinfieldLog met id ' . $twinfieldLogWithTrashedContact->id . ', invoiceId ' . $twinfieldLogWithTrashedContact->invoice_id . ', contactId '.$twinfieldLogWithTrashedContact->contact_id. ', Bericht ' . $twinfieldLogWithTrashedContact->message_text. ', userId ' . $twinfieldLogWithTrashedContact->user_id. ', isError ' . $twinfieldLogWithTrashedContact->is_error. ', createdAt ' . $twinfieldLogWithTrashedContact->created_at. ' en updatedAt ' . $twinfieldLogWithTrashedContact->updated_at);
                 DB::table('twinfield_log')
                     ->where('id', $twinfieldLogWithTrashedContact->id)
                     ->delete();

@@ -58,6 +58,8 @@ class controleScripts extends Command
         Artisan::call('email:checkSoftDeletedEmailAddressesInEmails');
         Artisan::call('participation:checkWrongDateFirstDepositMutationsLoan');
 
+        Artisan::call('check:controleScriptsSoftDeletedContacts');
+
         $commandRun->end_at = Carbon::now();
         $commandRun->finished = true;
         $commandRun->save();

@@ -3983,7 +3983,7 @@ class ExternalWebformController extends Controller
                 $latestQuotationRequestVisit->status_id = 8; // Afspraak gemaakt
                 break;
             case 3:
-                $latestQuotationRequestVisit->status_id = 9; // Afspraak gedaan
+                $latestQuotationRequestVisit->status_id = 9; // Afspraak uitgevoerd
                 break;
             case 4:
                 $latestQuotationRequestVisit->status_id = 14; // Afspraak afgezegd

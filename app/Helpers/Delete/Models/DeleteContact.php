@@ -110,6 +110,11 @@ class DeleteContact implements DeleteInterface
             $this->errorMessage = array_merge($this->errorMessage, $deleteAddress->delete());
         }
 
+        foreach ($this->contact->phoneNumbers as $phoneNumber){
+            $deletePhoneNumber = new DeletePhoneNumber($phoneNumber);
+            $this->errorMessage = array_merge($this->errorMessage, $deletePhoneNumber->delete());
+        }
+
         foreach ($this->contact->tasks as $task){
             $deleteTask = new DeleteTask($task);
             $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());

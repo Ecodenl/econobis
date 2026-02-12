@@ -102,7 +102,7 @@ class checkSoftDeletedContactsInContactAvailabilities extends Command
 
         foreach ($contactAvailabilitiesWithTrashedContact as $contactAvailabilityWithTrashedContact) {
             if($doRecover) {
-                Log::info('Delete van contactAvailabilities met contactId ' . $contactAvailabilityWithTrashedContact->contact_id . ', from '.$contactAvailabilityWithTrashedContact->from. ', to ' . $contactAvailabilityWithTrashedContact->to. ', createdAt ' . $contactAvailabilityWithTrashedContact->created_at. ' en updatedAt ' . $contactAvailabilityWithTrashedContact->updated_at);
+                Log::info('Delete van contactAvailabilities met id:' . $contactAvailabilityWithTrashedContact->id . ', contactId ' . $contactAvailabilityWithTrashedContact->contact_id . ', from '.$contactAvailabilityWithTrashedContact->from. ', to ' . $contactAvailabilityWithTrashedContact->to. ', createdAt ' . $contactAvailabilityWithTrashedContact->created_at. ' en updatedAt ' . $contactAvailabilityWithTrashedContact->updated_at);
                 DB::table('contact_availabilities')
                     ->where('id', $contactAvailabilityWithTrashedContact->id)
                     ->delete();

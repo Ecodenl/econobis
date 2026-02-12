@@ -113,7 +113,12 @@ class checkSoftDeletedContactsInFreeFieldsFieldRecords extends Command
 
         foreach ($freeFieldsFieldRecordsWithTrashedContact as $freeFieldsFieldRecordsWithTrashedContact) {
             if($doRecover) {
-                Log::info('Delete van freeFieldsFieldRecords met fieldId ' . $freeFieldsFieldRecordsWithTrashedContact->field_id . ', tableRecordId '.$freeFieldsFieldRecordsWithTrashedContact->table_record_id. ', fieldValueText ' . $freeFieldsFieldRecordsWithTrashedContact->field_value_text. ', fieldValueBoolean ' . $freeFieldsFieldRecordsWithTrashedContact->field_value_boolean. ', fieldValueInt ' . $freeFieldsFieldRecordsWithTrashedContact->field_value_int. ', fieldValueDouble ' . $freeFieldsFieldRecordsWithTrashedContact->field_value_double. ', fieldValueDatetime ' . $freeFieldsFieldRecordsWithTrashedContact->field_value_datetime. ', createdAt ' . $freeFieldsFieldRecordsWithTrashedContact->created_at. ', updatedAt ' . $freeFieldsFieldRecordsWithTrashedContact->updated_at . 'en deletedAt ' . $freeFieldsFieldRecordsWithTrashedContact->deleted_at);
+                Log::info('Delete van freeFieldsFieldRecords (en freeFieldsFieldLog) met id ' . $freeFieldsFieldRecordsWithTrashedContact->id);
+
+                DB::table('free_fields_field_log')
+                    ->where('free_fields_field_record_id', $freeFieldsFieldRecordsWithTrashedContact->id)
+                    ->delete();
+
                 DB::table('free_fields_field_records')->where('id', $freeFieldsFieldRecordsWithTrashedContact->id)->update([
                     'deleted_at' => now(),
                 ]);

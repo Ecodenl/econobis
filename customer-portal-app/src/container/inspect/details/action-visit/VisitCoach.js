@@ -166,7 +166,7 @@ function VisitCoach({ redirectBack, initialQuotationRequest, handleSubmit }) {
                                         )}
                                     </Field>
                                     <FormLabel htmlFor="date_recorded" className={'field-label'}>
-                                        Afspraak gedaan op
+                                        Afspraak afgerond
                                     </FormLabel>
                                     <Field name="dateRecorded">
                                         {({ field }) => (
@@ -178,7 +178,7 @@ function VisitCoach({ redirectBack, initialQuotationRequest, handleSubmit }) {
                                                 touched={touched}
                                                 onChangeAction={setFieldValue}
                                                 id="date_recorded"
-                                                placeholder={'Afspraak gedaan op'}
+                                                placeholder={'Afspraak afgerond'}
                                                 step="900"
                                             />
                                         )}

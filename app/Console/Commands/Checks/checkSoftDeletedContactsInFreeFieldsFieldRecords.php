@@ -72,6 +72,7 @@ class checkSoftDeletedContactsInFreeFieldsFieldRecords extends Command
         }
         foreach ($freeFieldsFieldRecordssWithDeletedContactIds as $freeFieldsFieldRecordssWithDeletedContactId) {
             $freeFieldsFieldRecordssWithDeletedContactIdsHtml .=
+                "Id: " . $freeFieldsFieldRecordssWithDeletedContactId['free-fields-field-records-id'] . " | " .
                 "Veld: " . $freeFieldsFieldRecordssWithDeletedContactId['field-id'] . " | " .
                 "Contact: " . $freeFieldsFieldRecordssWithDeletedContactId['table-record-id'] . " | " .
                 "Field value text: " . $freeFieldsFieldRecordssWithDeletedContactId['field-value-text'] . " | " .
@@ -113,9 +114,9 @@ class checkSoftDeletedContactsInFreeFieldsFieldRecords extends Command
         foreach ($freeFieldsFieldRecordsWithTrashedContact as $freeFieldsFieldRecordsWithTrashedContact) {
             if($doRecover) {
                 Log::info('Delete van freeFieldsFieldRecords met fieldId ' . $freeFieldsFieldRecordsWithTrashedContact->field_id . ', tableRecordId '.$freeFieldsFieldRecordsWithTrashedContact->table_record_id. ', fieldValueText ' . $freeFieldsFieldRecordsWithTrashedContact->field_value_text. ', fieldValueBoolean ' . $freeFieldsFieldRecordsWithTrashedContact->field_value_boolean. ', fieldValueInt ' . $freeFieldsFieldRecordsWithTrashedContact->field_value_int. ', fieldValueDouble ' . $freeFieldsFieldRecordsWithTrashedContact->field_value_double. ', fieldValueDatetime ' . $freeFieldsFieldRecordsWithTrashedContact->field_value_datetime. ', createdAt ' . $freeFieldsFieldRecordsWithTrashedContact->created_at. ', updatedAt ' . $freeFieldsFieldRecordsWithTrashedContact->updated_at . 'en deletedAt ' . $freeFieldsFieldRecordsWithTrashedContact->deleted_at);
-                DB::table('free_fields_field_records')
-                    ->where('id', $freeFieldsFieldRecordsWithTrashedContact->id)
-                    ->delete();
+                DB::table('free_fields_field_records')->where('id', $freeFieldsFieldRecordsWithTrashedContact->id)->update([
+                    'deleted_at' => now(),
+                ]);
             }
             $freeFieldsFieldRecordsWithTrashedContactReturn[$counter]['free-fields-field-records-id'] = $freeFieldsFieldRecordsWithTrashedContact->id;
             $freeFieldsFieldRecordsWithTrashedContactReturn[$counter]['field-id'] = $freeFieldsFieldRecordsWithTrashedContact->field_id;

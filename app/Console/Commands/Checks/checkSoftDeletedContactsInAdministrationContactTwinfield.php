@@ -100,7 +100,7 @@ class checkSoftDeletedContactsInAdministrationContactTwinfield extends Command
 
         foreach ($administrationContactTwinfieldsWithTrashedContact as $administrationContactTwinfield) {
             if($doRecover) {
-                Log::info('Delete van administrationContactTwinfield met contactId ' . $administrationContactTwinfield->contact_id . ', administrationId '.$administrationContactTwinfield->administration_id. ' en twinfieldNumber ' . $administrationContactTwinfield->twinfield_number);
+                Log::info('Delete van administrationContactTwinfield met id:' . $administrationContactTwinfield->id.  ', contactId ' . $administrationContactTwinfield->contact_id . ', administrationId '.$administrationContactTwinfield->administration_id. ' en twinfieldNumber ' . $administrationContactTwinfield->twinfield_number);
                 DB::table('administration_contact_twinfield')
                     ->where('id', $administrationContactTwinfield->id)
                     ->delete();

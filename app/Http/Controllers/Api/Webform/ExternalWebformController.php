@@ -1416,11 +1416,26 @@ class ExternalWebformController extends Controller
                     $AddressController = app(AddressController::class);
                     $getLvbagAddress = $AddressController->getLvbagAddress($request);
 
-                    if($getLvbagAddress['street'] != "" && $getLvbagAddress['street'] != ''){
-                        $data['address_street'] = $getLvbagAddress['street'];
-                        $data['address_city'] = $getLvbagAddress['city'];
-                        $this->log('Bij postcode ' . $data['address_postal_code'] . ' en huisnummer ' . $data['address_number'] . ' straat en plaats automatisch bepaald via LvBag: ' . $getLvbagAddress['street'] . ' | ' . $getLvbagAddress['city'] . '.');
+                    $street = $getLvbagAddress['street'] ?? null;
+                    $city   = $getLvbagAddress['city'] ?? null;
+
+                    if (!empty($street) && !empty($city)) {
+                        $data['address_street'] = $street;
+                        $data['address_city']   = $city;
+                        $this->log(
+                            'Bij postcode ' . $data['address_postal_code'] .
+                            ' en huisnummer ' . $data['address_number'] .
+                            ' straat en plaats automatisch bepaald via LvBag: ' .
+                            $street . ' | ' . $city . '.'
+                        );
+                    } else {
+                        $this->log(
+                            'Straat/Woonplaats kon niet automatisch bepaald worden bij postcode ' .
+                            $data['address_postal_code'] . ' en huisnummer ' .
+                            $data['address_number'] . '.'
+                        );
                     }
+
                 }
 
                 $address = Address::create([
@@ -3968,7 +3983,7 @@ class ExternalWebformController extends Controller
                 $latestQuotationRequestVisit->status_id = 8; // Afspraak gemaakt
                 break;
             case 3:
-                $latestQuotationRequestVisit->status_id = 9; // Afspraak gedaan
+                $latestQuotationRequestVisit->status_id = 9; // Afspraak uitgevoerd
                 break;
             case 4:
                 $latestQuotationRequestVisit->status_id = 14; // Afspraak afgezegd

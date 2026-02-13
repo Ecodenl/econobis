@@ -60,10 +60,12 @@ class checkTerminationDateParticipants extends Command
             foreach($participantsProject as $participantProject) {
 
                 $lastMutation = $participantProject->mutationsDefinitiveDesc()
-                    ->where('participant_mutations.type_id', $mutationTypeWithDrawalId)
-                    ->orWhere(function ($query) use ($mutationTypeResultDepositId) {
-                        $query->where('participant_mutations.type_id', $mutationTypeResultDepositId)
-                            ->where('participant_mutations.amount', '<', 0);
+                    ->where(function ($query) use ($mutationTypeWithDrawalId, $mutationTypeResultDepositId) {
+                        $query->where('participant_mutations.type_id', $mutationTypeWithDrawalId)
+                            ->orWhere(function ($query) use ($mutationTypeResultDepositId) {
+                                $query->where('participant_mutations.type_id', $mutationTypeResultDepositId)
+                                    ->where('participant_mutations.amount', '<', 0);
+                            });
                     })
                     ->first();
                 if($lastMutation) {
@@ -74,10 +76,14 @@ class checkTerminationDateParticipants extends Command
                 $participantProjectDateTerminated = Carbon::parse($participantProject->date_terminated)->format('Y-m-d');
                 $participantProjectDateTerminatedDayAfter = Carbon::parse($participantProject->date_terminated)->addDay()->format('Y-m-d');
 
-//Log::info('Deelnemer: ' . $participantProject->id);
-//Log::info('Date Terminated: ' . $participantProjectDateTerminated);
-//Log::info('Date Terminated (next day): ' . $participantProjectDateTerminatedDayAfter);
-//Log::info('Date Last mutation withdrawel: ' . $lastmutationDateEntry);
+//if($participantProject->id === 184) {
+//	Log::info('Deelnemer: ' . $participantProject->id);
+//					Log::info($mutationTypeWithDrawalId);
+//					Log::info($mutationTypeResultDepositId);
+//	Log::info('Date Terminated: ' . $participantProjectDateTerminated);
+//	Log::info('Date Terminated (next day): ' . $participantProjectDateTerminatedDayAfter);
+//	Log::info('Date Last mutation withdrawel: ' . $lastmutationDateEntry);
+//}
                 if(
                     isSet($lastMutation)
                     && ($lastmutationDateEntry != null)

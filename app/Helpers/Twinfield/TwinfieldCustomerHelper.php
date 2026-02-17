@@ -447,7 +447,11 @@ class TwinfieldCustomerHelper
 
     private function logStartSync()
     {
-        $message = 'Start synchroniseren contacten (vanaf ' . Carbon::parse($this->fromInvoiceDateSent)->format('d-m-Y') . '), organisatie: '
+        $from = $this->fromInvoiceDateSent
+            ? Carbon::parse($this->fromInvoiceDateSent)->format('d-m-Y')
+            : 'NIET GEZET';
+
+        $message = 'Start synchroniseren contacten (vanaf ' . $from . '), organisatie: '
             . $this->administration->twinfield_organization_code
             . ', code : ' . $this->administration->twinfield_office_code
             . ', client Id: ' . $this->administration->twinfield_client_id

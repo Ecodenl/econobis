@@ -36,8 +36,8 @@ class MailFetcherMsOauth
     {
         $this->mailbox = $mailbox;
 
-        $this->initStorageDir();
-        $this->initMsOauthConfig();
+//        $this->initStorageDir();
+//        $this->initMsOauthConfig();
     }
 
     /**
@@ -56,6 +56,9 @@ class MailFetcherMsOauth
             ];
         }
 
+        $this->ensureStorageDir();
+        $this->ensureGraphClient();
+
         if($this->errorAppClientInitialization){
             $errorMessage = "Initialization Graph client was not successfully! Mailbox id: " . $this->mailbox->id;
 //            Log::error($errorMessage);
@@ -65,44 +68,47 @@ class MailFetcherMsOauth
             ];
         }
 
-        if ($this->mailbox->date_last_fetched) {
-            $dateLastFetched = Carbon::parse($this->mailbox->date_last_fetched)->subDay()->format('Y-m-d');
-        } else {
-            $dateLastFetched = Carbon::now()->subDay()->format('Y-m-d');
-        }
-
-        $moreAvailable = true;
+        $dateLastFetched = $this->mailbox->date_last_fetched
+            ? Carbon::parse($this->mailbox->date_last_fetched)->subDay()
+            : Carbon::now()->subDay();
 
 // todo
 //  Dit werkt niet (schiet in lus) als er meer dan setPageSize messages zijn.
 //  moet dus anders
+//        $moreAvailable = true;
 //        while ($moreAvailable) {
 
-            try {
-                // Only request specific properties
-                $select = '$select=internetMessageId,sender,from,toRecipients,ccRecipients,bccRecipients,receivedDateTime,sentDateTime,subject,bodyPreview,body,isRead,hasAttachments';
-                // Sort by received time, newest first
-                $orderBy = '$orderBy=receivedDateTime DESC';
-                $filter = '$filter=receivedDateTime ge ' . $dateLastFetched . 'T00:00:00Z';
-                $requestUrl = '/users/' . $this->mailbox->oauthApiSettings->project_id. '/mailFolders/inbox/messages?'.$select.'&'.$filter.'&'.$orderBy;
-                $messages = $this->appClient->createCollectionRequest('GET', $requestUrl)
-                    ->setReturnType(Message::class)
-                    ->setPageSize(200);
+        // Graph filter gebruikt UTC, dus maak een UTC start-of-day
+        $dateLastFetchedUtc = $dateLastFetched->copy()->setTimezone('UTC')->startOfDay();
+
+        try {
+            $select  = '$select=internetMessageId,sender,from,toRecipients,ccRecipients,bccRecipients,receivedDateTime,sentDateTime,subject,bodyPreview,body,isRead,hasAttachments';
+            $orderBy = '$orderBy=receivedDateTime DESC';
+            $filter  = '$filter=receivedDateTime ge ' . $dateLastFetchedUtc->format('Y-m-d\TH:i:s\Z');
+
+            $requestUrl = '/users/' . $this->mailbox->oauthApiSettings->project_id . '/mailFolders/inbox/messages?'
+                . $select . '&' . $filter . '&' . $orderBy;
+
+            $messages = $this->appClient->createCollectionRequest('GET', $requestUrl)
+                ->setReturnType(Message::class)
+                ->setPageSize(200);
+
 //                Log::info('dateLastFetched: ' . $dateLastFetched);
 //                Log::info('Aantal messages: ' . $messages->count());
-                $moreAvailable = $this->processMessages($messages, $dateLastFetched);
-                if($moreAvailable){
-                    Log::error('Niet alle email ingelezen voor mailbox ' . $this->mailbox->id . ', totaal messages was: ' . $messages->count());
-                }
-            } catch (Exception $e) {
-                $errorMessage = "Error mailbox " . $this->mailbox->id . " getting user's inbox: " . $e->getMessage();
-//                Log::error($errorMessage);
-                return [
-                    'status' => 'error',
-                    'errorMessage' => $errorMessage,
-                ];
-            }
 
+            $moreAvailable = $this->processMessages($messages, $dateLastFetchedUtc);
+
+            if ($moreAvailable) {
+                Log::error('Niet alle email ingelezen voor mailbox ' . $this->mailbox->id . ', totaal messages was: ' . $messages->count());
+            }
+        } catch (Exception $e) {
+//            $errorMessage = "Error mailbox " . $this->mailbox->id . " getting user's inbox: " . $e->getMessage();
+//                Log::error($errorMessage);
+            return [
+                'status' => 'error',
+                'errorMessage' => "Error mailbox {$this->mailbox->id} getting user's inbox: {$e->getMessage()}",
+            ];
+        }
 //        }
 
         return [
@@ -112,33 +118,52 @@ class MailFetcherMsOauth
 
     }
 
-    private function processMessages(GraphCollectionRequest $listMessages, $dateLastFetched): bool
+    private function ensureStorageDir(): void
+    {
+        $this->initStorageDir();
+    }
+
+    private function ensureGraphClient(): void
+    {
+        if ($this->errorAppClientInitialization) {
+            return;
+        }
+
+        if (isset($this->appClient)) {
+            return;
+        }
+
+        $this->initMsOauthConfig();
+    }
+
+    private function processMessages(GraphCollectionRequest $listMessages, Carbon $dateLastFetchedUtc): bool
     {
         foreach ($listMessages->getPage() as $message) {
 //            $msOauthMessageId = $message->getId();
             $messageId = $message->getInternetMessageId();
-
 //            Log::info('Mailbox ' . $this->mailbox->id . ' getInternetMessageId: '.$message->getInternetMessageId());
 //            Log::info('Mailbox ' . $this->mailbox->id . ' subject: '. ($message->getSubject() ?: ''));
-            $receivedDateTime = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::parse( $message->getReceivedDateTime())->format('Y-m-d H:i:s'), 'UTC');
-            $receivedDateTime->setTimezone(date_default_timezone_get());
+
+//            $receivedDateTime = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::parse( $message->getReceivedDateTime())->format('Y-m-d H:i:s'), 'UTC');
+//            $receivedDateTime->setTimezone(date_default_timezone_get());
 //            Log::info('Mailbox ' . $this->mailbox->id . ' | receivedDateTime ' . $receivedDateTime . ' | msOauthMessageId: '.$msOauthMessageId);
 //            Log::info('receivedDateTime: '. $receivedDateTime);
 //            Log::info('dateLastFetched: '. $dateLastFetched);
-            if($receivedDateTime >= $dateLastFetched) {
-                if (!Email::whereMailboxId($this->mailbox->id)
-                    ->whereMessageId($messageId)
-                    ->exists()) {
-                    set_time_limit(180);
-                    $this->fetchEmail($message);
-                }
-            } else {
+
+            $receivedUtc = Carbon::parse($message->getReceivedDateTime())->setTimezone('UTC');
+
+            // we lopen DESC, dus zodra ouder dan grens: klaar
+            if ($receivedUtc->lt($dateLastFetchedUtc)) {
                 return false;
+            }
+
+            if (!Email::whereMailboxId($this->mailbox->id)->whereMessageId($messageId)->exists()) {
+                set_time_limit(180);
+                $this->fetchEmail($message);
             }
         }
 
-        return $listMessages->isEnd() ? false : true;
-
+        return !$listMessages->isEnd();
     }
 
     private function initMsOauthConfig(): void

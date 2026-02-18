@@ -51,7 +51,7 @@ class MailFetcher
             ];
         }
 
-        $this->initStorageDir();
+        $this->ensureStorageDir();
         $this->ensureImapConnection();
 
         if ($this->mailbox->date_last_fetched) {
@@ -127,10 +127,16 @@ class MailFetcher
         ];
     }
 
-    public function getImap()
+//    public function getImap()
+//    {
+//        $this->ensureStorageDir();
+//        $this->ensureImapConnection();
+//        return $this->imap;
+//    }
+
+    private function ensureStorageDir(): void
     {
-        $this->ensureImapConnection();
-        return $this->imap;
+        $this->initStorageDir();
     }
 
     private function ensureImapConnection(): void

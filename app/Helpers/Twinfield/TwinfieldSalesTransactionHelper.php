@@ -140,7 +140,7 @@ class TwinfieldSalesTransactionHelper
 
                 if (!$twinfieldCustomer) {
                     // 2) Bestaat niet / niet gevonden -> probeer aan te maken (maar NIET direct daarna ook nog updaten)
-                    $created = $this->withRetry(
+                    $this->withRetry(
                         fn() => $this->customerHelper->createCustomer($contact)
                     );
 
@@ -172,27 +172,27 @@ class TwinfieldSalesTransactionHelper
             $invoiceDestiny = $isNullInvoice ? Destiny::FINAL() : Destiny::TEMPORARY();
 
             //Invoice datum
+            if (!$invoiceToProcess->date_sent) {
+                throw new \RuntimeException("Nota datum ontbreekt voor nota {$invoiceToProcess->number}");
+            }
             $dateInvoice = Carbon::parse($invoiceToProcess->date_sent);
 
             //Due datum bepalen
-            if ($invoiceToProcess->payment_type_id === 'transfer') {
-                if ( $invoiceToProcess->days_to_expire && $invoiceToProcess->days_to_expire > 0 ){
-                    $daysToAdd2 = new \DateInterval('P' . $invoiceToProcess->days_to_expire . 'D');
-                    $dueDateInvoice2 = new \DateTime($invoiceToProcess->date_sent); ;
-                    $dueDateInvoice2->add( $daysToAdd2);
-
-                    $dueDateInvoice = Carbon::parse($invoiceToProcess->date_sent)->addDays((int) $invoiceToProcess->days_to_expire);
-                }else {
-                    $datePaymentDue = $invoiceToProcess->getDatePaymentDueAttribute();
-                    if (!$datePaymentDue) {
-                        $dueDateInvoice = Carbon::parse($invoiceToProcess->date_sent);
-                    } else {
-                        $dueDateInvoice = Carbon::parse($datePaymentDue);
-                    }
+            if ($invoiceToProcess->payment_type_id === 'collection') {
+                if (!$invoiceToProcess->date_collection) {
+                    throw new \RuntimeException("Incasso datum ontbreekt voor nota {$invoiceToProcess->number}");
                 }
-            }else{
-                if ($invoiceToProcess->payment_type_id === 'collection' && $invoiceToProcess->date_collection) {
-                    $dueDateInvoice = Carbon::parse($invoiceToProcess->date_collection);
+                $dueDateInvoice = Carbon::parse($invoiceToProcess->date_collection);
+            } else {
+                // Todo: check of we deze bepaling obv days_to_expire niet gewoon moet weglaten?
+                if ($invoiceToProcess->days_to_expire && $invoiceToProcess->days_to_expire > 0) {
+                    $dueDateInvoice = Carbon::parse($invoiceToProcess->date_sent)->addDays((int) $invoiceToProcess->days_to_expire);
+                } else {
+                    $dueDateInvoice = $invoiceToProcess->date_payment_due;
+                }
+
+                if (!$dueDateInvoice) {
+                    throw new \RuntimeException("Uiterste betaaldatum ontbreekt voor nota {$invoiceToProcess->number}");
                 }
             }
 

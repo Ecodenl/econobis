@@ -218,17 +218,17 @@ class Invoice extends Model
 
     public function getDatePaymentDueAttribute()
     {
-        if($this->payment_type_id === 'transfer'){
-            if(!$this->date_sent){
-                return 0;
-            }
-
-            $daysAllowed = $this->administration->default_payment_term ? $this->administration->default_payment_term : 30;
-
-            return Carbon::parse($this->date_sent)->addDays((int) $daysAllowed);
+        if ($this->payment_type_id !== 'transfer') {
+            return null;
         }
 
-        return null;
+        if (!$this->date_sent) {
+            return null;
+        }
+
+        $daysAllowed = (int) ($this->administration->default_payment_term ?? 30);
+
+        return Carbon::parse($this->date_sent)->addDays($daysAllowed);
     }
 
     public function getAmountOpenAttribute()

@@ -47,6 +47,15 @@ class MailFetcherMsOauth
      */
     public function fetchNew() :mixed
     {
+//        Log::info("Check fetchNew mailbox " . $this->mailbox->id);
+
+        if ($this->mailbox->only_outgoing_mailbox) {
+            return [
+                'status' => 'success',
+                'imapIdLastFetched' => null,
+            ];
+        }
+
         if($this->errorAppClientInitialization){
             $errorMessage = "Initialization Graph client was not successfully! Mailbox id: " . $this->mailbox->id;
 //            Log::error($errorMessage);
@@ -55,8 +64,6 @@ class MailFetcherMsOauth
                 'errorMessage' => $errorMessage,
             ];
         }
-
-//        Log::info("Check fetchNew mailbox " . $this->mailbox->id);
 
         if ($this->mailbox->date_last_fetched) {
             $dateLastFetched = Carbon::parse($this->mailbox->date_last_fetched)->subDay()->format('Y-m-d');

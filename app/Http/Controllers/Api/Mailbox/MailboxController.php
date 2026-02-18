@@ -65,6 +65,8 @@ class MailboxController extends Controller
 
         $data = $input->string('name')->whenMissing('')->onEmpty('')->next()
             ->string('email')->whenMissing('')->onEmpty('')->alias('email')->next()
+            ->boolean('isSystemMailbox')->alias('is_system_mailbox')->whenMissing(false)->onEmpty(false)->next()
+            ->boolean('onlyOutgoingMailbox')->alias('only_outgoing_mailbox')->whenMissing(false)->onEmpty(false)->next()
             ->string('smtpHost')->whenMissing('')->onEmpty('')->alias('smtp_host')->next()
             ->string('smtpPort')->whenMissing('')->onEmpty('')->alias('smtp_port')->next()
             ->string('smtpEncryption')->whenMissing(null)->onEmpty(null)->alias('smtp_encryption')->next()
@@ -137,6 +139,8 @@ class MailboxController extends Controller
 
         $data = $input->string('name')->next()
             ->string('email')->alias('email')->next()
+            ->boolean('isSystemMailbox')->alias('is_system_mailbox')->whenMissing(false)->onEmpty(false)->next()
+            ->boolean('onlyOutgoingMailbox')->alias('only_outgoing_mailbox')->whenMissing(false)->onEmpty(false)->next()
             ->string('smtpHost')->alias('smtp_host')->next()
             ->string('smtpPort')->alias('smtp_port')->next()
             ->string('smtpEncryption')->onEmpty(null)->alias('smtp_encryption')->next()
@@ -227,7 +231,11 @@ class MailboxController extends Controller
     static public function receiveAllEmail()
     {
         // Bepaal van welke mailboxen we email gaan ophalen: Alle actieve en geldige mailboxen
-        $mailboxes = Mailbox::where('valid', 1)->where('is_active', 1)->get();
+        $mailboxes = Mailbox::where('valid', 1)
+            ->where('is_active', 1)
+            ->where('only_outgoing_mailbox', 0)
+            ->get();
+
         self::receiveEmails($mailboxes);
     }
 
@@ -238,7 +246,10 @@ class MailboxController extends Controller
         $user = Auth::user();
 
         // Bepaal van welke mailboxen we email gaan ophalen: Alle gekoppelde mailboxen aan user
-        $mailboxes = $user->mailboxes()->where('valid', 1)->where('is_active', 1)->get();
+        $mailboxes = Mailbox::where('valid', 1)
+            ->where('is_active', 1)
+            ->where('only_outgoing_mailbox', 0)
+            ->get();
         self::receiveEmails($mailboxes);
 
     }
@@ -386,21 +397,23 @@ class MailboxController extends Controller
             }
         }
 
-// todo WM:opschonen, maar wellicht nog even gebruiken bij de-a
-//        Log::info('Mailbox ids to fetch emails', $mailboxIdsToFetch);
-
         // Mailboxen doorlopen waarvan we email gaan ophalen
         foreach ($mailboxIdsToFetch as $mailboxIdToFetch) {
-// todo WM:opschonen, maar wellicht nog even gebruiken bij de-a
-//            Log::info('Fetch emails voor mailbox Id: ' . $mailboxIdToFetch);
             $mailboxToFetch = Mailbox::find($mailboxIdToFetch);
-            if ($mailboxToFetch?->incoming_server_type === 'ms-oauth') {
-// todo WM:opschonen, maar wellicht nog even gebruiken bij de-a
-//                Log::info('via MailFetcherMsOauth');
+
+            if (!$mailboxToFetch) {
+                continue;
+            }
+
+            // NIEUW: only outgoing mailbox -> skip fetching
+            if ($mailboxToFetch->only_outgoing_mailbox) {
+                Log::info("Mailbox {$mailboxIdToFetch} is alleen voor uitgaande mail");
+                continue;
+            }
+
+            if ($mailboxToFetch->incoming_server_type === 'ms-oauth') {
                 $mailFetcher = new MailFetcherMsOauth($mailboxToFetch);
-            } else if ($mailboxToFetch?->incoming_server_type !== 'mailgun') {
-// todo WM:opschonen, maar wellicht nog even gebruiken bij de-a
-//                Log::info('via MailFetcher');
+            } else if ($mailboxToFetch->incoming_server_type !== 'mailgun') {
                 $mailFetcher = new MailFetcher($mailboxToFetch);
             } else {
                 // Ga door naar volgende mailbox (fetch doen we niet voor incoming mailgun mailboxen
@@ -409,9 +422,6 @@ class MailboxController extends Controller
 
             try {
             $response = $mailFetcher->fetchNew();
-// todo WM:opschonen, maar wellicht nog even gebruiken bij de-a
-//            Log::info( 'Response van Fetchnew:' );
-//            Log::info( $response );
                 if($response['status'] === 'error'){
                     Log::error('Errors found bij fetchNew mailbox id: ' . $mailboxToFetch->id);
                     Log::error($response['errorMessage']);

@@ -40,8 +40,11 @@ class TwinfieldSalesTransactionHelper
     private $changPayStatusTransactionApiConnector;
     private $currency;
     private TwinfieldCustomerHelper $customerHelper;
-    private array $twinfieldCustomerCacheByContactId = []; // [contact_id => Customer|null]
-
+    private array $twinfieldCustomerCacheByContactId = [];
+    private array $lastContactSyncAtByContactId = [];
+    private array $updatedCustomerThisRun = [];
+    private int $retry429Count = 0;
+    private int $retry429Sleeps = 0;
     public $messages;
 
 
@@ -163,6 +166,15 @@ class TwinfieldSalesTransactionHelper
                 }
 
                 $this->twinfieldCustomerCacheByContactId[$contactId] = $twinfieldCustomer;
+            }
+
+            $last = $this->lastContactSyncAtByContactId[$contactId] ?? null;
+            $last = $last ? Carbon::parse($last) : null;
+            $shouldUpdate = !$last || ($contact->updated_at && Carbon::parse($contact->updated_at)->gt($last));
+
+            if ($shouldUpdate && !isset($this->updatedCustomerThisRun[$contactId])) {
+                $this->withRetry(fn() => $this->customerHelper->updateCustomer($contact));
+                $this->updatedCustomerThisRun[$contactId] = true;
             }
 
             //Invoice totaal bedrag incl. BTW
@@ -336,7 +348,7 @@ class TwinfieldSalesTransactionHelper
                 'contact_id' => null,
                 'message_text' => substr($message, 0, 256),
                 'message_type' => 'invoice',
-                'user_id' => Auth::user()->id,
+                'user_id' => Auth::user()->id ?? null,
                 'is_error' => false,
             ]);
             array_push($this->messages, $message);
@@ -393,9 +405,40 @@ class TwinfieldSalesTransactionHelper
 
     private function processInvoiceBatch(array $invoiceBatch)
     {
-        foreach ($invoiceBatch as $invoiceToBeProcessed) {
-            $invoiceToProcess = Invoice::find($invoiceToBeProcessed['id']);
-            if ($invoiceToProcess){
+        $invoiceIds = collect($invoiceBatch)->pluck('id')->filter()->all();
+
+        $invoices = Invoice::query()
+            ->with([
+                'order.contact.twinfieldNumbers',
+                // eventueel alvast deze als je later N+1 wilt voorkomen:
+                // 'invoiceProducts.product.ledger.vatCode',
+                // 'order.orderProducts.costCenter',
+            ])
+            ->whereIn('id', $invoiceIds)
+            ->get()
+            ->keyBy('id');
+
+        $contactIds = $invoices
+            ->map(fn(Invoice $inv) => $inv->order?->contact?->id)
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        $this->lastContactSyncAtByContactId = TwinfieldLog::query()
+            ->selectRaw('contact_id, MAX(created_at) as last_success_at')
+            ->where('message_type', 'contact')
+            ->where('is_error', 0)
+            ->whereNotNull('contact_id')
+            ->where('message_text', 'like', '%succesvol gesynchroniseerd%')
+            ->whereIn('contact_id', $contactIds)
+            ->groupBy('contact_id')
+            ->pluck('last_success_at', 'contact_id')
+            ->toArray();
+
+        foreach ($invoiceIds as $invoiceId) {
+            $invoiceToProcess = $invoices->get($invoiceId);
+            if ($invoiceToProcess) {
                 $this->processInvoice($invoiceToProcess);
             }
         }
@@ -435,15 +478,27 @@ class TwinfieldSalesTransactionHelper
             } catch (PhpTwinfieldException $e) {
                 $attempt++;
 
-                $isTooManyRequests = stripos($e->getMessage(), 'Too Many Requests') !== false
+                $isTooManyRequests =
+                    stripos($e->getMessage(), 'Too Many Requests') !== false
                     || stripos($e->getMessage(), '429') !== false;
 
                 if (!$isTooManyRequests || $attempt >= $maxAttempts) {
                     throw $e;
                 }
 
-                // Exponential backoff: 1s, 2s, 4s, 8s...
-                sleep(2 ** ($attempt - 1));
+                $this->retry429Count++;
+                $sleepSeconds = 2 ** ($attempt - 1);
+                $this->retry429Sleeps += $sleepSeconds;
+
+                Log::warning('Twinfield 429 retry', [
+                    'attempt' => $attempt,
+                    'sleep_seconds' => $sleepSeconds,
+                    'admin_id' => $this->administration->id,
+                    'invoice_id' => $invoiceToProcess->id ?? null,
+                    'contact_id' => $contactId ?? null,
+                ]);
+
+                sleep($sleepSeconds);
             }
         }
     }
@@ -460,7 +515,7 @@ class TwinfieldSalesTransactionHelper
             'contact_id' => null,
             'message_text' => substr($message, 0, 256),
             'message_type' => 'invoice',
-            'user_id' => Auth::user()->id,
+            'user_id' => Auth::user()->id ?? null,
             'is_error' => false,
         ]);
     }
@@ -471,18 +526,34 @@ class TwinfieldSalesTransactionHelper
             'contact_id' => null,
             'message_text' => substr($message, 0, 256),
             'message_type' => 'invoice',
-            'user_id' => Auth::user()->id,
+            'user_id' => Auth::user()->id ?? null,
             'is_error' => false,
         ]);
     }
     private function logEndSync($message)
     {
+        if($this->retry429Count != 0 || $this->retry429Sleeps != 0){
+            Log::info('Twinfield sync retries summary', [
+                'admin_id' => $this->administration->id,
+                'retry_429_count' => $this->retry429Count,
+                'retry_429_total_sleep_seconds' => $this->retry429Sleeps,
+            ]);
+            TwinfieldLog::create([
+                'invoice_id' => null,
+                'contact_id' => null,
+                'message_text' => substr("429 retries: {$this->retry429Count}, total sleep (s): {$this->retry429Sleeps}", 0, 256),
+                'message_type' => 'invoice',
+                'user_id' => Auth::user()->id ?? null,
+                'is_error' => false,
+            ]);
+        }
+
         TwinfieldLog::create([
             'invoice_id' => null,
             'contact_id' => null,
             'message_text' => substr($message, 0, 256),
             'message_type' => 'invoice',
-            'user_id' => Auth::user()->id,
+            'user_id' => Auth::user()->id ?? null,
             'is_error' => false,
         ]);
     }
@@ -496,7 +567,7 @@ class TwinfieldSalesTransactionHelper
             'contact_id' => null,
             'message_text' => substr($message, 0, 256),
             'message_type' => 'invoice',
-            'user_id' => Auth::user()->id,
+            'user_id' => Auth::user()->id ?? null,
             'is_error' => $isError,
         ]);
     }

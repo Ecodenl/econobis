@@ -20,6 +20,8 @@ class GridMailbox extends JsonResource
                 'id' => $this->id,
                 'name' => $this->name,
                 'email' => $this->email,
+                'isSystemMailbox' => $this->is_system_mailbox,
+                'onlyOutgoingMailbox' => $this->only_outgoing_mailbox,
                 'incomingServerType' => $this->incoming_server_type,
                 'incomingServerTypeName' => $this->getIncomingServerType()->name,
                 'imapHost' => $this->imap_host,

@@ -28,6 +28,8 @@ class FullMailbox extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
+            'isSystemMailbox' => $this->is_system_mailbox,
+            'onlyOutgoingMailbox' => $this->only_outgoing_mailbox,
             'smtpHost' => $this->smtp_host,
             'smtpPort' => $this->smtp_port,
             'smtpEncryption' => $this->smtp_encryption,

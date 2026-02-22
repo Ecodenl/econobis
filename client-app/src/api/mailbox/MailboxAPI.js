@@ -99,4 +99,14 @@ export default {
 
         return getAxiosInstance().post(requestUrl);
     },
+
+    forceMsOauthReconnect: mailboxId => {
+        const requestUrl = `${URL_MAILBOX}/${mailboxId}/ms-oauth/force-reconnect`;
+        return getAxiosInstance().post(requestUrl);
+    },
+
+    forceMsOauthSelectAccount: mailboxId => {
+        const requestUrl = `${URL_MAILBOX}/${mailboxId}/ms-oauth/force-select-account`;
+        return getAxiosInstance().post(requestUrl);
+    },
 };

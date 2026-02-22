@@ -15,6 +15,11 @@ return new class extends Migration
             $table->boolean('is_system_mailbox')->default(false)->after('email');
             $table->boolean('only_outgoing_mailbox')->default(false)->after('is_system_mailbox');
         });
+
+        Schema::table('mailbox_oauth_api_settings', function (Blueprint $table) {
+            $table->boolean('force_reconnect')->default(false);
+            $table->boolean('force_select_account')->default(false);
+        });
     }
 
     /**
@@ -22,10 +27,14 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('mailbox_oauth_api_settings', function (Blueprint $table) {
+            $table->dropColumn('force_select_account');
+            $table->dropColumn('force_reconnect');
+        });
+
         Schema::table('mailboxes', function (Blueprint $table) {
             $table->dropColumn('only_outgoing_mailbox');
             $table->dropColumn('is_system_mailbox');
         });
-
     }
 };

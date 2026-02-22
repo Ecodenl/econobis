@@ -86,7 +86,7 @@ class MailboxController extends Controller
             ->get();
 
         //if incomingServerType is not mailgun clear some fields just to be safe
-        if($data['incoming_server_type'] != 'mailgun'){
+        if ($data['incoming_server_type'] != 'mailgun') {
             $data['inbound_mailgun_email'] = null;
             $data['inbound_mailgun_post_token'] = null;
             $data['inbound_mailgun_route_id'] = null;
@@ -115,9 +115,9 @@ class MailboxController extends Controller
             if (isset($client['message']) && $client['message'] == 'ms_oauth_unauthorised') {
                 return response()->json($client, 401);
             }
-        } else if ($mailbox->incoming_server_type === 'mailgun'){
+        } else if ($mailbox->incoming_server_type === 'mailgun') {
             $mailgunHelper->updateMailgunForwarding($mailbox);
-        } else if ($mailbox->incoming_server_type !== 'mailgun'){
+        } else if ($mailbox->incoming_server_type !== 'mailgun') {
             new MailFetcher($mailbox);
         }
 
@@ -160,7 +160,7 @@ class MailboxController extends Controller
             ->get();
 
         //if incomingServerType is not mailgun clear some fields just to be safe
-        if($data['incoming_server_type'] != 'mailgun'){
+        if ($data['incoming_server_type'] != 'mailgun') {
             $data['inbound_mailgun_email'] = null;
             $data['inbound_mailgun_post_token'] = null;
             $data['inbound_mailgun_route_id'] = null;
@@ -171,10 +171,10 @@ class MailboxController extends Controller
         $updateMailgunForwarding = $mailbox->isDirty('incoming_server_type');
         $mailbox->save();
 
-        if($updateMailgunForwarding){
-            try{
+        if ($updateMailgunForwarding) {
+            try {
                 $mailgunHelper->updateMailgunForwarding($mailbox);
-            }catch (\Exception $e){
+            } catch (\Exception $e) {
                 /**
                  * Error loggen maar niet hele script laten stoppen.
                  */
@@ -199,7 +199,7 @@ class MailboxController extends Controller
             if (isset($client['message']) && $client['message'] == 'ms_oauth_unauthorised') {
                 return response()->json($client, 401);
             }
-        } else if ($mailbox->incoming_server_type !== 'mailgun'){
+        } else if ($mailbox->incoming_server_type !== 'mailgun') {
             new MailFetcher($mailbox);
         }
 
@@ -275,11 +275,11 @@ class MailboxController extends Controller
         $time15MinutesAgo = Carbon::now()->subMinutes(15)->format('Y-m-d H:i:s');
         $activateAutomaticRefreshEmailData = $user->mailboxes()->where('is_active', 1)
             ->where('only_outgoing_mailbox', 0)
-            ->where('valid', true )
-            ->whereIn('incoming_server_type', ['imap', 'ms-oauth'] )
-            ->where(function ($query) use($time15MinutesAgo) {
+            ->where('valid', true)
+            ->whereIn('incoming_server_type', ['imap', 'ms-oauth'])
+            ->where(function ($query) use ($time15MinutesAgo) {
                 $query->whereNull('date_last_fetched')
-                    ->orwhere('date_last_fetched', '<', $time15MinutesAgo );
+                    ->orwhere('date_last_fetched', '<', $time15MinutesAgo);
             })->exists();
 
         return LoggedInUserOnlyActive::collection($mailboxes)
@@ -295,7 +295,7 @@ class MailboxController extends Controller
      */
     public function forUserEmailPeek(User $user)
     {
-        if(!Auth::user()->hasPermissionTo('manage_user', 'api') && $user->id !== Auth::id()){
+        if (!Auth::user()->hasPermissionTo('manage_user', 'api') && $user->id !== Auth::id()) {
             /**
              * Alleen toegankelijk voor 'manage_user' rechten (dit zijn normaal gesproken de keyusers) of voor de eigen gebruiker.
              * (gebruikers mogen eigen mailbox instellen)
@@ -348,37 +348,44 @@ class MailboxController extends Controller
 
     public function msOauthApiConnectionCallback(Request $request)
     {
-//todo WM oauth: opschonen
-//        Log::error("XXxxxxxxxxxxxxxxxxxxxxxxxxxx");
+        $mgr = new MsOauthConnectionManager();
 
-        $mailboxId= session('msOauthMailboxId');
-        $request->session()->forget('msOauthMailboxId');
-        $mailbox = Mailbox::find($mailboxId);
+        // Laat de manager zelf redirect/afhandeling doen
+        return $mgr->callback($request);
+    }
 
-        $appUrl = config('app.url');
+    public function forceMsOauthReconnect(Mailbox $mailbox)
+    {
+        $this->authorize('create', Mailbox::class);
 
-        if (!$mailbox){
-            Log::error("Callback vanuit ms-oauth is NIET ok - mailbox niet meer gevonden");
-            header("Location: {$appUrl}/#/mailboxen");
-            exit;
-        }
-        if (!$request->code){
-            Log::error("Callback vanuit ms-oauth is NIET ok - geen authorization code");
-            header("Location: {$appUrl}/#/mailbox/{$mailbox->id}");
-            exit;
-        }
+        $settings = $mailbox->oauthApiSettings;
 
-        $msOauthConnectionManager = new MsOauthConnectionManager($mailbox);
+        $settings->force_reconnect = true;
+        $settings->force_select_account = false;
+        $settings->token = null;
+        $settings->save();
 
-        // TODO If callback is not valid then show message to the user
-        if ($msOauthConnectionManager->callback($request, $mailbox)) {
-            header("Location: {$appUrl}/#/mailbox/{$mailbox->id}");
-            exit;
-        } else {
-            Log::error("Callback vanuit ms-oauth is NIET ok");
-            header("Location: {$appUrl}/#/mailbox/{$mailbox->id}");
-            exit;
-        }
+        $mailbox->valid = false;
+        $mailbox->save();
+
+        $mgr = new MsOauthConnectionManager($mailbox);
+        $resp = $mgr->connect(); // geeft authUrl terug + zet oauthState in session
+        return response()->json($resp, 401);
+    }
+
+    public function forceMsOauthSelectAccount(Mailbox $mailbox)
+    {
+        $this->authorize('create', Mailbox::class);
+
+        $settings = $mailbox->oauthApiSettings;
+
+        $settings->force_select_account = true;
+        $settings->force_reconnect = false;
+        $settings->save();
+
+        $mgr = new MsOauthConnectionManager($mailbox);
+        $resp = $mgr->connect(); // geeft authUrl terug + zet oauthState in session
+        return response()->json($resp, 401);
     }
 
     /**
@@ -429,20 +436,12 @@ class MailboxController extends Controller
 
                     if($mailboxToFetch->login_tries < 5){
                         $mailboxToFetch->login_tries += 1;
-// todo WM:opschonen, maar wellicht nog even gebruiken bij de-a
-//                        Log::info('Poging ' . $mailboxToFetch->login_tries);
                         $mailboxToFetch->save();
                     } else {
-// todo WM:opschonen, maar wellicht nog even gebruiken bij de-a
-//                        Log::info('Mailbox op invalid gezet na 5 pogingen.');
                         $mailboxToFetch->valid = false;
                         $mailboxToFetch->save();
                     }
                 } else {
-// todo WM:opschonen, maar wellicht nog even gebruiken bij de-a
-//                    Log::info('Geen fouten bij mailbox');
-                    //
-
                     if ($response['status'] === 'success') {
                         if($response['imapIdLastFetched'] !== null){
                             $mailboxToFetch->imap_id_last_fetched = $response['imapIdLastFetched'];

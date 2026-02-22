@@ -19,6 +19,7 @@ import { MailboxValidationClientSecret } from './Validation';
 import ViewText from '../../../../../components/form/ViewText';
 import moment from 'moment';
 import MailboxDefaultFormGeneralMsOauthApiSettings from './MsOauthApiSettings';
+import MailboxAPI from '../../../../../api/mailbox/MailboxAPI';
 
 function MailboxDefaultFormGeneral({
     initialValues,
@@ -32,6 +33,7 @@ function MailboxDefaultFormGeneral({
     const [currentOnlyOutgoingMailbox, setCurrentOnlyOutgoingMailbox] = useState(initialValues.onlyOutgoingMailbox);
     const [currentIncomingServerType, setCurrentIncomingServerType] = useState(initialValues.incomingServerType);
     const [currentOutgoingServerType, setCurrentOutgoingServerType] = useState(initialValues.outgoingServerType);
+    const [msOauthBusy, setMsOauthBusy] = useState(false);
 
     const { values, errors, touched, handleChange, handleSubmit, setFieldValue, handleBlur, isSubmitting } = useFormik({
         initialValues: initialValues,
@@ -42,10 +44,7 @@ function MailboxDefaultFormGeneral({
     });
 
     const manageSystemMailbox =
-        meDetails.email == 'support@econobis.nl' || meDetails.email == 'software@xaris.nl'
-            ? // meDetails.email == 'bar@mossy.nl'
-              true
-            : false;
+        meDetails.email == 'support@econobis.nl' || meDetails.email == 'software@xaris.nl' ? true : false;
 
     useEffect(() => {
         if (values.incomingServerType !== undefined) {
@@ -83,6 +82,52 @@ function MailboxDefaultFormGeneral({
             }
         }
         return validationSchema;
+    }
+
+    function redirectIfMsOauthUnauthorized(error) {
+        if (
+            error?.response?.status === 401 &&
+            error?.response?.data?.message === 'ms_oauth_unauthorised' &&
+            error?.response?.data?.authUrl
+        ) {
+            window.location = error.response.data.authUrl;
+            return true;
+        }
+        return false;
+    }
+
+    function handleForceReconnect(e) {
+        e?.preventDefault?.();
+        e?.stopPropagation?.();
+
+        if (!values.id || msOauthBusy) return;
+
+        setMsOauthBusy(true);
+
+        MailboxAPI.forceMsOauthReconnect(values.id)
+            .catch(error => {
+                if (redirectIfMsOauthUnauthorized(error)) return;
+                console.log(error);
+                alert('Kon Forceer reconnect niet starten.');
+            })
+            .finally(() => setMsOauthBusy(false));
+    }
+
+    function handleForceSelectAccount(e) {
+        e?.preventDefault?.();
+        e?.stopPropagation?.();
+
+        if (!values.id || msOauthBusy) return;
+
+        setMsOauthBusy(true);
+
+        MailboxAPI.forceMsOauthSelectAccount(values.id)
+            .catch(error => {
+                if (redirectIfMsOauthUnauthorized(error)) return;
+                console.log(error);
+                alert('Kon Account opnieuw kiezen niet starten.');
+            })
+            .finally(() => setMsOauthBusy(false));
     }
 
     return (
@@ -463,13 +508,43 @@ function MailboxDefaultFormGeneral({
                 )}
 
                 {(values.incomingServerType === 'ms-oauth' || values.outgoingServerType === 'ms-oauth') && (
-                    <MailboxDefaultFormGeneralMsOauthApiSettings
-                        values={values}
-                        errors={errors}
-                        touched={touched}
-                        handleChange={handleChange}
-                        handleBlur={handleBlur}
-                    />
+                    <>
+                        <MailboxDefaultFormGeneralMsOauthApiSettings
+                            values={values}
+                            errors={errors}
+                            touched={touched}
+                            handleChange={handleChange}
+                            handleBlur={handleBlur}
+                        />
+
+                        {values.id ? (
+                            <>
+                                <PanelHeader>
+                                    <span className="h5">
+                                        <strong>MS OAuth acties</strong>
+                                    </span>
+                                </PanelHeader>
+                                <PanelBody>
+                                    <div className="row">
+                                        <div className="col-sm-12">
+                                            <ButtonText
+                                                buttonClassName={'btn-default'}
+                                                buttonText={'Forceer reconnect (token reset)'}
+                                                onClickAction={handleForceReconnect}
+                                                loading={msOauthBusy}
+                                            />{' '}
+                                            <ButtonText
+                                                buttonClassName={'btn-default'}
+                                                buttonText={'Account opnieuw kiezen'}
+                                                onClickAction={handleForceSelectAccount}
+                                                loading={msOauthBusy}
+                                            />
+                                        </div>
+                                    </div>
+                                </PanelBody>
+                            </>
+                        ) : null}
+                    </>
                 )}
 
                 {values.incomingServerType === 'mailgun' && (

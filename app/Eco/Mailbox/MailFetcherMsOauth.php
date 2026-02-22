@@ -44,6 +44,7 @@ class MailFetcherMsOauth
      */
     public function fetchNew() :mixed
     {
+        // todo: tijdelijk log voor testen
 //        Log::info("Check fetchNew mailbox " . $this->mailbox->id);
 
         if ($this->mailbox->only_outgoing_mailbox) {
@@ -78,25 +79,26 @@ class MailFetcherMsOauth
             $filter  = '$filter=receivedDateTime ge ' . $dateLastFetchedUtc->format('Y-m-d\TH:i:s\Z');
             $top     = '$top=200';
 
-            $url = '/users/' . $this->mailbox->oauthApiSettings->project_id . '/mailFolders/inbox/messages?'
+            $targetUser = trim((string) $this->mailbox->oauthApiSettings->project_id);
+            $url = "/users/{$targetUser}/mailFolders/inbox/messages?"
                 . $select . '&' . $filter . '&' . $orderBy . '&' . $top;
 
             $seenNextLinks = [];
 
             // todo: tijdelijk max-loop guard voor testen
-            $maxPages = 5;
-            $pageCounter = 0;
+//            $maxPages = 5;
+//            $pageCounter = 0;
 
             while (true) {
-                // todo: WM log later opschonen.
-                Log::info("Fetching page for mailbox {$this->mailbox->id}");
+                // todo: tijdelijk log voor testen
+//                Log::info("Fetching page for mailbox {$this->mailbox->id}");
 
                 // todo: tijdelijk max-loop guard voor testen
-                $pageCounter++;
-                if ($pageCounter > $maxPages) {
-                    Log::warning("Test guard hit: maxPages reached");
-                    break;
-                }
+//                $pageCounter++;
+//                if ($pageCounter > $maxPages) {
+//                    Log::warning("Test guard hit: maxPages reached");
+//                    break;
+//                }
 
                 // 1) Execute request -> GraphResponse
                 $response = $this->appClient->createRequest('GET', $url)->execute();
@@ -109,6 +111,10 @@ class MailFetcherMsOauth
                     $body = json_decode($body, true) ?: [];
                 }
                 $items = $body['value'] ?? [];          // array van messages (arrays)
+
+                // todo: tijdelijk log voor testen
+//                Log::info('dateLastFetched: ' . $dateLastFetched);
+//                Log::info('Aantal messages: ' . count($items) );
 
                 // 3) Hydrate naar Message objects en verwerk
                 $continue = $this->processMessagesArray($items, $dateLastFetchedUtc);
@@ -326,7 +332,8 @@ class MailFetcherMsOauth
 
     private function storeAttachments(string $messageId, Email $email)
     {
-        $requestUrl = '/users/' . $this->mailbox->oauthApiSettings->project_id. '/messages/'.$messageId.'/attachments';
+        $targetUser = trim((string) $this->mailbox->oauthApiSettings->project_id);
+        $requestUrl = "/users/{$targetUser}/messages/{$messageId}/attachments";
         $requestResult = $this->appClient->createCollectionRequest('GET', $requestUrl)
             ->setReturnType(Attachment::class);
         if($requestResult){

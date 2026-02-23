@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::table('mailgun_domains', function (Blueprint $table) {
+            $table->boolean('is_system_mailgun_domain')->default(false)->after('secret');
+        });
+
         Schema::table('mailboxes', function (Blueprint $table) {
-            $table->boolean('is_system_mailbox')->default(false)->after('email');
-            $table->boolean('only_outgoing_mailbox')->default(false)->after('is_system_mailbox');
+            $table->boolean('only_outgoing_mailbox')->default(false)->after('email');
         });
 
         Schema::table('mailbox_oauth_api_settings', function (Blueprint $table) {
@@ -34,7 +37,11 @@ return new class extends Migration
 
         Schema::table('mailboxes', function (Blueprint $table) {
             $table->dropColumn('only_outgoing_mailbox');
-            $table->dropColumn('is_system_mailbox');
         });
+
+        Schema::table('mailgun_domains', function (Blueprint $table) {
+            $table->dropColumn('is_system_mailgun_domain');
+        });
+
     }
 };

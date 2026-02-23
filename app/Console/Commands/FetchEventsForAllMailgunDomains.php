@@ -40,7 +40,9 @@ class FetchEventsForAllMailgunDomains extends Command
         $commandRun->created_in_shared = false;
         $commandRun->save();
 
-        foreach (MailgunDomain::where('is_verified', true)->get() as $mailgunDomain) {
+        foreach (MailgunDomain::where('is_verified', true)
+                     ->where('is_system_mailgun_domain', false)
+                     ->get() as $mailgunDomain) {
             $this->fetchEventsForMailgunDomain($mailgunDomain);
         }
 

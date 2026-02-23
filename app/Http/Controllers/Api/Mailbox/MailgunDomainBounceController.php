@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Mailbox;
 
 use App\Eco\Mailbox\MailgunDomain;
-use App\Http\Traits\Mailgun\SystemMailboxSuppressionGuard;
+use App\Http\Traits\Mailgun\MailgunDomainSuppressionGuard;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -11,18 +11,21 @@ use Mailgun\Mailgun;
 
 class MailgunDomainBounceController
 {
-    use AuthorizesRequests, SystemMailboxSuppressionGuard;
+    use AuthorizesRequests, MailgunDomainSuppressionGuard;
 
     public function index(MailgunDomain $mailgunDomain)
     {
         $this->authorize('update', MailgunDomain::class);
 
+        $this->abortIfSystemMailgunDomain(
+            $mailgunDomain,
+            'System mailgun domain suppressions are not available.'
+        );
+
         $mailgunClient = Mailgun::create(
             $mailgunDomain->secret,
             'https://' . config('services.mailgun.endpoint')
         );
-
-        $systemRecipients = $this->getSystemRecipients($mailgunDomain);
 
         $fetchedBounces = $mailgunClient
             ->suppressions()
@@ -31,13 +34,6 @@ class MailgunDomainBounceController
             ->getItems();
 
         return collect($fetchedBounces)
-            ->filter(function ($bounce) use ($systemRecipients) {
-                return !in_array(
-                    mb_strtolower($bounce->getAddress()),
-                    $systemRecipients,
-                    true
-                );
-            })
             ->map(function ($bounce) {
                 return [
                     'address' => $bounce->getAddress(),
@@ -54,8 +50,9 @@ class MailgunDomainBounceController
     {
         $this->authorize('update', MailgunDomain::class);
 
+        $this->abortIfSystemMailgunDomain($mailgunDomain, 'System mailgun domain bounces are not managed here.');
+
         $address = (string) $request->input('address');
-        $this->abortIfSystemRecipient($mailgunDomain, $address, 'System or not active mailbox bounces are not managed here.');
 
         $mailgunClient = Mailgun::create($mailgunDomain->secret, 'https://' . config('services.mailgun.endpoint'));
 
@@ -68,7 +65,7 @@ class MailgunDomainBounceController
     {
         $this->authorize('update', MailgunDomain::class);
 
-        $this->abortIfSystemRecipient($mailgunDomain, (string) $address, 'System or not active mailbox bounces are not managed here.');
+        $this->abortIfSystemMailgunDomain($mailgunDomain, 'System mailgun domain bounces are not managed here.');
 
         $mailgunClient = Mailgun::create($mailgunDomain->secret, 'https://' . config('services.mailgun.endpoint'));
 

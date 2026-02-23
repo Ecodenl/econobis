@@ -18,7 +18,9 @@ class MailgunEventController
 
         $mailgunDomains = MailgunDomain::whereHas('mailboxes.users', function($query) use ($user){
             $query->where('users.id', $user->id);
-        })->get();
+        })
+            ->where('is_system_mailgun_domain', false)
+            ->get();
 
         foreach ($mailgunDomains as $mailgunDomain) {
             /**

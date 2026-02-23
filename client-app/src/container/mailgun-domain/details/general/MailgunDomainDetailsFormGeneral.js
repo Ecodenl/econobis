@@ -44,13 +44,20 @@ class MailgunDomainDetailsFormGeneral extends Component {
     render() {
         const { permissions = {} } = this.props.meDetails;
 
+        const manageSystemMailgunDomain =
+            this.props.meDetails.email == 'support@econobis.nl' || this.props.meDetails.email == 'software@xaris.nl'
+                ? true
+                : false;
+
         return (
             <div
                 className={this.state.activeDiv}
                 onMouseEnter={() => this.onDivEnter()}
                 onMouseLeave={() => this.onDivLeave()}
             >
-                {this.state.showEdit && permissions.manageMailgunDomain ? (
+                {this.state.showEdit &&
+                permissions.manageMailgunDomain &&
+                (!this.props.mailgunDomainDetails.isSystemMailgunDomain || manageSystemMailgunDomain) ? (
                     <MailgunDomainDetailsFormGeneralEdit switchToView={this.switchToView} />
                 ) : (
                     <MailgunDomainDetailsFormGeneralView switchToEdit={this.switchToEdit} />

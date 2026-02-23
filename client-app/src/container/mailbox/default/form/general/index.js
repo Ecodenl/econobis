@@ -144,7 +144,7 @@ function MailboxDefaultFormGeneral({
                             required={'required'}
                             error={errors.name && touched.name}
                             errorMessage={errors.name}
-                            disabled={!manageSystemMailbox && values.isSystemMailbox}
+                            disabled={!manageSystemMailbox && mailgunDomain.isSystemMailgunDomain}
                         />
                         <InputText
                             label={'E-mail'}
@@ -155,7 +155,7 @@ function MailboxDefaultFormGeneral({
                             required={'required'}
                             error={errors.email && touched.email}
                             errorMessage={errors.email}
-                            disabled={!manageSystemMailbox && values.isSystemMailbox}
+                            disabled={!manageSystemMailbox && mailgunDomain.isSystemMailgunDomain}
                         />
                     </div>
                     <div className="row">
@@ -169,21 +169,7 @@ function MailboxDefaultFormGeneral({
                             }}
                             size={'col-sm-5'}
                             textToolTip={`Indien dit aangezet wordt, dan kan je met deze mailbox alleen emails verzenden, niet ontvangen.`}
-                            disabled={!manageSystemMailbox && values.isSystemMailbox}
-                        />
-                        <InputToggle
-                            label={'Markeer als systeem mailbox'}
-                            name={'isSystemMailbox'}
-                            value={values.isSystemMailbox}
-                            onChangeAction={event => {
-                                event.persist();
-                                setFieldValue(event.target.name, event.target.checked);
-                            }}
-                            size={'col-sm-5'}
-                            textToolTip={`Een systeem mailbox is alleen voor support gebruiker en is vooral bedoeld voor initiele mailbox
-                                 bij het opzetten van een nieuwe cooperatie. Mailgun logs en bounches zullen niet opgehaald worden 
-                                 bij systeem mailboxen.`}
-                            disabled={!manageSystemMailbox}
+                            disabled={!manageSystemMailbox && mailgunDomain.isSystemMailgunDomain}
                         />
                     </div>
                     <div className="row">
@@ -195,7 +181,7 @@ function MailboxDefaultFormGeneral({
                                 event.persist();
                                 setFieldValue(event.target.name, event.target.checked);
                             }}
-                            disabled={values.primary || (!manageSystemMailbox && values.isSystemMailbox)}
+                            disabled={values.primary || (!manageSystemMailbox && mailgunDomain.isSystemMailgunDomain)}
                         />
                         <InputToggle
                             label="Primair (verzend wachtwoord mails)"
@@ -208,7 +194,7 @@ function MailboxDefaultFormGeneral({
                             disabled={
                                 !values.isActive ||
                                 initialValues.primary ||
-                                (!manageSystemMailbox && values.isSystemMailbox)
+                                (!manageSystemMailbox && mailgunDomain.isSystemMailgunDomain)
                             }
                             size={'col-sm-5'}
                             textToolTip={
@@ -234,7 +220,7 @@ function MailboxDefaultFormGeneral({
                                 event.persist();
                                 setFieldValue(event.target.name, event.target.checked);
                             }}
-                            disabled={!manageSystemMailbox && values.isSystemMailbox}
+                            disabled={!manageSystemMailbox && mailgunDomain.isSystemMailgunDomain}
                         />
                     </div>
                 </PanelBody>
@@ -262,7 +248,7 @@ function MailboxDefaultFormGeneral({
                                 onChangeAction={handleChange}
                                 emptyOption={false}
                                 required={'required'}
-                                readOnly={!manageSystemMailbox && values.isSystemMailbox}
+                                readOnly={!manageSystemMailbox && mailgunDomain.isSystemMailgunDomain}
                             />
                         )}
                         <InputSelect
@@ -273,7 +259,7 @@ function MailboxDefaultFormGeneral({
                             onChangeAction={handleChange}
                             emptyOption={false}
                             required={'required'}
-                            readOnly={!manageSystemMailbox && values.isSystemMailbox}
+                            readOnly={!manageSystemMailbox && mailgunDomain.isSystemMailgunDomain}
                         />
                     </div>
                     <div className="row">
@@ -295,7 +281,7 @@ function MailboxDefaultFormGeneral({
                                     required={'required'}
                                     error={errors.imapHost && touched.imapHost}
                                     errorMessage={errors.imapHost}
-                                    disabled={!manageSystemMailbox && values.isSystemMailbox}
+                                    disabled={!manageSystemMailbox && mailgunDomain.isSystemMailgunDomain}
                                 />
                             )
                         ) : (
@@ -312,7 +298,7 @@ function MailboxDefaultFormGeneral({
                                 required={'required'}
                                 error={errors.smtpHost && touched.smtpHost}
                                 errorMessage={errors.smtpHost}
-                                disabled={!manageSystemMailbox && values.isSystemMailbox}
+                                disabled={!manageSystemMailbox && mailgunDomain.isSystemMailgunDomain}
                             />
                         ) : null}
 
@@ -327,7 +313,7 @@ function MailboxDefaultFormGeneral({
                                 required={'required'}
                                 error={errors.mailgunDomainId && touched.mailgunDomainId}
                                 errorMessage={errors.mailgunDomainId}
-                                readOnly={!manageSystemMailbox && values.isSystemMailbox}
+                                readOnly={!manageSystemMailbox && mailgunDomain.isSystemMailgunDomain}
                             />
                         ) : null}
                     </div>
@@ -351,7 +337,7 @@ function MailboxDefaultFormGeneral({
                                     required={'required'}
                                     error={errors.username && touched.username}
                                     errorMessage={errors.username}
-                                    disabled={!manageSystemMailbox && values.isSystemMailbox}
+                                    disabled={!manageSystemMailbox && mailgunDomain.isSystemMailgunDomain}
                                 />
                                 <InputText
                                     type={'text'}
@@ -365,7 +351,7 @@ function MailboxDefaultFormGeneral({
                                     required={'required'}
                                     error={errors.password && touched.password}
                                     errorMessage={errors.password}
-                                    disabled={!manageSystemMailbox && values.isSystemMailbox}
+                                    disabled={!manageSystemMailbox && mailgunDomain.isSystemMailgunDomain}
                                 />
                             </div>
                             <div className="row">
@@ -389,7 +375,7 @@ function MailboxDefaultFormGeneral({
                                             required={'required'}
                                             error={errors.imapPort && touched.imapPort}
                                             errorMessage={errors.imapPort}
-                                            disabled={!manageSystemMailbox && values.isSystemMailbox}
+                                            disabled={!manageSystemMailbox && mailgunDomain.isSystemMailgunDomain}
                                         />
                                     )
                                 ) : (
@@ -405,7 +391,7 @@ function MailboxDefaultFormGeneral({
                                         required={'required'}
                                         error={errors.smtpPort && touched.smtpPort}
                                         errorMessage={errors.smtpPort}
-                                        disabled={!manageSystemMailbox && values.isSystemMailbox}
+                                        disabled={!manageSystemMailbox && mailgunDomain.isSystemMailgunDomain}
                                     />
                                 )}
                             </div>
@@ -431,7 +417,7 @@ function MailboxDefaultFormGeneral({
                                                 { id: 'tls', name: 'TLS' },
                                             ]}
                                             onChangeAction={handleChange}
-                                            readOnly={!manageSystemMailbox && values.isSystemMailbox}
+                                            readOnly={!manageSystemMailbox && mailgunDomain.isSystemMailgunDomain}
                                         />
                                     )
                                 ) : (
@@ -448,7 +434,7 @@ function MailboxDefaultFormGeneral({
                                             { id: 'tls', name: 'TLS' },
                                         ]}
                                         onChangeAction={handleChange}
-                                        readOnly={!manageSystemMailbox && values.isSystemMailbox}
+                                        readOnly={!manageSystemMailbox && mailgunDomain.isSystemMailgunDomain}
                                     />
                                 )}
                             </div>
@@ -474,7 +460,7 @@ function MailboxDefaultFormGeneral({
                                                 onBlurAction={handleBlur}
                                                 error={errors.imapInboxPrefix && touched.imapInboxPrefix}
                                                 errorMessage={errors.imapInboxPrefix}
-                                                disabled={!manageSystemMailbox && values.isSystemMailbox}
+                                                disabled={!manageSystemMailbox && mailgunDomain.isSystemMailgunDomain}
                                             />
                                         )}
                                     </div>
@@ -497,7 +483,7 @@ function MailboxDefaultFormGeneral({
                                                     event.persist();
                                                     setFieldValue(event.target.name, event.target.checked);
                                                 }}
-                                                disabled={!manageSystemMailbox && values.isSystemMailbox}
+                                                disabled={!manageSystemMailbox && mailgunDomain.isSystemMailgunDomain}
                                             />
                                         )}
                                     </div>

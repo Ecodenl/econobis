@@ -40,12 +40,11 @@ class MailboxesListItem extends Component {
     }
 
     render() {
-        console.log(this.props);
         const {
             id,
             name,
             email,
-            isSystemMailbox,
+            isSystemMailgunDomain,
             onlyOutgoingMailbox,
             incomingServerType,
             incomingServerTypeName,
@@ -96,7 +95,7 @@ class MailboxesListItem extends Component {
 
                 <td>{primary ? 'Primair' : ''}</td>
                 <td>{isActive ? 'Ja' : 'Nee'}</td>
-                <td>{isSystemMailbox ? 'Ja' : 'Nee'}</td>
+                <td>{isSystemMailgunDomain ? 'Ja' : 'Nee'}</td>
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Mailbox;
 
 use App\Eco\Mailbox\MailgunDomain;
-use App\Http\Traits\Mailgun\SystemMailboxSuppressionGuard;
+use App\Http\Traits\Mailgun\MailgunDomainSuppressionGuard;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -11,18 +11,21 @@ use Mailgun\Mailgun;
 
 class MailgunDomainComplaintController
 {
-    use AuthorizesRequests, SystemMailboxSuppressionGuard;
+    use AuthorizesRequests, MailgunDomainSuppressionGuard;
 
     public function index(MailgunDomain $mailgunDomain)
     {
         $this->authorize('update', MailgunDomain::class);
 
+        $this->abortIfSystemMailgunDomain(
+            $mailgunDomain,
+            'System mailgun domain suppressions are not available.'
+        );
+
         $mailgunClient = Mailgun::create(
             $mailgunDomain->secret,
             'https://' . config('services.mailgun.endpoint')
         );
-
-        $systemRecipients = $this->getSystemRecipients($mailgunDomain);
 
         $fetchedComplaints = $mailgunClient
             ->suppressions()
@@ -31,13 +34,6 @@ class MailgunDomainComplaintController
             ->getItems();
 
         return collect($fetchedComplaints)
-            ->filter(function ($complaint) use ($systemRecipients) {
-                return !in_array(
-                    mb_strtolower($complaint->getAddress()),
-                    $systemRecipients,
-                    true
-                );
-            })
             ->map(function ($complaint) {
                 return [
                     'address' => $complaint->getAddress(),
@@ -53,8 +49,9 @@ class MailgunDomainComplaintController
     {
         $this->authorize('update', MailgunDomain::class);
 
+        $this->abortIfSystemMailgunDomain($mailgunDomain, 'System mailgun domain complaints are not managed here.');
+
         $address = (string) $request->input('address');
-        $this->abortIfSystemRecipient($mailgunDomain, $address, 'System mailbox complaints are not managed here.');
 
         $mailgunClient = Mailgun::create($mailgunDomain->secret, 'https://' . config('services.mailgun.endpoint'));
 
@@ -65,7 +62,7 @@ class MailgunDomainComplaintController
     {
         $this->authorize('update', MailgunDomain::class);
 
-        $this->abortIfSystemRecipient($mailgunDomain, (string) $address, 'System mailbox complaints are not managed here.');
+        $this->abortIfSystemMailgunDomain($mailgunDomain, 'System mailgun domain complaints are not managed here.');
 
         $mailgunClient = Mailgun::create($mailgunDomain->secret, 'https://' . config('services.mailgun.endpoint'));
 

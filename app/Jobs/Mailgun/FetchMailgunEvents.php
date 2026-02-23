@@ -5,13 +5,14 @@ namespace App\Jobs\Mailgun;
 
 use App\Eco\Mailbox\MailgunDomain;
 use App\Eco\Mailbox\MailgunEvent;
-use App\Http\Traits\Mailgun\SystemMailboxSuppressionGuard;
+use App\Http\Traits\Mailgun\MailgunDomainSuppressionGuard;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Mailgun\Mailgun;
 use Mailgun\Model\Event\Event;
 use Mailgun\Model\Event\EventResponse;
@@ -19,7 +20,7 @@ use Mailgun\Model\Event\EventResponse;
 class FetchMailgunEvents implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    use SystemMailboxSuppressionGuard;
+    use MailgunDomainSuppressionGuard;
 
     protected MailgunDomain $mailgunDomain;
 
@@ -33,18 +34,27 @@ class FetchMailgunEvents implements ShouldQueue
 
     public function handle()
     {
+        if ($this->mailgunDomain->is_system_mailgun_domain) {
+            // optioneel: alleen lokaal loggen
+            if (app()->environment('local')) {
+                Log::info('Skipping Mailgun events fetch for system domain', [
+                    'mailgun_domain_id' => $this->mailgunDomain->id,
+                    'domain' => $this->mailgunDomain->domain,
+                ]);
+            }
+
+            return; // <- klaar, geen client, geen calls, geen DB writes
+        }
+
         $mailgunClient = Mailgun::create(
             $this->mailgunDomain->secret,
             'https://' . config('services.mailgun.endpoint')
         );
 
-        // Haal system mailbox recipients op voor deze domain
-        $systemRecipients = array_fill_keys($this->getSystemRecipients($this->mailgunDomain), true);
-
         $events = $this->getPaginatedEvents($mailgunClient);
 
         foreach ($events as $event) {
-            $this->processEvent($event, $systemRecipients);
+            $this->processEvent($event);
         }
     }
 
@@ -94,13 +104,8 @@ class FetchMailgunEvents implements ShouldQueue
         return $this->getPaginatedEvents($mailgunClient, $eventResponse, $events);
     }
 
-    private function processEvent(Event $event, array $systemRecipients)
+    private function processEvent(Event $event)
     {
-        $recipient = mb_strtolower(trim((string) $event->getRecipient()));
-        if ($recipient !== '' && isset($systemRecipients[$recipient])) {
-            return;
-        }
-
         if(MailgunEvent::where('mailgun_id', $event->getId())->exists()){
             return;
         }
@@ -114,6 +119,8 @@ class FetchMailgunEvents implements ShouldQueue
              */
             $eventCode = 'failed_' . $event->getSeverity();
         }
+
+        $recipient = mb_strtolower(trim((string) $event->getRecipient()));
 
         $subjectEvent = $event->getMessage()['headers']['subject'] ?? '';
         $subject = strlen($subjectEvent)>191 ? ( substr($subjectEvent,0,188) . '...') : $subjectEvent;

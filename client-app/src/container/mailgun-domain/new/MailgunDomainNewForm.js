@@ -29,6 +29,7 @@ class MailgunDomainNewForm extends Component {
                 id: '',
                 domain: '',
                 secret: '',
+                isSystemMailgunDomain: '',
             },
             errors: {
                 name: false,
@@ -101,7 +102,12 @@ class MailgunDomainNewForm extends Component {
     }
 
     render() {
-        const { domain, secret, isVerified } = this.state.mailgunDomain;
+        const { domain, secret, isVerified, isSystemMailgunDomain } = this.state.mailgunDomain;
+
+        const manageSystemMailgunDomain =
+            this.props.meDetails.email == 'support@econobis.nl' || this.props.meDetails.email == 'software@xaris.nl'
+                ? true
+                : false;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -125,6 +131,19 @@ class MailgunDomainNewForm extends Component {
                                 error={this.state.errors.secret}
                             />
                         </div>
+                        <div className="row">
+                            <InputToggle
+                                label={'Markeer als systeem mailgun domain'}
+                                name={'isSystemMailgunDomain'}
+                                value={isSystemMailgunDomain}
+                                onChangeAction={this.handleInputChange}
+                                size={'col-sm-5'}
+                                textToolTip={`Een systeem mailgun domain is alleen voor support gebruiker en is vooral bedoeld voor een initiele mailbox
+                                 bij het opzetten van een nieuwe cooperatie. Mailgun logs (events), bounches en complaints zullen niet opgehaald worden 
+                                 voor systeem mailgun domains.`}
+                                disabled={!manageSystemMailgunDomain}
+                            />
+                        </div>
                     </PanelBody>
 
                     <PanelBody>
@@ -143,6 +162,11 @@ class MailgunDomainNewForm extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        meDetails: state.meDetails,
+    };
+};
 const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
 
-export default connect(null, mapDispatchToProps)(MailgunDomainNewFormWrapper);
+export default connect(mapStateToProps, mapDispatchToProps)(MailgunDomainNewFormWrapper);

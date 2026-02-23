@@ -12,7 +12,7 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, meDetails, switchToEdit
     const {
         name,
         email,
-        isSystemMailbox,
+        isSystemMailgunDomain,
         onlyOutgoingMailbox,
         smtpHost,
         smtpPort,
@@ -39,13 +39,10 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, meDetails, switchToEdit
     } = mailboxDetails;
 
     const manageSystemMailbox =
-        meDetails.email == 'support@econobis.nl' || meDetails.email == 'software@xaris.nl'
-            ? // meDetails.email == 'bar@mossy.nl'
-              true
-            : false;
+        meDetails.email == 'support@econobis.nl' || meDetails.email == 'software@xaris.nl' ? true : false;
 
     function onClickForm() {
-        if (manageSystemMailbox || !isSystemMailbox) {
+        if (manageSystemMailbox || !isSystemMailgunDomain) {
             switchToEdit();
         }
     }
@@ -63,7 +60,6 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, meDetails, switchToEdit
                             label={'Mailbox voor alleen uitgaande emails'}
                             value={onlyOutgoingMailbox ? 'Ja' : 'Nee'}
                         />
-                        <ViewText label={'Markeer als systeem mailbox'} value={isSystemMailbox ? 'Ja' : 'Nee'} />
                     </div>
 
                     <div className="row">
@@ -267,7 +263,7 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, meDetails, switchToEdit
 const mapStateToProps = state => {
     return {
         mailboxDetails: state.mailboxDetails,
-        mailgunDomain: state.systemData.mailgunDomain,
+        // mailgunDomain: state.systemData.mailgunDomain, // volgens mij niet nodig en verwarrend
         meDetails: state.meDetails,
     };
 };

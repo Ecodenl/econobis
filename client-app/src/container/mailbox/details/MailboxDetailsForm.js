@@ -30,8 +30,7 @@ class MailboxDetailsForm extends Component {
 
         const manageSystemMailbox =
             this.props.meDetails.email == 'support@econobis.nl' || this.props.meDetails.email == 'software@xaris.nl'
-                ? // this.props.meDetails.email == 'bar@mossy.nl'
-                  true
+                ? true
                 : false;
 
         return loading ? (
@@ -48,12 +47,12 @@ class MailboxDetailsForm extends Component {
                         </PanelHeader>
                     </Panel>
                 ) : null}
-                {this.props.mailboxDetails.isSystemMailbox && !manageSystemMailbox ? (
+                {this.props.mailboxDetails.isSystemMailgunDomain && !manageSystemMailbox ? (
                     <Panel>
                         <PanelHeader>
                             <span className="h5" style={{ color: '#e64a4a' }}>
-                                Deze mailbox is geconfigureerd als systeem mailbox. Deze kan alleen door Econobis
-                                support gewijzigd worden.
+                                Deze mailgun mailbox is geconfigureerd met een systeem mailgun domain. Deze kan alleen
+                                door Econobis support gewijzigd worden.
                             </span>
                         </PanelHeader>
                     </Panel>

@@ -65,7 +65,6 @@ class MailboxController extends Controller
 
         $data = $input->string('name')->whenMissing('')->onEmpty('')->next()
             ->string('email')->whenMissing('')->onEmpty('')->alias('email')->next()
-            ->boolean('isSystemMailbox')->alias('is_system_mailbox')->whenMissing(false)->onEmpty(false)->next()
             ->boolean('onlyOutgoingMailbox')->alias('only_outgoing_mailbox')->whenMissing(false)->onEmpty(false)->next()
             ->string('smtpHost')->whenMissing('')->onEmpty('')->alias('smtp_host')->next()
             ->string('smtpPort')->whenMissing('')->onEmpty('')->alias('smtp_port')->next()
@@ -139,7 +138,6 @@ class MailboxController extends Controller
 
         $data = $input->string('name')->next()
             ->string('email')->alias('email')->next()
-            ->boolean('isSystemMailbox')->alias('is_system_mailbox')->whenMissing(false)->onEmpty(false)->next()
             ->boolean('onlyOutgoingMailbox')->alias('only_outgoing_mailbox')->whenMissing(false)->onEmpty(false)->next()
             ->string('smtpHost')->alias('smtp_host')->next()
             ->string('smtpPort')->alias('smtp_port')->next()

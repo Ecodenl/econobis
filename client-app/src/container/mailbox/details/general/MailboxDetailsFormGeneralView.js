@@ -8,10 +8,12 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import moment from 'moment/moment';
 import { REDIRECT_URL_MS_OAUTH } from '../../../../constants';
 
-function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
+function MailboxDetailsFormGeneralView({ mailboxDetails, meDetails, switchToEdit }) {
     const {
         name,
         email,
+        isSystemMailbox,
+        onlyOutgoingMailbox,
         smtpHost,
         smtpPort,
         smtpEncryption,
@@ -36,13 +38,32 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
         inboundMailgunEmail,
     } = mailboxDetails;
 
+    const manageSystemMailbox =
+        meDetails.email == 'support@econobis.nl' || meDetails.email == 'software@xaris.nl'
+            ? // meDetails.email == 'bar@mossy.nl'
+              true
+            : false;
+
+    function onClickForm() {
+        if (manageSystemMailbox || !isSystemMailbox) {
+            switchToEdit();
+        }
+    }
+
     return (
-        <div onClick={switchToEdit}>
+        <div onClick={onClickForm}>
             <Panel>
                 <PanelBody>
                     <div className="row">
                         <ViewText label={'Weergavenaam'} value={name} />
                         <ViewText label={'E-mail'} value={email} />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Mailbox voor alleen uitgaande emails'}
+                            value={onlyOutgoingMailbox ? 'Ja' : 'Nee'}
+                        />
+                        <ViewText label={'Markeer als systeem mailbox'} value={isSystemMailbox ? 'Ja' : 'Nee'} />
                     </div>
 
                     <div className="row">
@@ -72,12 +93,15 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
                 </PanelHeader>
                 <PanelBody>
                     <div className="row">
-                        <ViewText label={'Inkomende mail type'} value={mailboxServerTypes.incomingServerType?.name} />
+                        <ViewText
+                            label={'Inkomende mail type'}
+                            value={onlyOutgoingMailbox ? 'N.v.t.' : mailboxServerTypes.incomingServerType?.name}
+                        />
                         <ViewText label={'Uitgaande mail type'} value={mailboxServerTypes.outgoingServerType?.name} />
                     </div>
                     <div className="row">
                         {incomingServerType === 'imap' ? (
-                            <ViewText label="Inkomende IMAP host" value={imapHost} />
+                            <ViewText label="Inkomende IMAP host" value={onlyOutgoingMailbox ? 'N.v.t.' : imapHost} />
                         ) : (
                             <div className="form-group col-sm-6" />
                         )}
@@ -106,7 +130,7 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
                             </div>
                             <div className="row">
                                 {incomingServerType === 'imap' ? (
-                                    <ViewText label={'Imap poort'} value={imapPort} />
+                                    <ViewText label={'Imap poort'} value={onlyOutgoingMailbox ? 'N.v.t.' : imapPort} />
                                 ) : (
                                     <div className="form-group col-sm-6" />
                                 )}
@@ -117,7 +141,9 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
                                     <ViewText
                                         label={'Imap versleutelde verbinding'}
                                         value={
-                                            imapEncryption === 'ssl'
+                                            onlyOutgoingMailbox
+                                                ? 'N.v.t.'
+                                                : imapEncryption === 'ssl'
                                                 ? 'SSL'
                                                 : imapEncryption === 'ssl/novalidate-cert'
                                                 ? 'SSL - self-signed certificate'
@@ -137,12 +163,15 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
                             {incomingServerType === 'imap' && (
                                 <>
                                     <div className="row">
-                                        <ViewText label={'Inbox prefix'} value={imapInboxPrefix} />
+                                        <ViewText
+                                            label={'Inbox prefix'}
+                                            value={onlyOutgoingMailbox ? 'N.v.t.' : imapInboxPrefix}
+                                        />
                                     </div>
                                     <div className="row">
                                         <ViewText
                                             label={'Zet email als gelezen op server'}
-                                            value={emailMarkAsSeen ? 'Ja' : 'Nee'}
+                                            value={onlyOutgoingMailbox ? 'N.v.t.' : emailMarkAsSeen ? 'Ja' : 'Nee'}
                                         />
                                     </div>
                                 </>
@@ -238,8 +267,8 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
 const mapStateToProps = state => {
     return {
         mailboxDetails: state.mailboxDetails,
-        usesMailgun: state.systemData.usesMailgun,
         mailgunDomain: state.systemData.mailgunDomain,
+        meDetails: state.meDetails,
     };
 };
 

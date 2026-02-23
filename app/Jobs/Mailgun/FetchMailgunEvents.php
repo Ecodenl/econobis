@@ -5,6 +5,7 @@ namespace App\Jobs\Mailgun;
 
 use App\Eco\Mailbox\MailgunDomain;
 use App\Eco\Mailbox\MailgunEvent;
+use App\Http\Traits\Mailgun\SystemMailboxSuppressionGuard;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -18,6 +19,7 @@ use Mailgun\Model\Event\EventResponse;
 class FetchMailgunEvents implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use SystemMailboxSuppressionGuard;
 
     protected MailgunDomain $mailgunDomain;
 
@@ -31,12 +33,18 @@ class FetchMailgunEvents implements ShouldQueue
 
     public function handle()
     {
-        $mailgunClient = Mailgun::create($this->mailgunDomain->secret, 'https://' . config('services.mailgun.endpoint'));
+        $mailgunClient = Mailgun::create(
+            $this->mailgunDomain->secret,
+            'https://' . config('services.mailgun.endpoint')
+        );
+
+        // Haal system mailbox recipients op voor deze domain
+        $systemRecipients = array_fill_keys($this->getSystemRecipients($this->mailgunDomain), true);
 
         $events = $this->getPaginatedEvents($mailgunClient);
 
         foreach ($events as $event) {
-            $this->processEvent($event);
+            $this->processEvent($event, $systemRecipients);
         }
     }
 
@@ -86,8 +94,13 @@ class FetchMailgunEvents implements ShouldQueue
         return $this->getPaginatedEvents($mailgunClient, $eventResponse, $events);
     }
 
-    private function processEvent(Event $event)
+    private function processEvent(Event $event, array $systemRecipients)
     {
+        $recipient = mb_strtolower(trim((string) $event->getRecipient()));
+        if ($recipient !== '' && isset($systemRecipients[$recipient])) {
+            return;
+        }
+
         if(MailgunEvent::where('mailgun_id', $event->getId())->exists()){
             return;
         }
@@ -113,7 +126,7 @@ class FetchMailgunEvents implements ShouldQueue
             'mailgun_id' => $event->getId(),
             'mailgun_message_id' => $event->getMessage()['headers']['message-id'] ?? '',
             'event' => $eventCode,
-            'recipient' => $event->getRecipient(),
+            'recipient' => $recipient,
             'subject' => $subject,
             'event_date' => $event->getEventDate(),
             'delivery_status' => $deliveryStatus,

@@ -19,17 +19,21 @@ import { MailboxValidationClientSecret } from './Validation';
 import ViewText from '../../../../../components/form/ViewText';
 import moment from 'moment';
 import MailboxDefaultFormGeneralMsOauthApiSettings from './MsOauthApiSettings';
+import MailboxAPI from '../../../../../api/mailbox/MailboxAPI';
 
 function MailboxDefaultFormGeneral({
     initialValues,
     processSubmit,
     mailgunDomain,
     mailboxServerTypes,
+    meDetails,
     switchToView,
     isNew,
 }) {
+    const [currentOnlyOutgoingMailbox, setCurrentOnlyOutgoingMailbox] = useState(initialValues.onlyOutgoingMailbox);
     const [currentIncomingServerType, setCurrentIncomingServerType] = useState(initialValues.incomingServerType);
     const [currentOutgoingServerType, setCurrentOutgoingServerType] = useState(initialValues.outgoingServerType);
+    const [msOauthBusy, setMsOauthBusy] = useState(false);
 
     const { values, errors, touched, handleChange, handleSubmit, setFieldValue, handleBlur, isSubmitting } = useFormik({
         initialValues: initialValues,
@@ -39,18 +43,24 @@ function MailboxDefaultFormGeneral({
         },
     });
 
+    const manageSystemMailbox =
+        meDetails.email == 'support@econobis.nl' || meDetails.email == 'software@xaris.nl' ? true : false;
+
     useEffect(() => {
-        if (values.incomingServerType) {
+        if (values.incomingServerType !== undefined) {
             setCurrentIncomingServerType(values.incomingServerType);
         }
-        if (values.outgoingServerType) {
+        if (values.outgoingServerType !== undefined) {
             setCurrentOutgoingServerType(values.outgoingServerType);
         }
-    }, [values.incomingServerType, values.outgoingServerType]);
+        if (values.onlyOutgoingMailbox !== undefined) {
+            setCurrentOnlyOutgoingMailbox(values.onlyOutgoingMailbox);
+        }
+    }, [values.incomingServerType, values.outgoingServerType, values.onlyOutgoingMailbox]);
 
     function getValidationSchema() {
         let validationSchema = MailboxValidation;
-        if (currentIncomingServerType === 'imap') {
+        if (currentIncomingServerType === 'imap' && !currentOnlyOutgoingMailbox) {
             validationSchema = validationSchema.concat(MailboxValidationImap);
             if (isNew) {
                 validationSchema = validationSchema.concat(MailboxValidationPassword);
@@ -74,6 +84,52 @@ function MailboxDefaultFormGeneral({
         return validationSchema;
     }
 
+    function redirectIfMsOauthUnauthorized(error) {
+        if (
+            error?.response?.status === 401 &&
+            error?.response?.data?.message === 'ms_oauth_unauthorised' &&
+            error?.response?.data?.authUrl
+        ) {
+            window.location = error.response.data.authUrl;
+            return true;
+        }
+        return false;
+    }
+
+    function handleForceReconnect(e) {
+        e?.preventDefault?.();
+        e?.stopPropagation?.();
+
+        if (!values.id || msOauthBusy) return;
+
+        setMsOauthBusy(true);
+
+        MailboxAPI.forceMsOauthReconnect(values.id)
+            .catch(error => {
+                if (redirectIfMsOauthUnauthorized(error)) return;
+                console.log(error);
+                alert('Kon Forceer reconnect niet starten.');
+            })
+            .finally(() => setMsOauthBusy(false));
+    }
+
+    function handleForceSelectAccount(e) {
+        e?.preventDefault?.();
+        e?.stopPropagation?.();
+
+        if (!values.id || msOauthBusy) return;
+
+        setMsOauthBusy(true);
+
+        MailboxAPI.forceMsOauthSelectAccount(values.id)
+            .catch(error => {
+                if (redirectIfMsOauthUnauthorized(error)) return;
+                console.log(error);
+                alert('Kon Account opnieuw kiezen niet starten.');
+            })
+            .finally(() => setMsOauthBusy(false));
+    }
+
     return (
         <form className="form-horizontal" onSubmit={handleSubmit}>
             <Panel>
@@ -88,6 +144,7 @@ function MailboxDefaultFormGeneral({
                             required={'required'}
                             error={errors.name && touched.name}
                             errorMessage={errors.name}
+                            disabled={!manageSystemMailbox && values.isSystemMailbox}
                         />
                         <InputText
                             label={'E-mail'}
@@ -98,6 +155,35 @@ function MailboxDefaultFormGeneral({
                             required={'required'}
                             error={errors.email && touched.email}
                             errorMessage={errors.email}
+                            disabled={!manageSystemMailbox && values.isSystemMailbox}
+                        />
+                    </div>
+                    <div className="row">
+                        <InputToggle
+                            label={'Mailbox voor alleen uitgaande emails'}
+                            name={'onlyOutgoingMailbox'}
+                            value={values.onlyOutgoingMailbox}
+                            onChangeAction={event => {
+                                event.persist();
+                                setFieldValue(event.target.name, event.target.checked);
+                            }}
+                            size={'col-sm-5'}
+                            textToolTip={`Indien dit aangezet wordt, dan kan je met deze mailbox alleen emails verzenden, niet ontvangen.`}
+                            disabled={!manageSystemMailbox && values.isSystemMailbox}
+                        />
+                        <InputToggle
+                            label={'Markeer als systeem mailbox'}
+                            name={'isSystemMailbox'}
+                            value={values.isSystemMailbox}
+                            onChangeAction={event => {
+                                event.persist();
+                                setFieldValue(event.target.name, event.target.checked);
+                            }}
+                            size={'col-sm-5'}
+                            textToolTip={`Een systeem mailbox is alleen voor support gebruiker en is vooral bedoeld voor initiele mailbox
+                                 bij het opzetten van een nieuwe cooperatie. Mailgun logs en bounches zullen niet opgehaald worden 
+                                 bij systeem mailboxen.`}
+                            disabled={!manageSystemMailbox}
                         />
                     </div>
                     <div className="row">
@@ -109,7 +195,7 @@ function MailboxDefaultFormGeneral({
                                 event.persist();
                                 setFieldValue(event.target.name, event.target.checked);
                             }}
-                            disabled={values.primary}
+                            disabled={values.primary || (!manageSystemMailbox && values.isSystemMailbox)}
                         />
                         <InputToggle
                             label="Primair (verzend wachtwoord mails)"
@@ -119,7 +205,11 @@ function MailboxDefaultFormGeneral({
                                 event.persist();
                                 setFieldValue(event.target.name, event.target.checked);
                             }}
-                            disabled={!values.isActive || initialValues.primary}
+                            disabled={
+                                !values.isActive ||
+                                initialValues.primary ||
+                                (!manageSystemMailbox && values.isSystemMailbox)
+                            }
                             size={'col-sm-5'}
                             textToolTip={
                                 initialValues.primary &&
@@ -144,6 +234,7 @@ function MailboxDefaultFormGeneral({
                                 event.persist();
                                 setFieldValue(event.target.name, event.target.checked);
                             }}
+                            disabled={!manageSystemMailbox && values.isSystemMailbox}
                         />
                     </div>
                 </PanelBody>
@@ -155,15 +246,25 @@ function MailboxDefaultFormGeneral({
                 </PanelHeader>
                 <PanelBody>
                     <div className="row">
-                        <InputSelect
-                            label="Inkomende mail type"
-                            name={'incomingServerType'}
-                            value={values.incomingServerType}
-                            options={mailboxServerTypes.incomingServerTypes}
-                            onChangeAction={handleChange}
-                            emptyOption={false}
-                            required={'required'}
-                        />
+                        {currentOnlyOutgoingMailbox ? (
+                            <ViewText
+                                className={'form-group col-md-6'}
+                                label={'Inkomende mail type'}
+                                value={'N.v.t.'}
+                                textToolTip={'Deze mailbox staat nu ingesteld voor alleen uitgaande emails.'}
+                            />
+                        ) : (
+                            <InputSelect
+                                label="Inkomende mail type"
+                                name={'incomingServerType'}
+                                value={values.incomingServerType}
+                                options={mailboxServerTypes.incomingServerTypes}
+                                onChangeAction={handleChange}
+                                emptyOption={false}
+                                required={'required'}
+                                readOnly={!manageSystemMailbox && values.isSystemMailbox}
+                            />
+                        )}
                         <InputSelect
                             label="Uitgaande mail type"
                             name={'outgoingServerType'}
@@ -172,20 +273,31 @@ function MailboxDefaultFormGeneral({
                             onChangeAction={handleChange}
                             emptyOption={false}
                             required={'required'}
+                            readOnly={!manageSystemMailbox && values.isSystemMailbox}
                         />
                     </div>
                     <div className="row">
                         {values.incomingServerType === 'imap' ? (
-                            <InputText
-                                label="Inkomende IMAP host"
-                                name={'imapHost'}
-                                value={values.imapHost}
-                                onChangeAction={handleChange}
-                                onBlurAction={handleBlur}
-                                required={'required'}
-                                error={errors.imapHost && touched.imapHost}
-                                errorMessage={errors.imapHost}
-                            />
+                            currentOnlyOutgoingMailbox ? (
+                                <ViewText
+                                    className={'form-group col-md-6'}
+                                    label={'Inkomende IMAP host'}
+                                    value={'N.v.t.'}
+                                    textToolTip={'Deze mailbox staat nu ingesteld voor alleen uitgaande emails.'}
+                                />
+                            ) : (
+                                <InputText
+                                    label="Inkomende IMAP host"
+                                    name={'imapHost'}
+                                    value={values.imapHost}
+                                    onChangeAction={handleChange}
+                                    onBlurAction={handleBlur}
+                                    required={'required'}
+                                    error={errors.imapHost && touched.imapHost}
+                                    errorMessage={errors.imapHost}
+                                    disabled={!manageSystemMailbox && values.isSystemMailbox}
+                                />
+                            )
                         ) : (
                             <div className="form-group col-sm-6" />
                         )}
@@ -200,6 +312,7 @@ function MailboxDefaultFormGeneral({
                                 required={'required'}
                                 error={errors.smtpHost && touched.smtpHost}
                                 errorMessage={errors.smtpHost}
+                                disabled={!manageSystemMailbox && values.isSystemMailbox}
                             />
                         ) : null}
 
@@ -214,6 +327,7 @@ function MailboxDefaultFormGeneral({
                                 required={'required'}
                                 error={errors.mailgunDomainId && touched.mailgunDomainId}
                                 errorMessage={errors.mailgunDomainId}
+                                readOnly={!manageSystemMailbox && values.isSystemMailbox}
                             />
                         ) : null}
                     </div>
@@ -237,6 +351,7 @@ function MailboxDefaultFormGeneral({
                                     required={'required'}
                                     error={errors.username && touched.username}
                                     errorMessage={errors.username}
+                                    disabled={!manageSystemMailbox && values.isSystemMailbox}
                                 />
                                 <InputText
                                     type={'text'}
@@ -250,20 +365,33 @@ function MailboxDefaultFormGeneral({
                                     required={'required'}
                                     error={errors.password && touched.password}
                                     errorMessage={errors.password}
+                                    disabled={!manageSystemMailbox && values.isSystemMailbox}
                                 />
                             </div>
                             <div className="row">
                                 {values.incomingServerType === 'imap' ? (
-                                    <InputText
-                                        label={'Imap poort'}
-                                        name={'imapPort'}
-                                        value={values.imapPort}
-                                        onChangeAction={handleChange}
-                                        onBlurAction={handleBlur}
-                                        required={'required'}
-                                        error={errors.imapPort && touched.imapPort}
-                                        errorMessage={errors.imapPort}
-                                    />
+                                    currentOnlyOutgoingMailbox ? (
+                                        <ViewText
+                                            className={'form-group col-md-6'}
+                                            label={'Imap poort'}
+                                            value={'N.v.t.'}
+                                            textToolTip={
+                                                'Deze mailbox staat nu ingesteld voor alleen uitgaande emails.'
+                                            }
+                                        />
+                                    ) : (
+                                        <InputText
+                                            label={'Imap poort'}
+                                            name={'imapPort'}
+                                            value={values.imapPort}
+                                            onChangeAction={handleChange}
+                                            onBlurAction={handleBlur}
+                                            required={'required'}
+                                            error={errors.imapPort && touched.imapPort}
+                                            errorMessage={errors.imapPort}
+                                            disabled={!manageSystemMailbox && values.isSystemMailbox}
+                                        />
+                                    )
                                 ) : (
                                     <div className="form-group col-sm-6" />
                                 )}
@@ -277,22 +405,35 @@ function MailboxDefaultFormGeneral({
                                         required={'required'}
                                         error={errors.smtpPort && touched.smtpPort}
                                         errorMessage={errors.smtpPort}
+                                        disabled={!manageSystemMailbox && values.isSystemMailbox}
                                     />
                                 )}
                             </div>
                             <div className="row">
                                 {values.incomingServerType === 'imap' ? (
-                                    <InputSelect
-                                        label="Imap versleutelde verbinding"
-                                        name={'imapEncryption'}
-                                        value={values.imapEncryption}
-                                        options={[
-                                            { id: 'ssl', name: 'SSL' },
-                                            { id: 'ssl/novalidate-cert', name: 'SSL - self-signed certificate' },
-                                            { id: 'tls', name: 'TLS' },
-                                        ]}
-                                        onChangeAction={handleChange}
-                                    />
+                                    currentOnlyOutgoingMailbox ? (
+                                        <ViewText
+                                            className={'form-group col-md-6'}
+                                            label={'Imap versleutelde verbinding'}
+                                            value={'N.v.t.'}
+                                            textToolTip={
+                                                'Deze mailbox staat nu ingesteld voor alleen uitgaande emails.'
+                                            }
+                                        />
+                                    ) : (
+                                        <InputSelect
+                                            label="Imap versleutelde verbinding"
+                                            name={'imapEncryption'}
+                                            value={values.imapEncryption}
+                                            options={[
+                                                { id: 'ssl', name: 'SSL' },
+                                                { id: 'ssl/novalidate-cert', name: 'SSL - self-signed certificate' },
+                                                { id: 'tls', name: 'TLS' },
+                                            ]}
+                                            onChangeAction={handleChange}
+                                            readOnly={!manageSystemMailbox && values.isSystemMailbox}
+                                        />
+                                    )
                                 ) : (
                                     <div className="form-group col-sm-6" />
                                 )}
@@ -307,46 +448,103 @@ function MailboxDefaultFormGeneral({
                                             { id: 'tls', name: 'TLS' },
                                         ]}
                                         onChangeAction={handleChange}
+                                        readOnly={!manageSystemMailbox && values.isSystemMailbox}
                                     />
                                 )}
                             </div>
 
-                            {values.incomingServerType === 'imap' && (
+                            {values.incomingServerType === 'imap' ? (
                                 <>
                                     <div className="row">
-                                        <InputText
-                                            label={'Inbox prefix'}
-                                            name={'imapInboxPrefix'}
-                                            value={values.imapInboxPrefix}
-                                            onChangeAction={handleChange}
-                                            onBlurAction={handleBlur}
-                                            error={errors.imapInboxPrefix && touched.imapInboxPrefix}
-                                            errorMessage={errors.imapInboxPrefix}
-                                        />
+                                        {currentOnlyOutgoingMailbox ? (
+                                            <ViewText
+                                                className={'form-group col-md-6'}
+                                                label={'Inbox prefix'}
+                                                value={'N.v.t.'}
+                                                textToolTip={
+                                                    'Deze mailbox staat nu ingesteld voor alleen uitgaande emails.'
+                                                }
+                                            />
+                                        ) : (
+                                            <InputText
+                                                label={'Inbox prefix'}
+                                                name={'imapInboxPrefix'}
+                                                value={values.imapInboxPrefix}
+                                                onChangeAction={handleChange}
+                                                onBlurAction={handleBlur}
+                                                error={errors.imapInboxPrefix && touched.imapInboxPrefix}
+                                                errorMessage={errors.imapInboxPrefix}
+                                                disabled={!manageSystemMailbox && values.isSystemMailbox}
+                                            />
+                                        )}
                                     </div>
                                     <div className="row">
-                                        <InputToggle
-                                            label={'Zet email als gelezen op server'}
-                                            name={'emailMarkAsSeen'}
-                                            value={values.emailMarkAsSeen}
-                                            onChangeAction={handleChange}
-                                            onBlurAction={handleBlur}
-                                        />
+                                        {currentOnlyOutgoingMailbox ? (
+                                            <ViewText
+                                                className={'form-group col-md-6'}
+                                                label={'Zet email als gelezen op server'}
+                                                value={'N.v.t.'}
+                                                textToolTip={
+                                                    'Deze mailbox staat nu ingesteld voor alleen uitgaande emails.'
+                                                }
+                                            />
+                                        ) : (
+                                            <InputToggle
+                                                label={'Zet email als gelezen op server'}
+                                                name={'emailMarkAsSeen'}
+                                                value={values.emailMarkAsSeen}
+                                                onChangeAction={event => {
+                                                    event.persist();
+                                                    setFieldValue(event.target.name, event.target.checked);
+                                                }}
+                                                disabled={!manageSystemMailbox && values.isSystemMailbox}
+                                            />
+                                        )}
                                     </div>
                                 </>
-                            )}
+                            ) : null}
                         </PanelBody>
                     </>
                 )}
 
                 {(values.incomingServerType === 'ms-oauth' || values.outgoingServerType === 'ms-oauth') && (
-                    <MailboxDefaultFormGeneralMsOauthApiSettings
-                        values={values}
-                        errors={errors}
-                        touched={touched}
-                        handleChange={handleChange}
-                        handleBlur={handleBlur}
-                    />
+                    <>
+                        <MailboxDefaultFormGeneralMsOauthApiSettings
+                            values={values}
+                            errors={errors}
+                            touched={touched}
+                            handleChange={handleChange}
+                            handleBlur={handleBlur}
+                        />
+
+                        {values.id ? (
+                            <>
+                                <PanelHeader>
+                                    <span className="h5">
+                                        <strong>MS OAuth acties</strong>
+                                    </span>
+                                </PanelHeader>
+                                <PanelBody>
+                                    <div className="row">
+                                        <div className="col-sm-12">
+                                            <ButtonText
+                                                buttonClassName={'btn-default'}
+                                                buttonText={'Forceer reconnect (token reset)'}
+                                                onClickAction={handleForceReconnect}
+                                                loading={msOauthBusy}
+                                            />{' '}
+                                            <ButtonText
+                                                buttonClassName={'btn-default'}
+                                                buttonText={'Account opnieuw kiezen'}
+                                                onClickAction={handleForceSelectAccount}
+                                                loading={msOauthBusy}
+                                            />
+                                        </div>
+                                    </div>
+                                </PanelBody>
+                            </>
+                        ) : null}
+                    </>
                 )}
 
                 {values.incomingServerType === 'mailgun' && (
@@ -442,6 +640,7 @@ const mapStateToProps = state => {
     return {
         mailboxServerTypes: state.systemData.mailboxServerTypes,
         mailgunDomain: state.systemData.mailgunDomain,
+        meDetails: state.meDetails,
     };
 };
 

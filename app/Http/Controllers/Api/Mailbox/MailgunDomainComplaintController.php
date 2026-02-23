@@ -19,7 +19,7 @@ class MailgunDomainComplaintController
 
         $this->abortIfSystemMailgunDomain(
             $mailgunDomain,
-            'System mailgun domain suppressions are not available.'
+            'Complaints worden niet getoond voor dit Mailgun-domein omdat het is ingesteld als systeemdomein.'
         );
 
         $mailgunClient = Mailgun::create(

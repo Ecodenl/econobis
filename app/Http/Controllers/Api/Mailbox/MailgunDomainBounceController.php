@@ -19,7 +19,7 @@ class MailgunDomainBounceController
 
         $this->abortIfSystemMailgunDomain(
             $mailgunDomain,
-            'System mailgun domain suppressions are not available.'
+            'Bounces worden niet getoond voor dit Mailgun-domein omdat het is ingesteld als systeemdomein.'
         );
 
         $mailgunClient = Mailgun::create(

@@ -48,7 +48,7 @@ class FullMailbox extends JsonResource
             'valid' => $this->valid,
             'mailgunDomainId' => $this->mailgun_domain_id,
             'mailgunDomain' => $this->mailgunDomain ? $this->mailgunDomain->domain : '',
-            'isSystemMailgunDomain' => $this->mailgunDomain ? $this->mailgunDomain->is_system_mailgun_domain : true,
+            'isSystemMailgunDomain' => $this->mailgunDomain ? $this->mailgunDomain->is_system_mailgun_domain : false,
             'incomingServerType' => $this->incoming_server_type,
             'outgoingServerType' => $this->outgoing_server_type,
             'mailboxServerTypes' => [

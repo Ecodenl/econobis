@@ -43,9 +43,11 @@ return [
         'verkoop_grootboek_debiteuren' => '1300',
     ],
 
-    'google' => [
-        're_captcha_server_side_url' => env('RE_CAPTCHA_SERVER_SIDE_URL', 'https://www.google.com/recaptcha/api/siteverify'),
-        're_captcha_server_side_key' => env('RE_CAPTCHA_SERVER_SIDE_KEY'),
+    'privatecaptcha' => [
+        'sitekey' => env('PRIVATECAPTCHA_SITEKEY'),
+        'secret' => env('PRIVATECAPTCHA_SECRET'),
+        'verify_url' => env('PRIVATECAPTCHA_VERIFY_URL', 'https://privatecaptcha.com/api/siteverify'),
+        'enabled' => env('PRIVATECAPTCHA_ENABLED', false),
     ],
 
     'msoauthapi' => [

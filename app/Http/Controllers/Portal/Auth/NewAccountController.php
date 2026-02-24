@@ -20,6 +20,7 @@ use App\Http\Resources\Portal\Templates\PortalMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 
 class NewAccountController extends Controller
@@ -36,6 +37,10 @@ class NewAccountController extends Controller
     public function createNewAccount(Request $request)
     {
         $this->validateEmail($request);
+
+        if (!$this->verifyPrivateCaptcha($request)) {
+            abort(422, 'CAPTCHA verificatie mislukt.');
+        }
 
         // Hier gekomen, dan zijn de validaties ok.
 
@@ -59,66 +64,42 @@ class NewAccountController extends Controller
                 ->orderBy('created_at', 'asc')->first();
         }
 
+        // Voor aanmaak van Contact wordt created by and updated by via ContactObserver altijd bepaald obv Auth::id
+        $responsibleUserId = PortalSettings::get('responsibleUserId');
+        if (!$responsibleUserId) {
+            abort(501, 'Er is helaas een fout opgetreden (5).');
+        }
+        $emailTemplateNewAccountId = PortalSettings::get('emailTemplateNewAccountId');
+        if (!$emailTemplateNewAccountId) {
+            abort(501, 'Er is helaas een fout opgetreden (6).');
+        }
 
-        $url = config('services.google.re_captcha_server_side_url');
-        $data = [
-            'secret' => config('services.google.re_captcha_server_side_key'),
-            'response' => $request->reCaptchaToken
-        ];
+        $responsibleUser = User::find($responsibleUserId);
+        if (!$responsibleUser) {
+            abort(501, 'Er is helaas een fout opgetreden (7).');
+        }
 
-        $options = [
-          'http' => [
-              'header' => "Content-type: application/x-www-form-urlencoded\r\n",
-              'method' => "POST",
-              'content' => http_build_query($data),
-          ]
-        ];
-        $context = stream_context_create($options);
-        $result = file_get_contents($url, false, $context);
-        $resultJson = json_decode($result);
+        $responsibleUser->occupation = '@portal-update@';
+        Auth::setUser($responsibleUser);
 
-        if($resultJson->success) {
-            // Voor aanmaak van Contact wordt created by and updated by via ContactObserver altijd bepaald obv Auth::id
-            $responsibleUserId = PortalSettings::get('responsibleUserId');
-            if (!$responsibleUserId) {
-                abort(501, 'Er is helaas een fout opgetreden (5).');
+        DB::transaction(function () use ($request, $contact, $responsibleUserId, $emailTemplateNewAccountId) {
+
+            $data = $this->getDataFromRequest($request);
+
+            if(!$contact){
+                $contact = $this->addContact($data['contact']);
             }
-            $emailTemplateNewAccountId = PortalSettings::get('emailTemplateNewAccountId');
-            if (!$emailTemplateNewAccountId) {
-                abort(501, 'Er is helaas een fout opgetreden (6).');
-            }
-
-            $responsibleUser = User::find($responsibleUserId);
-            if (!$responsibleUser) {
+            if ($contact) {
+                $contact = Contact::find($contact->id);
+                $organisationName = null;
+                if ($data['contact']['organisation_name']) {
+                    $organisationName = $data['contact']['organisation_name'];
+                }
+                $this->sendNewAccountMail($contact, $organisationName, $responsibleUserId, $emailTemplateNewAccountId);
+            } else {
                 abort(501, 'Er is helaas een fout opgetreden (7).');
             }
-
-            $responsibleUser->occupation = '@portal-update@';
-            Auth::setUser($responsibleUser);
-
-            DB::transaction(function () use ($request, $contact, $responsibleUserId, $emailTemplateNewAccountId) {
-
-                $data = $this->getDataFromRequest($request);
-
-                if(!$contact){
-                    $contact = $this->addContact($data['contact']);
-                }
-                if ($contact) {
-                    $contact = Contact::find($contact->id);
-                    $organisationName = null;
-                    if ($data['contact']['organisation_name']) {
-                        $organisationName = $data['contact']['organisation_name'];
-                    }
-                    $this->sendNewAccountMail($contact, $organisationName, $responsibleUserId, $emailTemplateNewAccountId);
-                } else {
-                    abort(501, 'Er is helaas een fout opgetreden (7).');
-                }
-            });
-
-
-        } else {
-            abort(501, 'Er is helaas een fout opgetreden met de CAPTCHA verificatie.');
-        }
+        });
     }
 
     /**
@@ -340,6 +321,36 @@ class NewAccountController extends Controller
         $mail->send(new PortalMail($mail, $htmlBody, $emailTemplate->default_attachment_document_id));
 
         return true;
+    }
+
+    private function verifyPrivateCaptcha(Request $request): bool
+    {
+        // token uit request
+        $token = $request->input('captchaToken');
+        if (!$token) {
+            return false;
+        }
+
+        // feature flag: zolang secret nog ontbreekt
+        if (!config('services.privatecaptcha.enabled')) {
+            return true;
+        }
+
+        $res = Http::asForm()
+            ->timeout(5)
+            ->post(config('services.privatecaptcha.verify_url'), [
+                'secret' => config('services.privatecaptcha.secret'),
+                'response' => $token,
+                'sitekey' => config('services.privatecaptcha.sitekey'), // vaak optioneel
+            ]);
+
+        if (!$res->ok()) {
+            return false;
+        }
+
+        $json = $res->json();
+
+        return (bool)($json['success'] ?? false);
     }
 
 }

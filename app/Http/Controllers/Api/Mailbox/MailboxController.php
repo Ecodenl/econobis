@@ -256,7 +256,7 @@ class MailboxController extends Controller
     {
         $user = Auth::user();
 
-        $mailboxes = $user->mailboxes()->select('mailbox_id', 'email', 'name')->where('is_active', 1)->where('only_outgoing_mailbox', 0)->get();
+        $mailboxes = $user->mailboxes()->select('mailbox_id', 'email', 'name')->where('is_active', 1)->get();
 
         return LoggedInEmailPeek::collection($mailboxes);
     }
@@ -268,11 +268,10 @@ class MailboxController extends Controller
     {
         $user = Auth::user();
 
-        $mailboxes = $user->mailboxes()->select('mailbox_id', 'email', 'name', 'date_last_fetched', 'valid')->where('is_active', 1)->where('only_outgoing_mailbox', 0)->get();
+        $mailboxes = $user->mailboxes()->select('mailbox_id', 'email', 'name', 'date_last_fetched', 'valid')->where('is_active', 1)->get();
 
         $time15MinutesAgo = Carbon::now()->subMinutes(15)->format('Y-m-d H:i:s');
         $activateAutomaticRefreshEmailData = $user->mailboxes()->where('is_active', 1)
-            ->where('only_outgoing_mailbox', 0)
             ->where('valid', true)
             ->whereIn('incoming_server_type', ['imap', 'ms-oauth'])
             ->where(function ($query) use ($time15MinutesAgo) {
@@ -301,7 +300,7 @@ class MailboxController extends Controller
             abort(403);
         }
 
-        $mailboxes = $user->mailboxes()->select('mailbox_id', 'email', 'name')->where('is_active', 1)->where('only_outgoing_mailbox', 0)->get();
+        $mailboxes = $user->mailboxes()->select('mailbox_id', 'email', 'name')->where('is_active', 1)->get();
 
         return LoggedInEmailPeek::collection($mailboxes);
     }

@@ -46,8 +46,7 @@ return [
     'privatecaptcha' => [
         'enabled' => env('PRIVATECAPTCHA_ENABLED', false),
         'verify_url' => env('PRIVATECAPTCHA_VERIFY_URL', 'https://api.privatecaptcha.com/verify'),
-        'secret_nl' => env('PRIVATECAPTCHA_SECRET_NL'),
-        'secret_eu' => env('PRIVATECAPTCHA_SECRET_EU'),
+        'api_key' => env('PRIVATECAPTCHA_API_KEY'),
     ],
 
     'msoauthapi' => [

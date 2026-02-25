@@ -23,7 +23,7 @@ const NewAccount = props => {
     useEffect(() => {
         const t = setTimeout(() => {
             ensurePrivateCaptchaReady();
-            window.privateCaptcha?.reset?.();
+            // window.privateCaptcha?.reset?.();   // <-- deze eruit
         }, 0);
         return () => clearTimeout(t);
     }, [contactType]);
@@ -60,6 +60,7 @@ const NewAccount = props => {
 
     async function handleSubmit(values, actions) {
         const captchaToken = getPrivateCaptchaToken();
+        // console.log('PrivateCaptcha token on submit:', captchaToken);
         if (!captchaToken) {
             toggleError(true);
             setErrorMessage('Bevestig dat je geen robot bent en probeer opnieuw.');

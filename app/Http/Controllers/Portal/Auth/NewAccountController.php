@@ -42,6 +42,7 @@ class NewAccountController extends Controller
         if (!$this->verifyPrivateCaptcha($request)) {
             abort(422, 'Captcha verificatie mislukt.');
         }
+
         // Hier gekomen, dan zijn de validaties ok.
 
         $existingContactIds = EmailAddress::where('email', $request->input('email'))
@@ -323,21 +324,10 @@ class NewAccountController extends Controller
         return true;
     }
 
-    private function privateCaptchaSecretForHost(string $host): ?string
-    {
-        $host = strtolower($host);
-
-        if (str_ends_with($host, '.eu')) {
-            return config('services.privatecaptcha.secret_eu');
-        }
-
-        return config('services.privatecaptcha.secret_nl');
-    }
-
     private function verifyPrivateCaptcha(Request $request): bool
     {
-        $token = $request->input('captchaToken');
-        if (!$token) {
+        $solution = $request->input('captchaToken');
+        if (!$solution) {
             return false;
         }
 
@@ -345,24 +335,19 @@ class NewAccountController extends Controller
             return true;
         }
 
-        $secret = $this->privateCaptchaSecretForHost($request->getHost());
-        if (!$secret) {
-            Log::warning('PrivateCaptcha secret missing for host', ['host' => $request->getHost()]);
+        $apiKey = config('services.privatecaptcha.api_key');
+        if (!$apiKey) {
+            Log::warning('PrivateCaptcha API key missing');
             return false;
         }
 
-        $res = Http::asJson()
-            ->timeout(5)
-            ->post(config('services.privatecaptcha.verify_url'), [
-                'secret' => $secret,
-                'token' => $token,
-                // Sommige providers verwachten 'response' i.p.v. 'token'.
-                // Als verify faalt terwijl token wel gevuld is, switchen we dit.
-            ]);
+        $res = Http::timeout(5)
+            ->withHeaders(['X-Api-Key' => $apiKey])
+            ->withBody($solution, 'text/plain')
+            ->post(config('services.privatecaptcha.verify_url'));
 
         if (!$res->ok()) {
             Log::warning('PrivateCaptcha verify HTTP error', [
-                'host' => $request->getHost(),
                 'status' => $res->status(),
                 'body' => $res->body(),
             ]);
@@ -370,7 +355,6 @@ class NewAccountController extends Controller
         }
 
         $json = $res->json();
-
-        return (bool)($json['success'] ?? false);
+        return (bool)($json['success'] ?? false) && (int)($json['code'] ?? -1) === 0;
     }
 }

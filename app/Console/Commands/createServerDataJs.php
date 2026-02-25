@@ -43,7 +43,10 @@ class createServerDataJs extends Command
         $oauthClient = DB::table('oauth_clients')->where('id', 2)->first();
         $xml = view('portal.server-data', [
             'internalPortalUrl' => config('app.url') . '/portal',
-            'secretKey' => $oauthClient->secret
+            'clientId' => $oauthClient->client_id,
+            'secretKey' => $oauthClient->secret,
+            'captchaSiteKeyNl' => config('services.secret_nl'),
+            'captchaSiteKeyEu' => config('services.secret_eu')
         ])->render();
 
         try{

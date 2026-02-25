@@ -8,6 +8,7 @@ import Titles from '../../../data/Titles';
 import LastNamePrefixes from '../../../data/LastNamePrefixes';
 import Select from '../../../components/form/Select';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import { getPrivateCaptchaSiteKeyByDomain } from '../../../helpers/privateCaptcha';
 
 const validationSchema = Yup.object().shape({
     email: Yup.string()
@@ -22,10 +23,6 @@ const validationSchema = Yup.object().shape({
 });
 
 const NewAccountFormPersonal = ({ handleSubmit, showSuccessMessage }) => {
-    // useEffect(() => {
-    //     window.privateCaptcha?.render?.();
-    // }, []);
-
     return (
         <Formik
             initialValues={{
@@ -122,10 +119,7 @@ const NewAccountFormPersonal = ({ handleSubmit, showSuccessMessage }) => {
                         </Row>
 
                         <Row className="justify-content-center">
-                            <div
-                                className="private-captcha"
-                                data-sitekey={process.env.REACT_APP_PRIVATECAPTCHA_SITEKEY}
-                            ></div>
+                            <div className="private-captcha" data-sitekey={getPrivateCaptchaSiteKeyByDomain()} />
                         </Row>
 
                         <Row className="justify-content-center">

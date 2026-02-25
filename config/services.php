@@ -44,10 +44,10 @@ return [
     ],
 
     'privatecaptcha' => [
-        'sitekey' => env('PRIVATECAPTCHA_SITEKEY'),
-        'secret' => env('PRIVATECAPTCHA_SECRET'),
-        'verify_url' => env('PRIVATECAPTCHA_VERIFY_URL', 'https://privatecaptcha.com/api/siteverify'),
         'enabled' => env('PRIVATECAPTCHA_ENABLED', false),
+        'verify_url' => env('PRIVATECAPTCHA_VERIFY_URL', 'https://api.privatecaptcha.com/verify'),
+        'secret_nl' => env('PRIVATECAPTCHA_SECRET_NL'),
+        'secret_eu' => env('PRIVATECAPTCHA_SECRET_EU'),
     ],
 
     'msoauthapi' => [

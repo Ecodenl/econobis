@@ -10,6 +10,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { Button, ButtonToolbar } from 'react-bootstrap';
 import ButtonText from '../../../components/button/ButtonText';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import { getPrivateCaptchaSiteKeyByDomain } from '../../../helpers/privateCaptcha';
 
 const NewAccount = props => {
     const [contactType, setContactType] = useState('person');
@@ -22,10 +23,8 @@ const NewAccount = props => {
     useEffect(() => {
         const t = setTimeout(() => {
             ensurePrivateCaptchaReady();
-            // optioneel: reset bij wisselen
             window.privateCaptcha?.reset?.();
         }, 0);
-
         return () => clearTimeout(t);
     }, [contactType]);
 
@@ -45,21 +44,13 @@ const NewAccount = props => {
     }
 
     function ensurePrivateCaptchaReady() {
-        const sitekey = process.env.REACT_APP_PRIVATECAPTCHA_SITEKEY;
+        const sitekey = getPrivateCaptchaSiteKeyByDomain();
 
         if (!window.privateCaptcha || !sitekey) return false;
 
         try {
-            // setup initieert internal state/autoWidget
-            if (window.privateCaptcha.setup) {
-                window.privateCaptcha.setup({ sitekey });
-            }
-
-            // render koppelt aan .private-captcha elementen
-            if (window.privateCaptcha.render) {
-                window.privateCaptcha.render();
-            }
-
+            window.privateCaptcha.setup?.({ sitekey });
+            window.privateCaptcha.render?.();
             return true;
         } catch (e) {
             console.error('PrivateCaptcha init failed', e);
@@ -99,6 +90,8 @@ const NewAccount = props => {
                     setErrorMessage(
                         'Er bestaat al een contact met het e-mailadres, voornaam en achternaam dat je hebt ingevuld. Wil je een nieuw account aanmaken? Gebruik dan alsjeblieft een ander e-mailadres, voornaam of achternaam.'
                     );
+                } else if (error.response && error.response.status === 422) {
+                    setErrorMessage('Captcha verificatie mislukt. Probeer opnieuw.');
                 } else {
                     setErrorMessage('Fout bij aanmaken nieuw account!');
                 }

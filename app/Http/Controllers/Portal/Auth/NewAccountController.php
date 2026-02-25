@@ -21,6 +21,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class NewAccountController extends Controller
@@ -39,9 +40,8 @@ class NewAccountController extends Controller
         $this->validateEmail($request);
 
         if (!$this->verifyPrivateCaptcha($request)) {
-            abort(422, 'CAPTCHA verificatie mislukt.');
+            abort(422, 'Captcha verificatie mislukt.');
         }
-
         // Hier gekomen, dan zijn de validaties ok.
 
         $existingContactIds = EmailAddress::where('email', $request->input('email'))
@@ -323,28 +323,49 @@ class NewAccountController extends Controller
         return true;
     }
 
+    private function privateCaptchaSecretForHost(string $host): ?string
+    {
+        $host = strtolower($host);
+
+        if (str_ends_with($host, '.eu')) {
+            return config('services.privatecaptcha.secret_eu');
+        }
+
+        return config('services.privatecaptcha.secret_nl');
+    }
+
     private function verifyPrivateCaptcha(Request $request): bool
     {
-        // token uit request
         $token = $request->input('captchaToken');
         if (!$token) {
             return false;
         }
 
-        // feature flag: zolang secret nog ontbreekt
         if (!config('services.privatecaptcha.enabled')) {
             return true;
         }
 
-        $res = Http::asForm()
+        $secret = $this->privateCaptchaSecretForHost($request->getHost());
+        if (!$secret) {
+            Log::warning('PrivateCaptcha secret missing for host', ['host' => $request->getHost()]);
+            return false;
+        }
+
+        $res = Http::asJson()
             ->timeout(5)
             ->post(config('services.privatecaptcha.verify_url'), [
-                'secret' => config('services.privatecaptcha.secret'),
-                'response' => $token,
-                'sitekey' => config('services.privatecaptcha.sitekey'), // vaak optioneel
+                'secret' => $secret,
+                'token' => $token,
+                // Sommige providers verwachten 'response' i.p.v. 'token'.
+                // Als verify faalt terwijl token wel gevuld is, switchen we dit.
             ]);
 
         if (!$res->ok()) {
+            Log::warning('PrivateCaptcha verify HTTP error', [
+                'host' => $request->getHost(),
+                'status' => $res->status(),
+                'body' => $res->body(),
+            ]);
             return false;
         }
 
@@ -352,5 +373,4 @@ class NewAccountController extends Controller
 
         return (bool)($json['success'] ?? false);
     }
-
 }

@@ -27,6 +27,8 @@ class FullOauthApiSettings extends JsonResource
             'clientId' => $this->client_id,
             'projectId' => $this->project_id,
             'tenantId' => $this->tenant_id ? $this->tenant_id : '',
+            'forceReconnect' => $this->force_reconnect,
+            'forceSelectAccount' => $this->force_select_account,
         ];
     }
 }

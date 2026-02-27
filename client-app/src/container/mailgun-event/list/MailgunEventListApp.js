@@ -76,6 +76,10 @@ export default function MailgunEventListApp() {
                     jory: {
                         fld: ['id', 'domain'],
                         srt: ['domain'],
+                        flt: {
+                            f: 'isSystemMailgunDomain',
+                            d: false,
+                        },
                     },
                 },
             })

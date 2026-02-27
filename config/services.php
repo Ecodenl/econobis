@@ -44,6 +44,8 @@ return [
     ],
 
     'privatecaptcha' => [
+        'sitekey_nl' => env('PRIVATECAPTCHA_SITEKEY_NL'),
+        'sitekey_eu' => env('PRIVATECAPTCHA_SITEKEY_EU'),
         'enabled' => env('PRIVATECAPTCHA_ENABLED', false),
         'verify_url' => env('PRIVATECAPTCHA_VERIFY_URL', 'https://api.privatecaptcha.com/verify'),
         'api_key' => env('PRIVATECAPTCHA_API_KEY'),

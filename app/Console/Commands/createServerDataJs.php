@@ -45,8 +45,8 @@ class createServerDataJs extends Command
             'internalPortalUrl' => config('app.url') . '/portal',
             'clientId' => $oauthClient->client_id,
             'secretKey' => $oauthClient->secret,
-            'captchaSiteKeyNl' => config('services.secret_nl'),
-            'captchaSiteKeyEu' => config('services.secret_eu')
+            'captchaSiteKeyNl' => config('services.privatecaptcha.sitekey_nl'),
+            'captchaSiteKeyEu' => config('services.privatecaptcha.sitekey_eu'),
         ])->render();
 
         try{

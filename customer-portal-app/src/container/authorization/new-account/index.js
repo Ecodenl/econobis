@@ -36,11 +36,10 @@ const NewAccount = props => {
     }, []);
 
     function getPrivateCaptchaToken() {
-        try {
-            return window.privateCaptcha?.getResponse?.() || null;
-        } catch (e) {
-            return null;
-        }
+        // Dit is de canonical manier volgens docs
+        const el = document.querySelector('input[name="private-captcha-solution"]');
+        const token = el?.value?.trim();
+        return token ? token : null;
     }
 
     function ensurePrivateCaptchaReady() {
@@ -61,6 +60,9 @@ const NewAccount = props => {
     async function handleSubmit(values, actions) {
         const captchaToken = getPrivateCaptchaToken();
         // console.log('PrivateCaptcha token on submit:', captchaToken);
+        const el = document.querySelector('input[name="private-captcha-solution"]');
+        // console.log('solution input exists?', !!el, 'value length:', el?.value?.length);
+
         if (!captchaToken) {
             toggleError(true);
             setErrorMessage('Bevestig dat je geen robot bent en probeer opnieuw.');

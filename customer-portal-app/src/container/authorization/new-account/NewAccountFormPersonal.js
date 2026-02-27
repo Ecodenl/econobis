@@ -119,7 +119,11 @@ const NewAccountFormPersonal = ({ handleSubmit, showSuccessMessage }) => {
                         </Row>
 
                         <Row className="justify-content-center">
-                            <div className="private-captcha" data-sitekey={getPrivateCaptchaSiteKeyByDomain()} />
+                            <div
+                                className="private-captcha"
+                                data-sitekey={getPrivateCaptchaSiteKeyByDomain()}
+                                data-solution-field="private-captcha-solution"
+                            />
                         </Row>
 
                         <Row className="justify-content-center">

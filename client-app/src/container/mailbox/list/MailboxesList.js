@@ -30,7 +30,7 @@ function MailboxesList({
                     <DataTableBody>
                         {isLoading ? (
                             <tr>
-                                <td colSpan={7}>Bezig met gegevens laden</td>
+                                <td colSpan={8}>Bezig met gegevens laden</td>
                             </tr>
                         ) : mailboxes.length > 0 ? (
                             mailboxes.map(mailbox => {
@@ -38,7 +38,7 @@ function MailboxesList({
                             })
                         ) : (
                             <tr>
-                                <td colSpan={3}>Geen resultaten!</td>
+                                <td colSpan={8}>Geen resultaten!</td>
                             </tr>
                         )}
                     </DataTableBody>

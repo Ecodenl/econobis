@@ -31,8 +31,8 @@ class MailFetcher
     {
         $this->mailbox = $mailbox;
 
-        $this->initStorageDir();
-        $this->initImapConnection();
+//        $this->initStorageDir();
+//        $this->initImapConnection();
     }
 
     /**
@@ -43,6 +43,16 @@ class MailFetcher
     public function fetchNew() :mixed
     {
         //        Log::info("Check fetchNew mailbox " . $this->mailbox->id);
+
+        if ($this->mailbox->only_outgoing_mailbox) {
+            return [
+                'status' => 'success',
+                'imapIdLastFetched' => $this->mailbox->imap_id_last_fetched ?? 0,
+            ];
+        }
+
+        $this->ensureStorageDir();
+        $this->ensureImapConnection();
 
         if ($this->mailbox->date_last_fetched) {
             $dateLastFetched = Carbon::parse($this->mailbox->date_last_fetched)->subDay()->format('Y-m-d');
@@ -117,11 +127,26 @@ class MailFetcher
         ];
     }
 
-    public function getImap()
+//    public function getImap()
+//    {
+//        $this->ensureStorageDir();
+//        $this->ensureImapConnection();
+//        return $this->imap;
+//    }
+
+    private function ensureStorageDir(): void
     {
-        return $this->imap;
+        $this->initStorageDir();
     }
 
+    private function ensureImapConnection(): void
+    {
+        if ($this->imap) {
+            return;
+        }
+
+        $this->initImapConnection();
+    }
     private function fetchEmail($mailId)
     {
         $emailData = $this->imap->getMail($mailId, $this->mailbox->email_mark_as_seen);

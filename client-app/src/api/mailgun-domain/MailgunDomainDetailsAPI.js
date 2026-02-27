@@ -10,7 +10,7 @@ export default {
             params: {
                 jory: {
                     // fld: ['id', 'domain', 'secret', 'isVerified'],
-                    fld: ['id', 'domain', 'isVerified'],
+                    fld: ['id', 'domain', 'isVerified', 'isSystemMailgunDomain'],
                 },
             },
         });

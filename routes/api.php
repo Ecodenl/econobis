@@ -356,6 +356,10 @@ Route::namespace('Api')
         Route::get('mailbox/receive/from-mailboxes-user', 'Mailbox\MailboxController@receiveMailFromMailboxesUser');
         Route::get('mailbox/{mailbox}/make-primary', 'Mailbox\MailboxController@makePrimary');
 
+        Route::post('mailbox/{mailbox}/ms-oauth/force-reconnect', [MailboxController::class, 'forceMsOauthReconnect']);
+        Route::post('mailbox/{mailbox}/ms-oauth/force-select-account', [MailboxController::class, 'forceMsOauthSelectAccount']);
+
+
         /**
          * Districts
          */

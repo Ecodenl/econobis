@@ -8,6 +8,7 @@ use App\Console\Commands\contactGroupsContactsForReport;
 use App\Console\Commands\createTaskAtEndDateAddress;
 use App\Console\Commands\deleteEmailDefinitive;
 use App\Console\Commands\getAllEmail;
+use App\Console\Commands\Install\MigrateEnvToPrivateCaptcha;
 use App\Console\Commands\processCommandRunsToShared;
 use App\Console\Commands\processStateAllMembersLaposta;
 use App\Console\Commands\processTwinfieldCustomer;
@@ -53,6 +54,7 @@ class Kernel extends ConsoleKernel
         processWorkflowEmailQuotationRequestStatus::class,
         checkWrongTwinfieldInvoices::class,
         contactGroupsContactsForReport::class,
+        MigrateEnvToPrivateCaptcha::class,
     ];
 
     /**

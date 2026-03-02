@@ -69,25 +69,30 @@ class MigrateEnvToPrivateCaptcha extends Command
         $touched = [];
 
         foreach ($lines as $line) {
-            // preserve empty lines and comments as-is
-            if ($line === '' || str_starts_with(ltrim($line), '#')) {
+            $trimmed = ltrim($line);
+
+            // Verwijder Recaptcha commentregels
+            if (str_starts_with($trimmed, '# Recaptcha')) {
+                continue;
+            }
+
+            // preserve empty lines and other comments as-is
+            if ($line === '' || str_starts_with($trimmed, '#')) {
                 $newLines[] = $line;
                 continue;
             }
 
             [$k, $v] = $this->splitEnvLine($line);
             if ($k === null) {
-                // unknown line, keep
                 $newLines[] = $line;
                 continue;
             }
 
             if (in_array($k, $removeKeys, true)) {
                 $removed[] = $k;
-                continue; // drop line
+                continue;
             }
 
-            // If PrivateCaptcha key already exists in env AND we have a seeded value, we overwrite it.
             if (array_key_exists($k, $privateDefaults) && $privateDefaults[$k] !== null) {
                 $newVal = $privateDefaults[$k];
                 $newLines[] = $this->formatEnvLine($k, $newVal);
@@ -95,7 +100,6 @@ class MigrateEnvToPrivateCaptcha extends Command
                 continue;
             }
 
-            // Otherwise keep original line untouched
             $newLines[] = $line;
         }
 

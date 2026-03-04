@@ -134,6 +134,7 @@ class Mailbox extends Model
             'transport' => 'mailgun',
             'domain' => $mailgunDomain->domain,
             'secret' => $mailgunDomain->secret,
+            'isSystemMailgunDomain' => $mailgunDomain->is_system_mailgun_domain,
             'endpoint' => 'api.eu.mailgun.net',
             'scheme' => 'https',
         ];

@@ -104,7 +104,10 @@ class ParticipantsListApp extends Component {
         setTimeout(() => {
             const extraFilters = this.state.extraFilters;
             const filters = filterHelper(this.props.participantsProjectFilters);
-            const sorts = this.props.participantsProjectSorts;
+            const sorts =
+                this.props.participantsProjectSorts.length == 0
+                    ? [{ field: 'name', order: 'ASC' }]
+                    : this.props.participantsProjectSorts;
             // todo Hier juiste records per page nog zetten (origineel 20: voor testen op 4)!
             const pagination = { limit: 20, offset: this.props.participantsProjectPagination.offset };
             const filterType = this.state.filterType;

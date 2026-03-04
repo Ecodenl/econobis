@@ -86,7 +86,18 @@ class ProjectRevenueController extends ApiController
         $limit = 100;
         $offset = $request->input('page') ? $request->input('page') * $limit : 0;
 
-        $distribution = $projectRevenue->distribution()->limit($limit)->offset($offset)->orderBy('status')->get();
+        $distribution = $projectRevenue
+            ->distribution()
+            ->with(['contact'])
+            ->orderBy(
+                Contact::select('full_name')
+                    ->whereColumn('contacts.id', 'project_revenue_distribution.contact_id'),
+                'asc'
+            )
+            ->orderBy('project_revenue_distribution.id', 'asc')
+            ->limit($limit)
+            ->offset($offset)
+            ->get();
 
         $distributionIdsTotal = $projectRevenue->distribution()->pluck('id')->toArray();
         $total = $projectRevenue->distribution()->count();
@@ -316,12 +327,26 @@ class ProjectRevenueController extends ApiController
     {
         $this->authorize('manage', ProjectRevenue::class);
 
-        $ids = $request->input('ids') ? $request->input('ids') : [];
+        $ids = $request->input('ids', []);
 
-        $distributions = new ProjectRevenueDistribution();
-        foreach(array_chunk($ids,900) as $chunk){
-            $distributions = $distributions->orWhereIn('id', $chunk);
+        if (empty($ids)) {
+            return ProjectRevenueDistributionPeek::collection(collect());
         }
+
+        $distributions = ProjectRevenueDistribution::query()
+            ->where(function ($q) use ($ids) {
+                foreach (array_chunk($ids, 900) as $chunk) {
+                    $q->orWhereIn('id', $chunk);
+                }
+            })
+            ->with(['contact'])
+            ->orderBy(
+                Contact::select('full_name')
+                    ->whereColumn('contacts.id', 'project_revenue_distribution.contact_id'),
+                'asc'
+            )
+            ->orderBy('project_revenue_distribution.id', 'asc');
+
         return ProjectRevenueDistributionPeek::collection($distributions->get());
     }
 

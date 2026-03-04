@@ -24,7 +24,7 @@ class MailFetcherMsOauth
      * @var Mailbox
      */
     private Mailbox $mailbox;
-    private array $fetchedEmails = [];
+//    private array $fetchedEmails = [];
     private Collection $parts;
     private Graph $appClient;
     private $errorAppClientInitialization = false;
@@ -35,9 +35,6 @@ class MailFetcherMsOauth
     public function __construct(Mailbox $mailbox)
     {
         $this->mailbox = $mailbox;
-
-        $this->initStorageDir();
-        $this->initMsOauthConfig();
     }
 
     /**
@@ -47,6 +44,19 @@ class MailFetcherMsOauth
      */
     public function fetchNew() :mixed
     {
+        // todo: tijdelijk log voor testen
+//        Log::info("Check fetchNew mailbox " . $this->mailbox->id);
+
+        if ($this->mailbox->only_outgoing_mailbox) {
+            return [
+                'status' => 'success',
+                'imapIdLastFetched' => null,
+            ];
+        }
+
+        $this->ensureStorageDir();
+        $this->ensureGraphClient();
+
         if($this->errorAppClientInitialization){
             $errorMessage = "Initialization Graph client was not successfully! Mailbox id: " . $this->mailbox->id;
 //            Log::error($errorMessage);
@@ -56,46 +66,91 @@ class MailFetcherMsOauth
             ];
         }
 
-//        Log::info("Check fetchNew mailbox " . $this->mailbox->id);
+        $dateLastFetched = $this->mailbox->date_last_fetched
+            ? Carbon::parse($this->mailbox->date_last_fetched)->subDay()
+            : Carbon::now()->subDay();
 
-        if ($this->mailbox->date_last_fetched) {
-            $dateLastFetched = Carbon::parse($this->mailbox->date_last_fetched)->subDay()->format('Y-m-d');
-        } else {
-            $dateLastFetched = Carbon::now()->subDay()->format('Y-m-d');
-        }
+        // Graph filter gebruikt UTC, dus maak een UTC start-of-day
+        $dateLastFetchedUtc = $dateLastFetched->copy()->setTimezone('UTC')->startOfDay();
 
-        $moreAvailable = true;
+        try {
+            $select  = '$select=internetMessageId,sender,from,toRecipients,ccRecipients,bccRecipients,receivedDateTime,sentDateTime,subject,bodyPreview,body,isRead,hasAttachments';
+            $orderBy = '$orderby=receivedDateTime DESC';
+            $filter  = '$filter=receivedDateTime ge ' . $dateLastFetchedUtc->format('Y-m-d\TH:i:s\Z');
+            $top     = '$top=200';
 
-// todo
-//  Dit werkt niet (schiet in lus) als er meer dan setPageSize messages zijn.
-//  moet dus anders
-//        while ($moreAvailable) {
+            $targetUser = trim((string) $this->mailbox->oauthApiSettings->project_id);
+            $url = "/users/{$targetUser}/mailFolders/inbox/messages?"
+                . $select . '&' . $filter . '&' . $orderBy . '&' . $top;
 
-            try {
-                // Only request specific properties
-                $select = '$select=internetMessageId,sender,from,toRecipients,ccRecipients,bccRecipients,receivedDateTime,sentDateTime,subject,bodyPreview,body,isRead,hasAttachments';
-                // Sort by received time, newest first
-                $orderBy = '$orderBy=receivedDateTime DESC';
-                $filter = '$filter=receivedDateTime ge ' . $dateLastFetched . 'T00:00:00Z';
-                $requestUrl = '/users/' . $this->mailbox->oauthApiSettings->project_id. '/mailFolders/inbox/messages?'.$select.'&'.$filter.'&'.$orderBy;
-                $messages = $this->appClient->createCollectionRequest('GET', $requestUrl)
-                    ->setReturnType(Message::class)
-                    ->setPageSize(200);
-//                Log::info('dateLastFetched: ' . $dateLastFetched);
-//                Log::info('Aantal messages: ' . $messages->count());
-                $moreAvailable = $this->processMessages($messages, $dateLastFetched);
-                if($moreAvailable){
-                    Log::error('Niet alle email ingelezen voor mailbox ' . $this->mailbox->id . ', totaal messages was: ' . $messages->count());
+            $seenNextLinks = [];
+
+            // todo: tijdelijk max-loop guard voor testen
+//            $maxPages = 5;
+//            $pageCounter = 0;
+
+            while (true) {
+                // todo: tijdelijk log voor testen
+//                Log::info("Fetching page for mailbox {$this->mailbox->id}");
+
+                // todo: tijdelijk max-loop guard voor testen
+//                $pageCounter++;
+//                if ($pageCounter > $maxPages) {
+//                    Log::warning("Test guard hit: maxPages reached");
+//                    break;
+//                }
+
+                // 1) Execute request -> GraphResponse
+                $response = $this->appClient->createRequest('GET', $url)->execute();
+
+                // 2) Body uitlezen
+                $body = $response->getBody();           // array
+                if (is_string($body)) {
+                    // todo: WM log later opschonen.
+                    Log::info('body is string, dan eerst nog een fix');
+                    $body = json_decode($body, true) ?: [];
                 }
-            } catch (Exception $e) {
-                $errorMessage = "Error mailbox " . $this->mailbox->id . " getting user's inbox: " . $e->getMessage();
-//                Log::error($errorMessage);
-                return [
-                    'status' => 'error',
-                    'errorMessage' => $errorMessage,
-                ];
+                $items = $body['value'] ?? [];          // array van messages (arrays)
+
+                // todo: tijdelijk log voor testen
+//                Log::info('dateLastFetched: ' . $dateLastFetched);
+//                Log::info('Aantal messages: ' . count($items) );
+
+                // 3) Hydrate naar Message objects en verwerk
+                $continue = $this->processMessagesArray($items, $dateLastFetchedUtc);
+                if (!$continue) {
+                    break; // cutoff bereikt
+                }
+
+                // 4) nextLink ophalen (via body of via helper)
+                $nextLink = $body['@odata.nextLink'] ?? $body['@odata.nextlink'] ?? null;
+
+                // of als jouw $response echt GraphResponse is met getNextLink():
+                // $nextLink = $response->getNextLink();
+
+                if (empty($nextLink)) {
+                    break; // klaar, geen volgende pagina
+                }
+
+                // infinite-loop safety
+                if (isset($seenNextLinks[$nextLink])) {
+                    Log::error("Paging loop detected (same nextLink repeated) mailbox {$this->mailbox->id}");
+                    break;
+                }
+                $seenNextLinks[$nextLink] = true;
+
+                // nextLink is meestal volledige URL; de SDK accepteert die gewoon als request URL
+                $url = $nextLink;
             }
 
+        } catch (Exception $e) {
+//            $errorMessage = "Error mailbox " . $this->mailbox->id . " getting user's inbox: " . $e->getMessage();
+//                Log::error($errorMessage);
+            return [
+                'status' => 'error',
+                'errorMessage' => "Error mailbox {$this->mailbox->id} getting user's inbox: {$e->getMessage()}",
+            ];
+        }
 //        }
 
         return [
@@ -105,33 +160,45 @@ class MailFetcherMsOauth
 
     }
 
-    private function processMessages(GraphCollectionRequest $listMessages, $dateLastFetched): bool
+    private function ensureStorageDir(): void
     {
-        foreach ($listMessages->getPage() as $message) {
-//            $msOauthMessageId = $message->getId();
-            $messageId = $message->getInternetMessageId();
+        $this->initStorageDir();
+    }
 
-//            Log::info('Mailbox ' . $this->mailbox->id . ' getInternetMessageId: '.$message->getInternetMessageId());
-//            Log::info('Mailbox ' . $this->mailbox->id . ' subject: '. ($message->getSubject() ?: ''));
-            $receivedDateTime = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::parse( $message->getReceivedDateTime())->format('Y-m-d H:i:s'), 'UTC');
-            $receivedDateTime->setTimezone(date_default_timezone_get());
-//            Log::info('Mailbox ' . $this->mailbox->id . ' | receivedDateTime ' . $receivedDateTime . ' | msOauthMessageId: '.$msOauthMessageId);
-//            Log::info('receivedDateTime: '. $receivedDateTime);
-//            Log::info('dateLastFetched: '. $dateLastFetched);
-            if($receivedDateTime >= $dateLastFetched) {
-                if (!Email::whereMailboxId($this->mailbox->id)
-                    ->whereMessageId($messageId)
-                    ->exists()) {
-                    set_time_limit(180);
-                    $this->fetchEmail($message);
-                }
-            } else {
+    private function ensureGraphClient(): void
+    {
+        if ($this->errorAppClientInitialization) {
+            return;
+        }
+
+        if (isset($this->appClient)) {
+            return;
+        }
+
+        $this->initMsOauthConfig();
+    }
+
+    private function processMessagesArray(array $items, Carbon $dateLastFetchedUtc): bool
+    {
+        foreach ($items as $item) {
+            // Hydrate naar Message object
+            $message = new Message($item);
+
+            $messageId = $message->getInternetMessageId();
+            $receivedUtc = Carbon::parse($message->getReceivedDateTime())->setTimezone('UTC');
+
+            // DESC: zodra ouder dan cutoff => klaar met ALLES
+            if ($receivedUtc->lt($dateLastFetchedUtc)) {
                 return false;
+            }
+
+            if (!Email::whereMailboxId($this->mailbox->id)->whereMessageId($messageId)->exists()) {
+                set_time_limit(180);
+                $this->fetchEmail($message);
             }
         }
 
-        return $listMessages->isEnd() ? false : true;
-
+        return true;
     }
 
     private function initMsOauthConfig(): void
@@ -155,11 +222,10 @@ class MailFetcherMsOauth
 
     private function fetchEmail(Message $message)
     {
-        $from = $message->getFrom()->getEmailAddress()->getAddress();
+        $from = $message->getFrom()?->getEmailAddress()?->getAddress() ?? '';
         // geen fromAddress, dan melding
-        if(!$from){
-            Log::error("Email zonder from (mailbox: " . $this->mailbox->id . ", message_id: " . $message->getInternetMessageId() . ").");
-            $from = '';
+        if ($from === '') {
+            Log::error("Email zonder from (mailbox: {$this->mailbox->id}, message_id: {$message->getInternetMessageId()}).");
 //            return;
         }
         // fromAddress te lang, dan afkappen en melding
@@ -266,7 +332,8 @@ class MailFetcherMsOauth
 
     private function storeAttachments(string $messageId, Email $email)
     {
-        $requestUrl = '/users/' . $this->mailbox->oauthApiSettings->project_id. '/messages/'.$messageId.'/attachments';
+        $targetUser = trim((string) $this->mailbox->oauthApiSettings->project_id);
+        $requestUrl = "/users/{$targetUser}/messages/{$messageId}/attachments";
         $requestResult = $this->appClient->createCollectionRequest('GET', $requestUrl)
             ->setReturnType(Attachment::class);
         if($requestResult){

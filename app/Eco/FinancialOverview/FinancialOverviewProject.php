@@ -89,35 +89,54 @@ class FinancialOverviewProject extends Model
 
     public function getTotalQuantityStartValueAttribute()
     {
-        $projectTypeCodeRef = (ProjectType::where('id', $this->project->project_type_id)->first())->code_ref;
-        if($projectTypeCodeRef === 'loan') {
+        $projectTypeCodeRef = $this->project?->projectType?->code_ref ?? '';
+        if ($projectTypeCodeRef === 'loan') {
             return null;
         }
         return $this->financialOverviewParticipantProjects->sum('quantity_start_value');
     }
+
     public function getTotalQuantityEndValueAttribute()
     {
-        $projectTypeCodeRef = (ProjectType::where('id', $this->project->project_type_id)->first())->code_ref;
-        if($projectTypeCodeRef === 'loan') {
+        $projectTypeCodeRef = $this->project?->projectType?->code_ref ?? '';
+        if ($projectTypeCodeRef === 'loan') {
             return null;
         }
         return $this->financialOverviewParticipantProjects->sum('quantity_end_value');
     }
 
-    public function getBookworthStartValueAttribute(){
-        $projectTypeCodeRef = (ProjectType::where('id', $this->project->project_type_id)->first())->code_ref;
-        if($projectTypeCodeRef === 'loan') {
+    public function getBookworthStartValueAttribute()
+    {
+        $projectTypeCodeRef = $this->project?->projectType?->code_ref ?? '';
+        if ($projectTypeCodeRef === 'loan') {
             return null;
         }
-        $projectValueCourse = ProjectValueCourse::where('project_id', $this->project->id)->where('date', '<=', $this->getStartDateAttribute())->orderBy('date', 'DESC')->first();
+
+        $startDate = Carbon::parse($this->getStartDateAttribute()); // 01-01-[jaar]
+
+        $projectValueCourse = ProjectValueCourse::where('project_id', $this->project_id)
+            ->where('date', '<', $startDate->toDateString())   // < i.p.v. <=
+            ->latest('date')
+            ->first();
+
         return $projectValueCourse ? $projectValueCourse->book_worth : 0;
     }
-    public function getBookworthEndValueAttribute(){
-        $projectTypeCodeRef = (ProjectType::where('id', $this->project->project_type_id)->first())->code_ref;
-        if($projectTypeCodeRef === 'loan') {
+
+    public function getBookworthEndValueAttribute()
+    {
+        $projectTypeCodeRef = $this->project?->projectType?->code_ref ?? '';
+        if ($projectTypeCodeRef === 'loan') {
             return null;
         }
-        $projectValueCourse = ProjectValueCourse::where('project_id', $this->project->id)->where('date', '<=', $this->getEndDateAttribute())->orderBy('date', 'DESC')->first();
+
+        $endDate = Carbon::parse($this->getEndDateAttribute());     // 31-12-[jaar]
+        $endPeil = $endDate->copy()->addDay();                      // 01-01-[jaar+1]
+
+        $projectValueCourse = ProjectValueCourse::where('project_id', $this->project_id)
+            ->where('date', '<', $endPeil->toDateString())          // < 01-01 volgend jaar
+            ->latest('date')
+            ->first();
+
         return $projectValueCourse ? $projectValueCourse->book_worth : 0;
     }
 
@@ -125,9 +144,9 @@ class FinancialOverviewProject extends Model
     {
         return $this->financialOverviewParticipantProjects->sum('amount_start_value');
     }
+
     public function getTotalAmountEndValueAttribute()
     {
         return $this->financialOverviewParticipantProjects->sum('amount_end_value');
     }
-
 }

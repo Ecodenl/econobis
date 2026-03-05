@@ -20,7 +20,7 @@ class checkWrongEnergySupplierDataInParts extends Command
      * @var string
      */
     protected $signature = 'revenue:checkWrongEnergySupplierDataInParts';
-    protected $mailTo = 'xaris@econobis.nl';
+    protected $mailTo = 'xaris.software@econobis.nl';
 
     /**
      * The console command description.

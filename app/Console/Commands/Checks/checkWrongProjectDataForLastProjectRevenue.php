@@ -18,7 +18,7 @@ class checkWrongProjectDataForLastProjectRevenue extends Command
      * @var string
      */
     protected $signature = 'project:checkWrongProjectDataForLastProjectRevenue';
-    protected $mailTo = 'xaris@econobis.nl';
+    protected $mailTo = 'xaris.software@econobis.nl';
 
     /**
      * The console command description.

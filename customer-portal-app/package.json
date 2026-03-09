@@ -10,7 +10,7 @@
     "formik": "^2.2.9",
     "ibantools": "^2.2.0",
     "js-file-download": "^0.4.12",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "moment": "^2.29.1",
     "pdfjs-dist": "^3.11.174",
     "react": "^18.2.0",

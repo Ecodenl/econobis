@@ -7,7 +7,7 @@ namespace App\Http\Controllers\Portal\Auth;
 use App\Eco\Contact\Contact;
 use App\Eco\Portal\PortalUser;
 use App\Eco\User\User;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +26,7 @@ class RegisterController extends Controller
         Log::info("Registratie poging van: |" . $request->get('email') . "| met portal registration code: |" . $request->get('registrationCode') . "|");
 
         // Voor aanmaak van Contact wordt created by and updated by via ContactObserver altijd bepaald obv Auth::id
-        $responsibleUserId = PortalSettings::get('responsibleUserId');
+        $responsibleUserId = PortalSettings::first()?->responsible_user_id;
         if (!$responsibleUserId) {
             abort(501, 'Er is helaas een fout opgetreden (1).');
         }

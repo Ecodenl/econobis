@@ -1,6 +1,6 @@
 {
   "name": "customer-portal-app",
-  "version": "5.1.0",
+  "version": "5.3.5",
   "homepage": ".",
   "private": true,
   "dependencies": {
@@ -20,7 +20,6 @@
     "react-dom": "^18.2.0",
     "react-dropzone": "^4.3.0",
     "react-frame-component": "^4.1.1",
-    "react-google-recaptcha-v3": "^1.4.0",
     "react-html-parser": "^2.0.2",
     "react-icons": "^3.7.0",
     "react-pdf": "^7.7.3",

@@ -17,7 +17,7 @@ class checkSoftDeletedContactsInFinancialOverviewContacts extends Command
      * @var string
      */
     protected $signature = 'contact:checkSoftDeletedContactsInFinancialOverviewContacts {--recover=false}';
-    protected $mailTo = 'xaris@econobis.nl';
+    protected $mailTo = 'xaris.software@econobis.nl';
 
     /**
      * The console command description.
@@ -67,8 +67,10 @@ class checkSoftDeletedContactsInFinancialOverviewContacts extends Command
 
         $financialOverviewContactsWithDeletedContactIdsHtml = "<p>De volgende financial overview contacts id's hebben soft deleted contacten (ids) :</p>";
         if($doRecover){
-            $financialOverviewContactsWithDeletedContactIdsHtml .= "<p>MET HERSTEL!</p>";
+//            $financialOverviewContactsWithDeletedContactIdsHtml .= "<p>MET HERSTEL!</p>";
         }
+        $financialOverviewContactsWithDeletedContactIdsHtml .= "<p>AUTOMATISCH HERSTEL NIET MOGELIJK!</p>";
+        $financialOverviewContactsWithDeletedContactIdsHtml .= "<p>Dit kan pas als tabel softdeletable is gemaakt. Tot die tijd handmatig oplossen door contacts en people/organisations records van dit contact weer van softdeleted af te halen.</p>";
         foreach ($financialOverviewContactsWithDeletedContactIds as $financialOverviewContactsWithDeletedContactId) {
             $financialOverviewContactsWithDeletedContactIdsHtml .=
                 "Financial overview contacts: " . $financialOverviewContactsWithDeletedContactId['financial-overview-contact-id'] . " | " .
@@ -105,11 +107,13 @@ class checkSoftDeletedContactsInFinancialOverviewContacts extends Command
             ->get();
 
         foreach ($financialOverviewContactsWithTrashedContact as $financialOverviewContactsWithTrashedContact) {
+            Log::info('Delete nog NIET mogelijk van financialOverviewContacts met id:' . $financialOverviewContactsWithTrashedContact->id . ', financialOverviewId ' . $financialOverviewContactsWithTrashedContact->financial_overview_id . ', contactId '.$financialOverviewContactsWithTrashedContact->contact_id. ', statusId ' . $financialOverviewContactsWithTrashedContact->status_id. ', filename ' . $financialOverviewContactsWithTrashedContact->filename. ', name ' . $financialOverviewContactsWithTrashedContact->name. ', dateSent ' . $financialOverviewContactsWithTrashedContact->date_sent. ', emailedTo ' . $financialOverviewContactsWithTrashedContact->emailed_to. ', createdAt ' . $financialOverviewContactsWithTrashedContact->created_at. ' en updatedAt ' . $financialOverviewContactsWithTrashedContact->updated_at);
+            Log::info('Dit kan pas als tabel softdeletable is gemaakt. Tot die tijd handmatig oplossen door contacts en people/organisations records van dit contact weer van softdeleted af te halen.');
             if($doRecover) {
-                Log::info('Delete van financialOverviewContacts met id:' . $financialOverviewContactsWithTrashedContact->id . ', financialOverviewId ' . $financialOverviewContactsWithTrashedContact->financial_overview_id . ', contactId '.$financialOverviewContactsWithTrashedContact->contact_id. ', statusId ' . $financialOverviewContactsWithTrashedContact->status_id. ', filename ' . $financialOverviewContactsWithTrashedContact->filename. ', name ' . $financialOverviewContactsWithTrashedContact->name. ', dateSent ' . $financialOverviewContactsWithTrashedContact->date_sent. ', emailedTo ' . $financialOverviewContactsWithTrashedContact->emailed_to. ', createdAt ' . $financialOverviewContactsWithTrashedContact->created_at. ' en updatedAt ' . $financialOverviewContactsWithTrashedContact->updated_at);
-                DB::table('financial_overview_contacts')
-                    ->where('id', $financialOverviewContactsWithTrashedContact->id)
-                    ->delete();
+//                Log::info('Delete van financialOverviewContacts met id:' . $financialOverviewContactsWithTrashedContact->id . ', financialOverviewId ' . $financialOverviewContactsWithTrashedContact->financial_overview_id . ', contactId '.$financialOverviewContactsWithTrashedContact->contact_id. ', statusId ' . $financialOverviewContactsWithTrashedContact->status_id. ', filename ' . $financialOverviewContactsWithTrashedContact->filename. ', name ' . $financialOverviewContactsWithTrashedContact->name. ', dateSent ' . $financialOverviewContactsWithTrashedContact->date_sent. ', emailedTo ' . $financialOverviewContactsWithTrashedContact->emailed_to. ', createdAt ' . $financialOverviewContactsWithTrashedContact->created_at. ' en updatedAt ' . $financialOverviewContactsWithTrashedContact->updated_at);
+//                DB::table('financial_overview_contacts')
+//                    ->where('id', $financialOverviewContactsWithTrashedContact->id)
+//                    ->delete();
             }
             $financialOverviewContactsWithTrashedContactReturn[$counter]['financial-overview-contact-id'] = $financialOverviewContactsWithTrashedContact->id;
             $financialOverviewContactsWithTrashedContactReturn[$counter]['financial-overview-id'] = $financialOverviewContactsWithTrashedContact->financial_overview_id;

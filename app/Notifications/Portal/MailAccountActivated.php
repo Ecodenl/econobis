@@ -2,7 +2,7 @@
 
 namespace App\Notifications\Portal;
 
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -47,11 +47,11 @@ class MailAccountActivated extends Notification
             ->subject("Account geactiveerd")
             ->greeting(" ")
             ->line('<p style="text-align:center">
-            <a href="' . PortalSettings::get("portalUrl") . '" style="box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif, \'Apple Color Emoji\', \'Segoe UI Emoji\', \'Segoe UI Symbol\'; position: relative; color: #3d4852; font-size: 19px; font-weight: bold; text-decoration: none; display: inline-block;" target="_blank">
-' . PortalSettings::get("portalName")  . '</a></p>')
+            <a href="' . PortalSettings::first()?->portal_url . '" style="box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif, \'Apple Color Emoji\', \'Segoe UI Emoji\', \'Segoe UI Symbol\'; position: relative; color: #3d4852; font-size: 19px; font-weight: bold; text-decoration: none; display: inline-block;" target="_blank">
+' . PortalSettings::first()?->portal_name . '</a></p>')
             ->line("<h1>Beste " . $this->name . ",</h1>")
             ->line("Je account is succesvol geactiveerd.")
-            ->action('Inloggen', 'https://' . PortalSettings::get("portalUrl") . '/#/login')
+            ->action('Inloggen', 'https://' . PortalSettings::first()?->portal_url . '/#/login')
             ->salutation(' ');
     }
 }

@@ -19,7 +19,7 @@ class checkWrongDateFirstDepositMutationsLoan extends Command
      * @var string
      */
     protected $signature = 'participation:checkWrongDateFirstDepositMutationsLoan';
-    protected $mailTo = 'xaris@econobis.nl';
+    protected $mailTo = 'xaris.software@econobis.nl';
 
     /**
      * The console command description.

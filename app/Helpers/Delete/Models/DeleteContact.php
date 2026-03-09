@@ -110,6 +110,11 @@ class DeleteContact implements DeleteInterface
             $this->errorMessage = array_merge($this->errorMessage, $deleteAddress->delete());
         }
 
+        foreach ($this->contact->phoneNumbers as $phoneNumber){
+            $deletePhoneNumber = new DeletePhoneNumber($phoneNumber);
+            $this->errorMessage = array_merge($this->errorMessage, $deletePhoneNumber->delete());
+        }
+
         foreach ($this->contact->tasks as $task){
             $deleteTask = new DeleteTask($task);
             $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
@@ -186,6 +191,9 @@ class DeleteContact implements DeleteInterface
         foreach ($this->contact->responses as $response){
             $response->delete();
         }
+
+        $this->contact->manualEmails()->detach();
+        $this->contact->groups()->detach();
     }
 
     /**
@@ -193,12 +201,16 @@ class DeleteContact implements DeleteInterface
      */
     public function deleteRelations()
     {
-        if($this->contact->isPerson()) {
-            $this->contact->person->delete();
+        foreach ($this->contact->contactEmails as $response){
+            $response->delete();
         }
 
         foreach ($this->contact->emailAddresses as $emailAddress){
             $emailAddress->delete();
+        }
+
+        if($this->contact->isPerson()) {
+            $this->contact->person->delete();
         }
     }
 

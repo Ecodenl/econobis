@@ -32,6 +32,17 @@ export default {
             });
     },
 
+    peekDistricts: () => {
+        return getAxiosInstance()
+            .get(`${BASE_URL}/peek`)
+            .then(function(response) {
+                return response.data.data;
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    },
+
     newDistrict: district => {
         return getAxiosInstance()
             .post(BASE_URL, district)

@@ -250,7 +250,7 @@ function Inspectlist(props) {
                                             />
                                         </th>
                                         <th>
-                                            Afspraak gedaan op
+                                            Afspraak afgerond
                                             <br />
                                             <FiArrowUp
                                                 onClick={() => setSortOn({ col: 'dateRecorded', desc: false })}

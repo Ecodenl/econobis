@@ -102,7 +102,7 @@ function SubsidyRequestProjectManager({ redirectBack, initialQuotationRequest, h
                                         )}
                                     </Field>
                                     <FormLabel htmlFor="date_recorded" className={'field-label'}>
-                                        Afspraak gedaan op
+                                        Afspraak afgerond
                                     </FormLabel>
                                     <Field name="dateRecorded">
                                         {({ field }) => (
@@ -110,7 +110,7 @@ function SubsidyRequestProjectManager({ redirectBack, initialQuotationRequest, h
                                                 field={field}
                                                 type="datetime-local"
                                                 id="date_recorded"
-                                                placeholder={'Afspraak gedaan op'}
+                                                placeholder={'Afspraak afgerond'}
                                                 readOnly={true}
                                             />
                                         )}

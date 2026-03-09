@@ -73,6 +73,12 @@ class TeamDetailsContactGroupsNew extends Component {
     }
 
     render() {
+        const selectedIds = (this.props.selectedContractGroups || []).map(d => String(d.id));
+
+        const contactGroupsToSelectFiltered = (this.state.contactGroupsToSelect || []).filter(
+            d => !selectedIds.includes(String(d.id))
+        );
+
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel className={'panel-grey'}>
@@ -83,7 +89,7 @@ class TeamDetailsContactGroupsNew extends Component {
                                 label={'Groep'}
                                 size={'col-sm-6'}
                                 name={'contactGroupId'}
-                                options={this.state.contactGroupsToSelect}
+                                options={contactGroupsToSelectFiltered}
                                 optionName={'name'}
                                 value={this.state.contactGroupId}
                                 onChangeAction={this.handleInputChange}
@@ -116,6 +122,7 @@ const mapStateToProps = state => {
     return {
         teamId: state.teamDetails.id,
         teamName: state.teamDetails.name,
+        selectedContractGroups: state.teamDetails.contactGroups,
     };
 };
 

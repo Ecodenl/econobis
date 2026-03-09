@@ -10,6 +10,7 @@ namespace App\Eco\Contact;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class ContactObserver
 {
@@ -27,6 +28,7 @@ class ContactObserver
             $contact->created_with = 'econobis';
         }
         $contact->updated_with = $contact->created_with;
+        $contact->public_id = Str::random(22);
     }
 
     public function created(Contact $contact)

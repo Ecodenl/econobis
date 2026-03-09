@@ -120,7 +120,7 @@ function QuotationRequestCoach({ redirectBack, initialQuotationRequest, handleSu
                                         )}
                                     </Field>
                                     <FormLabel htmlFor="date_recorded" className={'field-label'}>
-                                        Afspraak gedaan op
+                                        Afspraak afgerond
                                     </FormLabel>
                                     <Field name="dateRecorded">
                                         {({ field }) => (
@@ -132,7 +132,7 @@ function QuotationRequestCoach({ redirectBack, initialQuotationRequest, handleSu
                                                 touched={touched}
                                                 onChangeAction={setFieldValue}
                                                 id="date_recorded"
-                                                placeholder={'Afspraak gedaan op'}
+                                                placeholder={'Afspraak afgerond'}
                                                 step="900"
                                             />
                                         )}

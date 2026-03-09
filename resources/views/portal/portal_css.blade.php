@@ -238,6 +238,10 @@ color: red;
 font-size: 18px;
 }
 /* ----------------- BUTTON STYLING -----------------*/
+.btn-group .btn {
+margin: 5px;
+}
+
 .w-button-group {
 margin-bottom: 10px;
 }
@@ -247,7 +251,7 @@ float: left !important;
 left: 15px;
 }
 
-.w-button.w-button {
+button.w-button {
 background-color: var(--button-primary-color);
 border-color: var(--button-primary-color);
 color: var(--button-primary-text-color);

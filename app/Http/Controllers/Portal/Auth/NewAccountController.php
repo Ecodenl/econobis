@@ -238,6 +238,7 @@ class NewAccountController extends Controller
                 'occupation_id' => 14, // Relatie type "medewerker"
                 'primary_contact_id' => $organisation->contact_id,
                 'contact_id' => $person->contact_id,
+                'allow_manage_in_portal' => true,
                 'primary' => true,
             ]);
 

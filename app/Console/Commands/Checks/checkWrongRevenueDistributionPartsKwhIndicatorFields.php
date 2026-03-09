@@ -18,7 +18,7 @@ class checkWrongRevenueDistributionPartsKwhIndicatorFields extends Command
      * @var string
      */
     protected $signature = 'revenue:checkWrongRevenueDistributionPartsKwhIndicatorFields {--recover=false}';
-    protected $mailTo = 'xaris@econobis.nl';
+    protected $mailTo = 'xaris.software@econobis.nl';
 
     /**
      * The console command description.

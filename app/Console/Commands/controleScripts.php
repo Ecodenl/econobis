@@ -58,6 +58,14 @@ class controleScripts extends Command
         Artisan::call('email:checkSoftDeletedEmailAddressesInEmails');
         Artisan::call('participation:checkWrongDateFirstDepositMutationsLoan');
 
+//        Artisan::call('check:controleScriptsSoftDeletedContacts');
+        Artisan::call('contact:checkSoftDeletedContactsInContactEmailManual');
+        Artisan::call('contact:checkSoftDeletedContactsInAdministrationContactTwinfield');
+        Artisan::call('contact:checkSoftDeletedContactsInContactAvailabilities');
+        Artisan::call('contact:checkSoftDeletedContactsInFinancialOverviewContacts');
+        Artisan::call('contact:checkSoftDeletedContactsInFreeFieldsFieldRecords');
+        Artisan::call('contact:checkSoftDeletedContactsInTwinfieldLog');
+
         $commandRun->end_at = Carbon::now();
         $commandRun->finished = true;
         $commandRun->save();

@@ -6,10 +6,13 @@ use App\Eco\Contact\Contact;
 use App\Eco\District\District;
 use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\District\PeekDistrict;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class DistrictController
+class DistrictController extends Controller
 {
     public function index()
     {
@@ -17,13 +20,25 @@ class DistrictController
             abort(403);
         }
 
-        return District::orderBy('name')->get()->map(function ($district) {
-            return [
-                'id' => $district->id,
-                'name' => $district->name,
-                'closed' => $district->closed,
-            ];
-        });
+        return District::whereTeamDistrictIds(Auth::user())
+            ->orderBy('name')
+            ->get()
+            ->map(function ($district) {
+                return [
+                    'id' => $district->id,
+                    'name' => $district->name,
+                    'closed' => $district->closed,
+                ];
+            });
+    }
+
+    public function peek($active = null)
+    {
+        $districts = District::query();
+        if($active == "active") {
+            $districts->where('closed', '!=', 1);
+        }
+        return PeekDistrict::collection($districts->get());
     }
 
     public function show(District $district)
@@ -31,6 +46,8 @@ class DistrictController
         if(!auth()->user()->hasPermissionTo('manage_coach_planning', 'api')) {
             abort(403);
         }
+
+        $this->districtAutorized($district);
 
         return [
             'id' => $district->id,
@@ -61,6 +78,8 @@ class DistrictController
         if(!auth()->user()->hasPermissionTo('manage_coach_planning', 'api')) {
             abort(403);
         }
+
+        $this->districtAutorized($district);
 
         $startDate = $request->get('startDate');
         $endDate = $request->get('endDate');
@@ -181,6 +200,8 @@ class DistrictController
             abort(403);
         }
 
+        $this->districtAutorized($district);
+
         $request->validate([
             'name' => 'required',
             'defaultDurationMinutes' => [],
@@ -206,6 +227,8 @@ class DistrictController
             abort(403);
         }
 
+        $this->districtAutorized($district);
+
         $district->delete();
     }
 
@@ -214,6 +237,8 @@ class DistrictController
         if(!auth()->user()->hasPermissionTo('manage_coach_planning', 'api')) {
             abort(403);
         }
+
+        $this->districtAutorized($district);
 
         $district->coaches()->detach($coach->id);
     }
@@ -224,6 +249,20 @@ class DistrictController
             abort(403);
         }
 
+        $this->districtAutorized($district);
+
         $district->coaches()->attach($coach->id);
+    }
+
+    /**
+     * @param District $district
+     * @return void
+     */
+    private function districtAutorized(District $district): void
+    {
+        $districtAutorized = District::whereTeamDistrictIds(Auth::user())->where('id', $district->id)->first();
+        if (!$districtAutorized) {
+            abort(403, 'Niet geautoriseerd.');
+        }
     }
 }

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>Contactgegevens ophalen</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; }
+        label { display: block; margin-bottom: .5rem; }
+        input { padding: .4rem; margin-bottom: 1rem; width: 200px; }
+        button { padding: .5rem 1rem; }
+        pre { background: #f6f6f6; padding: 1rem; }
+    </style>
+</head>
+<body>
+<h1>Contactgegevens ophalen</h1>
+
+<label for="contactPublicId">Contact public ID:</label>
+<input type="text" id="contactPublicId" name="contactPublicId" placeholder="Bijv. nOzBJUtOPLxmFJcSqLRF9i">
+
+<button id="btnFetch">Haal op</button>
+
+<h2>Resultaat</h2>
+<pre id="result">Nog niets opgehaald...</pre>
+
+<script>
+    // 1) contactPublicId uit de URL lezen: ?contactPublicId=1234567891123456789212
+    const params = new URLSearchParams(window.location.search);
+    const initialId = params.get('contactPublicId');
+
+    const input = document.getElementById('contactPublicId');
+    const result = document.getElementById('result');
+    const button = document.getElementById('btnFetch');
+
+    if (initialId) {
+        input.value = initialId;
+    }
+
+    async function fetchContact() {
+        const contactPublicId = input.value.trim();
+        if (!contactPublicId) {
+            alert('Vul een contactPublicId in');
+            return;
+        }
+
+        const response = await fetch('test-rest-proxy.php', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ contactPublicId: contactPublicId })
+        });
+
+        const data = await response.json().catch(() => ({ error: 'invalid_json' }));
+        result.textContent = JSON.stringify(data, null, 2);
+    }
+
+    button.addEventListener('click', fetchContact);
+
+    // 2) Als er een contactPublicId in de URL staat, meteen automatisch ophalen (optioneel)
+    if (initialId) {
+        fetchContact().catch(console.error);
+    }
+</script>
+</body>
+</html>

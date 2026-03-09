@@ -3,6 +3,7 @@
 namespace App\Eco\Team;
 
 use App\Eco\ContactGroup\ContactGroup;
+use App\Eco\District\District;
 use App\Eco\Email\Email;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
@@ -26,6 +27,11 @@ class Team extends Model
     public function contactGroups()
     {
           return $this->belongsToMany(ContactGroup::class,  'team_contact_group');
+    }
+
+    public function districts()
+    {
+        return $this->belongsToMany(District::class,  'team_district');
     }
 
     public function documentCreatedFroms()

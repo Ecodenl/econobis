@@ -9,8 +9,10 @@ class SetAppScope
 
     public function handle($request, Closure $next)
     {
-        $request->merge(['scope' => 'use-app']);
-
+        // Alleen een default zetten als er nog geen scope is meegegeven
+        if (!$request->has('scope') || empty($request->input('scope'))) {
+            $request->merge(['scope' => 'use-app']);
+        }
         return $next($request);
     }
 }

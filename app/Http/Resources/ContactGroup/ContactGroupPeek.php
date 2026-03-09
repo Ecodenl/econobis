@@ -19,6 +19,6 @@ class ContactGroupPeek extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-        ];
+            'closed' => $this->closed,        ];
     }
 }

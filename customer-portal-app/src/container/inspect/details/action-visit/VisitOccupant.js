@@ -154,7 +154,7 @@ function VisitOccupant({ redirectBack, initialQuotationRequest, handleSubmit }) 
                                         )}
                                     </Field>
                                     <FormLabel htmlFor="date_recorded" className={'field-label'}>
-                                        Afspraak gedaan op
+                                        Afspraak afgerond
                                     </FormLabel>
                                     <Field name="dateRecorded">
                                         {({ field }) => (
@@ -162,7 +162,7 @@ function VisitOccupant({ redirectBack, initialQuotationRequest, handleSubmit }) 
                                                 field={field}
                                                 type="datetime-local"
                                                 id="date_recorded"
-                                                placeholder={'Afspraak gedaan op'}
+                                                placeholder={'Afspraak afgerond'}
                                                 readOnly={true}
                                             />
                                         )}

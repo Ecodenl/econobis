@@ -8,9 +8,10 @@
 
 namespace App\Http\Resources\Team;
 
-use App\Http\Resources\ContactGroup\FullContactGroup;
-use App\Http\Resources\Document\FullDocumentCreatedFrom;
-use App\Http\Resources\User\FullUser;
+use App\Http\Resources\ContactGroup\TeamContactGroup;
+use App\Http\Resources\District\TeamDistrict;
+use App\Http\Resources\Document\TeamDocumentCreatedFrom;
+use App\Http\Resources\User\TeamUser;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class FullTeam extends JsonResource
@@ -20,9 +21,10 @@ class FullTeam extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'users' => FullUser::collection($this->whenLoaded('users')),
-            'contactGroups' => FullContactGroup::collection($this->whenLoaded('contactGroups')),
-            'documentCreatedFroms' => FullDocumentCreatedFrom::collection($this->whenLoaded('documentCreatedFroms')),
+            'users' => TeamUser::collection($this->whenLoaded('users')),
+            'contactGroups' => TeamContactGroup::collection($this->whenLoaded('contactGroups')),
+            'documentCreatedFroms' => TeamDocumentCreatedFrom::collection($this->whenLoaded('documentCreatedFroms')),
+            'districts' => TeamDistrict::collection($this->whenLoaded('districts')),
         ];
     }
 }

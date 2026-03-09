@@ -19,7 +19,7 @@ class checkWrongDistributionParts extends Command
      * @var string
      */
     protected $signature = 'revenue:checkWrongDistributionParts';
-    protected $mailTo = 'xaris@econobis.nl';
+    protected $mailTo = 'xaris.software@econobis.nl';
 
     /**
      * The console command description.

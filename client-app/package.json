@@ -59,7 +59,7 @@
     "jquery": "^3.6.0",
     "js-file-download": "^0.4.12",
     "loader-utils": "^1.2.3",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "moment": "^2.29.1",
     "moment-business-days": "^1.2.0",
     "node-sass": "^8.0.0",

@@ -13,6 +13,7 @@ import PanelBody from '../../../components/panel/PanelBody';
 import Panel from '../../../components/panel/Panel';
 import MailgunDomainDetailsAPI from '../../../api/mailgun-domain/MailgunDomainDetailsAPI';
 import { fetchSystemData } from '../../../actions/general/SystemDataActions';
+import InputToggle from '../../../components/form/InputToggle';
 
 // Functionele wrapper voor de class component
 const MailgunDomainNewFormWrapper = props => {

@@ -19,6 +19,8 @@ const PortalSettingsFormGeneralView = ({
     linkPrivacyPolicy,
     showNewAtCooperativeLink,
     newAtCooperativeLinkText,
+    showAllowRequestForDelete,
+    allowRequestForDeleteButtonText,
     defaultContactGroupMember,
     defaultContactGroupNoMember,
     pcrPowerKwhConsumptionPercentage,
@@ -111,6 +113,24 @@ const PortalSettingsFormGeneralView = ({
                             {/*>*/}
                             {/*{newAtCooperativeLinkText.replace('{cooperatie_naam}', cooperativeName)}*/}
                             {/*</span>*/}
+                        </div>
+                    ) : null}
+                    <div className="row">
+                        <ViewText
+                            label={'Verwijderen via portaal toestaan'}
+                            divSize={'col-sm-8'}
+                            value={showAllowRequestForDelete ? 'Ja' : 'Nee'}
+                            className={'col-sm-8 form-group'}
+                        />
+                    </div>
+                    {showAllowRequestForDelete ? (
+                        <div className="row">
+                            <ViewText
+                                label={'Knoptekst voor verwijderen via portaal'}
+                                divSize={'col-sm-8'}
+                                value={allowRequestForDeleteButtonText}
+                                className={'col-sm-8 form-group'}
+                            />
                         </div>
                     ) : null}
                     <div className="row">

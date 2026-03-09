@@ -65,9 +65,8 @@ function StepOnePcr({
         ),
     });
 
-    // const PCR_POWER_KWH_CONSUMPTION_PERCENTAGE = 0.8;
     const PCR_POWER_KWH_CONSUMPTION_PERCENTAGE = portalSettings['pcrPowerKwhConsumptionPercentage'];
-    // const PCR_GENERATING_CAPACITY_ONE_SOLAR_PANEL = 250;
+    const PCR_POWER_KWH_CONSUMPTION_FACTOR = portalSettings['pcrPowerKwhConsumptionPercentage'] / 100;
     const PCR_GENERATING_CAPACITY_ONE_SOLAR_PANEL = portalSettings['pcrGeneratingCapacityOneSolorPanel'];
 
     function calculateEstimatedGeneratedNumberOfKwh(values) {
@@ -93,7 +92,7 @@ function StepOnePcr({
         let pcrAdviseMaxNumberOfParticipations =
             calculatePowerKwhConsumption(values) > 0
                 ? Math.ceil(
-                      (calculatePowerKwhConsumption(values) * PCR_POWER_KWH_CONSUMPTION_PERCENTAGE) /
+                      (calculatePowerKwhConsumption(values) * PCR_POWER_KWH_CONSUMPTION_FACTOR) /
                           PCR_GENERATING_CAPACITY_ONE_SOLAR_PANEL
                   )
                 : 0;
@@ -167,7 +166,7 @@ function StepOnePcr({
             {({ handleSubmit, values, touched, errors, setFieldValue }) => {
                 let pcrEstimatedGeneratedNumberOfKwh = calculateEstimatedGeneratedNumberOfKwh(values);
                 let powerKwhConsumption = Math.ceil(
-                    calculatePowerKwhConsumption(values) * PCR_POWER_KWH_CONSUMPTION_PERCENTAGE
+                    calculatePowerKwhConsumption(values) * PCR_POWER_KWH_CONSUMPTION_FACTOR
                 );
                 let pcrAdviseMaxNumberOfParticipations = calculateAdviseMaxNumberOfParticipations(values);
                 return (
@@ -382,7 +381,7 @@ function StepOnePcr({
                             <Row>
                                 <Col xs={12} md={6}>
                                     <p>
-                                        We adviseren tot {PCR_POWER_KWH_CONSUMPTION_PERCENTAGE * 100}% van je jaarlijks
+                                        We adviseren tot {PCR_POWER_KWH_CONSUMPTION_PERCENTAGE}% van je jaarlijks
                                         verbruik minus de jaarlijkse opbrengsten (in jouw geval {powerKwhConsumption}{' '}
                                         kWh) te dekken met {lowerCaseFirstLetter(textRegisterParticipationPlural)}. In
                                         het veld hier direct onder is voor je uitgerekend hoeveel{' '}

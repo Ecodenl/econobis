@@ -18,7 +18,7 @@ class checkWrongRevenueDistributionKwhStatus extends Command
      * @var string
      */
     protected $signature = 'revenue:checkWrongRevenueDistributionKwhStatus';
-    protected $mailTo = 'xaris@econobis.nl';
+    protected $mailTo = 'xaris.software@econobis.nl';
 
     /**
      * The console command description.

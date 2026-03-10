@@ -9,6 +9,7 @@ class PortalSettingsDashboardPolicy
 {
     use HandlesAuthorization;
 
+//todo WM: Hiervoor moet eventueel nog een aparte permission view_portal_settings komen
     public function view(User $user)
     {
         return $user->hasPermissionTo('manage_portal_settings', 'api');

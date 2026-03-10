@@ -265,4 +265,9 @@ class User extends Authenticatable
 
         return null;
     }
+
+    public function getFullNameAttribute()
+    {
+        return $this->present()->fullName();
+    }
 }

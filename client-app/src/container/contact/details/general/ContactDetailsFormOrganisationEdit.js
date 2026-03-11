@@ -290,37 +290,44 @@ class ContactDetailsFormOrganisationEdit extends Component {
                     </div>
 
                     <div className="row">
-                        {!didAgreeAvg ? (
-                            <InputToggle
-                                label="Akkoord privacybeleid"
-                                divSize={'col-xs-12'}
-                                name="didAgreeAvg"
-                                value={didAgreeAvg}
-                                onChangeAction={this.handleInputChange}
-                            />
-                        ) : (
-                            <ViewText
-                                label="Akkoord privacybeleid"
-                                id={'didAgreeAvg'}
-                                className={'form-group col-md-12'}
-                                value={
-                                    didAgreeAvg ? (
-                                        <span>
-                                            Ja{' '}
-                                            <em>
-                                                (
-                                                {dateDidAgreeAvg
-                                                    ? moment(dateDidAgreeAvg).format('L')
-                                                    : moment().format('L')}
-                                                )
-                                            </em>
-                                        </span>
-                                    ) : (
-                                        'Nee'
-                                    )
-                                }
-                            />
-                        )}
+                        {/*{!didAgreeAvg ? (*/}
+                        <InputToggle
+                            label="Akkoord privacybeleid"
+                            divSize={'col-xs-12'}
+                            name="didAgreeAvg"
+                            value={didAgreeAvg}
+                            onChangeAction={this.handleInputChange}
+                            additionalTextValue={
+                                didAgreeAvg
+                                    ? 'Ja (' +
+                                      (dateDidAgreeAvg ? moment(dateDidAgreeAvg).format('L') : moment().format('L')) +
+                                      ')'
+                                    : 'Nee'
+                            }
+                        />
+                        {/*) : (*/}
+                        {/*    <ViewText*/}
+                        {/*        label="Akkoord privacybeleid"*/}
+                        {/*        id={'didAgreeAvg'}*/}
+                        {/*        className={'form-group col-md-12'}*/}
+                        {/*        value={*/}
+                        {/*            didAgreeAvg ? (*/}
+                        {/*                <span>*/}
+                        {/*                    Ja{' '}*/}
+                        {/*                    <em>*/}
+                        {/*                        (*/}
+                        {/*                        {dateDidAgreeAvg*/}
+                        {/*                            ? moment(dateDidAgreeAvg).format('L')*/}
+                        {/*                            : moment().format('L')}*/}
+                        {/*                        )*/}
+                        {/*                    </em>*/}
+                        {/*                </span>*/}
+                        {/*            ) : (*/}
+                        {/*                'Nee'*/}
+                        {/*            )*/}
+                        {/*        }*/}
+                        {/*    />*/}
+                        {/*)}*/}
                     </div>
 
                     {/* vooralsnog alleen bij persons, organisations kunnen al gekoppeld worden aan kansactie */}

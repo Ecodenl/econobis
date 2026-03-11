@@ -5,11 +5,10 @@ namespace App\Console\Commands\Checks;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\Project\ProjectType;
+use App\Helpers\Mail\MailHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
-use ParticipantMutations;
 
 class checkWrongDateFirstDepositMutationsLoan extends Command
 {
@@ -102,7 +101,7 @@ class checkWrongDateFirstDepositMutationsLoan extends Command
                 "Deelnemer/Mutatie Id: " . $participationsWithWrongDateEntry->participation_id . "/" . $participationsWithWrongDateEntry->id . "</br>";
         }
 
-        $mail = Mail::to($this->mailTo);
+        $mail = MailHelper::to($this->mailTo);
         $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'.$subject.'</title></head><body><p>'. $subject . '</p>' . $participationsWithWrongDateEntriesHtml . '</body></html>';
 
         $mail->subject = $subject;

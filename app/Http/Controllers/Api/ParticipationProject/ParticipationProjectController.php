@@ -34,6 +34,7 @@ use App\Helpers\Delete\Models\DeleteParticipation;
 use App\Helpers\Delete\Models\DeleteRevenue;
 use App\Helpers\Excel\ParticipantExcelHelper;
 use App\Helpers\Excel\ParticipantExcelHelperHelper;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Project\RevenuesKwhHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Eco\PortalSettings\PortalSettings;
@@ -59,7 +60,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -838,7 +838,7 @@ class ParticipationProjectController extends ApiController
 
             //send email
             if ($primaryEmailAddress) {
-                $email = Mail::to($primaryEmailAddress->email);
+                $email = MailHelper::to($primaryEmailAddress->email);
                 if (!$subject) {
                     $subject = 'Participant rapportage Econobis';
                 }
@@ -1062,7 +1062,7 @@ class ParticipationProjectController extends ApiController
                     $fromName = \Config::get('mail.from.name');
                 }
 
-                $email = Mail::fromMailbox($mailbox)
+                $email = MailHelper::fromMailbox($mailbox)
                     ->to($primaryEmailAddress->email);
                 if(!$subject){
                     $subject = 'Participant rapportage Econobis';

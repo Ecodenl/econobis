@@ -5,12 +5,12 @@ namespace App\Console\Commands\Checks;
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\RevenuesKwh\RevenuesKwh;
+use App\Helpers\Mail\MailHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 
 class checkWrongEnergySupplierDataInParts extends Command
 {
@@ -193,7 +193,7 @@ class checkWrongEnergySupplierDataInParts extends Command
 
     private function sendMail($subject)
     {
-        $mail = Mail::to($this->mailTo);
+        $mail = MailHelper::to($this->mailTo);
         $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>Wrong energy supplier data in parts</title></head><body><p>'. $subject . '</p><p>' . \Config::get("app.name") .'</p></body></html>';
 
         $mail->subject = $subject;

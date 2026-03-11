@@ -3,11 +3,11 @@
 namespace App\Console\Commands\Checks;
 
 use App\Eco\Contact\Contact;
+use App\Helpers\Mail\MailHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 
 class checkSoftDeletedContactsInFinancialOverviewContacts extends Command
 {
@@ -86,7 +86,7 @@ class checkSoftDeletedContactsInFinancialOverviewContacts extends Command
             ;
         }
 
-        $mail = Mail::to($this->mailTo);
+        $mail = MailHelper::to($this->mailTo);
         $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'.$subject.'</title></head><body><p>'. $subject . '</p>' . $financialOverviewContactsWithDeletedContactIdsHtml . '</body></html>';
 
         $mail->subject = $subject;

@@ -10,6 +10,7 @@ use App\Eco\FinancialOverview\FinancialOverviewsToSend;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\Project\Project;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewContactController;
@@ -17,7 +18,6 @@ use App\Http\Resources\FinancialOverview\Templates\FinancialOverviewContactMail;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class FinancialOverviewHelper
@@ -270,7 +270,7 @@ class FinancialOverviewHelper
             . $subject . '</title></head>'
             . $htmlBody . '</html>';
 
-        $mail = Mail::fromMailbox($mailbox)
+        $mail = MailHelper::fromMailbox($mailbox)
             ->to($contactInfo['email']);
 
         $mail->subject = $subject;

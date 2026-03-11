@@ -7,6 +7,7 @@ use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\Jobs\JobsLog;
 use App\Eco\User\User;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMail;
@@ -18,7 +19,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Mail;
+//use Mail;
 
 /**
  * @deprecated replaced by SendEmailsWithVariables
@@ -105,7 +106,7 @@ class SendEmailsWithVariablesDeprecated implements ShouldQueue {
             /**
              * Setup
              */
-            $mail = Mail::fromMailbox($mailbox)
+            $mail = MailHelper::fromMailbox($mailbox)
                 ->to($emailsToEmailAddress);
             $subjectWithVariables = 'Econobis';
 
@@ -164,7 +165,7 @@ class SendEmailsWithVariablesDeprecated implements ShouldQueue {
         if (!empty($emailsToContact)) {
             foreach ($emailsToContact as $emailToContact) {
 
-                $mail = Mail::fromMailbox($email->mailbox)
+                $mail = MailHelper::fromMailbox($email->mailbox)
                     ->to($emailToContact->email);
                 $subjectWithContactVariables = 'Econobis';
 

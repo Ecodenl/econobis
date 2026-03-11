@@ -8,11 +8,11 @@ use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\PortalSettings\PortalSettings;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 
 class QuotationRequestWorkflowHelper
 {
@@ -84,7 +84,7 @@ class QuotationRequestWorkflowHelper
 
         if(!$to) return false;
 
-        $mail = Mail::fromMailbox($mailbox)
+        $mail = MailHelper::fromMailbox($mailbox)
             ->to($to);
         $toEmail = $to->email;
         $ccEmail = '';
@@ -137,7 +137,7 @@ class QuotationRequestWorkflowHelper
             $mailbox = Mailbox::getDefault();
         }
 
-        $mail = Mail::fromMailbox($mailbox)
+        $mail = MailHelper::fromMailbox($mailbox)
             ->to($this->quotationRequest->organisationOrCoach->primaryEmailAddress);
 
         $this->mailWorkflow($emailTemplate, $mail, $mailbox, $this->quotationRequest->organisationOrCoach->primaryEmailAddress->email, '');

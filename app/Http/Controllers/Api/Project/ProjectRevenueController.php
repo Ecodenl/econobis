@@ -23,6 +23,7 @@ use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Project\ProjectType;
 use App\Helpers\CSV\RevenueDistributionCSVHelper;
 use App\Helpers\Delete\Models\DeleteRevenue;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Eco\PortalSettings\PortalSettings;
 use App\Helpers\Template\TemplateTableHelper;
@@ -41,7 +42,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -473,7 +473,7 @@ class ProjectRevenueController extends ApiController
                     $fromEmail = \Config::get('mail.from.address');
                 }
 
-                $email = Mail::fromMailbox($mailbox)
+                $email = MailHelper::fromMailbox($mailbox)
                     ->to($primaryEmailAddress->email);
 
                 if (!$subject) {
@@ -1097,7 +1097,7 @@ class ProjectRevenueController extends ApiController
                         $fromName = \Config::get('mail.from.name');
                     }
 
-                    $email = Mail::fromMailbox($mailbox)
+                    $email = MailHelper::fromMailbox($mailbox)
                         ->to($primaryEmailAddress->email);
 
                     if (!$subject) {

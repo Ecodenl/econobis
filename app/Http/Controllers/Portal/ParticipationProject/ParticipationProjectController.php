@@ -23,6 +23,7 @@ use App\Helpers\Address\AddressHelper;
 use App\Helpers\Delete\Models\DeleteParticipation;
 use App\Helpers\Document\DocumentHelper;
 use App\Eco\PortalSettings\PortalSettings;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ContactGroup\ContactGroupController;
@@ -37,7 +38,6 @@ use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -399,7 +399,7 @@ class ParticipationProjectController extends Controller
 
             $portalUserContact = $portalUser ? $portalUser->contact : null;
 
-            $email = Mail::fromMailbox($mailbox)
+            $email = MailHelper::fromMailbox($mailbox)
                 ->to($primaryEmailAddress->email);
 
             if($emailTemplate && !empty($emailTemplate->subject) )

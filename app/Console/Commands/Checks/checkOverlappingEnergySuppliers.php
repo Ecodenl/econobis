@@ -3,12 +3,12 @@
 namespace App\Console\Commands\Checks;
 
 use App\Eco\Address\Address;
+use App\Helpers\Mail\MailHelper;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 
 class checkOverlappingEnergySuppliers extends Command
 {
@@ -94,7 +94,8 @@ class checkOverlappingEnergySuppliers extends Command
     {
         $subject = 'Overlappende energie leveranciers! (' . count($invalidPeriodAddressEnergySuppliers) . '/' . count($overlappingAddresses) . ') - ' . \Config::get('app.APP_COOP_NAME');
 
-        $mail = Mail::to($this->mailTo);
+        $mail = MailHelper::to($this->mailTo);
+
         $htmlBody = "<!DOCTYPE html><html><head><meta http-equiv='content-type' content='text/html;charset=UTF-8'/><title>".$subject."</title></head><body><p>". $subject . "</p>";
         $htmlBody .= "<p>De volgende contact/adres id's hebben ongeldige energie leverancier periodes:<br>" . implode(', ', $invalidPeriodAddressEnergySuppliers) . "</p>";
         $htmlBody .= "<p>De volgende contact/adres id's hebben overlappende energie leverancier periodes:<br>" . implode(', ', $overlappingAddresses) . "</p>";

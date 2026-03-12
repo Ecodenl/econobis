@@ -2,15 +2,17 @@ import React, { useState, useEffect, useContext } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import LoadingView from '../../../components/general/LoadingView';
-import { PortalUserContext } from '../../../context/PortalUserContext';
 import { Card, Table } from 'react-bootstrap';
 import AdministrationAPI from '../../../api/administration/AdministrationAPI';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
+import { ThemeSettingsContext } from '../../../context/ThemeSettingsContext';
+import { PortalUserContext } from '../../../context/PortalUserContext';
 import AboutUsDocumentTable from './document-table';
 
 function AboutUsAdministration({ match }) {
+    const { setCurrentThemeSettings } = useContext(ThemeSettingsContext);
     const { currentSelectedContact } = useContext(PortalUserContext);
     const [administration, setAdministration] = useState({});
     const [websiteLink, setWebsiteLink] = useState(null);
@@ -24,6 +26,7 @@ function AboutUsAdministration({ match }) {
                 AdministrationAPI.fetchAdministration(match.params.id)
                     .then(payload => {
                         setAdministration(payload.data.data);
+                        setCurrentThemeSettings(payload.data.data.portalSettingsLayoutAssigned);
                         setLoading(false);
                     })
                     .catch(error => {

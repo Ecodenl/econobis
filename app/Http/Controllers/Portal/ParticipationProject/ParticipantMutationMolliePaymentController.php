@@ -45,7 +45,7 @@ class ParticipantMutationMolliePaymentController extends ApiController
             /**
              * Hackje; Tijdelijk user setten om alle observers tevreden te houden.
              */
-            $responsibleUser = PortalSettings::first()?->responsible_user_id;
+            $responsibleUser = User::find(PortalSettings::first()?->responsible_user_id);;
             $responsibleUser->occupation = '@portal-update@';
             Auth::setUser($responsibleUser);
 

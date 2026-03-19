@@ -163,7 +163,7 @@ export default function* watchSagas() {
     yield takeLatest('DELETE_EMAIL_ADDRESS', deleteEmailAddressSaga);
     yield takeLatest('DELETE_PORTAL_USER', deletePortalUserSaga);
     yield takeLatest('DELETE_CONTACT_NOTE', deleteContactNoteSaga);
-    yield takeLatest('DELETE_ADDRESS_ENERGY_SUPPLIER', deleteAddressEnergySupplierSaga);
+    yield takeLatest('DELETE_ADDRESS_ENERGY_SUPPLIER_REQUEST', deleteAddressEnergySupplierSaga);
     yield takeLatest('DELETE_ADDRESS_DONGLE', deleteAddressDongleSaga);
     // Contact group
     yield takeLatest('FETCH_CONTACT_GROUPS', fetchContactGroupsSaga);

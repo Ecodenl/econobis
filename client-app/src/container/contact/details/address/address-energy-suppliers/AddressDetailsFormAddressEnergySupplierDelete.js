@@ -16,9 +16,11 @@ const AddressDetailsFormAddressEnergySupplierDelete = props => {
         props.address.city +
         (props.address.country ? ', ' + props.address.country.name : '');
     const confirmAction = () => {
-        props.deleteAddressEnergySupplier(props.id);
-        props.closeDeleteItemModal();
-        props.reloadContact();
+        // tweede parameter is onSuccess functie. Deze wordt dus alleen uitgevoerd bij succesvolle delete.
+        props.deleteAddressEnergySupplier(props.id, () => {
+            props.closeDeleteItemModal();
+            props.reloadContact();
+        });
     };
 
     return (
@@ -38,9 +40,8 @@ const AddressDetailsFormAddressEnergySupplierDelete = props => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    deleteAddressEnergySupplier: id => {
-        dispatch(deleteAddressEnergySupplier(id));
+    deleteAddressEnergySupplier: (id, onSuccess) => {
+        dispatch(deleteAddressEnergySupplier(id, onSuccess));
     },
 });
-
 export default connect(null, mapDispatchToProps)(AddressDetailsFormAddressEnergySupplierDelete);

@@ -39,7 +39,8 @@ class rebuildPortalCss extends Command
      */
     public function handle()
     {
-        GeneratePortalCss::dispatch();
+        Log::info('Start Maak nieuwe portal css aan');
+        GeneratePortalCss::dispatchSync();
         Log::info('Einde Maak nieuwe portal css aan');
     }
 

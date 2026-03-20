@@ -3,10 +3,10 @@
 namespace App\Console\Commands\Checks;
 
 use App\Eco\Contact\Contact;
+use App\Helpers\Mail\MailHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 
 class CheckSoftDeletedContactsInContactNotes extends AbstractSystemCheckCommand
 {
@@ -132,7 +132,7 @@ class CheckSoftDeletedContactsInContactNotes extends AbstractSystemCheckCommand
             . '<p>Bekijk de details in de logging tabel system_check_runs / system_check_run_items.</p>'
             . '</body></html>';
 
-        $mail = Mail::to($this->mailTo);
+        $mail = MailHelper::to($this->mailTo);
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;
 

@@ -4,12 +4,12 @@ namespace App\Console\Commands;
 
 use App\Eco\Schedule\CommandRun;
 use App\Eco\SystemCheck\SystemCheckRun;
+use App\Helpers\Mail\MailHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 
 class ControleScriptsSoftDeletedContacts extends Command
 {
@@ -136,7 +136,7 @@ class ControleScriptsSoftDeletedContacts extends Command
         $htmlBody .= '<br/><p>Bekijk details in de logging tabel system_check_runs / system_check_run_items.</p>';
         $htmlBody .= '</body></html>';
 
-        $mail = Mail::to($this->mailTo);
+        $mail = MailHelper::to($this->mailTo);
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;
 

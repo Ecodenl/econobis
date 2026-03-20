@@ -6,9 +6,9 @@ use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use App\Eco\PortalSettings\PortalSettings;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
-use Illuminate\Support\Facades\Mail;
 
 class TaskWorkflowHelper
 {
@@ -47,7 +47,7 @@ class TaskWorkflowHelper
             return false;
         }
 
-        $mail = Mail::to($this->contact->primaryEmailAddress);
+        $mail = MailHelper::to($this->contact->primaryEmailAddress);
         $this->mailWorkflow($emailTemplate, $mail);
         return true;
     }
@@ -82,7 +82,7 @@ class TaskWorkflowHelper
             return false;
         }
 
-        $mail = Mail::to($users->pluck('email')->toArray());
+        $mail = MailHelper::to($users->pluck('email')->toArray());
         $this->mailWorkflow($emailTemplate, $mail);
         return true;
     }
@@ -117,7 +117,7 @@ class TaskWorkflowHelper
             return false;
         }
 
-        $mail = Mail::to($users->pluck('email')->toArray());
+        $mail = MailHelper::to($users->pluck('email')->toArray());
         $this->mailWorkflow($emailTemplate, $mail);
         return true;
     }

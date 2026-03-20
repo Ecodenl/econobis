@@ -5,15 +5,14 @@ namespace App\Console\Commands\Checks;
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\EnergySupplier\EnergySupplierType;
-use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
 use App\Eco\RevenuesKwh\RevenuesKwh;
+use App\Helpers\Mail\MailHelper;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 
 class checkMissingEnergySuppliersInAddress extends Command
 {
@@ -225,7 +224,7 @@ class checkMissingEnergySuppliersInAddress extends Command
             ;
         }
 
-        $mail = Mail::to($this->mailTo);
+        $mail = MailHelper::to($this->mailTo);
         $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'.$subject.'</title></head><body><p>'. $subject . '</p>' . $missingEnergySuppliersInAddressDataHtml . '</body></html>';
 
         $mail->subject = $subject;

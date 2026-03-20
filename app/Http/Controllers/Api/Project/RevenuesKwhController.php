@@ -16,6 +16,7 @@ use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Helpers\CSV\RevenueDistributionKwhCSVHelper;
 use App\Helpers\Delete\Models\DeleteRevenueDistributionKwh;
 use App\Helpers\Delete\Models\DeleteRevenuesKwh;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Project\RevenuesKwhHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Eco\PortalSettings\PortalSettings;
@@ -33,7 +34,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -560,7 +560,7 @@ class RevenuesKwhController extends ApiController
                     $fromEmail = \Config::get('mail.from.address');
                 }
 
-                $email = Mail::fromMailbox($mailbox)
+                $email = MailHelper::fromMailbox($mailbox)
                     ->to($primaryEmailAddress->email);
                 if (!$subject) {
                     $subject = 'Participant rapportage Econobis';
@@ -819,7 +819,7 @@ class RevenuesKwhController extends ApiController
                         $fromName = \Config::get('mail.from.name');
                     }
 
-                    $email = Mail::fromMailbox($mailbox)
+                    $email = MailHelper::fromMailbox($mailbox)
                         ->to($primaryEmailAddress->email);
 
                     if (!$subject) {

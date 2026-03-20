@@ -12,13 +12,13 @@ use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Helpers\Laposta\LapostaMemberHelper;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Hoomdossier\Templates\HoomdossierMail;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
 class HoomdossierHelper
@@ -262,10 +262,9 @@ class HoomdossierHelper
             }
         }
     }
-
     private function sendMail()
     {
-//        $mail = Mail::to($this->contact->primaryEmailAddress);
+        $emailTo = $this->contact->primaryEmailAddress;
 
         if ($this->cooperation->hoom_mailbox_id) {
             $mailbox = Mailbox::find($this->cooperation->hoom_mailbox_id);
@@ -276,7 +275,7 @@ class HoomdossierHelper
             $mailbox = Mailbox::getDefault();
         }
 
-        $mail = Mail::fromMailbox($mailbox)->to($this->contact->primaryEmailAddress);
+        $mail = MailHelper::fromMailbox($mailbox)->to($this->contact->primaryEmailAddress);
 
         $emailTemplate = EmailTemplate::find($this->cooperation->hoom_email_template_id);
 
@@ -285,18 +284,17 @@ class HoomdossierHelper
 
         $subject = str_replace('{cooperatie_naam}', $this->cooperation->name, $subject);
         $subject = str_replace('{contactpersoon}', $this->contact->full_name, $subject);
-        $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'contact', $this->contact);
+        $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'contact', $this->contact);
 
         $htmlBody = str_replace('{cooperatie_naam}', $this->cooperation->name, $htmlBody);
         $htmlBody = str_replace('{contactpersoon}', $this->contact->full_name, $htmlBody);
-        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'contact', $this->contact);
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'contact', $this->contact);
 
         $htmlBody = TemplateVariableHelper::stripRemainingVariableTags($htmlBody);
 
         $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
             . $subject . '</title></head>'
             . $htmlBody . '</html>';
-
 
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;

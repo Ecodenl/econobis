@@ -7,7 +7,6 @@ use App\Helpers\Mail\MailHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Illuminate\Support\Facades\DB;
 
-
 class CheckSoftDeletedContactGroupsInContactGroupPivot extends AbstractSystemCheckCommand
 {
     /**

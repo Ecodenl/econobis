@@ -5,89 +5,24 @@ namespace App\Console\Commands\Checks;
 use App\Eco\Contact\Contact;
 use App\Helpers\Mail\MailHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
-use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class checkSoftDeletedContactsInAdministrationContactTwinfield extends Command
+class CheckSoftDeletedContactsInAdministrationContactTwinfield extends AbstractSystemCheckCommand
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'contact:checkSoftDeletedContactsInAdministrationContactTwinfield {--recover=false}';
-    protected $mailTo = 'xaris.software@econobis.nl';
+    protected $signature = 'contact:checkSoftDeletedContactsInAdministrationContactTwinfield
+                        {--recover=false}
+                        {--batch-key=}
+                        {--send-mail=true}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
+    protected string $commandRef = 'contact:checkSoftDeletedContactsInAdministrationContactTwinfield';
+    protected string $checkCode = 'soft_deleted_contacts_in_administration_contact_twinfield';
+    protected string $checkName = 'Soft deleted contacten in administration contact Twinfield';
+    protected ?string $mailTo = 'xaris.software@econobis.nl';
+
     protected $description = 'Check op soft deleted contacten (id\'s) in administration contact Twinfield';
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
-    {
-        // met of zonder herstel?
-        $doRecover = $this->option('recover') == 'true';
-
-        Log::info('Procedure check op soft deleted contacten (id\'s) in administration contact Twinfield ' . ($doRecover ? ' MET HERSTEL!' : ''));
-
-        $administrationContactTwinfieldWithDeletedContactIds = $this->getAdministrationContactTwinfieldWithDeletedContactIds($doRecover);
-
-        if(!empty($administrationContactTwinfieldWithDeletedContactIds)) {
-            $this->sendMail($administrationContactTwinfieldWithDeletedContactIds, $doRecover);
-            Log::info('Soft deleted contacten (ids) gevonden in administration contact Twinfield. Mail verzonden,');
-        } else {
-            Log::info('Geen soft deleted contacten (ids) gevonden in administration contact Twinfield.');
-        }
-
-        Log::info('Procedure check op soft deleted contacten (id\'s) in administration contact Twinfield klaar.');
-
-    }
-
-    private function sendMail($administrationContactTwinfieldWithDeletedContactIds, $doRecover)
-    {
-        $subject = 'Soft deleted contacten (ids) gevonden in administration contact Twinfield! (' . count($administrationContactTwinfieldWithDeletedContactIds) . ') - ' . \Config::get('app.APP_COOP_NAME');
-
-        $administrationContactTwinfieldWithDeletedContactIdsHtml = "<p>De volgende administration contact Twinfield id's hebben soft deleted contacten (ids) :</p>";
-        if($doRecover){
-            $administrationContactTwinfieldWithDeletedContactIdsHtml .= "<p>MET HERSTEL!</p>";
-        }
-        foreach ($administrationContactTwinfieldWithDeletedContactIds as $administrationContactTwinfieldWithDeletedContactId) {
-            $administrationContactTwinfieldWithDeletedContactIdsHtml .=
-                "Administration contact Twinfield: " . $administrationContactTwinfieldWithDeletedContactId['administration-contact-twinfield-id'] . " | " .
-                "Contact : " . $administrationContactTwinfieldWithDeletedContactId['contact-id'] . " | " .
-                "Administratie : " . $administrationContactTwinfieldWithDeletedContactId['administration-id'] . " | " .
-                "Twinfield nummer : " . $administrationContactTwinfieldWithDeletedContactId['twinfield-number'] . "</br>"
-            ;
-        }
-
-        $mail = MailHelper::to($this->mailTo);
-        $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'.$subject.'</title></head><body><p>'. $subject . '</p>' . $administrationContactTwinfieldWithDeletedContactIdsHtml . '</body></html>';
-
-        $mail->subject = $subject;
-        $mail->html_body = $htmlBody;
-
-        $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody));
-    }
-
-    private function getAdministrationContactTwinfieldWithDeletedContactIds(bool $doRecover): array
+    protected function getItems(bool $doRecover): array
     {
         $counter = 0;
         $administrationContactTwinfieldReturn = [];
@@ -99,12 +34,23 @@ class checkSoftDeletedContactsInAdministrationContactTwinfield extends Command
             ->get();
 
         foreach ($administrationContactTwinfieldsWithTrashedContact as $administrationContactTwinfield) {
-            if($doRecover) {
-                Log::info('Delete van administrationContactTwinfield met id:' . $administrationContactTwinfield->id.  ', contactId ' . $administrationContactTwinfield->contact_id . ', administrationId '.$administrationContactTwinfield->administration_id. ' en twinfieldNumber ' . $administrationContactTwinfield->twinfield_number);
+            if ($doRecover) {
+                Log::info(
+                    'Delete van administrationContactTwinfield met id:'
+                    . $administrationContactTwinfield->id
+                    . ', contactId '
+                    . $administrationContactTwinfield->contact_id
+                    . ', administrationId '
+                    . $administrationContactTwinfield->administration_id
+                    . ' en twinfieldNumber '
+                    . $administrationContactTwinfield->twinfield_number
+                );
+
                 DB::table('administration_contact_twinfield')
                     ->where('id', $administrationContactTwinfield->id)
                     ->delete();
             }
+
             $administrationContactTwinfieldReturn[$counter]['administration-contact-twinfield-id'] = $administrationContactTwinfield->id;
             $administrationContactTwinfieldReturn[$counter]['contact-id'] = $administrationContactTwinfield->contact_id;
             $administrationContactTwinfieldReturn[$counter]['administration-id'] = $administrationContactTwinfield->administration_id;
@@ -114,5 +60,77 @@ class checkSoftDeletedContactsInAdministrationContactTwinfield extends Command
 
         return $administrationContactTwinfieldReturn;
     }
-}
 
+    protected function getItemMessage(array $item): string
+    {
+        return 'Administration contact Twinfield heeft soft deleted contact.';
+    }
+
+    protected function getEntityType(): ?string
+    {
+        return 'administration_contact_twinfield';
+    }
+
+    protected function getEntityId(array $item): ?int
+    {
+        return $item['administration-contact-twinfield-id'];
+    }
+
+    protected function getRelatedEntityType(): ?string
+    {
+        return 'contact';
+    }
+
+    protected function getRelatedEntityId(array $item): ?int
+    {
+        return $item['contact-id'];
+    }
+
+    protected function getContext(array $item): array
+    {
+        return [
+            'administration_id' => $item['administration-id'],
+            'twinfield_number' => $item['twinfield-number'],
+        ];
+    }
+
+    protected function getSummary(int $issuesFound, bool $doRecover): string
+    {
+        $summary = $issuesFound . ' administration contact Twinfield records gekoppeld aan soft deleted contacten.';
+
+        if ($doRecover) {
+            $summary .= ' Controle uitgevoerd met herstel.';
+        }
+
+        return $summary;
+    }
+
+    protected function sendSummaryMail(int $issuesFound, bool $doRecover): void
+    {
+        $subjectPrefix = $doRecover ? '[ECONOBIS RECOVER] ' : '[ECONOBIS CHECK] ';
+
+        $subject = $subjectPrefix
+            . $issuesFound
+            . ' issues gevonden bij '
+            . $this->checkName
+            . ' - '
+            . config('app.APP_COOP_NAME');
+
+        $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/>'
+            . '<title>' . e($subject) . '</title></head><body>'
+            . '<p>' . e($subject) . '</p>'
+            . '<p>Tijdens een automatische controle zijn afwijkingen gevonden.</p>'
+            . '<p><strong>Controle:</strong> ' . e($this->checkName) . '</p>'
+            . '<p><strong>Coöperatie:</strong> ' . e(config('app.APP_COOP_NAME')) . '</p>'
+            . '<p><strong>Aantal issues:</strong> ' . $issuesFound . '</p>'
+            . '<p><strong>Herstelmodus:</strong> ' . ($doRecover ? 'ja' : 'nee') . '</p>'
+            . '<p>Bekijk de details in de logging tabel system_check_runs / system_check_run_items.</p>'
+            . '</body></html>';
+
+        $mail = MailHelper::to($this->mailTo);
+        $mail->subject = $subject;
+        $mail->html_body = $htmlBody;
+
+        $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody));
+    }
+}

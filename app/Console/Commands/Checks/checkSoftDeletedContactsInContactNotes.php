@@ -51,7 +51,9 @@ class CheckSoftDeletedContactsInContactNotes extends AbstractSystemCheckCommand
 
                 DB::table('contact_notes')
                     ->where('id', $contactNote->id)
-                    ->delete();
+                    ->update([
+                        'deleted_at' => now(),
+                    ]);
             }
 
             $contactNotesReturn[$counter]['note-id'] = $contactNote->id;

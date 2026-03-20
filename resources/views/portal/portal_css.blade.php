@@ -137,7 +137,7 @@ font-weight: 400;
 }
 
 h5.card-title {
-line-height: 0px;
+line-height: 1.4;
 margin-top: 0px;
 }
 

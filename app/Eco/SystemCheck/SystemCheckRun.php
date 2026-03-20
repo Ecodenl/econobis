@@ -23,6 +23,7 @@ class SystemCheckRun extends Model
         'issues_found',
         'is_recover_mode',
         'mail_sent',
+        'notification_sent',
         'mail_to',
         'summary',
     ];
@@ -34,6 +35,7 @@ class SystemCheckRun extends Model
         'created_in_shared' => 'boolean',
         'is_recover_mode' => 'boolean',
         'mail_sent' => 'boolean',
+        'notification_sent' => 'boolean',
     ];
 
     public function items(): HasMany

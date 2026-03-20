@@ -61,11 +61,13 @@ abstract class AbstractSystemCheckCommand extends Command
 
             $issuesFound = count($items);
             $mailSent = false;
+            $notificationSent = false;
 
             if ($issuesFound > 0) {
                 if ($sendMail && $this->mailTo) {
                     $this->sendSummaryMail($issuesFound, $doRecover);
                     $mailSent = true;
+                    $notificationSent = true;
 
                     Log::info($this->checkName . '. Samenvattingsmail verzonden.');
                 } else {
@@ -79,7 +81,8 @@ abstract class AbstractSystemCheckCommand extends Command
                 run: $run,
                 issuesFound: $issuesFound,
                 summary: $this->getSummary($issuesFound, $doRecover),
-                mailSent: $mailSent
+                mailSent: $mailSent,
+                notificationSent: $notificationSent
             );
 
             Log::info('Procedure ' . $this->checkName . ' klaar.');

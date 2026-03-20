@@ -28,6 +28,7 @@ class CreateSystemCheckRunsTable extends Migration
             $table->boolean('is_recover_mode')->default(false);
 
             $table->boolean('mail_sent')->default(false);
+            $table->boolean('notification_sent')->default(false);
             $table->string('mail_to')->nullable();
 
             $table->text('summary')->nullable();

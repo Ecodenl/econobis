@@ -107,7 +107,9 @@ class CheckSoftDeletedContactsInAdministrationContactTwinfield extends AbstractS
 
     protected function sendSummaryMail(int $issuesFound, bool $doRecover): void
     {
-        $subject = '[ECONOBIS CHECK] '
+        $subjectPrefix = $doRecover ? '[ECONOBIS RECOVER] ' : '[ECONOBIS CHECK] ';
+
+        $subject = $subjectPrefix
             . $issuesFound
             . ' issues gevonden bij '
             . $this->checkName

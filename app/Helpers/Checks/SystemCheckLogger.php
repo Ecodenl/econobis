@@ -28,6 +28,7 @@ class SystemCheckLogger
             'issues_found' => 0,
             'is_recover_mode' => $isRecoverMode,
             'mail_sent' => false,
+            'notification_sent' => false,
             'mail_to' => $mailTo,
         ]);
     }
@@ -57,7 +58,8 @@ class SystemCheckLogger
         SystemCheckRun $run,
         int $issuesFound,
         ?string $summary = null,
-        bool $mailSent = false
+        bool $mailSent = false,
+        bool $notificationSent = false
     ): SystemCheckRun {
         $status = 'ok';
 
@@ -71,6 +73,7 @@ class SystemCheckLogger
             'issues_found' => $issuesFound,
             'summary' => $summary,
             'mail_sent' => $mailSent,
+            'notification_sent' => $notificationSent,
             'status' => $status,
             'end_at' => now(),
             'finished' => true,

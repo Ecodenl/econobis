@@ -76,6 +76,18 @@ class ControleScriptsSoftDeletedContacts extends Command
 
         if ($runsWithIssues->isNotEmpty()) {
             $this->sendSummaryMail($runs, $batchKey, $doRecover);
+
+            // alle runs in batch markeren als "gemeld"
+            SystemCheckRun::where('batch_key', $batchKey)
+                ->where('issues_found', '>', 0)
+                ->update([
+                    'notification_sent' => true,
+                ]);
+
+            Log::info('Batch notificatie gemarkeerd voor runs met issues.', [
+                'batch_key' => $batchKey,
+                'runs_marked' => $runsWithIssues->count(),
+            ]);
         }
 
         $commandRun->end_at = Carbon::now();
@@ -87,10 +99,11 @@ class ControleScriptsSoftDeletedContacts extends Command
 
     private function sendSummaryMail($runs, string $batchKey, bool $doRecover): void
     {
+        $subjectPrefix = $doRecover ? '[ECONOBIS RECOVER] ' : '[ECONOBIS CHECK] ';
         $runsWithIssues = $runs->where('issues_found', '>', 0);
         $totalIssues = $runsWithIssues->sum('issues_found');
 
-        $subject = '[ECONOBIS CHECK] '
+        $subject = $subjectPrefix
             . $runsWithIssues->count()
             . ' checks met issues, totaal '
             . $totalIssues

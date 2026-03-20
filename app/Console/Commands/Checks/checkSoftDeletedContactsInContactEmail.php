@@ -3,21 +3,26 @@
 namespace App\Console\Commands\Checks;
 
 use App\Eco\Contact\Contact;
-use App\Helpers\Mail\MailHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
-use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
-class checkSoftDeletedContactsInContactEmail extends Command
+class CheckSoftDeletedContactsInContactEmail extends AbstractSystemCheckCommand
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'contact:checkSoftDeletedContactsInContactEmail {--recover=false}';
-    protected $mailTo = 'xaris.software@econobis.nl';
+    protected $signature = 'contact:checkSoftDeletedContactsInContactEmail
+                        {--recover=false}
+                        {--batch-key=}
+                        {--send-mail=true}';
+
+    protected string $commandRef = 'contact:checkSoftDeletedContactsInContactEmail';
+    protected string $checkCode = 'soft_deleted_contacts_in_contact_email';
+    protected string $checkName = 'Soft deleted contacten in contact emails';
+    protected ?string $mailTo = 'xaris.software@econobis.nl';
 
     /**
      * The console command description.
@@ -26,61 +31,7 @@ class checkSoftDeletedContactsInContactEmail extends Command
      */
     protected $description = 'Check op soft deleted contacten (id\'s) in contact emails';
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    public function handle()
-    {
-        // met of zonder herstel?
-        $doRecover = $this->option('recover') == 'true';
-
-        Log::info('Procedure check op soft deleted contacten (id\'s) in contact emails ' . ($doRecover ? ' MET HERSTEL!' : ''));
-
-        $contactEmailsWithDeletedContactIds = $this->getContactEmailsWithDeletedContactIds($doRecover);
-
-        if(!empty($contactEmailsWithDeletedContactIds)) {
-            $this->sendMail($contactEmailsWithDeletedContactIds, $doRecover);
-            Log::info('Soft deleted contacten (ids) gevonden in contact emails. Mail verzonden,');
-        } else {
-            Log::info('Geen soft deleted contacten (ids) gevonden in contact emails.');
-        }
-
-        Log::info('Procedure check op soft deleted contacten (id\'s) in contact emails klaar.');
-
-    }
-
-    private function sendMail($contactEmailsWithDeletedContactIds, $doRecover)
-    {
-        $subject = 'Soft deleted contacten (ids) gevonden in contact emails! (' . count($contactEmailsWithDeletedContactIds) . ') - ' . \Config::get('app.APP_COOP_NAME');
-
-        $contactEmailsWithDeletedContactIdsHtml = "<p>De volgende contact email id's hebben soft deleted contacten (ids) :</p>";
-        if($doRecover){
-            $contactEmailsWithDeletedContactIdsHtml .= "<p>MET HERSTEL!</p>";
-        }
-        foreach ($contactEmailsWithDeletedContactIds as $contactEmailWithDeletedContactIds) {
-            $contactEmailsWithDeletedContactIdsHtml .=
-                "Email: " . $contactEmailWithDeletedContactIds['email-id'] . " " . $contactEmailWithDeletedContactIds['email-subject'] . " | " .
-                "Contact : " . $contactEmailWithDeletedContactIds['contact-id'] . " " . $contactEmailWithDeletedContactIds['contact-name'] . "</br>"
-            ;
-        }
-
-        $mail = MailHelper::to($this->mailTo);
-        $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'.$subject.'</title></head><body><p>'. $subject . '</p>' . $contactEmailsWithDeletedContactIdsHtml . '</body></html>';
-
-        $mail->subject = $subject;
-        $mail->html_body = $htmlBody;
-
-        $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody));
-    }
-
-    private function getContactEmailsWithDeletedContactIds(bool $doRecover): array
+    protected function getItems(bool $doRecover): array
     {
         $counter = 0;
         $contactEmailsReturn = [];
@@ -89,19 +40,19 @@ class checkSoftDeletedContactsInContactEmail extends Command
 
         $contactEmails = DB::table('contact_email')
             ->join('emails', 'emails.id', '=', 'contact_email.email_id')
-            ->join('contacts','contacts.id', '=', 'contact_email.contact_id')
+            ->join('contacts', 'contacts.id', '=', 'contact_email.contact_id')
             ->select('email_id', 'emails.subject', 'contact_id', 'contacts.full_name')
             ->whereIn('contact_id', $contactsTrashed)
             ->get();
 
         foreach ($contactEmails as $contactEmail) {
-            if($doRecover) {
-//                Log::info('Detach van contactEmail contactId ' . $contactEmail->contact_id . ' en contactEmailId ' . $contactEmail->email_id);
+            if ($doRecover) {
                 DB::table('contact_email')
                     ->where('contact_id', $contactEmail->contact_id)
                     ->where('email_id', $contactEmail->email_id)
                     ->delete();
             }
+
             $contactEmailsReturn[$counter]['email-id'] = $contactEmail->email_id;
             $contactEmailsReturn[$counter]['email-subject'] = $contactEmail->subject;
             $contactEmailsReturn[$counter]['contact-id'] = $contactEmail->contact_id;
@@ -111,5 +62,77 @@ class checkSoftDeletedContactsInContactEmail extends Command
 
         return $contactEmailsReturn;
     }
-}
 
+    protected function getItemMessage(array $item): string
+    {
+        return 'Contact email koppeling heeft soft deleted contact.';
+    }
+
+    protected function getEntityType(): ?string
+    {
+        return 'contact_email';
+    }
+
+    protected function getEntityId(array $item): ?int
+    {
+        return $item['email-id'];
+    }
+
+    protected function getRelatedEntityType(): ?string
+    {
+        return 'contact';
+    }
+
+    protected function getRelatedEntityId(array $item): ?int
+    {
+        return $item['contact-id'];
+    }
+
+    protected function getContext(array $item): array
+    {
+        return [
+            'email_subject' => $item['email-subject'],
+            'contact_name' => $item['contact-name'],
+        ];
+    }
+
+    protected function getSummary(int $issuesFound, bool $doRecover): string
+    {
+        $summary = $issuesFound . ' contact email koppelingen gekoppeld aan soft deleted contacten.';
+
+        if ($doRecover) {
+            $summary .= ' Controle uitgevoerd met herstel.';
+        }
+
+        return $summary;
+    }
+
+    protected function sendSummaryMail(int $issuesFound, bool $doRecover): void
+    {
+        $subjectPrefix = $doRecover ? '[ECONOBIS RECOVER] ' : '[ECONOBIS CHECK] ';
+
+        $subject = $subjectPrefix
+            . $issuesFound
+            . ' issues gevonden bij '
+            . $this->checkName
+            . ' - '
+            . config('app.APP_COOP_NAME');
+
+        $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/>'
+            . '<title>' . e($subject) . '</title></head><body>'
+            . '<p>' . e($subject) . '</p>'
+            . '<p>Tijdens een automatische controle zijn afwijkingen gevonden.</p>'
+            . '<p><strong>Controle:</strong> ' . e($this->checkName) . '</p>'
+            . '<p><strong>Coöperatie:</strong> ' . e(config('app.APP_COOP_NAME')) . '</p>'
+            . '<p><strong>Aantal issues:</strong> ' . $issuesFound . '</p>'
+            . '<p><strong>Herstelmodus:</strong> ' . ($doRecover ? 'ja' : 'nee') . '</p>'
+            . '<p>Bekijk de details in de logging tabel system_check_runs / system_check_run_items.</p>'
+            . '</body></html>';
+
+        $mail = Mail::to($this->mailTo);
+        $mail->subject = $subject;
+        $mail->html_body = $htmlBody;
+
+        $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody));
+    }
+}

@@ -4,11 +4,11 @@ namespace App\Console\Commands\Checks;
 
 use App\Eco\Invoice\Invoice;
 use App\Eco\Schedule\CommandRun;
+use App\Helpers\Mail\MailHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 
 class checkWrongTwinfieldInvoices extends Command
 {
@@ -85,7 +85,7 @@ class checkWrongTwinfieldInvoices extends Command
                 "Nota status: " . $wrongTwinfieldInvoice->status_id . "</p>";
         }
 
-        $mail = Mail::to($this->mailTo);
+        $mail = MailHelper::to($this->mailTo);
         $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'.$subject.'</title></head><body><p>'.$subject.'</p>' . $wrongTwinfieldInvoicesHtml .'</body></html>';
 
         $mail->subject = $subject;

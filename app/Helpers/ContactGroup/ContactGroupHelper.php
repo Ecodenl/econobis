@@ -6,9 +6,9 @@ use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\PortalSettings\PortalSettings;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
-use Illuminate\Support\Facades\Mail;
 
 class ContactGroupHelper
 {
@@ -44,7 +44,7 @@ class ContactGroupHelper
             return false;
         }
 
-        $mail = Mail::to($this->contact->primaryEmailAddress);
+        $mail = MailHelper::to($this->contact->primaryEmailAddress);
         $this->mailWorkflow($emailTemplate, $mail);
         return true;
     }

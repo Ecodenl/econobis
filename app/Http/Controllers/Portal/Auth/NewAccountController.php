@@ -14,6 +14,7 @@ use App\Eco\Portal\PortalUser;
 use App\Eco\Title\Title;
 use App\Eco\User\User;
 use App\Eco\PortalSettings\PortalSettings;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Portal\Templates\PortalMail;
@@ -22,7 +23,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 
 class NewAccountController extends Controller
 {
@@ -284,7 +284,7 @@ class NewAccountController extends Controller
         if (!$contact->primaryEmailAddress) {
             return false;
         }
-        $mail = Mail::to($contact->primaryEmailAddress);
+        $mail = MailHelper::to($contact->primaryEmailAddress);
 
         $emailTemplate = EmailTemplate::find($emailTemplateNewAccountId);
         if (!$emailTemplate) {

@@ -398,7 +398,7 @@ class QuotationRequestController
         }
 
         $mail = MailHelper::fromMailbox($mailbox)
-            ->to($contact->primaryEmailAddress);
+            ->to($contact->primaryEmailAddress->email);
 
         $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Afspraak schouwen';
         $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail, $mailbox);
@@ -433,7 +433,7 @@ class QuotationRequestController
         }
 
         $mail = MailHelper::fromMailbox($mailbox)
-            ->to($contact->primaryEmailAddress);
+            ->to($contact->primaryEmailAddress->email);
 
         $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Opname schouwen';
         $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail, $mailbox);
@@ -468,7 +468,7 @@ class QuotationRequestController
         }
 
         $mail = MailHelper::fromMailbox($mailbox)
-            ->to($contact->primaryEmailAddress);
+            ->to($contact->primaryEmailAddress->email);
         $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Opname schouwen';
 
         $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail, $mailbox);

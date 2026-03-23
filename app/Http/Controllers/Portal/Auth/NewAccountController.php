@@ -284,7 +284,7 @@ class NewAccountController extends Controller
         if (!$contact->primaryEmailAddress) {
             return false;
         }
-        $mail = MailHelper::to($contact->primaryEmailAddress);
+        $mail = MailHelper::to($contact->primaryEmailAddress?->email);
 
         $emailTemplate = EmailTemplate::find($emailTemplateNewAccountId);
         if (!$emailTemplate) {

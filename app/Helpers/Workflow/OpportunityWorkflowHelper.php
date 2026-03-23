@@ -64,7 +64,7 @@ class OpportunityWorkflowHelper
         }
 
         $mail = MailHelper::fromMailbox($mailbox)
-            ->to($this->contact->primaryEmailAddress);
+            ->to($this->contact->primaryEmailAddress?->email);
         $this->mailWorkflow($emailTemplate, $mail, $mailbox);
         return true;
     }

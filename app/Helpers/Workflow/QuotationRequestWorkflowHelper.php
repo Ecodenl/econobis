@@ -85,11 +85,11 @@ class QuotationRequestWorkflowHelper
         if(!$to) return false;
 
         $mail = MailHelper::fromMailbox($mailbox)
-            ->to($to);
+            ->to($to->email);
         $toEmail = $to->email;
         $ccEmail = '';
         if($cc) {
-            $mail->cc($this->quotationRequest->organisationOrCoach->primaryEmailAddress);
+            $mail->cc($cc->email);
             $ccEmail = $cc->email;
         }
 
@@ -138,7 +138,7 @@ class QuotationRequestWorkflowHelper
         }
 
         $mail = MailHelper::fromMailbox($mailbox)
-            ->to($this->quotationRequest->organisationOrCoach->primaryEmailAddress);
+            ->to($this->quotationRequest->organisationOrCoach->primaryEmailAddress?->email);
 
         $this->mailWorkflow($emailTemplate, $mail, $mailbox, $this->quotationRequest->organisationOrCoach->primaryEmailAddress->email, '');
 

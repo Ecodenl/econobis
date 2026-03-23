@@ -47,7 +47,7 @@ class TaskWorkflowHelper
             return false;
         }
 
-        $mail = MailHelper::to($this->contact->primaryEmailAddress);
+        $mail = MailHelper::to($this->contact->primaryEmailAddress?->email);
         $this->mailWorkflow($emailTemplate, $mail);
         return true;
     }

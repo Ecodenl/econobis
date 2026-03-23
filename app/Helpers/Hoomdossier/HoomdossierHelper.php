@@ -275,7 +275,7 @@ class HoomdossierHelper
             $mailbox = Mailbox::getDefault();
         }
 
-        $mail = MailHelper::fromMailbox($mailbox)->to($this->contact->primaryEmailAddress);
+        $mail = MailHelper::fromMailbox($mailbox)->to($this->contact->primaryEmailAddress?->email);
 
         $emailTemplate = EmailTemplate::find($this->cooperation->hoom_email_template_id);
 

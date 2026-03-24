@@ -43,6 +43,7 @@ class CheckSoftDeletedContactsInContactNotes extends AbstractSystemCheckCommand
             ->join('contacts', 'contacts.id', '=', 'contact_notes.contact_id')
             ->select('contact_notes.id', 'contact_notes.note', 'contact_notes.contact_id', 'contacts.full_name')
             ->whereIn('contact_id', $contactsTrashed)
+            ->whereNull('contact_notes.deleted_at')
             ->get();
 
         foreach ($contactNotes as $contactNote) {

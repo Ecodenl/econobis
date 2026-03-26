@@ -225,9 +225,9 @@ class AddressEnergySupplierController extends ApiController
             $deleteAddressEnergySupplier = new DeleteAddressEnergySupplier($addressEnergySupplier);
             $result = $deleteAddressEnergySupplier->delete();
 
-            if(count($result) > 0){
+            if (count($result) > 0) {
                 DB::rollBack();
-                abort(412, implode(";", array_unique($result)));
+                abort(412, implode('; ', array_unique($result)));
             }
 
             DB::commit();

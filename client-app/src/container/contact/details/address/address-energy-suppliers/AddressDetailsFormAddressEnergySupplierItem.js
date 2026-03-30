@@ -28,7 +28,6 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
             highlightLine: '',
             showEdit: false,
             showDelete: false,
-            showConfirmValidatePeriodOverlap: false,
             showMessageDoubleEsNumber: false,
             messageDoubleEsNumber: '',
             messageDoubleEsName: '',
@@ -182,32 +181,6 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
         this.reloadContact();
     };
 
-    setShowConfirmValidatePeriodOverlap(message) {
-        this.setState({
-            ...this.state,
-            showConfirmValidatePeriodOverlap: true,
-            messageConfirmValidatePeriodOverlap: message,
-        });
-    }
-    closeValidatePeriodOverlap = () => {
-        this.setState({
-            ...this.state,
-            showConfirmValidatePeriodOverlap: false,
-            messageConfirmValidatePeriodOverlap: '',
-        });
-    };
-    confirmActionValidatePeriodOverlap = () => {
-        const { addressEnergySupplier } = this.state;
-
-        this.doUpdateAddressEnergySupplier(addressEnergySupplier);
-
-        this.setState({
-            ...this.state,
-            showConfirmValidatePeriodOverlap: false,
-            messageConfirmValidatePeriodOverlap: '',
-        });
-    };
-
     handleSubmit = event => {
         event.preventDefault();
 
@@ -246,12 +219,12 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
         if (!hasErrors) {
             AddressEnergySupplierAPI.validateAddressEnergySupplierForm(addressEnergySupplier)
                 .then(payload => {
-                    // indien geen overlap dan direct verwerken
-                    if (!payload.data.responseOverlap.hasOverlap) {
+                    // indien geen error dan direct verwerken
+                    if (!payload.data.responseValidation.hasErrors) {
                         this.doUpdateAddressEnergySupplier(addressEnergySupplier);
                     } else {
-                        // indien wel overlap dan eerst bevestigen
-                        this.setShowConfirmValidatePeriodOverlap(payload.data.responseOverlap.message);
+                        // indien wel error, dan fout tonen
+                        this.props.setError(422, payload.data.responseValidation.message);
                     }
                 })
                 .catch(error => {
@@ -336,20 +309,7 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
                         {...this.state.addressEnergySupplier}
                     />
                 )}
-                {this.state.showConfirmValidatePeriodOverlap && (
-                    <Modal
-                        buttonConfirmText="Bevestigen"
-                        buttonClassName={'btn-danger'}
-                        closeModal={this.closeValidatePeriodOverlap}
-                        confirmAction={() => this.confirmActionValidatePeriodOverlap()}
-                        title="Bevestig periode afsluiting"
-                    >
-                        {this.state.messageConfirmValidatePeriodOverlap}
-                        <br />
-                        <br />
-                        {'Deze periode afsluiten op dag voor nieuwe Klant sinds datum?'}
-                    </Modal>
-                )}
+
                 {this.state.showMessageDoubleEsNumber && (
                     <Modal
                         title={'Waarschuwing'}

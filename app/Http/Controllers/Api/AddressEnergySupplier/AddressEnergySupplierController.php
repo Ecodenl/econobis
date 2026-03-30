@@ -12,6 +12,7 @@ use App\Http\Resources\AddressEnergySupplier\FullAddressEnergySupplier;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class AddressEnergySupplierController extends ApiController
 {
@@ -35,13 +36,18 @@ class AddressEnergySupplierController extends ApiController
         $message = $this->validateOwnPeriod($addressEnergySupplier, false);
 
         if (!$message) {
-            $message = $this->validateOverlapPeriode($addressEnergySupplier, false);
+            if ($addressEnergySupplier->end_date) {
+                try {
+                    $this->validateEndDateDoesNotBreakRevenueDistributions($addressEnergySupplier);
+                } catch (HttpException $e) {
+                    $message = $e->getMessage();
+                }
+            }
         }
 
-
         return [
-            'responseOverlap' => [
-                'hasOverlap' => (bool) $message,
+            'responseValidation' => [
+                'hasErrors' => (bool) $message,
                 'message' => $message ?: '',
             ]
         ];
@@ -68,26 +74,33 @@ class AddressEnergySupplierController extends ApiController
         if (!$message) {
             try {
                 $this->validateAllowedUpdateAddressEnergySupplier($addressEnergySupplier, $data);
-            } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+            } catch (HttpException $e) {
                 $message = $e->getMessage();
             }
         }
 
         if (!$message) {
-            $message = $this->validateOverlapPeriode($addressEnergySupplier, false);
+            $memberSinceChanged = $this->hasDateFieldChanged($addressEnergySupplier, 'member_since');
+
+            // Bij wijziging van member_since wordt overlap automatisch opgelost in update()
+            if (!$memberSinceChanged) {
+                $message = $this->validateOverlapPeriode($addressEnergySupplier, false);
+            }
         }
 
-        if (!$message && $this->hasDateFieldChanged($addressEnergySupplier, 'end_date')) {
-            try {
-                $this->validateEndDateUpdateDoesNotBreakRevenueDistributions($addressEnergySupplier);
-            } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
-                $message = $e->getMessage();
+        if (!$message) {
+            if ($this->hasDateFieldChanged($addressEnergySupplier, 'end_date')) {
+                try {
+                    $this->validateEndDateDoesNotBreakRevenueDistributions($addressEnergySupplier);
+                } catch (HttpException $e) {
+                    $message = $e->getMessage();
+                }
             }
         }
 
         return [
-            'responseOverlap' => [
-                'hasOverlap' => (bool) $message,
+            'responseValidation' => [
+                'hasErrors' => (bool) $message,
                 'message' => $message ?: '',
             ]
         ];
@@ -108,54 +121,76 @@ class AddressEnergySupplierController extends ApiController
             ->get();
 
         $addressEnergySupplier = new AddressEnergySupplier();
-
         $addressEnergySupplier->fill($data);
 
         $this->authorize('create', $addressEnergySupplier);
 
-        if ($this->validateOverlapPeriode($addressEnergySupplier, false)) {
-            $this->setEndDateAddressEnergySupplier($addressEnergySupplier);
+        // Nieuwe periode moet altijd aansluiten op vorige relevante periode
+        if ($addressEnergySupplier->member_since) {
+            $this->syncPreviousAddressEnergySupplierEndDate($addressEnergySupplier);
         }
+
+        if ($addressEnergySupplier->end_date) {
+            $this->validateEndDateDoesNotBreakRevenueDistributions($addressEnergySupplier);
+        }
+        $this->validateAddressEnergySupplier($addressEnergySupplier, true);
 
         $addressEnergySupplier->save();
 
         $revenuePartsKwhArray = [];
-        if(Carbon::parse($addressEnergySupplier->end_date_previous)->format('Y-m-d') != '1900-01-01'){
+        if (Carbon::parse($addressEnergySupplier->end_date_previous)->format('Y-m-d') != '1900-01-01') {
             $participations = $addressEnergySupplier->address->participations;
             foreach ($participations as $participation) {
                 $projectType = $participation->project->projectType;
                 if ($projectType->code_ref === 'postalcode_link_capital') {
                     $revenuesKwhHelper = new RevenuesKwhHelper();
-                    $splitRevenuePartsKwhResponse = $revenuesKwhHelper->checkAndSplitRevenuePartsKwh($participation, $addressEnergySupplier->member_since, $addressEnergySupplier);
-                    if($splitRevenuePartsKwhResponse){
-                        $revenuePartsKwhArray [] = $splitRevenuePartsKwhResponse;
+                    $splitRevenuePartsKwhResponse = $revenuesKwhHelper->checkAndSplitRevenuePartsKwh(
+                        $participation,
+                        $addressEnergySupplier->member_since,
+                        $addressEnergySupplier
+                    );
+                    if ($splitRevenuePartsKwhResponse) {
+                        $revenuePartsKwhArray[] = $splitRevenuePartsKwhResponse;
                     }
                 }
             }
         }
+
         $addressEnergySupplier = AddressEnergySupplier::find($addressEnergySupplier->id);
         $addressEnergySupplier->load('energySupplier', 'energySupplyStatus', 'createdBy', 'address', 'energySupplyType');
 
-        if(count($revenuePartsKwhArray) > 0){
+        if (count($revenuePartsKwhArray) > 0) {
             $projectsArray = [];
-            foreach ($revenuePartsKwhArray as $revenuePartsKwhItem){
+            foreach ($revenuePartsKwhArray as $revenuePartsKwhItem) {
                 $projectsArray[] = ['projectMessage' => $revenuePartsKwhItem['projectMessage']];
             }
+
             $revenuePartsKwhRedirect = null;
-            if(count($revenuePartsKwhArray) == 1){
-                if($revenuePartsKwhArray[0]['success'] && $revenuePartsKwhArray[0]['newRevenue'] ){
-                    $revenuePartsKwhRedirect = '/project/opbrengst-kwh/nieuw/' . $revenuePartsKwhArray[0]['projectId']  . '/1';
+            if (count($revenuePartsKwhArray) == 1) {
+                if ($revenuePartsKwhArray[0]['success'] && $revenuePartsKwhArray[0]['newRevenue']) {
+                    $revenuePartsKwhRedirect = '/project/opbrengst-kwh/nieuw/' . $revenuePartsKwhArray[0]['projectId'] . '/1';
                 }
-                if($revenuePartsKwhArray[0]['success'] && !$revenuePartsKwhArray[0]['newRevenue'] ){
-                    $revenuePartsKwhRedirect = '/project/opbrengst-kwh/' . $revenuePartsKwhArray[0]['revenuesId']  . '/deelperiode/' . $revenuePartsKwhArray[0]['revenuePartsId'];
+                if ($revenuePartsKwhArray[0]['success'] && !$revenuePartsKwhArray[0]['newRevenue']) {
+                    $revenuePartsKwhRedirect = '/project/opbrengst-kwh/' . $revenuePartsKwhArray[0]['revenuesId'] . '/deelperiode/' . $revenuePartsKwhArray[0]['revenuePartsId'];
                 }
             }
 
-            $responseParticipations = ['hasParticipations' => true, 'revenuePartsKwhRedirect' => $revenuePartsKwhRedirect,  'projectsArray' => $projectsArray];
-        }else{
-            $responseParticipations = ['hasParticipations' => false, null, 'projectsArray' => []];
+            $responseParticipations = [
+                'hasParticipations' => true,
+                'revenuePartsKwhRedirect' => $revenuePartsKwhRedirect,
+                'projectsArray' => $projectsArray
+            ];
+        } else {
+            $responseParticipations = [
+                'hasParticipations' => false,
+                'revenuePartsKwhRedirect' => null,
+                'projectsArray' => []];
         }
-        return ['addressEnergySupplier' => FullAddressEnergySupplier::make($addressEnergySupplier), 'responseParticipations' => $responseParticipations];
+
+        return [
+            'addressEnergySupplier' => FullAddressEnergySupplier::make($addressEnergySupplier),
+            'responseParticipations' => $responseParticipations
+        ];
     }
 
     public function update(RequestInput $requestInput, AddressEnergySupplier $addressEnergySupplier)
@@ -183,7 +218,7 @@ class AddressEnergySupplierController extends ApiController
         }
 
         if ($this->hasDateFieldChanged($addressEnergySupplier, 'end_date')) {
-            $this->validateEndDateUpdateDoesNotBreakRevenueDistributions($addressEnergySupplier);
+            $this->validateEndDateDoesNotBreakRevenueDistributions($addressEnergySupplier);
         }
         $this->validateAddressEnergySupplier($addressEnergySupplier, true);
 
@@ -226,9 +261,17 @@ class AddressEnergySupplierController extends ApiController
                 }
             }
 
-            $responseParticipations = ['hasParticipations' => true, 'revenuePartsKwhRedirect' => $revenuePartsKwhRedirect,  'projectsArray' => $projectsArray];
+            $responseParticipations = [
+                'hasParticipations' => true,
+                'revenuePartsKwhRedirect' => $revenuePartsKwhRedirect,
+                'projectsArray' => $projectsArray
+            ];
         }else{
-            $responseParticipations = ['hasParticipations' => false, null, 'projectsArray' => []];
+            $responseParticipations = [
+                'hasParticipations' => false,
+                'revenuePartsKwhRedirect' => null,
+                'projectsArray' => []
+            ];
         }
         return ['addressEnergySupplier' => FullAddressEnergySupplier::make($addressEnergySupplier), 'responseParticipations' => $responseParticipations];
     }
@@ -296,22 +339,6 @@ class AddressEnergySupplierController extends ApiController
             }
         }
         return false;
-    }
-
-    /**
-     * @param AddressEnergySupplier $addressEnergySupplier
-     */
-    public function setEndDateAddressEnergySupplier(AddressEnergySupplier $addressEnergySupplier)
-    {
-        $newEndDate = Carbon::parse($addressEnergySupplier->member_since)->subDay();
-
-        $otherAddressEnergySuppliers = $this->getOtherAddressEnergySuppliersWithOverlap($addressEnergySupplier);
-        foreach ($otherAddressEnergySuppliers->get() as $otherAddressEnergySupplier) {
-            if($otherAddressEnergySupplier->member_since <= $newEndDate){
-                $otherAddressEnergySupplier->end_date = $newEndDate;
-                $otherAddressEnergySupplier->save();
-            }
-        }
     }
 
     /**
@@ -444,15 +471,19 @@ class AddressEnergySupplierController extends ApiController
 
         $types = $this->getRelevantEnergySupplyTypeIds((int) $addressEnergySupplier->energy_supply_type_id);
 
-        return AddressEnergySupplier::query()
+        $query = AddressEnergySupplier::query()
             ->where('address_id', $addressEnergySupplier->address_id)
-            ->where('id', '!=', $addressEnergySupplier->id)
             ->whereIn('energy_supply_type_id', $types)
             ->whereNotNull('member_since')
             ->where('member_since', '<', $addressEnergySupplier->member_since)
             ->orderBy('member_since', 'desc')
-            ->orderBy('id', 'desc')
-            ->first();
+            ->orderBy('id', 'desc');
+
+        if ($addressEnergySupplier->id) {
+            $query->where('id', '!=', $addressEnergySupplier->id);
+        }
+
+        return $query->first();
     }
 
     private function validateAllowedUpdateAddressEnergySupplier(
@@ -516,9 +547,9 @@ class AddressEnergySupplierController extends ApiController
         $previousAddressEnergySupplier->save();
     }
 
-    private function validateEndDateUpdateDoesNotBreakRevenueDistributions(AddressEnergySupplier $addressEnergySupplier): void
+    private function validateEndDateDoesNotBreakRevenueDistributions(AddressEnergySupplier $addressEnergySupplier): void
     {
-        $messages = AddressEnergySupplierHelper::getUpdateEndDateBlockingMessages($addressEnergySupplier);
+        $messages = AddressEnergySupplierHelper::getEndDateBlockingMessages($addressEnergySupplier);
         if (!empty($messages)) {
             abort(422, implode('; ', array_unique($messages)));
         }

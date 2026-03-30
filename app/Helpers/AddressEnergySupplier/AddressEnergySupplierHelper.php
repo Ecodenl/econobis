@@ -8,7 +8,7 @@ use Carbon\Carbon;
 
 class AddressEnergySupplierHelper
 {
-    public static function getUpdateEndDateBlockingMessages(AddressEnergySupplier $addressEnergySupplier): array
+    public static function getEndDateBlockingMessages(AddressEnergySupplier $addressEnergySupplier): array
     {
         $messages = [];
 

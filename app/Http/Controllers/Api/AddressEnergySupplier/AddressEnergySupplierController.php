@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\AddressEnergySupplier;
 
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
+use App\Helpers\AddressEnergySupplier\AddressEnergySupplierHelper;
 use App\Helpers\Delete\Models\DeleteAddressEnergySupplier;
 use App\Helpers\Project\RevenuesKwhHelper;
 use App\Helpers\RequestInput\RequestInput;
@@ -31,13 +32,19 @@ class AddressEnergySupplierController extends ApiController
         $addressEnergySupplier = new AddressEnergySupplier();
         $addressEnergySupplier->fill($data);
 
-        $hasOverlapPeriode = $this->validateOverlapPeriode($addressEnergySupplier, false);
-        if($hasOverlapPeriode){
-            $responseOverlap = ['hasOverlap' => true, 'message' => $hasOverlapPeriode];
-        }else{
-            $responseOverlap = ['hasOverlap' => false, 'message' => ''];
+        $message = $this->validateOwnPeriod($addressEnergySupplier, false);
+
+        if (!$message) {
+            $message = $this->validateOverlapPeriode($addressEnergySupplier, false);
         }
-        return ['responseOverlap' => $responseOverlap];
+
+
+        return [
+            'responseOverlap' => [
+                'hasOverlap' => (bool) $message,
+                'message' => $message ?: '',
+            ]
+        ];
     }
 
     public function validateAddressEnergySupplierForm(RequestInput $requestInput, AddressEnergySupplier $addressEnergySupplier)
@@ -56,14 +63,34 @@ class AddressEnergySupplierController extends ApiController
 
         $addressEnergySupplier->fill($data);
 
-        $hasOverlapPeriode = $this->validateOverlapPeriode($addressEnergySupplier, false);
-        if($hasOverlapPeriode){
-            $responseOverlap = ['hasOverlap' => true, 'message' => $hasOverlapPeriode];
-        }else{
-            $responseOverlap = ['hasOverlap' => false, 'message' => ''];
+        $message = $this->validateOwnPeriod($addressEnergySupplier, false);
+
+        if (!$message) {
+            try {
+                $this->validateAllowedUpdateAddressEnergySupplier($addressEnergySupplier, $data);
+            } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+                $message = $e->getMessage();
+            }
         }
 
-        return ['responseOverlap' => $responseOverlap];
+        if (!$message) {
+            $message = $this->validateOverlapPeriode($addressEnergySupplier, false);
+        }
+
+        if (!$message && $this->hasDateFieldChanged($addressEnergySupplier, 'end_date')) {
+            try {
+                $this->validateEndDateUpdateDoesNotBreakRevenueDistributions($addressEnergySupplier);
+            } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+                $message = $e->getMessage();
+            }
+        }
+
+        return [
+            'responseOverlap' => [
+                'hasOverlap' => (bool) $message,
+                'message' => $message ?: '',
+            ]
+        ];
     }
 
     public function store(RequestInput $requestInput)
@@ -106,15 +133,6 @@ class AddressEnergySupplierController extends ApiController
                 }
             }
         }
-        // LETOP: Laravel 7 uses a new date serialization format when using the toArray or toJson method on Eloquent models.
-        // To format dates for serialization, the framework now uses Carbon's toJSON method, which produces an ISO-8601 compatible
-        // date including timezone information and fractional seconds. In addition, this change provides better support and
-        // integration with client-side date parsing libraries.
-        // Previously, dates would be serialized to a format like the following: 2019-11-30 00:00:00.000000. Dates serialized using the
-        // new format will appear like: 2019-11-29T23:00:00.000000Z. Please note that ISO-8601 dates are always expressed in UTC.
-        //
-        // We halen hierom voor teruggeven AddressEnergySupplier even opnieuw op, anders geven we verkeerde datum terug (nl. 2019-11-29 in
-        // bovenstaand voorbeeld).
         $addressEnergySupplier = AddressEnergySupplier::find($addressEnergySupplier->id);
         $addressEnergySupplier->load('energySupplier', 'energySupplyStatus', 'createdBy', 'address', 'energySupplyType');
 
@@ -156,9 +174,18 @@ class AddressEnergySupplierController extends ApiController
 
         $addressEnergySupplier->fill($data);
 
-        if ($this->validateOverlapPeriode($addressEnergySupplier, false)) {
-            $this->setEndDateAddressEnergySupplier($addressEnergySupplier);
+        $this->validateAllowedUpdateAddressEnergySupplier($addressEnergySupplier, $data);
+
+        $memberSinceChanged = $this->hasDateFieldChanged($addressEnergySupplier, 'member_since');
+
+        if ($memberSinceChanged) {
+            $this->syncPreviousAddressEnergySupplierEndDate($addressEnergySupplier);
         }
+
+        if ($this->hasDateFieldChanged($addressEnergySupplier, 'end_date')) {
+            $this->validateEndDateUpdateDoesNotBreakRevenueDistributions($addressEnergySupplier);
+        }
+        $this->validateAddressEnergySupplier($addressEnergySupplier, true);
 
         $aesMemberSince = $addressEnergySupplier->member_since ? Carbon::parse($addressEnergySupplier->member_since)->format('Y-m-d') : '1900-01-01';
         $aesMemberSinceOriginal = $addressEnergySupplier->getOriginal('member_since') ? Carbon::parse($addressEnergySupplier->getOriginal('member_since'))->format('Y-m-d') : '1900-01-01';
@@ -181,15 +208,6 @@ class AddressEnergySupplierController extends ApiController
             }
         }
 
-        // LETOP: Laravel 7 uses a new date serialization format when using the toArray or toJson method on Eloquent models.
-        // To format dates for serialization, the framework now uses Carbon's toJSON method, which produces an ISO-8601 compatible
-        // date including timezone information and fractional seconds. In addition, this change provides better support and
-        // integration with client-side date parsing libraries.
-        // Previously, dates would be serialized to a format like the following: 2019-11-30 00:00:00.000000. Dates serialized using the
-        // new format will appear like: 2019-11-29T23:00:00.000000Z. Please note that ISO-8601 dates are always expressed in UTC.
-        //
-        // We halen hierom voor teruggeven AddressEnergySupplier even opnieuw op, anders geven we verkeerde datum terug (nl. 2019-11-29 in
-        // bovenstaand voorbeeld).
         $addressEnergySupplier = AddressEnergySupplier::find($addressEnergySupplier->id);
         $addressEnergySupplier->load('energySupplier', 'energySupplyStatus', 'createdBy', 'address', 'energySupplyType');
 
@@ -243,7 +261,23 @@ class AddressEnergySupplierController extends ApiController
      */
     public function validateAddressEnergySupplier(AddressEnergySupplier $addressEnergySupplier, $withAbort = true)
     {
-        return $this->validateOverlapPeriode($addressEnergySupplier, $withAbort);
+        $message = $this->validateOwnPeriod($addressEnergySupplier, false);
+        if ($message) {
+            if ($withAbort) {
+                 abort(422, $message);
+            }
+            return $message;
+        }
+
+        $message = $this->validateOverlapPeriode($addressEnergySupplier, false);
+        if ($message) {
+            if ($withAbort) {
+                abort(422, $message);
+            }
+            return $message;
+        }
+
+        return false;
     }
 
     /**
@@ -359,16 +393,146 @@ class AddressEnergySupplierController extends ApiController
             if($addressEnergySupplier->is_current_supplier == false) {
                 $addressEnergySupplier->is_current_supplier = true;
                 $addressEnergySupplier->save();
-//                Log::info('AddressEnergySupplier ' . $addressEnergySupplier->id . ' is Huidige leverancier geworden!');
             }
         }else{
             if($addressEnergySupplier->is_current_supplier == true)
             {
                 $addressEnergySupplier->is_current_supplier = false;
                 $addressEnergySupplier->save();
-//                Log::info('AddressEnergySupplier ' . $addressEnergySupplier->id . ' is niet langer meer Huidige leverancier!');
             }
         }
+    }
+
+    private function getRelevantEnergySupplyTypeIds(int $energySupplyTypeId): array
+    {
+        if ($energySupplyTypeId === 1) {
+            return [1, 3];
+        }
+
+        if ($energySupplyTypeId === 2) {
+            return [2, 3];
+        }
+
+        return [1, 2, 3];
+    }
+
+    private function getMostRecentRelevantAddressEnergySupplier(AddressEnergySupplier $addressEnergySupplier): ?AddressEnergySupplier
+    {
+        $types = $this->getRelevantEnergySupplyTypeIds((int) $addressEnergySupplier->energy_supply_type_id);
+
+        return AddressEnergySupplier::query()
+            ->where('address_id', $addressEnergySupplier->address_id)
+            ->whereIn('energy_supply_type_id', $types)
+            ->orderByRaw('CASE WHEN member_since IS NULL THEN 0 ELSE 1 END DESC')
+            ->orderBy('member_since', 'desc')
+            ->orderBy('id', 'desc')
+            ->first();
+    }
+
+    private function isMostRecentRelevantAddressEnergySupplier(AddressEnergySupplier $addressEnergySupplier): bool
+    {
+        $mostRecent = $this->getMostRecentRelevantAddressEnergySupplier($addressEnergySupplier);
+
+        return $mostRecent && (int) $mostRecent->id === (int) $addressEnergySupplier->id;
+    }
+
+    private function getPreviousRelevantAddressEnergySupplier(AddressEnergySupplier $addressEnergySupplier): ?AddressEnergySupplier
+    {
+        if (!$addressEnergySupplier->member_since) {
+            return null;
+        }
+
+        $types = $this->getRelevantEnergySupplyTypeIds((int) $addressEnergySupplier->energy_supply_type_id);
+
+        return AddressEnergySupplier::query()
+            ->where('address_id', $addressEnergySupplier->address_id)
+            ->where('id', '!=', $addressEnergySupplier->id)
+            ->whereIn('energy_supply_type_id', $types)
+            ->whereNotNull('member_since')
+            ->where('member_since', '<', $addressEnergySupplier->member_since)
+            ->orderBy('member_since', 'desc')
+            ->orderBy('id', 'desc')
+            ->first();
+    }
+
+    private function validateAllowedUpdateAddressEnergySupplier(
+        AddressEnergySupplier $addressEnergySupplier,
+        array $data
+    ): void {
+        $typeChanged = array_key_exists('energy_supply_type_id', $data)
+            && $addressEnergySupplier->isDirty('energy_supply_type_id');
+
+        if ($typeChanged) {
+            abort(422, 'Wijzigen van leverancierstype is niet toegestaan. Maak hiervoor een nieuwe periode aan.');
+        }
+
+        $memberSinceChanged = array_key_exists('member_since', $data)
+            && $this->hasDateFieldChanged($addressEnergySupplier, 'member_since');
+
+        $endDateChanged = array_key_exists('end_date', $data)
+            && $this->hasDateFieldChanged($addressEnergySupplier, 'end_date');
+
+
+
+        if (($memberSinceChanged || $endDateChanged) && !$this->isMostRecentRelevantAddressEnergySupplier($addressEnergySupplier)) {
+            abort(422, 'Alleen de meest recente periode voor hetzelfde adres en leverancierstype Elektriciteit en/of Gas mag gewijzigd worden.');
+        }
+    }
+
+    private function validateOwnPeriod(AddressEnergySupplier $addressEnergySupplier, $withAbort = true)
+    {
+        if (
+            $addressEnergySupplier->member_since
+            && $addressEnergySupplier->end_date
+            && Carbon::parse($addressEnergySupplier->end_date)->lt(Carbon::parse($addressEnergySupplier->member_since))
+        ) {
+            $message = "Eind datum mag niet vóór 'Klant sinds' liggen.";
+
+            if ($withAbort) {
+                abort(422, $message);
+            }
+
+            return $message;
+        }
+
+        return false;
+    }
+
+    private function syncPreviousAddressEnergySupplierEndDate(AddressEnergySupplier $addressEnergySupplier): void
+    {
+        if (!$addressEnergySupplier->member_since) {
+            return;
+        }
+
+        $previousAddressEnergySupplier = $this->getPreviousRelevantAddressEnergySupplier($addressEnergySupplier);
+
+        if (!$previousAddressEnergySupplier) {
+            return;
+        }
+
+        $newEndDate = Carbon::parse($addressEnergySupplier->member_since)->subDay()->format('Y-m-d');
+
+        $previousAddressEnergySupplier->end_date = $newEndDate;
+        $previousAddressEnergySupplier->save();
+    }
+
+    private function validateEndDateUpdateDoesNotBreakRevenueDistributions(AddressEnergySupplier $addressEnergySupplier): void
+    {
+        $messages = AddressEnergySupplierHelper::getUpdateEndDateBlockingMessages($addressEnergySupplier);
+        if (!empty($messages)) {
+            abort(422, implode('; ', array_unique($messages)));
+        }
+    }
+
+    private function hasDateFieldChanged(AddressEnergySupplier $addressEnergySupplier, string $field): bool
+    {
+        $originalValue = $addressEnergySupplier->getOriginal($field);
+        $currentValue = $addressEnergySupplier->{$field};
+
+        $originalDate = $originalValue ? Carbon::parse($originalValue)->format('Y-m-d') : null;
+        $currentDate = $currentValue ? Carbon::parse($currentValue)->format('Y-m-d') : null;
+
+        return $originalDate !== $currentDate;
     }
 
 }

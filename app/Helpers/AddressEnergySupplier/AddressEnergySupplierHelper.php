@@ -4,9 +4,82 @@ namespace App\Helpers\AddressEnergySupplier;
 
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
+use Carbon\Carbon;
 
 class AddressEnergySupplierHelper
 {
+    public static function getUpdateEndDateBlockingMessages(AddressEnergySupplier $addressEnergySupplier): array
+    {
+        $messages = [];
+
+        if (self::wouldCauseMissingEnergySupplierAfterEndDateUpdate($addressEnergySupplier)) {
+            $messages[] = 'Deze einddatum kan niet gewijzigd worden omdat daardoor voor een nog niet verwerkte opbrengstverdeling geen geldige energieleverancier-periode meer bestaat.';
+        }
+
+        return $messages;
+    }
+
+    protected static function wouldCauseMissingEnergySupplierAfterEndDateUpdate(AddressEnergySupplier $addressEnergySupplier): bool
+    {
+        if (!in_array((int) $addressEnergySupplier->energy_supply_type_id, [2, 3], true)) {
+            return false;
+        }
+
+        if (!$addressEnergySupplier->address_id) {
+            return false;
+        }
+
+        if (!$addressEnergySupplier->end_date) {
+            return false;
+        }
+
+        $distributionParts = RevenueDistributionPartsKwh::query()
+            ->with([
+                'partsKwh:id,date_begin,date_end',
+                'distributionKwh:id,participation_id',
+                'distributionKwh.participation:id,address_id',
+            ])
+            ->where('status', '!=', 'processed')
+            ->whereHas('distributionKwh.participation', function ($query) use ($addressEnergySupplier) {
+                $query->where('address_id', $addressEnergySupplier->address_id);
+            })
+            ->whereHas('partsKwh', function ($query) use ($addressEnergySupplier) {
+                $query->where(function ($query) use ($addressEnergySupplier) {
+                    $query->whereNotNull('date_begin')
+                        ->whereDate('date_begin', '>=', $addressEnergySupplier->end_date);
+                })->orWhere(function ($query) use ($addressEnergySupplier) {
+                    $query->whereNotNull('date_end')
+                        ->whereDate('date_end', '>', $addressEnergySupplier->end_date);
+                });
+            })
+            ->get();
+
+        foreach ($distributionParts as $distributionPart) {
+            $partBegin = $distributionPart->partsKwh?->date_begin;
+            $partEnd = $distributionPart->partsKwh?->date_end;
+
+            if (!$partBegin) {
+                continue;
+            }
+
+            $firstUncoveredDate = Carbon::parse($addressEnergySupplier->end_date)->addDay()->format('Y-m-d');
+            $checkDate = Carbon::parse($partBegin)->gt(Carbon::parse($firstUncoveredDate))
+                ? Carbon::parse($partBegin)->format('Y-m-d')
+                : $firstUncoveredDate;
+
+            if (!self::existsAlternativeElectricityAddressEnergySupplierInPeriod(
+                addressId: $addressEnergySupplier->address_id,
+                dateBegin: $checkDate,
+                dateEnd: $partEnd,
+                excludeId: $addressEnergySupplier->id
+            )) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static function getDeleteBlockingMessages(AddressEnergySupplier $addressEnergySupplier): array
     {
         $messages = [];

@@ -1,87 +1,80 @@
-import React, { Component } from 'react';
+import React, { useCallback } from 'react';
+import { connect } from 'react-redux';
 
 import AddressDetailsFormAddressEnergySupplierList from './AddressDetailsFormAddressEnergySupplierList';
 import AddressDetailsFormAddressEnergySupplierNew from './AddressDetailsFormAddressEnergySupplierNew';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../../components/panel/PanelHeader';
-import { connect } from 'react-redux';
 import ButtonText from '../../../../../components/button/ButtonText';
 
 import Icon from 'react-icons-kit';
 import { plus } from 'react-icons-kit/fa/plus';
 
-class AddressDetailsFormAddressEnergySupplier extends Component {
-    constructor(props) {
-        super(props);
+function AddressDetailsFormAddressEnergySupplier(props) {
+    const {
+        permissions,
+        address,
+        addressEnergySupplierNewOrEditOpen,
+        setAddressEnergySupplierNewOrEditOpen,
+        closeAddressEnergySupplier,
+    } = props;
 
-        this.state = {
-            showNew: false,
-        };
-    }
+    const toggleShowNew = useCallback(() => {
+        setAddressEnergySupplierNewOrEditOpen(!addressEnergySupplierNewOrEditOpen);
+    }, [addressEnergySupplierNewOrEditOpen, setAddressEnergySupplierNewOrEditOpen]);
 
-    toggleShowNew = () => {
-        const currentShowNew = this.state.showNew;
-        this.setState({
-            showNew: !currentShowNew,
-        });
-        this.props.setAddressEnergySupplierNewOrEditOpen(!currentShowNew);
-    };
+    const canCreate = permissions.createContactAddress && (permissions.updatePerson || permissions.updateOrganisation);
 
-    render() {
-        return (
-            <Panel>
-                <PanelHeader>
-                    <span className="h5 text-bold">Energieleverancier gegevens</span>
-                    {this.props.permissions.createContactAddress &&
-                        (this.props.permissions.updatePerson || this.props.permissions.updateOrganisation) &&
-                        this.props.addressEnergySupplierNewOrEditOpen == false && (
-                            <a role="button" className="pull-right" onClick={this.toggleShowNew}>
-                                <Icon size={14} icon={plus} />
-                            </a>
-                        )}
-                </PanelHeader>
-                <PanelBody>
-                    <div className="col-md-12">
-                        <AddressDetailsFormAddressEnergySupplierList
-                            address={this.props.address}
-                            setAddressEnergySupplierNewOrEditOpen={this.props.setAddressEnergySupplierNewOrEditOpen}
-                            addressEnergySupplierNewOrEditOpen={this.props.addressEnergySupplierNewOrEditOpen}
+    return (
+        <Panel>
+            <PanelHeader>
+                <span className="h5 text-bold">Energieleverancier gegevens</span>
+                {canCreate && !addressEnergySupplierNewOrEditOpen && (
+                    <a role="button" className="pull-right" onClick={toggleShowNew}>
+                        <Icon size={14} icon={plus} />
+                    </a>
+                )}
+            </PanelHeader>
+
+            <PanelBody>
+                <div className="col-md-12">
+                    <AddressDetailsFormAddressEnergySupplierList
+                        address={address}
+                        setAddressEnergySupplierNewOrEditOpen={setAddressEnergySupplierNewOrEditOpen}
+                        addressEnergySupplierNewOrEditOpen={addressEnergySupplierNewOrEditOpen}
+                    />
+                </div>
+
+                <div className="col-md-12 margin-10-top">
+                    {canCreate && addressEnergySupplierNewOrEditOpen && (
+                        <AddressDetailsFormAddressEnergySupplierNew
+                            contactId={address.contactId}
+                            addressId={address.id}
+                            memberSinceGasDisabledBefore={address.memberSinceGasDisabledBefore}
+                            memberSinceElectricityDisabledBefore={address.memberSinceElectricityDisabledBefore}
+                            memberSinceGasAndElectricityDisabledBefore={
+                                address.memberSinceGasAndElectricityDisabledBefore
+                            }
+                            toggleShowNew={toggleShowNew}
                         />
-                    </div>
-                    <div className="col-md-12 margin-10-top">
-                        {this.props.permissions.createContactAddress && this.state.showNew && (
-                            <AddressDetailsFormAddressEnergySupplierNew
-                                contactId={this.props.address.contactId}
-                                addressId={this.props.address.id}
-                                memberSinceGasDisabledBefore={this.props.address.memberSinceGasDisabledBefore}
-                                memberSinceElectricityDisabledBefore={
-                                    this.props.address.memberSinceElectricityDisabledBefore
-                                }
-                                memberSinceGasAndElectricityDisabledBefore={
-                                    this.props.address.memberSinceGasAndElectricityDisabledBefore
-                                }
-                                toggleShowNew={this.toggleShowNew}
-                            />
-                        )}
-                    </div>
-                    <div className="pull-right btn-group" role="group">
-                        <ButtonText
-                            buttonClassName={'btn-default'}
-                            buttonText={'Annuleren'}
-                            onClickAction={this.props.closeAddressEnergySupplier}
-                        />
-                    </div>
-                </PanelBody>
-            </Panel>
-        );
-    }
+                    )}
+                </div>
+
+                <div className="pull-right btn-group" role="group">
+                    <ButtonText
+                        buttonClassName="btn-default"
+                        buttonText="Annuleren"
+                        onClickAction={closeAddressEnergySupplier}
+                    />
+                </div>
+            </PanelBody>
+        </Panel>
+    );
 }
 
-const mapStateToProps = state => {
-    return {
-        permissions: state.meDetails.permissions,
-    };
-};
+const mapStateToProps = state => ({
+    permissions: state.meDetails.permissions,
+});
 
 export default connect(mapStateToProps)(AddressDetailsFormAddressEnergySupplier);

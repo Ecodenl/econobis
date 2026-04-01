@@ -1,39 +1,44 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { connect } from 'react-redux';
 
 import Modal from '../../../../../components/modal/Modal';
 import { deleteAddressEnergySupplier } from '../../../../../actions/contact/ContactDetailsActions';
 
-const AddressDetailsFormAddressEnergySupplierDelete = props => {
-    const addressLine =
-        props.address.street +
-        ' ' +
-        props.address.number +
-        (props.address.addition ? '-' + props.address.addition : '') +
-        ', ' +
-        props.address.postalCode +
-        ', ' +
-        props.address.city +
-        (props.address.country ? ', ' + props.address.country.name : '');
+const AddressDetailsFormAddressEnergySupplierDelete = ({
+    address,
+    id,
+    energySupplier,
+    closeDeleteItemModal,
+    reloadContact,
+    deleteAddressEnergySupplier,
+}) => {
+    const addressLine = useMemo(() => {
+        return (
+            `${address.street} ${address.number}` +
+            `${address.addition ? '-' + address.addition : ''}, ` +
+            `${address.postalCode}, ${address.city}` +
+            `${address.country ? ', ' + address.country.name : ''}`
+        );
+    }, [address]);
+
     const confirmAction = () => {
-        // tweede parameter is onSuccess functie. Deze wordt dus alleen uitgevoerd bij succesvolle delete.
-        props.deleteAddressEnergySupplier(props.id, () => {
-            props.closeDeleteItemModal();
-            props.reloadContact();
+        deleteAddressEnergySupplier(id, () => {
+            closeDeleteItemModal();
+            reloadContact();
         });
     };
 
     return (
         <Modal
             buttonConfirmText="Verwijder"
-            buttonClassName={'btn-danger'}
-            closeModal={props.closeDeleteItemModal}
-            confirmAction={() => confirmAction()}
+            buttonClassName="btn-danger"
+            closeModal={closeDeleteItemModal}
+            confirmAction={confirmAction}
             title="Verwijderen"
         >
             <p>
-                Verwijder energieleverancier: <strong> {`${props.energySupplier.name}`} </strong> bij adres{' '}
-                <strong> {`${addressLine}`} </strong>?
+                Verwijder energieleverancier: <strong>{energySupplier?.name || ''}</strong> bij adres{' '}
+                <strong>{addressLine}</strong>?
             </p>
         </Modal>
     );
@@ -44,4 +49,5 @@ const mapDispatchToProps = dispatch => ({
         dispatch(deleteAddressEnergySupplier(id, onSuccess));
     },
 });
+
 export default connect(null, mapDispatchToProps)(AddressDetailsFormAddressEnergySupplierDelete);

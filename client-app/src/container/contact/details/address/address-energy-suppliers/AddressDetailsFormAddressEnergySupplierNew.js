@@ -1,449 +1,423 @@
-import React, { Component } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { connect } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import validator from 'validator';
 
 import { setError } from '../../../../../actions/general/ErrorActions';
 import AddressEnergySupplierAPI from '../../../../../api/contact/AddressEnergySupplierAPI';
-import { newStateAddressEnergySupplier } from '../../../../../actions/contact/ContactDetailsActions';
-import { fetchContactDetails } from '../../../../../actions/contact/ContactDetailsActions';
+import {
+    newStateAddressEnergySupplier,
+    fetchContactDetails,
+} from '../../../../../actions/contact/ContactDetailsActions';
+
 import InputText from '../../../../../components/form/InputText';
 import ButtonText from '../../../../../components/button/ButtonText';
 import InputSelect from '../../../../../components/form/InputSelect';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
-import validator from 'validator';
 import InputDate from '../../../../../components/form/InputDate';
 import Modal from '../../../../../components/modal/Modal';
-import { useNavigate } from 'react-router-dom';
 
-// Functionele wrapper voor de class component
-const AddressDetailsFormAddressEnergySupplierNewWrapper = props => {
+const AddressDetailsFormAddressEnergySupplierNewContainer = props => {
     const navigate = useNavigate();
     return <AddressDetailsFormAddressEnergySupplierNew {...props} navigate={navigate} />;
 };
 
-class AddressDetailsFormAddressEnergySupplierNew extends Component {
-    constructor(props) {
-        super(props);
+function AddressDetailsFormAddressEnergySupplierNew(props) {
+    const {
+        addressId,
+        contactId,
+        energySuppliers,
+        energySupplierStatuses,
+        energySupplierTypes,
+        memberSinceGasDisabledBefore,
+        memberSinceElectricityDisabledBefore,
+        memberSinceGasAndElectricityDisabledBefore,
+        toggleShowNew,
+        newStateAddressEnergySupplier,
+        fetchContactDetails,
+        setError,
+        navigate,
+    } = props;
 
-        this.state = {
-            showMessageDoubleEsNumber: false,
-            messageDoubleEsNumber: '',
-            messageDoubleEsName: '',
-            messageDoubleEsNumberArray: [],
-            showMessageHasParticipations: false,
-            messageHasParticipations: false,
-            messageHasParticipationsRedirect: '',
-            messageHasParticipationsProjectsArray: [],
+    const [showMessageDoubleEsNumber, setShowMessageDoubleEsNumber] = useState(false);
+    const [messageDoubleEsNumber, setMessageDoubleEsNumber] = useState('');
+    const [messageDoubleEsName, setMessageDoubleEsName] = useState('');
+    const [messageDoubleEsNumberArray, setMessageDoubleEsNumberArray] = useState([]);
 
-            addressEnergySupplier: {
-                addressId: this.props.addressId,
-                energySupplierId: '',
-                energySupplyTypeId: '',
-                memberSince: '',
-                energySupplyStatusId: '',
-                switchDate: '',
-                endDate: '',
-                esNumber: '',
-                isCurrentSupplier: false,
-            },
-            memberSinceDisabledBefore: '1900-01-01',
-            errors: {
-                energySupplierId: false,
-                energySupplyTypeId: false,
-                memberSince: false,
-            },
-        };
+    const [showMessageHasParticipations, setShowMessageHasParticipations] = useState(false);
+    const [messageHasParticipations, setMessageHasParticipations] = useState(false);
+    const [messageHasParticipationsRedirect, setMessageHasParticipationsRedirect] = useState('');
+    const [messageHasParticipationsProjectsArray, setMessageHasParticipationsProjectsArray] = useState([]);
 
-        this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
-    }
+    const [addressEnergySupplier, setAddressEnergySupplier] = useState({
+        addressId: addressId,
+        energySupplierId: '',
+        energySupplyTypeId: '',
+        memberSince: '',
+        energySupplyStatusId: '',
+        switchDate: '',
+        endDate: '',
+        esNumber: '',
+        isCurrentSupplier: false,
+    });
 
-    handleInputChange = event => {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
+    const [memberSinceDisabledBefore, setMemberSinceDisabledBefore] = useState('1900-01-01');
 
-        const memberSinceDisabledBefore =
-            value == 1
-                ? this.props.memberSinceGasDisabledBefore
-                : value == 2
-                ? this.props.memberSinceElectricityDisabledBefore
-                : value == 3
-                ? this.props.memberSinceGasAndElectricityDisabledBefore
-                : '1900-01-01';
+    const [errors, setErrors] = useState({
+        energySupplierId: false,
+        energySupplyTypeId: false,
+        memberSince: false,
+        endDate: false,
+    });
 
-        if (name == 'energySupplyTypeId') {
-            this.setState({
-                ...this.state,
-                addressEnergySupplier: {
-                    ...this.state.addressEnergySupplier,
-                    [name]: value,
-                },
-                memberSinceDisabledBefore: memberSinceDisabledBefore,
-            });
-        } else {
-            this.setState({
-                ...this.state,
-                addressEnergySupplier: {
-                    ...this.state.addressEnergySupplier,
-                    [name]: value,
-                },
-            });
-        }
-    };
+    const canRedirectToFinalSettlement = useMemo(() => {
+        return messageHasParticipationsProjectsArray.length === 1 && !!messageHasParticipationsRedirect;
+    }, [messageHasParticipationsProjectsArray, messageHasParticipationsRedirect]);
 
-    handleInputChangeDate(value, name) {
-        this.setState({
-            ...this.state,
-            addressEnergySupplier: {
-                ...this.state.addressEnergySupplier,
+    const handleInputChange = useCallback(
+        event => {
+            const target = event.target;
+            const value = target.type === 'checkbox' ? target.checked : target.value;
+            const name = target.name;
+
+            setAddressEnergySupplier(prev => ({
+                ...prev,
                 [name]: value,
-            },
-        });
-    }
+            }));
 
-    setMessageDoubleEsNumber(esNumber, energySupplierName, messageDoubleEsNumberArray) {
-        this.setState({
-            ...this.state,
-            messageDoubleEsNumber: esNumber,
-            messageDoubleEsName: energySupplierName,
-            messageDoubleEsNumberArray: messageDoubleEsNumberArray,
-        });
-    }
-    setShowMessageDoubleEsNumber() {
-        this.setState({
-            ...this.state,
-            showMessageDoubleEsNumber: true,
-        });
-    }
-    setHideMessageDoubleEsNumber = () => {
-        this.setState({
-            ...this.state,
-            showMessageDoubleEsNumber: false,
-            messageDoubleEsNumber: '',
-            messageDoubleEsName: '',
-            messageDoubleEsNumberArray: [],
-        });
-        if (this.state.messageHasParticipations) {
-            this.setShowMessageHasParticipations();
+            if (name === 'energySupplyTypeId') {
+                const disabledBefore =
+                    value == 1
+                        ? memberSinceGasDisabledBefore
+                        : value == 2
+                        ? memberSinceElectricityDisabledBefore
+                        : value == 3
+                        ? memberSinceGasAndElectricityDisabledBefore
+                        : '1900-01-01';
+
+                setMemberSinceDisabledBefore(disabledBefore);
+            }
+        },
+        [memberSinceGasDisabledBefore, memberSinceElectricityDisabledBefore, memberSinceGasAndElectricityDisabledBefore]
+    );
+
+    const handleInputChangeDate = useCallback((value, name) => {
+        setAddressEnergySupplier(prev => ({
+            ...prev,
+            [name]: value,
+        }));
+    }, []);
+
+    const handleSetMessageDoubleEsNumber = useCallback((esNumber, energySupplierName, duplicateArray) => {
+        setMessageDoubleEsNumber(esNumber);
+        setMessageDoubleEsName(energySupplierName);
+        setMessageDoubleEsNumberArray(duplicateArray);
+    }, []);
+
+    const handleSetMessageHasParticipations = useCallback((hasParticipations, redirect, projectsArray) => {
+        setMessageHasParticipations(hasParticipations);
+        setMessageHasParticipationsRedirect(redirect);
+        setMessageHasParticipationsProjectsArray(projectsArray);
+    }, []);
+
+    const hideMessageDoubleEsNumber = useCallback(() => {
+        setShowMessageDoubleEsNumber(false);
+        setMessageDoubleEsNumber('');
+        setMessageDoubleEsName('');
+        setMessageDoubleEsNumberArray([]);
+
+        if (messageHasParticipations) {
+            setShowMessageHasParticipations(true);
         } else {
-            this.props.toggleShowNew();
-            this.props.fetchContactDetails(this.props.contactId);
+            toggleShowNew();
+            fetchContactDetails(contactId);
         }
-    };
+    }, [messageHasParticipations, toggleShowNew, fetchContactDetails, contactId]);
 
-    setMessageHasParticipations(messageHasParticipations, messageHasParticipationsRedirect, projectsArray) {
-        this.setState({
-            ...this.state,
-            messageHasParticipations: messageHasParticipations,
-            messageHasParticipationsRedirect: messageHasParticipationsRedirect,
-            messageHasParticipationsProjectsArray: projectsArray,
-        });
-    }
-    setShowMessageHasParticipations() {
-        this.setState({
-            ...this.state,
-            showMessageHasParticipations: true,
-        });
-    }
-    setHideMessageHasParticipations = () => {
-        this.setState({
-            ...this.state,
-            showMessageHasParticipations: false,
-            messageHasParticipations: false,
-            messageHasParticipationsRedirect: '',
-            messageHasParticipationsProjectsArray: [],
-        });
-        this.props.toggleShowNew();
-        this.props.fetchContactDetails(this.props.contactId);
-    };
+    const hideMessageHasParticipations = useCallback(() => {
+        setShowMessageHasParticipations(false);
+        setMessageHasParticipations(false);
+        setMessageHasParticipationsRedirect('');
+        setMessageHasParticipationsProjectsArray([]);
 
-    handleSubmit = event => {
-        event.preventDefault();
+        toggleShowNew();
+        fetchContactDetails(contactId);
+    }, [toggleShowNew, fetchContactDetails, contactId]);
 
-        const { addressEnergySupplier } = this.state;
-
-        let errors = {};
-        let hasErrors = false;
-
-        if (validator.isEmpty(addressEnergySupplier.energySupplierId)) {
-            errors.energySupplierId = true;
-            hasErrors = true;
-        }
-
-        if (validator.isEmpty(addressEnergySupplier.energySupplyTypeId)) {
-            errors.energySupplyTypeId = true;
-            hasErrors = true;
-        }
-
-        if (!addressEnergySupplier.memberSince || validator.isEmpty(addressEnergySupplier.memberSince)) {
-            errors.memberSince = true;
-            hasErrors = true;
-        }
-
-        if (
-            !hasErrors &&
-            addressEnergySupplier.memberSince &&
-            this.state.memberSinceDisabledBefore > addressEnergySupplier.memberSince
-        ) {
-            errors.memberSince = true;
-            hasErrors = true;
-        }
-
-        if (
-            !hasErrors &&
-            addressEnergySupplier.endDate &&
-            !validator.isEmpty(addressEnergySupplier.endDate) &&
-            addressEnergySupplier.endDate < addressEnergySupplier.memberSince
-        ) {
-            errors.memberSince = true;
-            errors.endDate = true;
-            hasErrors = true;
-        }
-
-        this.setState({ ...this.state, errors: errors });
-
-        // If no errors send form
-        if (!hasErrors) {
-            AddressEnergySupplierAPI.validateAddressEnergySupplierForm(addressEnergySupplier)
+    const doNewAddressEnergySupplier = useCallback(
+        addressEnergySupplierToSave => {
+            AddressEnergySupplierAPI.newAddressEnergySupplier(addressEnergySupplierToSave)
                 .then(payload => {
-                    // indien geen error dan direct verwerken
-                    if (!payload.data.responseValidation.hasErrors) {
-                        this.doNewAddressEnergySupplier(addressEnergySupplier);
+                    newStateAddressEnergySupplier(payload.data.addressEnergySupplier);
+
+                    if (payload.data.responseParticipations.hasParticipations) {
+                        handleSetMessageHasParticipations(
+                            payload.data.responseParticipations.hasParticipations,
+                            payload.data.responseParticipations.revenuePartsKwhRedirect,
+                            payload.data.responseParticipations.projectsArray
+                        );
+                    }
+
+                    if (payload.data.addressEnergySupplier.addressEnergySuppliersWithDoubleEsNumber) {
+                        handleSetMessageDoubleEsNumber(
+                            payload.data.addressEnergySupplier.esNumber,
+                            payload.data.addressEnergySupplier.energySupplier.name,
+                            payload.data.addressEnergySupplier.addressEnergySuppliersWithDoubleEsNumber
+                        );
+                    }
+
+                    if (payload.data.addressEnergySupplier.addressEnergySuppliersWithDoubleEsNumber) {
+                        setShowMessageDoubleEsNumber(true);
+                    } else if (payload.data.responseParticipations.hasParticipations) {
+                        setShowMessageHasParticipations(true);
                     } else {
-                        // indien wel error, dan fout tonen
-                        this.props.setError(422, payload.data.responseValidation.message);
+                        toggleShowNew();
+                        fetchContactDetails(contactId);
                     }
                 })
                 .catch(error => {
-                    hasErrors = true;
                     if (error.response) {
-                        this.props.setError(error.response.status, error.response.data.message);
+                        setError(error.response.status, error.response.data.message);
                     } else {
-                        // this.props.setError(error);
                         console.log(error);
                     }
                 });
-        }
-    };
+        },
+        [
+            newStateAddressEnergySupplier,
+            handleSetMessageHasParticipations,
+            handleSetMessageDoubleEsNumber,
+            toggleShowNew,
+            fetchContactDetails,
+            contactId,
+            setError,
+        ]
+    );
 
-    doNewAddressEnergySupplier = addressEnergySupplier => {
-        AddressEnergySupplierAPI.newAddressEnergySupplier(addressEnergySupplier)
-            .then(payload => {
-                this.props.newStateAddressEnergySupplier(payload.data.addressEnergySupplier);
-                // todo WM: dit (fetchContactDetails) moet anders, want anders zie je show meldingen bepaald
-                //  in doNewAddressEnergySupplier hieronder niet.
-                // if (doFetchContact) {
-                //     this.props.fetchContactDetails(this.props.contactId);
-                // }
+    const handleSubmit = useCallback(
+        event => {
+            event.preventDefault();
 
-                if (payload.data.responseParticipations.hasParticipations) {
-                    this.setMessageHasParticipations(
-                        payload.data.responseParticipations.hasParticipations,
-                        payload.data.responseParticipations.revenuePartsKwhRedirect,
-                        payload.data.responseParticipations.projectsArray
-                    );
-                }
-                if (payload.data.addressEnergySupplier.addressEnergySuppliersWithDoubleEsNumber) {
-                    this.setMessageDoubleEsNumber(
-                        payload.data.addressEnergySupplier.esNumber,
-                        payload.data.addressEnergySupplier.energySupplier.name,
-                        payload.data.addressEnergySupplier.addressEnergySuppliersWithDoubleEsNumber
-                    );
-                }
-                if (payload.data.addressEnergySupplier.addressEnergySuppliersWithDoubleEsNumber) {
-                    this.setShowMessageDoubleEsNumber();
-                } else if (payload.data.responseParticipations.hasParticipations) {
-                    this.setShowMessageHasParticipations();
-                } else {
-                    this.props.toggleShowNew();
-                    this.props.fetchContactDetails(this.props.contactId);
-                }
-            })
-            .catch(error => {
-                if (error.response) {
-                    this.props.setError(error.response.status, error.response.data.message);
-                } else {
-                    console.log(error);
-                }
-            });
-    };
+            let newErrors = {
+                energySupplierId: false,
+                energySupplyTypeId: false,
+                memberSince: false,
+                endDate: false,
+            };
+            let hasErrors = false;
 
-    render() {
-        const {
-            energySupplierId,
-            energySupplyTypeId,
-            memberSince,
-            energySupplyStatusId,
-            switchDate,
-            endDate,
-            esNumber,
-        } = this.state.addressEnergySupplier;
+            if (validator.isEmpty(addressEnergySupplier.energySupplierId)) {
+                newErrors.energySupplierId = true;
+                hasErrors = true;
+            }
 
-        return (
-            <form className="form-horizontal" onSubmit={this.handleSubmit}>
-                <Panel className={'panel-grey'}>
-                    <PanelBody>
-                        <div className="row">
-                            <InputSelect
-                                label={'Energieleverancier'}
-                                id="energySupplierId"
-                                name={'energySupplierId'}
-                                options={this.props.energySuppliers}
-                                value={energySupplierId}
-                                onChangeAction={this.handleInputChange}
-                                required={'required'}
-                                error={this.state.errors.energySupplierId}
-                            />
-                            <InputSelect
-                                label={'Type'}
-                                id="energySupplyTypeId"
-                                name={'energySupplyTypeId'}
-                                options={this.props.energySupplierTypes}
-                                value={energySupplyTypeId}
-                                onChangeAction={this.handleInputChange}
-                                required={'required'}
-                                error={this.state.errors.energySupplyTypeId}
-                            />
-                        </div>
+            if (validator.isEmpty(addressEnergySupplier.energySupplyTypeId)) {
+                newErrors.energySupplyTypeId = true;
+                hasErrors = true;
+            }
 
-                        <div className="row">
-                            <div className="form-group col-sm-6" />
-                            <InputText
-                                label={'Klantnummer'}
-                                id={'esNumber'}
-                                name={'esNumber'}
-                                value={esNumber}
-                                onChangeAction={this.handleInputChange}
-                            />
-                        </div>
+            if (!addressEnergySupplier.memberSince || validator.isEmpty(addressEnergySupplier.memberSince)) {
+                newErrors.memberSince = true;
+                hasErrors = true;
+            }
 
-                        <div className="row">
-                            <InputDate
-                                label="Klant sinds"
-                                name="memberSince"
-                                value={memberSince ? memberSince : ''}
-                                disabledBefore={this.state.memberSinceDisabledBefore}
-                                onChangeAction={this.handleInputChangeDate}
-                                required={'required'}
-                                error={this.state.errors.memberSince}
-                            />
-                            <InputDate
-                                label={'Eind datum'}
-                                name="endDate"
-                                value={endDate ? endDate : ''}
-                                onChangeAction={this.handleInputChangeDate}
-                                error={this.state.errors.endDate}
-                            />
-                        </div>
+            if (
+                !hasErrors &&
+                addressEnergySupplier.memberSince &&
+                memberSinceDisabledBefore > addressEnergySupplier.memberSince
+            ) {
+                newErrors.memberSince = true;
+                hasErrors = true;
+            }
 
-                        <div className="row">
-                            <InputDate
-                                label="Mogelijke overstap datum"
-                                name="switchDate"
-                                value={switchDate ? switchDate : ''}
-                                onChangeAction={this.handleInputChangeDate}
-                            />
-                            <InputSelect
-                                label={'Overstap status'}
-                                id="energySupplyStatusId"
-                                name={'energySupplyStatusId'}
-                                options={this.props.energySupplierStatuses}
-                                value={energySupplyStatusId}
-                                onChangeAction={this.handleInputChange}
-                            />
-                        </div>
+            if (
+                !hasErrors &&
+                addressEnergySupplier.endDate &&
+                !validator.isEmpty(addressEnergySupplier.endDate) &&
+                addressEnergySupplier.endDate < addressEnergySupplier.memberSince
+            ) {
+                newErrors.memberSince = true;
+                newErrors.endDate = true;
+                hasErrors = true;
+            }
 
-                        <div className="pull-right btn-group" role="group">
-                            <ButtonText
-                                buttonClassName={'btn-default'}
-                                buttonText={'Annuleren'}
-                                onClickAction={this.props.toggleShowNew}
-                            />
-                            <ButtonText
-                                buttonText={'Opslaan'}
-                                onClickAction={this.handleSubmit}
-                                type={'submit'}
-                                value={'Submit'}
-                            />
-                        </div>
+            setErrors(newErrors);
 
-                        {this.state.showMessageDoubleEsNumber && (
-                            <Modal
-                                closeModal={this.setHideMessageDoubleEsNumber}
-                                // modalClassName="modal-lg"
-                                showConfirmAction={false}
-                                buttonCancelText="Ok"
-                            >
-                                {'Klantnummer leverancier '} <strong>{this.state.messageDoubleEsNumber}</strong>
-                                {' komt al voor bij een andere adres voor leverancier '}
-                                <strong>{this.state.messageDoubleEsName}</strong>
-                                {
-                                    '. (N.B. dit kan ook bij een ander contact zijn). Gewijzigde gegevens van deze adres/energieleverancier zijn wel opgeslagen.'
-                                }
-                                <br /> <br />
-                                {'Contacten/adressen met dezelfde klantnummer leverancier zijn:'} <br />
-                                <ul>
-                                    {this.state.messageDoubleEsNumberArray.map(item => (
-                                        <li>
-                                            Contact: {item.contactName} ({item.contactNumber}) met adres:{' '}
-                                            {item.addressStreetPostalCodeCity}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </Modal>
-                        )}
-                        {this.state.showMessageHasParticipations && (
-                            <Modal
-                                closeModal={this.setHideMessageHasParticipations}
-                                // modalClassName="modal-lg"
-                                // buttonCancelText="Ok"
-                                buttonCancelText="Sluiten"
-                                showConfirmAction={
-                                    this.state.messageHasParticipationsProjectsArray.length == 1 &&
-                                    this.state.messageHasParticipationsRedirect
-                                        ? true
-                                        : false
-                                }
-                                buttonConfirmText={
-                                    this.state.messageHasParticipationsProjectsArray.length == 1 &&
-                                    this.state.messageHasParticipationsRedirect
-                                        ? 'Naar eindafrekening'
-                                        : ''
-                                }
-                                confirmAction={
-                                    this.state.messageHasParticipationsProjectsArray.length == 1 &&
-                                    this.state.messageHasParticipationsRedirect
-                                        ? () => this.props.navigate(`${this.state.messageHasParticipationsRedirect}`)
-                                        : {}
-                                }
-                            >
-                                Beëindigde adres/energieleverancier komt voor bij deelnames in volgende projecten:{' '}
-                                <br />
-                                <ul>
-                                    {this.state.messageHasParticipationsProjectsArray.map(item => (
-                                        <li>{item.projectMessage}</li>
-                                    ))}
-                                </ul>
-                                <br />
-                                {this.state.messageHasParticipationsProjectsArray.length == 1
-                                    ? 'Hiervoor kan nu eindafrekening voor teruggave EB gemaakt worden'
-                                    : 'Hiervoor kunnen nu eindafrekeningen voor teruggave EB gemaakt worden'}
-                            </Modal>
-                        )}
-                    </PanelBody>
-                </Panel>
-            </form>
-        );
-    }
+            if (!hasErrors) {
+                AddressEnergySupplierAPI.validateAddressEnergySupplierForm(addressEnergySupplier)
+                    .then(payload => {
+                        if (!payload.data.responseValidation.hasErrors) {
+                            doNewAddressEnergySupplier(addressEnergySupplier);
+                        } else {
+                            setError(422, payload.data.responseValidation.message);
+                        }
+                    })
+                    .catch(error => {
+                        if (error.response) {
+                            setError(error.response.status, error.response.data.message);
+                        } else {
+                            console.log(error);
+                        }
+                    });
+            }
+        },
+        [addressEnergySupplier, memberSinceDisabledBefore, doNewAddressEnergySupplier, setError]
+    );
+
+    const {
+        energySupplierId,
+        energySupplyTypeId,
+        memberSince,
+        energySupplyStatusId,
+        switchDate,
+        endDate,
+        esNumber,
+    } = addressEnergySupplier;
+
+    return (
+        <form className="form-horizontal" onSubmit={handleSubmit}>
+            <Panel className="panel-grey">
+                <PanelBody>
+                    <div className="row">
+                        <InputSelect
+                            label="Energieleverancier"
+                            id="energySupplierId"
+                            name="energySupplierId"
+                            options={energySuppliers}
+                            value={energySupplierId}
+                            onChangeAction={handleInputChange}
+                            required="required"
+                            error={errors.energySupplierId}
+                        />
+                        <InputSelect
+                            label="Type"
+                            id="energySupplyTypeId"
+                            name="energySupplyTypeId"
+                            options={energySupplierTypes}
+                            value={energySupplyTypeId}
+                            onChangeAction={handleInputChange}
+                            required="required"
+                            error={errors.energySupplyTypeId}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <div className="form-group col-sm-6" />
+                        <InputText
+                            label="Klantnummer"
+                            id="esNumber"
+                            name="esNumber"
+                            value={esNumber}
+                            onChangeAction={handleInputChange}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputDate
+                            label="Klant sinds"
+                            name="memberSince"
+                            value={memberSince || ''}
+                            disabledBefore={memberSinceDisabledBefore}
+                            onChangeAction={handleInputChangeDate}
+                            required="required"
+                            error={errors.memberSince}
+                        />
+                        <InputDate
+                            label="Eind datum"
+                            name="endDate"
+                            value={endDate || ''}
+                            onChangeAction={handleInputChangeDate}
+                            error={errors.endDate}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputDate
+                            label="Mogelijke overstap datum"
+                            name="switchDate"
+                            value={switchDate || ''}
+                            onChangeAction={handleInputChangeDate}
+                        />
+                        <InputSelect
+                            label="Overstap status"
+                            id="energySupplyStatusId"
+                            name="energySupplyStatusId"
+                            options={energySupplierStatuses}
+                            value={energySupplyStatusId}
+                            onChangeAction={handleInputChange}
+                        />
+                    </div>
+
+                    <div className="pull-right btn-group" role="group">
+                        <ButtonText
+                            buttonClassName="btn-default"
+                            buttonText="Annuleren"
+                            onClickAction={toggleShowNew}
+                        />
+                        <ButtonText buttonText="Opslaan" onClickAction={handleSubmit} type="submit" value="Submit" />
+                    </div>
+
+                    {showMessageDoubleEsNumber && (
+                        <Modal closeModal={hideMessageDoubleEsNumber} showConfirmAction={false} buttonCancelText="Ok">
+                            {'Klantnummer leverancier '}
+                            <strong>{messageDoubleEsNumber}</strong>
+                            {' komt al voor bij een andere adres voor leverancier '}
+                            <strong>{messageDoubleEsName}</strong>
+                            {
+                                '. (N.B. dit kan ook bij een ander contact zijn). Gewijzigde gegevens van deze adres/energieleverancier zijn wel opgeslagen.'
+                            }
+                            <br />
+                            <br />
+                            {'Contacten/adressen met dezelfde klantnummer leverancier zijn:'}
+                            <br />
+                            <ul>
+                                {messageDoubleEsNumberArray.map(item => (
+                                    <li key={`${item.contactNumber}-${item.addressStreetPostalCodeCity}`}>
+                                        Contact: {item.contactName} ({item.contactNumber}) met adres:{' '}
+                                        {item.addressStreetPostalCodeCity}
+                                    </li>
+                                ))}
+                            </ul>
+                        </Modal>
+                    )}
+
+                    {showMessageHasParticipations && (
+                        <Modal
+                            closeModal={hideMessageHasParticipations}
+                            buttonCancelText="Sluiten"
+                            showConfirmAction={canRedirectToFinalSettlement}
+                            buttonConfirmText={canRedirectToFinalSettlement ? 'Naar eindafrekening' : ''}
+                            confirmAction={
+                                canRedirectToFinalSettlement
+                                    ? () => navigate(messageHasParticipationsRedirect)
+                                    : undefined
+                            }
+                        >
+                            Beëindigde adres/energieleverancier komt voor bij deelnames in volgende projecten:
+                            <br />
+                            <ul>
+                                {messageHasParticipationsProjectsArray.map((item, index) => (
+                                    <li key={`${index}-${item.projectMessage}`}>{item.projectMessage}</li>
+                                ))}
+                            </ul>
+                            <br />
+                            {messageHasParticipationsProjectsArray.length === 1
+                                ? 'Hiervoor kan nu eindafrekening voor teruggave EB gemaakt worden'
+                                : 'Hiervoor kunnen nu eindafrekeningen voor teruggave EB gemaakt worden'}
+                        </Modal>
+                    )}
+                </PanelBody>
+            </Panel>
+        </form>
+    );
 }
 
-const mapStateToProps = state => {
-    return {
-        energySuppliers: state.systemData.energySuppliers,
-        energySupplierStatuses: state.systemData.energySupplierStatuses,
-        energySupplierTypes: state.systemData.energySupplierTypes,
-    };
-};
+const mapStateToProps = state => ({
+    energySuppliers: state.systemData.energySuppliers,
+    energySupplierStatuses: state.systemData.energySupplierStatuses,
+    energySupplierTypes: state.systemData.energySupplierTypes,
+});
 
 const mapDispatchToProps = dispatch => ({
     newStateAddressEnergySupplier: addressEnergySupplier => {
@@ -452,9 +426,9 @@ const mapDispatchToProps = dispatch => ({
     fetchContactDetails: id => {
         dispatch(fetchContactDetails(id));
     },
-    setError: (http_code, message) => {
-        dispatch(setError(http_code, message));
+    setError: (httpCode, message) => {
+        dispatch(setError(httpCode, message));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddressDetailsFormAddressEnergySupplierNewWrapper);
+export default connect(mapStateToProps, mapDispatchToProps)(AddressDetailsFormAddressEnergySupplierNewContainer);

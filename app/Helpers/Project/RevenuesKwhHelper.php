@@ -748,79 +748,157 @@ class RevenuesKwhHelper
                 $newDistributionPartsKwh = $distributionPartsKwh->replicate();
                 $newDistributionPartsKwh->parts_id = $newRevenuePartsKwh->id;
                 $newDistributionPartsKwh->delivered_kwh = 0;
-                if ($addressEnergySupplier && $distributionPartsKwh->distributionKwh->participation_id ==$participant->id) {
-                    $newDistributionPartsKwh->es_id = $addressEnergySupplier ? $addressEnergySupplier->energy_supplier_id : null;
-                    $newDistributionPartsKwh->energy_supplier_name = $addressEnergySupplier ? $addressEnergySupplier->energySupplier->name : null;
-                    $newDistributionPartsKwh->energy_supplier_number = $addressEnergySupplier ? $addressEnergySupplier->es_number : null;
-                }
-                $newDistributionPartsKwh->save();
-                list($quantityOfParticipationsAtStart, $quantityOfParticipations) = $this->determineParticipationsQuantityPart($dateBeginRevenues, Carbon::parse($newRevenuePartsKwh->date_begin)->format('Y-m-d'), Carbon::parse($newRevenuePartsKwh->date_end)->format('Y-m-d'), $newDistributionPartsKwh);
-                $newDistributionPartsKwh->participations_quantity_at_start = $quantityOfParticipationsAtStart;
-                $newDistributionPartsKwh->participations_quantity = $quantityOfParticipations;
                 $newDistributionPartsKwh->save();
 
-                //  4b Bij originele distributionPartsKwh records participations_quantity opnieuw bepalen voor split datum.
+                // 4b Bij originele en nieuwe distributionPartsKwh records participations_quantity opnieuw bepalen.
                 $dateBeginRevenues = Carbon::parse($revenuePartsKwh->revenuesKwh->date_begin)->format('Y-m-d');
-                list($quantityOfParticipationsAtStart, $quantityOfParticipations) = $this->determineParticipationsQuantityPart($dateBeginRevenues, Carbon::parse($revenuePartsKwh->date_begin)->format('Y-m-d'), Carbon::parse($revenuePartsKwh->date_end)->format('Y-m-d'), $distributionPartsKwh);
+
+                list(
+                    $quantityOfParticipationsAtStart,
+                    $quantityOfParticipations
+                    ) = $this->determineParticipationsQuantityPart(
+                    $dateBeginRevenues,
+                    Carbon::parse($revenuePartsKwh->date_begin)->format('Y-m-d'),
+                    Carbon::parse($revenuePartsKwh->date_end)->format('Y-m-d'),
+                    $distributionPartsKwh
+                );
                 $distributionPartsKwh->participations_quantity_at_start = $quantityOfParticipationsAtStart;
                 $distributionPartsKwh->participations_quantity = $quantityOfParticipations;
                 $distributionPartsKwh->save();
 
-                //  5a Concept -> delete distributions bij orignele part en maak ze opnieuw bij originele en nieuwe.
-                //
-                if($revenuePartsKwh->status == 'concept') {
-                    $distributionPartsKwh->distributionKwh->newOrConceptDistributionValuesKwh()->where('parts_id', $revenuePartsKwh->id)->delete();
+                list(
+                    $newQuantityOfParticipationsAtStart,
+                    $newQuantityOfParticipations
+                    ) = $this->determineParticipationsQuantityPart(
+                    $dateBeginRevenues,
+                    Carbon::parse($newRevenuePartsKwh->date_begin)->format('Y-m-d'),
+                    Carbon::parse($newRevenuePartsKwh->date_end)->format('Y-m-d'),
+                    $newDistributionPartsKwh
+                );
+                $newDistributionPartsKwh->participations_quantity_at_start = $newQuantityOfParticipationsAtStart;
+                $newDistributionPartsKwh->participations_quantity = $newQuantityOfParticipations;
+                $newDistributionPartsKwh->save();
+
+                // 5a Concept -> delete distributions bij originele part en maak ze opnieuw bij originele en nieuwe.
+                if ($revenuePartsKwh->status == 'concept') {
+                    $distributionPartsKwh->distributionKwh->newOrConceptDistributionValuesKwh()
+                        ->where('parts_id', $revenuePartsKwh->id)
+                        ->delete();
+
                     $this->saveDistributionValuesKwh($revenuePartsKwh->date_begin, $revenuePartsKwh->date_end, $distributionPartsKwh);
-                }else{
-                    //  5b Doorlezen distributionValuesKwh voor van originele revenuePartsKwh voor datums nieuwe aanpassen:
-                    //    parts_id = (id_new).
-                    //    overige gegevens overnemen originele distributionValuesKwh.
-                    //
+                    $this->saveDistributionValuesKwh($newRevenuePartsKwh->date_begin, $newRevenuePartsKwh->date_end, $newDistributionPartsKwh);
+                } else {
+                    // 5b Doorlezen distributionValuesKwh van originele revenuePartsKwh
                     foreach ($revenuePartsKwh->distributionValuesKwh->sortBy('date_begin') as $distributionValuesKwh) {
                         // Splitdatum na einddatum, dan geen splitsing en behouden bij originele.
-                        if($splitDateString > Carbon::parse($distributionValuesKwh->date_end)->format('Y-m-d') ){
+                        if ($splitDateString > Carbon::parse($distributionValuesKwh->date_end)->format('Y-m-d')) {
+                            // niets doen
                         }
+
                         // Splitdatum gelijk aan of na begindatum maar voor einddatum, dan splitsen.
-                        if($splitDateString >= Carbon::parse($distributionValuesKwh->date_begin)->format('Y-m-d') && $splitDateString < Carbon::parse($distributionValuesKwh->date_end)){
+                        if (
+                            $splitDateString >= Carbon::parse($distributionValuesKwh->date_begin)->format('Y-m-d')
+                            && $splitDateString < Carbon::parse($distributionValuesKwh->date_end)->format('Y-m-d')
+                        ) {
                             $newDistributionValuesKwh = $distributionValuesKwh->replicate();
                             $newDistributionValuesKwh->date_begin = $splitDateString;
                             $newDistributionValuesKwh->date_end = $oldEndDateOriginalPartsKwh;
                             $newDistributionValuesKwh->parts_id = $newRevenuePartsKwh->id;
+
                             $dateEndForPeriodNew = clone Carbon::parse($oldEndDateOriginalPartsKwh);
                             $dateEndForPeriodNew->endOfDay();
-                            $newDistributionValuesKwh->days_of_period = $dateEndForPeriodNew->addDay()->diffInDays(Carbon::parse($splitDateString), true);
-                            $newDistributionValuesKwh->quantity_multiply_by_days = $newDistributionValuesKwh->participations_quantity * $newDistributionValuesKwh->days_of_period;
-                            $newDistributionValuesKwh->delivered_kwh = round($newDistributionValuesKwh->delivered_kwh / $distributionValuesKwh->days_of_period * $newDistributionValuesKwh->days_of_period, 6);
+                            $newDistributionValuesKwh->days_of_period = $dateEndForPeriodNew
+                                ->addDay()
+                                ->diffInDays(Carbon::parse($splitDateString), true);
+                            $newDistributionValuesKwh->quantity_multiply_by_days =
+                                $newDistributionValuesKwh->participations_quantity * $newDistributionValuesKwh->days_of_period;
+                            $newDistributionValuesKwh->delivered_kwh = round(
+                                $newDistributionValuesKwh->delivered_kwh / $distributionValuesKwh->days_of_period * $newDistributionValuesKwh->days_of_period,
+                                6
+                            );
                             $newDistributionValuesKwh->save();
 
-                            //  Bij originele distributionValuesKwh
+                            // Bij originele distributionValuesKwh
                             $dateEndForPeriodOriginal = clone Carbon::parse($newEndDateOriginalPartsKwh);
                             $dateEndForPeriodOriginal->endOfDay();
                             $distributionValuesKwh->date_end = $newEndDateOriginalPartsKwh;
-                            $distributionValuesKwh->days_of_period = $dateEndForPeriodOriginal->addDay()->diffInDays(Carbon::parse($revenuePartsKwh->date_begin), true);
-                            $distributionValuesKwh->quantity_multiply_by_days =$distributionValuesKwh->participations_quantity * $distributionValuesKwh->days_of_period;
-                            $distributionValuesKwh->delivered_kwh = $distributionValuesKwh->delivered_kwh - $newDistributionValuesKwh->delivered_kwh;
+                            $distributionValuesKwh->days_of_period = $dateEndForPeriodOriginal
+                                ->addDay()
+                                ->diffInDays(Carbon::parse($revenuePartsKwh->date_begin), true);
+                            $distributionValuesKwh->quantity_multiply_by_days =
+                                $distributionValuesKwh->participations_quantity * $distributionValuesKwh->days_of_period;
+                            $distributionValuesKwh->delivered_kwh =
+                                $distributionValuesKwh->delivered_kwh - $newDistributionValuesKwh->delivered_kwh;
                             $distributionValuesKwh->save();
-
                         }
+
                         // Splitdatum voor begin, dan overzetten naar nieuwe part.
-                        if($splitDateString < Carbon::parse($distributionValuesKwh->date_begin)->format('Y-m-d')){
-                            // overzetten naar nieuwe part.
+                        if ($splitDateString < Carbon::parse($distributionValuesKwh->date_begin)->format('Y-m-d')) {
                             $distributionValuesKwh->parts_id = $newRevenuePartsKwh->id;
                             $distributionValuesKwh->save();
                         }
                     }
-
                 }
-                $totalDeliveredKwh = RevenueDistributionValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->where('distribution_id', $distributionPartsKwh->distribution_id)->where('parts_id', $revenuePartsKwh->id)->sum('delivered_kwh');
-                $distributionPartsKwh->delivered_kwh = $totalDeliveredKwh;
-                // hier nieuwe checks op is_energy_supplier_switch, is_end_participation, is_end_total_period, is_end_year_period en is_visible
-                $this->setIndicatorFields($distributionPartsKwh->distributionKwh->participation, $distributionPartsKwh, $distributionPartsKwh->partsKwh);
 
-                $newTotalDeliveredKwh = RevenueDistributionValuesKwh::where('revenue_id', $newRevenuePartsKwh->revenue_id)->where('distribution_id', $newDistributionPartsKwh->distribution_id)->where('parts_id', $newRevenuePartsKwh->id)->sum('delivered_kwh');
+                // delivered_kwh opnieuw bepalen
+                $totalDeliveredKwh = RevenueDistributionValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)
+                    ->where('distribution_id', $distributionPartsKwh->distribution_id)
+                    ->where('parts_id', $revenuePartsKwh->id)
+                    ->sum('delivered_kwh');
+                $distributionPartsKwh->delivered_kwh = $totalDeliveredKwh;
+                $distributionPartsKwh->save();
+
+                $newTotalDeliveredKwh = RevenueDistributionValuesKwh::where('revenue_id', $newRevenuePartsKwh->revenue_id)
+                    ->where('distribution_id', $newDistributionPartsKwh->distribution_id)
+                    ->where('parts_id', $newRevenuePartsKwh->id)
+                    ->sum('delivered_kwh');
                 $newDistributionPartsKwh->delivered_kwh = $newTotalDeliveredKwh;
-                $newDistributionPartsKwh->is_visible = $this->determineIsVisible($newDistributionPartsKwh);
                 $newDistributionPartsKwh->save();
+
+                // Leverancier voor beide delen opnieuw bepalen op basis van part-begindatum
+                $addressId = $distributionPartsKwh->distributionKwh->participation->address_id;
+
+                $originalAddressEnergySupplier = $this->getAddressEnergySupplierForPart(
+                    $addressId,
+                    Carbon::parse($revenuePartsKwh->date_begin)->format('Y-m-d')
+                );
+
+                $newAddressEnergySupplier = $this->getAddressEnergySupplierForPart(
+                    $addressId,
+                    Carbon::parse($newRevenuePartsKwh->date_begin)->format('Y-m-d')
+                );
+
+                $this->applyAddressEnergySupplierToDistributionPart($distributionPartsKwh, $originalAddressEnergySupplier);
+                $this->applyAddressEnergySupplierToDistributionPart($newDistributionPartsKwh, $newAddressEnergySupplier);
+
+                // Indicatorvelden opnieuw bepalen voor beide delen
+                $this->setIndicatorFields(
+                    $distributionPartsKwh->distributionKwh->participation,
+                    $distributionPartsKwh,
+                    $distributionPartsKwh->partsKwh
+                );
+
+                $this->setIndicatorFields(
+                    $newDistributionPartsKwh->distributionKwh->participation,
+                    $newDistributionPartsKwh,
+                    $newDistributionPartsKwh->partsKwh
+                );
+
+                // Ook vorige buur-part opnieuw beoordelen, omdat switch-/visible-indicatoren kunnen verschuiven
+                $previousDistributionPartKwh = RevenueDistributionPartsKwh::where('revenue_id', $distributionPartsKwh->revenue_id)
+                    ->where('distribution_id', $distributionPartsKwh->distribution_id)
+                    ->whereHas('partsKwh', function ($query) use ($distributionPartsKwh) {
+                        $query->where('date_end', Carbon::parse($distributionPartsKwh->partsKwh->date_begin)->subDay()->format('Y-m-d'));
+                    })
+                    ->first();
+
+                if ($previousDistributionPartKwh) {
+                    $this->setIndicatorFields(
+                        $previousDistributionPartKwh->distributionKwh->participation,
+                        $previousDistributionPartKwh,
+                        $previousDistributionPartKwh->partsKwh
+                    );
+                }
             }
             $revenuePartsKwhForRecalculate = RevenuePartsKwh::find($revenuePartsKwh->id);
             if($revenuePartsKwhForRecalculate->status == 'concept'){
@@ -961,28 +1039,69 @@ class RevenuesKwhHelper
      */
     private function setIndicatorFields(ParticipantProject $participant, $distributionPartsKwh, $checkRevenuePartsKwh): void
     {
-        // hier nieuwe checks op is_energy_supplier_switch, is_end_participation, is_end_total_period, is_end_year_period en is_visible
-        if (AddressEnergySupplier::where('address_id', $participant->address_id)->where('energy_supplier_id', $distributionPartsKwh->es_id)->where('end_date', $checkRevenuePartsKwh->date_end)->exists()) {
+        // Alleen elektriciteit/combi is relevant voor kWh-opbrengstverdelingen
+        if (AddressEnergySupplier::where('address_id', $participant->address_id)
+            ->where('energy_supplier_id', $distributionPartsKwh->es_id)
+            ->whereIn('energy_supply_type_id', [2, 3])
+            ->where('end_date', $checkRevenuePartsKwh->date_end)
+            ->exists()) {
             $distributionPartsKwh->is_energy_supplier_switch = true;
         } else {
             $distributionPartsKwh->is_energy_supplier_switch = false;
         }
+
         if ($participant->date_terminated == $checkRevenuePartsKwh->date_end) {
             $distributionPartsKwh->is_end_participation = true;
         } else {
             $distributionPartsKwh->is_end_participation = false;
         }
+
         if ($checkRevenuePartsKwh->date_end && $checkRevenuePartsKwh->date_end == $checkRevenuePartsKwh->revenuesKwh->date_end) {
             $distributionPartsKwh->is_end_total_period = true;
         } else {
             $distributionPartsKwh->is_end_total_period = false;
         }
-        if ($checkRevenuePartsKwh->date_end && Carbon::parse($checkRevenuePartsKwh->date_end)->day == 31 && Carbon::parse($checkRevenuePartsKwh->date_end)->month == 12) {
+
+        if (
+            $checkRevenuePartsKwh->date_end &&
+            Carbon::parse($checkRevenuePartsKwh->date_end)->day == 31 &&
+            Carbon::parse($checkRevenuePartsKwh->date_end)->month == 12
+        ) {
             $distributionPartsKwh->is_end_year_period = true;
         } else {
             $distributionPartsKwh->is_end_year_period = false;
         }
+
         $distributionPartsKwh->is_visible = $this->determineIsVisible($distributionPartsKwh);
+        $distributionPartsKwh->save();
+    }
+
+    private function getAddressEnergySupplierForPart(int $addressId, string $partDateBegin): ?AddressEnergySupplier
+    {
+        return AddressEnergySupplier::where('address_id', $addressId)
+            ->whereIn('energy_supply_type_id', [2, 3])
+            ->where(function ($query) use ($partDateBegin) {
+                $query->where(function ($query) use ($partDateBegin) {
+                    $query->whereNotNull('member_since')
+                        ->where('member_since', '<=', $partDateBegin);
+                })->orWhereNull('member_since');
+            })
+            ->where(function ($query) use ($partDateBegin) {
+                $query->where(function ($query) use ($partDateBegin) {
+                    $query->whereNotNull('end_date')
+                        ->where('end_date', '>=', $partDateBegin);
+                })->orWhereNull('end_date');
+            })
+            ->first();
+    }
+
+    private function applyAddressEnergySupplierToDistributionPart(
+        RevenueDistributionPartsKwh $distributionPartsKwh,
+        ?AddressEnergySupplier $addressEnergySupplier
+    ): void {
+        $distributionPartsKwh->es_id = $addressEnergySupplier ? $addressEnergySupplier->energy_supplier_id : null;
+        $distributionPartsKwh->energy_supplier_name = $addressEnergySupplier ? $addressEnergySupplier->energySupplier->name : null;
+        $distributionPartsKwh->energy_supplier_number = $addressEnergySupplier ? $addressEnergySupplier->es_number : null;
         $distributionPartsKwh->save();
     }
 

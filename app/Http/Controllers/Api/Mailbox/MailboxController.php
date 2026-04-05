@@ -468,21 +468,38 @@ class MailboxController extends Controller
 
     private function storeOrUpdateOauthApiSettings(Mailbox $mailbox, array $inputOauthApiSettings): void
     {
-        $oauthApiSettings = MailboxOauthApiSettings::firstOrNew(['mailbox_id' => $mailbox->id]);
+        $oauthApiSettings = MailboxOauthApiSettings::firstOrNew([
+            'mailbox_id' => $mailbox->id,
+        ]);
 
-        $oauthApiSettings->client_id = $inputOauthApiSettings['clientId'];
-        $oauthApiSettings->project_id = $inputOauthApiSettings['projectId'];
+        $newClientId = $inputOauthApiSettings['clientId'] ?? '';
+        $newProjectId = $inputOauthApiSettings['projectId'] ?? '';
+        $newClientSecret = $inputOauthApiSettings['clientSecret'] ?? $oauthApiSettings->client_secret;
+        $newTenantId = !empty($inputOauthApiSettings['tenantId'])
+            ? $inputOauthApiSettings['tenantId']
+            : null;
 
-        if (isset($inputOauthApiSettings['clientSecret'])) {
-            $oauthApiSettings->client_secret = $inputOauthApiSettings['clientSecret'];
-        }
+        $configChanged =
+            $oauthApiSettings->exists &&
+            (
+                $oauthApiSettings->client_id !== $newClientId ||
+                $oauthApiSettings->project_id !== $newProjectId ||
+                $oauthApiSettings->client_secret !== $newClientSecret ||
+                $oauthApiSettings->tenant_id !== $newTenantId
+            );
 
-        if (isset($inputOauthApiSettings['tenantId']) && !empty($inputOauthApiSettings['tenantId'])) {
-            $oauthApiSettings->tenant_id = $inputOauthApiSettings['tenantId'];
-        } else {
-            $oauthApiSettings->tenant_id = null;
+        $oauthApiSettings->client_id = $newClientId;
+        $oauthApiSettings->project_id = $newProjectId;
+        $oauthApiSettings->client_secret = $newClientSecret;
+        $oauthApiSettings->tenant_id = $newTenantId;
+
+        if ($configChanged) {
+            $oauthApiSettings->token = '';
+            $oauthApiSettings->force_reconnect = true;
+            $oauthApiSettings->force_select_account = false;
         }
 
         $oauthApiSettings->save();
     }
+
 }

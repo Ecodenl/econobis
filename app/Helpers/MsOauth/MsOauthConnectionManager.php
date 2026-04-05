@@ -26,10 +26,20 @@ class MsOauthConnectionManager extends Controller
         }
     }
 
-    public function connect()
+    public function connect(): ?array
     {
         if (!$this->mailbox || !$this->oauthApiSettings) {
             throw new \RuntimeException('Mailbox not set for connect()');
+        }
+        if (!$this->shouldStartInteractiveAuth()) {
+            // Geen interactieve OAuth nodig; probeer gewoon token te refreshen / valideren
+            $token = $this->setAccessTokenFromRefreshToken();
+
+            if ($token) {
+                return null;
+            }
+
+            // Refresh lukte niet, dan pas interactieve auth starten
         }
 
         $options = [];
@@ -39,7 +49,6 @@ class MsOauthConnectionManager extends Controller
         }
 
         $authUrl = $this->clientProvider->getAuthorizationUrl($options);
-
         $state = $this->clientProvider->getState();
 
         Cache::put("ms_oauth_state:$state", [
@@ -59,7 +68,6 @@ class MsOauthConnectionManager extends Controller
             'description' => 'Not authorised for MS oauth API',
             'authUrl' => $authUrl,
         ];
-
     }
 
     public function callback(Request $request)
@@ -279,4 +287,20 @@ class MsOauthConnectionManager extends Controller
 
         return null;
     }
+
+    private function shouldStartInteractiveAuth(): bool
+    {
+        if ($this->oauthApiSettings->force_reconnect) {
+            return true;
+        }
+
+        if ($this->oauthApiSettings->force_select_account) {
+            return true;
+        }
+
+        $token = $this->oauthApiSettings->token;
+
+        return empty($token);
+    }
+
 }

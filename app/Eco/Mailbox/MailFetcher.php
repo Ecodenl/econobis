@@ -30,9 +30,20 @@ class MailFetcher
     public function __construct(Mailbox $mailbox)
     {
         $this->mailbox = $mailbox;
+    }
 
-//        $this->initStorageDir();
-//        $this->initImapConnection();
+    public function checkMailbox(): void
+    {
+        if ($this->mailbox->only_outgoing_mailbox) {
+            return;
+        }
+
+        if ($this->mailbox->incoming_server_type !== 'imap') {
+            return;
+        }
+
+        $this->ensureStorageDir();
+        $this->ensureImapConnection();
     }
 
     /**
@@ -119,20 +130,11 @@ class MailFetcher
 //            Log::info("Laatste imap Id achteraf: " . $imapIdLastFetched);
 
         }
-//        $this->mailbox->imap_id_last_fetched = $imapIdLastFetched;
-//        $this->mailbox->save();
         return [
             'status' => 'success',
             'imapIdLastFetched' => $imapIdLastFetched,
         ];
     }
-
-//    public function getImap()
-//    {
-//        $this->ensureStorageDir();
-//        $this->ensureImapConnection();
-//        return $this->imap;
-//    }
 
     private function ensureStorageDir(): void
     {
@@ -293,6 +295,7 @@ class MailFetcher
             }
         }
         catch(\Exception $e){
+            Log::info("Mailbox " . $this->mailbox->id . " op valid FALSE ivm error imap->checkMailbox");
             Log::error($e->getMessage());
             $mb->valid = false;
             $mb->login_tries = $mb->login_tries + 1;

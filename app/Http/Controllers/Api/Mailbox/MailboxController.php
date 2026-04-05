@@ -472,17 +472,17 @@ class MailboxController extends Controller
 
         $oauthApiSettings->client_id = $inputOauthApiSettings['clientId'];
         $oauthApiSettings->project_id = $inputOauthApiSettings['projectId'];
-        if(isset($inputOauthApiSettings['clientSecret'])){
+
+        if (isset($inputOauthApiSettings['clientSecret'])) {
             $oauthApiSettings->client_secret = $inputOauthApiSettings['clientSecret'];
         }
-        if(isset($inputOauthApiSettings['tenantId']) && !empty($inputOauthApiSettings['tenantId'])) {
+
+        if (isset($inputOauthApiSettings['tenantId']) && !empty($inputOauthApiSettings['tenantId'])) {
             $oauthApiSettings->tenant_id = $inputOauthApiSettings['tenantId'];
         } else {
             $oauthApiSettings->tenant_id = null;
         }
-        $oauthApiSettings->token = '';
 
         $oauthApiSettings->save();
     }
-
 }

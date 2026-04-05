@@ -117,7 +117,8 @@ class MailboxController extends Controller
         } else if ($mailbox->incoming_server_type === 'mailgun') {
             $mailgunHelper->updateMailgunForwarding($mailbox);
         } else if ($mailbox->incoming_server_type !== 'mailgun') {
-            new MailFetcher($mailbox);
+            $mailFetcher = new MailFetcher($mailbox);
+            $mailFetcher->checkMailbox();
         }
 
         return GenericResource::make($mailbox);
@@ -198,7 +199,8 @@ class MailboxController extends Controller
                 return response()->json($client, 401);
             }
         } else if ($mailbox->incoming_server_type !== 'mailgun') {
-            new MailFetcher($mailbox);
+            $mailFetcher = new MailFetcher($mailbox);
+            $mailFetcher->checkMailbox();
         }
 
         return $this->show($mailbox);
@@ -458,8 +460,6 @@ class MailboxController extends Controller
         foreach ($mailboxIdsToFetch as $mailboxIdToFetch) {
             $mailboxToFetch = Mailbox::find($mailboxIdToFetch);
             if ($mailboxToFetch?->start_fetch_mail !== null) {
-// todo WM:opschonen, maar wellicht nog even gebruiken bij de-a
-//                Log::info('Vrijgeven voor fetch emails van mailbox Id: ' . $mailboxIdToFetch);
                 $mailboxToFetch->start_fetch_mail = null;
                 $mailboxToFetch->save();
             }
@@ -472,17 +472,17 @@ class MailboxController extends Controller
 
         $oauthApiSettings->client_id = $inputOauthApiSettings['clientId'];
         $oauthApiSettings->project_id = $inputOauthApiSettings['projectId'];
-        if(isset($inputOauthApiSettings['clientSecret'])){
+
+        if (isset($inputOauthApiSettings['clientSecret'])) {
             $oauthApiSettings->client_secret = $inputOauthApiSettings['clientSecret'];
         }
-        if(isset($inputOauthApiSettings['tenantId']) && !empty($inputOauthApiSettings['tenantId'])) {
+
+        if (isset($inputOauthApiSettings['tenantId']) && !empty($inputOauthApiSettings['tenantId'])) {
             $oauthApiSettings->tenant_id = $inputOauthApiSettings['tenantId'];
         } else {
             $oauthApiSettings->tenant_id = null;
         }
-        $oauthApiSettings->token = '';
 
         $oauthApiSettings->save();
     }
-
 }

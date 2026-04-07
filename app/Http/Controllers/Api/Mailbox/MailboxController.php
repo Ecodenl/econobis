@@ -117,7 +117,8 @@ class MailboxController extends Controller
         } else if ($mailbox->incoming_server_type === 'mailgun') {
             $mailgunHelper->updateMailgunForwarding($mailbox);
         } else if ($mailbox->incoming_server_type !== 'mailgun') {
-            new MailFetcher($mailbox);
+            $mailFetcher = new MailFetcher($mailbox);
+            $mailFetcher->checkMailbox();
         }
 
         return GenericResource::make($mailbox);
@@ -198,7 +199,8 @@ class MailboxController extends Controller
                 return response()->json($client, 401);
             }
         } else if ($mailbox->incoming_server_type !== 'mailgun') {
-            new MailFetcher($mailbox);
+            $mailFetcher = new MailFetcher($mailbox);
+            $mailFetcher->checkMailbox();
         }
 
         return $this->show($mailbox);
@@ -458,8 +460,6 @@ class MailboxController extends Controller
         foreach ($mailboxIdsToFetch as $mailboxIdToFetch) {
             $mailboxToFetch = Mailbox::find($mailboxIdToFetch);
             if ($mailboxToFetch?->start_fetch_mail !== null) {
-// todo WM:opschonen, maar wellicht nog even gebruiken bij de-a
-//                Log::info('Vrijgeven voor fetch emails van mailbox Id: ' . $mailboxIdToFetch);
                 $mailboxToFetch->start_fetch_mail = null;
                 $mailboxToFetch->save();
             }
@@ -468,19 +468,36 @@ class MailboxController extends Controller
 
     private function storeOrUpdateOauthApiSettings(Mailbox $mailbox, array $inputOauthApiSettings): void
     {
-        $oauthApiSettings = MailboxOauthApiSettings::firstOrNew(['mailbox_id' => $mailbox->id]);
+        $oauthApiSettings = MailboxOauthApiSettings::firstOrNew([
+            'mailbox_id' => $mailbox->id,
+        ]);
 
-        $oauthApiSettings->client_id = $inputOauthApiSettings['clientId'];
-        $oauthApiSettings->project_id = $inputOauthApiSettings['projectId'];
-        if(isset($inputOauthApiSettings['clientSecret'])){
-            $oauthApiSettings->client_secret = $inputOauthApiSettings['clientSecret'];
+        $newClientId = $inputOauthApiSettings['clientId'] ?? '';
+        $newProjectId = $inputOauthApiSettings['projectId'] ?? '';
+        $newClientSecret = $inputOauthApiSettings['clientSecret'] ?? $oauthApiSettings->client_secret;
+        $newTenantId = !empty($inputOauthApiSettings['tenantId'])
+            ? $inputOauthApiSettings['tenantId']
+            : null;
+
+        $configChanged =
+            $oauthApiSettings->exists &&
+            (
+                $oauthApiSettings->client_id !== $newClientId ||
+                $oauthApiSettings->project_id !== $newProjectId ||
+                $oauthApiSettings->client_secret !== $newClientSecret ||
+                $oauthApiSettings->tenant_id !== $newTenantId
+            );
+
+        $oauthApiSettings->client_id = $newClientId;
+        $oauthApiSettings->project_id = $newProjectId;
+        $oauthApiSettings->client_secret = $newClientSecret;
+        $oauthApiSettings->tenant_id = $newTenantId;
+
+        if ($configChanged) {
+            $oauthApiSettings->token = '';
+            $oauthApiSettings->force_reconnect = true;
+            $oauthApiSettings->force_select_account = false;
         }
-        if(isset($inputOauthApiSettings['tenantId']) && !empty($inputOauthApiSettings['tenantId'])) {
-            $oauthApiSettings->tenant_id = $inputOauthApiSettings['tenantId'];
-        } else {
-            $oauthApiSettings->tenant_id = null;
-        }
-        $oauthApiSettings->token = '';
 
         $oauthApiSettings->save();
     }

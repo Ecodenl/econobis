@@ -12,7 +12,6 @@ use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Microsoft\Graph\Graph;
-use Microsoft\Graph\Http\GraphCollectionRequest;
 use Microsoft\Graph\Model\Message;
 use Microsoft\Graph\Model\Attachment;
 
@@ -24,7 +23,6 @@ class MailFetcherMsOauth
      * @var Mailbox
      */
     private Mailbox $mailbox;
-//    private array $fetchedEmails = [];
     private Collection $parts;
     private Graph $appClient;
     private $errorAppClientInitialization = false;
@@ -35,6 +33,30 @@ class MailFetcherMsOauth
     public function __construct(Mailbox $mailbox)
     {
         $this->mailbox = $mailbox;
+    }
+
+    public function checkMailbox(): void
+    {
+        if ($this->mailbox->only_outgoing_mailbox) {
+            return;
+        }
+
+        if ($this->mailbox->incoming_server_type !== 'ms-oauth') {
+            return;
+        }
+
+        $this->ensureStorageDir();
+        $this->ensureGraphClient();
+
+        if ($this->errorAppClientInitialization) {
+            Log::info("Mailbox " . $this->mailbox->id . " op valid FALSE ivm error AppClientInitialization");
+            $this->mailbox->valid = false;
+            $this->mailbox->save();
+        } else {
+            $this->mailbox->valid = true;
+            $this->mailbox->login_tries = 0;
+            $this->mailbox->save();
+        }
     }
 
     /**
@@ -85,21 +107,7 @@ class MailFetcherMsOauth
 
             $seenNextLinks = [];
 
-            // todo: tijdelijk max-loop guard voor testen
-//            $maxPages = 5;
-//            $pageCounter = 0;
-
             while (true) {
-                // todo: tijdelijk log voor testen
-//                Log::info("Fetching page for mailbox {$this->mailbox->id}");
-
-                // todo: tijdelijk max-loop guard voor testen
-//                $pageCounter++;
-//                if ($pageCounter > $maxPages) {
-//                    Log::warning("Test guard hit: maxPages reached");
-//                    break;
-//                }
-
                 // 1) Execute request -> GraphResponse
                 $response = $this->appClient->createRequest('GET', $url)->execute();
 
@@ -112,10 +120,6 @@ class MailFetcherMsOauth
                 }
                 $items = $body['value'] ?? [];          // array van messages (arrays)
 
-                // todo: tijdelijk log voor testen
-//                Log::info('dateLastFetched: ' . $dateLastFetched);
-//                Log::info('Aantal messages: ' . count($items) );
-
                 // 3) Hydrate naar Message objects en verwerk
                 $continue = $this->processMessagesArray($items, $dateLastFetchedUtc);
                 if (!$continue) {
@@ -124,9 +128,6 @@ class MailFetcherMsOauth
 
                 // 4) nextLink ophalen (via body of via helper)
                 $nextLink = $body['@odata.nextLink'] ?? $body['@odata.nextlink'] ?? null;
-
-                // of als jouw $response echt GraphResponse is met getNextLink():
-                // $nextLink = $response->getNextLink();
 
                 if (empty($nextLink)) {
                     break; // klaar, geen volgende pagina
@@ -144,14 +145,11 @@ class MailFetcherMsOauth
             }
 
         } catch (Exception $e) {
-//            $errorMessage = "Error mailbox " . $this->mailbox->id . " getting user's inbox: " . $e->getMessage();
-//                Log::error($errorMessage);
             return [
                 'status' => 'error',
                 'errorMessage' => "Error mailbox {$this->mailbox->id} getting user's inbox: {$e->getMessage()}",
             ];
         }
-//        }
 
         return [
             'status' => 'success',
@@ -282,7 +280,6 @@ class MailFetcherMsOauth
         // when encoding isn't UTF-8 encode texthtml to utf8.
         $currentEncodingTextHtml = mb_detect_encoding($textHtml, 'UTF-8', true);
         if (false === $currentEncodingTextHtml) {
-//            $textHtml = utf8_encode($textHtml);
             $textHtml = mb_convert_encoding($textHtml, 'UTF-8', mb_list_encodings());
         }
 
@@ -326,8 +323,6 @@ class MailFetcherMsOauth
         $this->addRelationToContacts($email);
 
         $this->storeAttachments($message->getId(), $email);
-
-//        $this->fetchedEmails[] = $email;
     }
 
     private function storeAttachments(string $messageId, Email $email)

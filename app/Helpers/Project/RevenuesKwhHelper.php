@@ -428,6 +428,15 @@ class RevenuesKwhHelper
         if(!in_array($distributionPartsKwh->status, ['processed'])){
             // Indien geen $addressEnergySupplier gevonden, dan adhoc hier aanmaken met energySupllier Onbekend.
             if(!$addressEnergySupplier){
+                Log::info('Geen AES gevonden in saveDistributionPartsKwh', [
+                    'distribution_parts_id' => $distributionPartsKwh->id,
+                    'distribution_id' => $distributionPartsKwh->distribution_id,
+                    'parts_id' => $revenuePartsKwh->id,
+                    'part_date_begin' => $partDateBegin,
+                    'part_date_end' => $partDateEnd,
+                    'address_id' => $distributionPartsKwh->distributionKwh->participation->address_id,
+                ]);
+
                 $energySupplierUnknown = EnergySupplier::where('abbreviation', 'ONB')->first();
                 $energySupplierTypeElectriciteit = EnergySupplierType::where('name', 'Elektriciteit')->first();
                 $firstNextAddressEnergySupplier = $this->getFirstNextAddressEnergySupplier($distributionPartsKwh->distributionKwh->participation->address_id, $distributionPartsKwh->partsKwh->date_begin);
@@ -446,10 +455,26 @@ class RevenuesKwhHelper
                 $addressEnergySupplierController = new AddressEnergySupplierController();
                 // voor zekerheid nog even controleren met validateAddressEnergySupplier
                 $response = $addressEnergySupplierController->validateAddressEnergySupplier($addressEnergySupplier, false);
+
+                if ($response) {
+                    Log::error('Koppeling adres met energieleverancier ONB NIET gemaakt.');
+                    Log::error($response);
+                    return;
+                }
+
                 $addressEnergySupplier->save();
             }
+            Log::info('AES bijwerken in saveDistributionPartsKwh', [
+                'id' => $addressEnergySupplier->id,
+                'energy_supplier_id' => $addressEnergySupplier->energy_supplier_id,
+                'energySupplier->name' => $addressEnergySupplier->energySupplier->name,
+                'es_number' => $addressEnergySupplier->es_number,
+            ]);
+
             $distributionPartsKwh->es_id = $addressEnergySupplier ? $addressEnergySupplier->energy_supplier_id : null;
-            $distributionPartsKwh->energy_supplier_name = $addressEnergySupplier ? $addressEnergySupplier->energySupplier->name : null;
+            $distributionPartsKwh->energy_supplier_name = $addressEnergySupplier && $addressEnergySupplier->energySupplier
+                ? $addressEnergySupplier->energySupplier->name
+                : null;
             $distributionPartsKwh->energy_supplier_number = $addressEnergySupplier ? $addressEnergySupplier->es_number: null;
 
             // hier nieuwe checks op is_energy_supplier_switch, is_end_participa
@@ -536,6 +561,7 @@ class RevenuesKwhHelper
 
     public function checkAndSplitRevenuePartsKwh(ParticipantProject $participant, $splitDate, AddressEnergySupplier $addressEnergySupplier = null)
     {
+        Log::info('checkAndSplitRevenuePartsKwh');
         $projectName = $participant ? $participant->project->name : '?';
         $projectId = $participant ? $participant->project->id : 'onbekend';
 // todo WM: clenanup
@@ -1100,7 +1126,9 @@ class RevenuesKwhHelper
         ?AddressEnergySupplier $addressEnergySupplier
     ): void {
         $distributionPartsKwh->es_id = $addressEnergySupplier ? $addressEnergySupplier->energy_supplier_id : null;
-        $distributionPartsKwh->energy_supplier_name = $addressEnergySupplier ? $addressEnergySupplier->energySupplier->name : null;
+        $distributionPartsKwh->energy_supplier_name = $addressEnergySupplier && $addressEnergySupplier->energySupplier
+            ? $addressEnergySupplier->energySupplier->name
+            : null;
         $distributionPartsKwh->energy_supplier_number = $addressEnergySupplier ? $addressEnergySupplier->es_number : null;
         $distributionPartsKwh->save();
     }

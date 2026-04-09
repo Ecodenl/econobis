@@ -82,6 +82,8 @@ use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberPolicy;
 use App\Eco\Portal\PortalUser;
 use App\Eco\Portal\PortalUserPolicy;
+use App\Eco\PortalSettings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettingsPolicy;
 use App\Eco\PortalSettingsDashboard\PortalSettingsDashboard;
 use App\Eco\PortalSettingsDashboard\PortalSettingsDashboardPolicy;
 use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
@@ -178,6 +180,7 @@ class AuthServiceProvider extends ServiceProvider
         QuotationRequestStatus::class => QuotationRequestStatusPolicy::class,
         OpportunityStatus::class => OpportunityStatusPolicy::class,
         FinancialOverview::class => FinancialOverviewPolicy::class,
+        PortalSettings::class => PortalSettingsPolicy::class,
         PortalSettingsLayout::class => PortalSettingsLayoutPolicy::class,
         PortalSettingsDashboard::class => PortalSettingsDashboardPolicy::class,
         Cooperation::class => CooperationPolicy::class,
@@ -193,17 +196,25 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-        Passport::tokensExpireIn(now()->addHours(12));
-        Passport::refreshTokensExpireIn(now()->addHours(12));
+
+        // Access tokens (user-based: portal + auth code)
+        Passport::tokensExpireIn(now()->addDays(1));
+
+        // Refresh tokens (user-based flows)
+        Passport::refreshTokensExpireIn(now()->addDays(90));
 
         /**
          * Scopes registreren voor verschillende tokens voor
-         * gebruik van app of portal.
+         * gebruik van econobis app, portal app of rest-api.
          */
         Passport::tokensCan([
             'use-app' => 'Use Econobis app',
             'use-portal' => 'Use Econobis portal',
+            'econobis-rest-api' => 'Use Econobis rest API',
         ]);
+
+        // custom consent scherm
+        Passport::authorizationView('rest-api.authorize');
 
         // Laad de custom Passport routes
         if (! $this->app->routesAreCached()) {

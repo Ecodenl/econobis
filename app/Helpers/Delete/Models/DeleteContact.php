@@ -183,9 +183,8 @@ class DeleteContact implements DeleteInterface
             $document->save();
         }
 
-        foreach ($this->contact->responses as $response){
-            $response->delete();
-        }
+        $this->contact->manualEmails()->detach();
+        $this->contact->groups()->detach();
     }
 
     /**
@@ -193,13 +192,31 @@ class DeleteContact implements DeleteInterface
      */
     public function deleteRelations()
     {
+        // softdeletable
+        $this->contact->phoneNumbers()->delete();
+        $this->contact->emailAddresses()->delete();
+        $this->contact->contactNotes()->delete();
+
+        foreach ($this->contact->freeFieldsFieldRecords as $freeFieldsFieldRecord){
+            $freeFieldsFieldRecord->freeFieldsFieldLogs()->delete();
+            $freeFieldsFieldRecord->delete();
+        }
+        foreach ($this->contact->portalFreeFieldsFieldRecords as $portalFreeFieldsFieldRecord){
+            $portalFreeFieldsFieldRecord->freeFieldsFieldLogs()->delete();
+            $portalFreeFieldsFieldRecord->delete();
+        }
+
         if($this->contact->isPerson()) {
             $this->contact->person->delete();
         }
 
-        foreach ($this->contact->emailAddresses as $emailAddress){
-            $emailAddress->delete();
-        }
+        // hard delete
+        $this->contact->contactEmails()->delete(); //// contact_email is een echte tabel met model ContactEmail (niet-softdeletable)
+        $this->contact->responses()->delete();
+        $this->contact->twinfieldNumbers()->delete();
+        $this->contact->twinfieldLogs()->delete();
+        $this->contact->availabilities()->delete();
+
     }
 
 

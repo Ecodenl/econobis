@@ -203,6 +203,11 @@ return [
         ],
     ],
 
+    'blocked_recipient_domains' => [
+        'ecogeenmail.nl',
+        'econobisgeenmail.nl',
+    ],
+
     /**
      * Voor lokaal ontwikkelen;
      * Als deze is ingeschakeld worden alle mails obv .env instellingen gestuurd ipv mailboxen in database.

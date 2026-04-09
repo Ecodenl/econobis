@@ -7,12 +7,12 @@ use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Opportunity\Opportunity;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 
 class OpportunityWorkflowHelper
 {
@@ -22,7 +22,7 @@ class OpportunityWorkflowHelper
         $this->opportunity = $opportunity;
         $this->opportunity_status = $opportunity->status;
         $this->contact = $opportunity->intake->contact;
-        $this->cooperativeName = PortalSettings::get('cooperativeName');
+        $this->cooperativeName = PortalSettings::first()?->cooperative_name;;
 
     }
 
@@ -63,8 +63,8 @@ class OpportunityWorkflowHelper
             $mailbox = Mailbox::getDefault();
         }
 
-        $mail = Mail::fromMailbox($mailbox)
-            ->to($this->contact->primaryEmailAddress);
+        $mail = MailHelper::fromMailbox($mailbox)
+            ->to($this->contact->primaryEmailAddress?->email);
         $this->mailWorkflow($emailTemplate, $mail, $mailbox);
         return true;
     }

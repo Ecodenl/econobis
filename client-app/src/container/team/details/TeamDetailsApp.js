@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { fetchTeamDetails } from '../../../actions/team/TeamDetailsActions';
 import TeamDetailsToolbar from './TeamDetailsToolbar';
-import TeamDetailsForm from './TeamDetailsForm';
+import TeamDetailsForm from './TeamDetailsFrom';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import { useParams } from 'react-router-dom';

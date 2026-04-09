@@ -11,10 +11,10 @@ use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\Organisation\Organisation;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
-use Illuminate\Support\Facades\Mail;
 
 class IntakeWorkflowHelper
 {
@@ -25,7 +25,7 @@ class IntakeWorkflowHelper
         $this->opportunity = null;
         $this->quotationRequest = null;
         $this->measureCategory = $measureCategory;
-        $this->cooperativeName = PortalSettings::get('cooperativeName');
+        $this->cooperativeName = PortalSettings::first()?->cooperative_name;;
 
     }
 
@@ -118,7 +118,7 @@ class IntakeWorkflowHelper
             return false;
         }
 
-        $mail = Mail::to($organisationContactperson->primaryEmailAddress->email);
+        $mail = MailHelper::to($organisationContactperson->primaryEmailAddress->email);
         $this->mailWorkflow($emailTemplate, $mail, $organisationContactperson);
         return true;
     }

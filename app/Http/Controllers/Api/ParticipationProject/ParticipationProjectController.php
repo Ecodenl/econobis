@@ -34,9 +34,10 @@ use App\Helpers\Delete\Models\DeleteParticipation;
 use App\Helpers\Delete\Models\DeleteRevenue;
 use App\Helpers\Excel\ParticipantExcelHelper;
 use App\Helpers\Excel\ParticipantExcelHelperHelper;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Project\RevenuesKwhHelper;
 use App\Helpers\RequestInput\RequestInput;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
@@ -59,7 +60,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -778,8 +778,8 @@ class ParticipationProjectController extends ApiController
 
         $participantIds = $request->input('participantIds');
         $subject = $request->input('subject');
-        $portalName = PortalSettings::get('portalName');
-        $cooperativeName = PortalSettings::get('cooperativeName');
+        $portalName = PortalSettings::first()?->portal_name;
+        $cooperativeName = PortalSettings::first()?->cooperative_name;
         $subject = str_replace('{cooperatie_portal_naam}', $portalName, $subject);
         $subject = str_replace('{cooperatie_naam}', $cooperativeName, $subject);
 
@@ -796,7 +796,7 @@ class ParticipationProjectController extends ApiController
 
             //send email
             if ($primaryEmailAddress) {
-                $email = Mail::to($primaryEmailAddress->email);
+                $email = MailHelper::to($primaryEmailAddress->email);
                 if (!$subject) {
                     $subject = 'Participant rapportage Econobis';
                 }
@@ -915,8 +915,8 @@ class ParticipationProjectController extends ApiController
     {
         $this->authorize('manage', ParticipantProject::class);
 
-        $portalName = PortalSettings::get('portalName');
-        $cooperativeName = PortalSettings::get('cooperativeName');
+        $portalName = PortalSettings::first()?->portal_name;
+        $cooperativeName = PortalSettings::first()?->cooperative_name;
         $subject = str_replace('{cooperatie_portal_naam}', $portalName, $subject);
         $subject = str_replace('{cooperatie_naam}', $cooperativeName, $subject);
 
@@ -1020,7 +1020,7 @@ class ParticipationProjectController extends ApiController
                     $fromName = \Config::get('mail.from.name');
                 }
 
-                $email = Mail::fromMailbox($mailbox)
+                $email = MailHelper::fromMailbox($mailbox)
                     ->to($primaryEmailAddress->email);
                 if(!$subject){
                     $subject = 'Participant rapportage Econobis';
@@ -1087,8 +1087,26 @@ class ParticipationProjectController extends ApiController
 
     public function peekParticipantByIds(Request $request)
     {
-        $participations = ParticipantProject::whereIn('id',
-            $request->input('ids'))->with('contact')->get();
+        $ids = $request->input('ids', []);
+
+        if (empty($ids)) {
+            return ParticipantProjectPeek::collection(collect());
+        }
+
+        $participations = ParticipantProject::query()
+            ->where(function ($q) use ($ids) {
+                foreach (array_chunk($ids, 900) as $chunk) {
+                    $q->orWhereIn('id', $chunk);
+                }
+            })
+            ->with(['contact'])
+            ->orderBy(
+                Contact::select('full_name')
+                    ->whereColumn('contacts.id', 'participation_project.contact_id'),
+                'asc'
+            )
+            ->orderBy('participation_project.id', 'asc')
+            ->get();
 
         return ParticipantProjectPeek::collection($participations);
     }

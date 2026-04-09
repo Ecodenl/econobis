@@ -8,6 +8,7 @@ use App\Console\Commands\contactGroupsContactsForReport;
 use App\Console\Commands\createTaskAtEndDateAddress;
 use App\Console\Commands\deleteEmailDefinitive;
 use App\Console\Commands\getAllEmail;
+use App\Console\Commands\Install\MigrateEnvToPrivateCaptcha;
 use App\Console\Commands\processCommandRunsToShared;
 use App\Console\Commands\processStateAllMembersLaposta;
 use App\Console\Commands\processTwinfieldCustomer;
@@ -53,6 +54,7 @@ class Kernel extends ConsoleKernel
         processWorkflowEmailQuotationRequestStatus::class,
         checkWrongTwinfieldInvoices::class,
         contactGroupsContactsForReport::class,
+        MigrateEnvToPrivateCaptcha::class,
     ];
 
     /**
@@ -78,7 +80,7 @@ class Kernel extends ConsoleKernel
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('14:55');
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('17:55');
 
-                $schedule->command('check:controleScript')->timezone('Europe/Amsterdam')->dailyAt('20:55');
+                $schedule->command('check:controleScripts')->timezone('Europe/Amsterdam')->dailyAt('20:55');
 
                 $schedule->command('laposta:processStateAllMembersLaposta')->timezone('Europe/Amsterdam')->dailyAt('21:41');
 
@@ -124,7 +126,7 @@ class Kernel extends ConsoleKernel
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('14:56');
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('17:56');
 
-                $schedule->command('check:controleScript')->timezone('Europe/Amsterdam')->dailyAt('21:00');
+                $schedule->command('check:controleScripts')->timezone('Europe/Amsterdam')->dailyAt('21:00');
 
                 $schedule->command('laposta:processStateAllMembersLaposta')->timezone('Europe/Amsterdam')->dailyAt('21:56');
 
@@ -170,7 +172,7 @@ class Kernel extends ConsoleKernel
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('14:57');
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('17:57');
 
-                $schedule->command('check:controleScript')->timezone('Europe/Amsterdam')->dailyAt('21:05');
+                $schedule->command('check:controleScripts')->timezone('Europe/Amsterdam')->dailyAt('21:05');
 
                 $schedule->command('laposta:processStateAllMembersLaposta')->timezone('Europe/Amsterdam')->dailyAt('22:11');
 
@@ -216,7 +218,7 @@ class Kernel extends ConsoleKernel
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('14:58');
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('17:58');
 
-                $schedule->command('check:controleScript')->timezone('Europe/Amsterdam')->dailyAt('21:10');
+                $schedule->command('check:controleScripts')->timezone('Europe/Amsterdam')->dailyAt('21:10');
 
                 $schedule->command('laposta:processStateAllMembersLaposta')->timezone('Europe/Amsterdam')->dailyAt('22:26');
 
@@ -262,7 +264,7 @@ class Kernel extends ConsoleKernel
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('14:59');
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('17:59');
 
-                $schedule->command('check:controleScript')->timezone('Europe/Amsterdam')->dailyAt('21:15');
+                $schedule->command('check:controleScripts')->timezone('Europe/Amsterdam')->dailyAt('21:15');
 
                 $schedule->command('laposta:processStateAllMembersLaposta')->timezone('Europe/Amsterdam')->dailyAt('22:41');
 

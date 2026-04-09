@@ -356,10 +356,15 @@ Route::namespace('Api')
         Route::get('mailbox/receive/from-mailboxes-user', 'Mailbox\MailboxController@receiveMailFromMailboxesUser');
         Route::get('mailbox/{mailbox}/make-primary', 'Mailbox\MailboxController@makePrimary');
 
+        Route::post('mailbox/{mailbox}/ms-oauth/force-reconnect', [MailboxController::class, 'forceMsOauthReconnect']);
+        Route::post('mailbox/{mailbox}/ms-oauth/force-select-account', [MailboxController::class, 'forceMsOauthSelectAccount']);
+
+
         /**
          * Districts
          */
         Route::get('district', [\App\Http\Controllers\Api\District\DistrictController::class, 'index']);
+        Route::get('district/peek/{active?}', [\App\Http\Controllers\Api\District\DistrictController::class, 'peek']);
         Route::get('district/{district}', [\App\Http\Controllers\Api\District\DistrictController::class, 'show']);
         Route::get('district/{district}/calendar-items', [\App\Http\Controllers\Api\District\DistrictController::class, 'getCalendarItems']);
         Route::post('district', [\App\Http\Controllers\Api\District\DistrictController::class, 'create']);
@@ -480,6 +485,8 @@ Route::namespace('Api')
         Route::post('team/{team}/{user}/detach', 'Team\TeamController@detachUser');
         Route::post('team/{team}/{contactGroup}/attach-contact-group', 'Team\TeamController@attachContactGroup');
         Route::post('team/{team}/{contactGroup}/detach-contact-group', 'Team\TeamController@detachContactGroup');
+        Route::post('team/{team}/{district}/attach-district', 'Team\TeamController@attachDistrict');
+        Route::post('team/{team}/{district}/detach-district', 'Team\TeamController@detachDistrict');
         Route::post('team/{team}/{documentCreatedFrom}/attach-document-created-from', 'Team\TeamController@attachDocumentCreatedFrom');
         Route::post('team/{team}/{documentCreatedFrom}/detach-document-created-from', 'Team\TeamController@detachDocumentCreatedFrom');
 
@@ -707,10 +714,6 @@ Route::namespace('Api')
         Route::get('opportunity-status/jory', 'Opportunity\OpportunityStatusController@jory');
         Route::post('opportunity-status/{opportunityStatus}', 'Opportunity\OpportunityStatusController@update');
 
-        Route::get('setting', 'Setting\SettingController@get');
-        Route::get('setting/multiple', 'Setting\SettingController@multiple');
-        Route::post('setting', 'Setting\SettingController@store');
-
         Route::get('financial-overview/jory', 'FinancialOverview\FinancialOverviewController@jory');
         Route::post('financial-overview', 'FinancialOverview\FinancialOverviewController@store');
         Route::post('financial-overview/{financialOverview}', 'FinancialOverview\FinancialOverviewController@update');
@@ -738,14 +741,17 @@ Route::namespace('Api')
         Route::get('financial-overview-post/{financialOverviewPost}/download', 'FinancialOverview\FinancialOverviewPostController@downloadFinancialOverviewPost');
         Route::post('financial-overview-post/{financialOverviewPost}/delete', 'FinancialOverview\FinancialOverviewPostController@deleteFinancialOverviewPost');
 
+        Route::get('portal-settings/jory', 'PortalSettings\PortalSettingsController@jory');
+        Route::post('portal-settings/{portalSettings}', 'PortalSettings\PortalSettingsController@update');
+
+        Route::get('portal-settings-dashboard/jory', 'PortalSettingsDashboard\PortalSettingsDashboardController@jory');
+        Route::post('portal-settings-dashboard/{portalSettingsDashboard}', 'PortalSettingsDashboard\PortalSettingsDashboardController@update');
+
         Route::get('portal-settings-layout/jory', 'PortalSettingsLayout\PortalSettingsLayoutController@jory');
         Route::get('portal-settings-layout/default', 'PortalSettingsLayout\PortalSettingsLayoutController@getDefault');
         Route::post('portal-settings-layout', 'PortalSettingsLayout\PortalSettingsLayoutController@store');
         Route::post('portal-settings-layout/{portalSettingsLayout}', 'PortalSettingsLayout\PortalSettingsLayoutController@update');
         Route::post('portal-settings-layout/{portalSettingsLayout}/delete', 'PortalSettingsLayout\PortalSettingsLayoutController@destroy');
-
-        Route::get('portal-settings-dashboard/jory', 'PortalSettingsDashboard\PortalSettingsDashboardController@jory');
-        Route::post('portal-settings-dashboard/{portalSettingsDashboard}', 'PortalSettingsDashboard\PortalSettingsDashboardController@update');
 
         Route::get('portal-settings-dashboard-widget/jory', 'PortalSettingsDashboard\PortalSettingsDashboardWidgetController@jory');
         Route::post('portal-settings-dashboard-widget', 'PortalSettingsDashboard\PortalSettingsDashboardWidgetController@store');

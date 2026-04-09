@@ -4,11 +4,11 @@ namespace App\Console\Commands\Checks;
 
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
+use App\Helpers\Mail\MailHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 
 class checkWrongRevenueDistributionPartsKwhIndicatorFields extends Command
 {
@@ -18,7 +18,7 @@ class checkWrongRevenueDistributionPartsKwhIndicatorFields extends Command
      * @var string
      */
     protected $signature = 'revenue:checkWrongRevenueDistributionPartsKwhIndicatorFields {--recover=false}';
-    protected $mailTo = 'xaris@econobis.nl';
+    protected $mailTo = 'xaris.software@econobis.nl';
 
     /**
      * The console command description.
@@ -166,7 +166,7 @@ class checkWrongRevenueDistributionPartsKwhIndicatorFields extends Command
             ;
         }
 
-        $mail = Mail::to($this->mailTo);
+        $mail = MailHelper::to($this->mailTo);
         $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>.$subject.</title></head><body><p>'. $subject . '</p>' . $wrongRevenueDistributionPartsKwhHtml . '</body></html>';
 
         $mail->subject = $subject;

@@ -41,7 +41,7 @@ use App\Eco\Task\Task;
 use App\Eco\Twinfield\TwinfieldCustomerNumber;
 use App\Eco\Twinfield\TwinfieldLog;
 use App\Eco\User\User;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 use App\Http\Resources\ContactGroup\GridContactGroup;
 use App\Http\Traits\Encryptable;
 use Carbon\Carbon;
@@ -787,7 +787,7 @@ class Contact extends Model
             });
         })->orderBy('name')->get();
         if ($administrations->count() == 0) {
-            $defaultAdministrationId = PortalSettings::get('defaultAdministrationId');
+            $defaultAdministrationId = PortalSettings::first()?->default_administration_id;
             if (!empty($defaultAdministrationId)) {
                 $administrations = Administration::whereId($defaultAdministrationId)->get();
             }

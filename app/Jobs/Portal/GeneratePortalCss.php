@@ -12,7 +12,6 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Spatie\Valuestore\Valuestore;
 
 class GeneratePortalCss implements ShouldQueue
 {
@@ -44,6 +43,7 @@ class GeneratePortalCss implements ShouldQueue
         try{
             if(Config::get('app.env') == "local")
             {
+                Log::info('Lokaal 3x aanmaken');
                 Storage::disk('public_portal_local')->put('portal.css', $html);
                 Storage::disk('customer_portal_app_build_local')->put('portal.css', $html);
                 Storage::disk('customer_portal_app_public_local')->put('portal.css', $html);
@@ -55,8 +55,4 @@ class GeneratePortalCss implements ShouldQueue
         }
     }
 
-    protected function getStore(): Valuestore
-    {
-        return Valuestore::make(storage_path('app' . DIRECTORY_SEPARATOR . 'portal-settings.json'));
-    }
 }

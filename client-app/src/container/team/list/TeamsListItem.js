@@ -42,7 +42,7 @@ class TeamsListItem extends Component {
     }
 
     render() {
-        const { id, name, users, contactGroups, documentCreatedFroms = [] } = this.props;
+        const { id, name, users, contactGroups, documentCreatedFroms, districts = [] } = this.props;
 
         return (
             <tr
@@ -57,6 +57,7 @@ class TeamsListItem extends Component {
                 <td>
                     {documentCreatedFroms.length > 0 ? <Icon className="mybtn-success" size={14} icon={check} /> : ''}
                 </td>
+                <td>{districts.length > 0 ? <Icon className="mybtn-success" size={14} icon={check} /> : ''}</td>
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>

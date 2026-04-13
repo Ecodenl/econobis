@@ -3,8 +3,8 @@
 window.__SERVER_DATA__ = window.__SERVER_DATA__ || {};
 
 window.__SERVER_DATA__.base_url = 'https://xxx.yyy.zz/portal';
-window.__SERVER_DATA__.client_id = '2';
-window.__SERVER_DATA__.client_key = '9pxl...9Imh';
+// window.__SERVER_DATA__.client_id = '2';
+// window.__SERVER_DATA__.client_key = '9pxl...9Imh';
 
 // PrivateCaptcha keys
 window.__SERVER_DATA__.privatecaptcha_sitekey_nl = '16h1...ceef';

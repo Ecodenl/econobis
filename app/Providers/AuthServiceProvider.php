@@ -221,7 +221,7 @@ class AuthServiceProvider extends ServiceProvider
             require base_path('routes/passport.php');
         }
 
-        Passport::loadKeysFrom(__DIR__ . '/../../secrets/oauth');
+        Passport::loadKeysFrom(config('passport.keys_path', base_path('secrets/oauth')));
 
         /**
          * Helperfuncties op Auth facade toevoegen. Zo kan via

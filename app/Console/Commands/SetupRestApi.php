@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -104,8 +105,6 @@ class SetupRestApi extends Command
 
     private function upsertClientCredentialsClient(string $name, bool $force): array
     {
-        // We gebruiken oauth_clients zoals Passport dat doet.
-        // Voor client credentials is het voldoende dat het geen password/personal_access client is.
         $existing = DB::table('oauth_clients')
             ->where('name', $name)
             ->where('revoked', false)
@@ -116,7 +115,9 @@ class SetupRestApi extends Command
         }
 
         if ($existing && $force) {
-            DB::table('oauth_clients')->where('id', $existing->id)->update(['revoked' => true, 'updated_at' => now()]);
+            DB::table('oauth_clients')
+                ->where('id', $existing->id)
+                ->update(['revoked' => true, 'updated_at' => now()]);
         }
 
         $plain = Str::random(40);
@@ -124,7 +125,7 @@ class SetupRestApi extends Command
         $id = DB::table('oauth_clients')->insertGetId([
             'user_id' => null,
             'name' => $name,
-            'secret' => $plain,
+            'secret' => Hash::make($plain),
             'provider' => 'users',
             'redirect' => '',
             'personal_access_client' => false,
@@ -134,9 +135,12 @@ class SetupRestApi extends Command
             'updated_at' => now(),
         ]);
 
-        return ['created' => true, 'id' => $id, 'plain_secret' => $plain];
+        return [
+            'created' => true,
+            'id' => $id,
+            'plain_secret' => $plain,
+        ];
     }
-
     private function upsertAuthCodeClient(string $name, string $redirect, bool $force): array
     {
         $existing = DB::table('oauth_clients')
@@ -146,6 +150,7 @@ class SetupRestApi extends Command
 
         if ($existing && !$force) {
             $updatedRedirect = false;
+
             if (($existing->redirect ?? '') !== $redirect) {
                 DB::table('oauth_clients')->where('id', $existing->id)->update([
                     'redirect' => $redirect,
@@ -154,11 +159,17 @@ class SetupRestApi extends Command
                 $updatedRedirect = true;
             }
 
-            return ['created' => false, 'id' => $existing->id, 'updated_redirect' => $updatedRedirect];
+            return [
+                'created' => false,
+                'id' => $existing->id,
+                'updated_redirect' => $updatedRedirect,
+            ];
         }
 
         if ($existing && $force) {
-            DB::table('oauth_clients')->where('id', $existing->id)->update(['revoked' => true, 'updated_at' => now()]);
+            DB::table('oauth_clients')
+                ->where('id', $existing->id)
+                ->update(['revoked' => true, 'updated_at' => now()]);
         }
 
         $plain = Str::random(40);
@@ -166,7 +177,7 @@ class SetupRestApi extends Command
         $id = DB::table('oauth_clients')->insertGetId([
             'user_id' => null,
             'name' => $name,
-            'secret' => $plain,
+            'secret' => Hash::make($plain),
             'provider' => 'users',
             'redirect' => $redirect,
             'personal_access_client' => false,
@@ -176,6 +187,10 @@ class SetupRestApi extends Command
             'updated_at' => now(),
         ]);
 
-        return ['created' => true, 'id' => $id, 'plain_secret' => $plain];
+        return [
+            'created' => true,
+            'id' => $id,
+            'plain_secret' => $plain,
+        ];
     }
 }

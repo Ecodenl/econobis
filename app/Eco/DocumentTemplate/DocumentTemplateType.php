@@ -9,7 +9,6 @@
 namespace App\Eco\DocumentTemplate;
 
 
-use JosKolenberg\Enum\Enum;
 use JosKolenberg\Enum\EnumWithIdAndName;
 
 class DocumentTemplateType extends EnumWithIdAndName

@@ -9,7 +9,6 @@
 namespace App\Eco\Document;
 
 
-use JosKolenberg\Enum\Enum;
 use JosKolenberg\Enum\EnumWithIdAndName;
 
 class DocumentGroup extends EnumWithIdAndName

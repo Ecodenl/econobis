@@ -9,7 +9,6 @@
 namespace App\Eco\Contact;
 
 
-use JosKolenberg\Enum\Enum;
 use JosKolenberg\Enum\EnumWithIdAndName;
 
 class ContactStatus extends EnumWithIdAndName

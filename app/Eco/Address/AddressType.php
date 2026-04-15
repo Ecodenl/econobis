@@ -1,28 +1,27 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Beheerder
- * Date: 06-10-2017
- * Time: 15:19
- */
 
 namespace App\Eco\Address;
 
-use JosKolenberg\Enum\EnumWithIdAndName;
+use App\Support\Enum\HasLegacyEnumHelpers;
 
-class AddressType extends EnumWithIdAndName
+enum AddressType: string
 {
+    use HasLegacyEnumHelpers;
 
-    static $all;
+    case DELIVER = 'deliver';
+    case INVOICE = 'invoice';
+    case POSTAL = 'postal';
+    case VISIT = 'visit';
+    case OLD = 'old';
 
-    protected static function seed()
+    public function getName(): string
     {
-        return [
-            new static('deliver', 'Bezorg'),
-            new static('invoice', 'Nota'),
-            new static('postal', 'Post'),
-            new static('visit', 'Bezoek'),
-            new static('old', 'Oud'),
-        ];
+        return match ($this) {
+            self::DELIVER => 'Bezorg',
+            self::INVOICE => 'Nota',
+            self::POSTAL => 'Post',
+            self::VISIT => 'Bezoek',
+            self::OLD => 'Oud',
+        };
     }
 }

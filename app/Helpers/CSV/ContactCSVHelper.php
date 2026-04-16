@@ -61,10 +61,10 @@ class ContactCSVHelper
                 // Addresses
                 if ($contact->addresses) {
                     foreach (AddressType::collection() as $type) {
-                        $address = $contact->addresses()->where('type_id', $type->id)->where('primary', true)->first();
+                        $address = $contact->addresses()->where('type_id', $type->value)->where('primary', true)->first();
                         if(empty($address))
                         {
-                            $address = $contact->addresses()->where('type_id', $type->id)->first();
+                            $address = $contact->addresses()->where('type_id', $type->value)->first();
                         }
 
                         $addressArr = [];
@@ -78,7 +78,7 @@ class ContactCSVHelper
                         $addressArr['districtName'] = (($address && $address->getSharedPostalCodesHouseNumber()) ? $address->getSharedPostalCodesHouseNumber()->sharedArea->district_name : '');
                         $addressArr['country'] = (($address && $address->country) ? $address->country->name : '');
 
-                        $contact['address_' . $type->id] = $addressArr;
+                        $contact['address_' . $type->value] = $addressArr;
                     }
                 }
 
@@ -398,7 +398,7 @@ class ContactCSVHelper
                     $addressArr['postal_code'] = ($address ? $address->postal_code : '');
                     $addressArr['city'] = ($address ? $address->city : '');
                     $addressArr['country'] = (($address && $address->country) ? $address->country->name : '');
-                    $addressArr['type'] = (($address && $address->getType() && $address->getType()->name) ? $address->getType()->name : '');
+                    $addressArr['type'] = $address?->getType()?->getName() ?? '';
                     $contact['address'] = $addressArr;
                 }
             }

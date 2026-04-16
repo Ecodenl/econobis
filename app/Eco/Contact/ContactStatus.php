@@ -1,37 +1,37 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Beheerder
- * Date: 26-10-2017
- * Time: 11:55
- */
 
 namespace App\Eco\Contact;
 
+use App\Support\Enum\HasLegacyEnumHelpers;
 
-use JosKolenberg\Enum\EnumWithIdAndName;
-
-class ContactStatus extends EnumWithIdAndName
+enum ContactStatus: string
 {
+    use HasLegacyEnumHelpers;
 
-    /**
-     * Seed the class with Enum instances
-     *
-     * @return array
-     */
-    protected static function seed()
+    case INTERESTED = 'interested';
+    case MEMBER = 'member';
+    case MEMBER_ASPIRANT = 'memberAspirant';
+    case MEMBER_YOUTH = 'memberYouth';
+    case STOPPED = 'stopped';
+    case DONOR = 'donor';
+    case NONE = 'none';
+    case PORTAL = 'portal';
+    case WEBFORM = 'webform';
+    case IMPORT_ES_CLIENT = 'importEsClient';
+
+    public function getName(): string
     {
-        return [
-            new static('interested', 'Belangstellend'),
-            new static('member', 'Lid'),
-            new static('memberAspirant', 'Aspirantlid'),
-            new static('memberYouth', 'Jeugdlid'),
-            new static('stopped', 'Uitgeschreven'),
-            new static('donor', 'Donateur'),
-            new static('none', 'Geen'),
-            new static('portal', 'Portal'),
-            new static('webform', 'Webformulier'),
-            new static('importEsClient', 'Import energieklant'),
-        ];
+        return match ($this) {
+            self::INTERESTED => 'Belangstellend',
+            self::MEMBER => 'Lid',
+            self::MEMBER_ASPIRANT => 'Aspirantlid',
+            self::MEMBER_YOUTH => 'Jeugdlid',
+            self::STOPPED => 'Uitgeschreven',
+            self::DONOR => 'Donateur',
+            self::NONE => 'Geen',
+            self::PORTAL => 'Portal',
+            self::WEBFORM => 'Webformulier',
+            self::IMPORT_ES_CLIENT => 'Import energieklant',
+        };
     }
 }

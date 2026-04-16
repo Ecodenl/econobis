@@ -211,9 +211,9 @@ class ParticipantExcelHelper
 
                 if ($participant->contact->addresses) {
                     foreach (AddressType::collection() as $type) {
-                        $address = $participant->contact->addresses()->where('type_id', $type->id)->where('primary', true)->first();
+                        $address = $participant->contact->addresses()->where('type_id', $type->value)->where('primary', true)->first();
                         if(!$address){
-                            $address = $participant->contact->addresses()->where('type_id', $type->id)->first();
+                            $address = $participant->contact->addresses()->where('type_id', $type->value)->first();
                         }
 
                         $addressArr = [];
@@ -224,7 +224,7 @@ class ParticipantExcelHelper
                         $addressArr['city'] = ($address ? $address->city : '');
                         $addressArr['country'] = (($address && $address->country) ? $address->country->name : '');
 
-                        $participant['address_' . $type->id] = $addressArr;
+                        $participant['address_' . $type->value] = $addressArr;
                     }
                 }
 

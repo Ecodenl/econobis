@@ -1,40 +1,41 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Beheerder
- * Date: 26-10-2017
- * Time: 11:55
- */
 
 namespace App\Eco\Invoice;
 
-use JosKolenberg\Enum\EnumWithIdAndName;
+use App\Support\Enum\HasLegacyEnumHelpers;
 
-class InvoiceStatus extends EnumWithIdAndName
+enum InvoiceStatus: string
 {
+    use HasLegacyEnumHelpers;
 
-    /**
-     * Seed the class with Enum instances
-     *-
-     * @return array
-     */
-    protected static function seed()
+    case TO_SEND = 'to-send';
+    case IN_PROGRESS = 'in-progress';
+    case ERROR_MAKING = 'error-making';
+    case IS_SENDING = 'is-sending';
+    CASE ERROR_SENDING = 'ERROR-SENDING';
+    case IS_RESENDING = 'is-resending';
+    case SENT = 'sent';
+    case IS_EXPORTING = 'is-exporting';
+    case ERROR_EXPORTING = 'error-exporting';
+    case EXPORTED = 'exported';
+    case PAID = 'paid';
+    case IRRECOVERABLE = 'irrecoverable';
+
+    public function getName(): string
     {
-        //Also edit InvoicesListFilter!
-        //Also edit InvoiceObserver!
-        return [
-            new static('to-send', 'Te verzenden'),
-            new static('in-progress', 'Wordt definitief gemaakt'),
-            new static('error-making', 'Fout bij maken'),
-            new static('is-sending', 'Wordt verstuurd'),
-            new static('error-sending', 'Opnieuw te verzenden'),
-            new static('is-resending', 'Wordt opnieuw verstuurd'),
-            new static('sent', 'Verzonden'),
-            new static('is-exporting', 'Wordt gesynchroniseerd naar Twinfield'),
-            new static('error-exporting', 'Fout bij synchroniseren naar Twinfield'),
-            new static('exported', 'Geboekt naar Twinfield'),
-            new static('paid', 'Betaald'),
-            new static('irrecoverable', 'Oninbaar'),
-        ];
+        return match ($this) {
+            self::TO_SEND => 'Te verzenden',
+            self::IN_PROGRESS => 'Wordt definitief gemaakt',
+            self::ERROR_MAKING => 'Fout bij maken',
+            self::IS_SENDING => 'Wordt verstuurd',
+            self::ERROR_SENDING => 'Opnieuw te verzenden',
+            self::IS_RESENDING => 'Wordt opnieuw verstuurd',
+            self::SENT => 'Verzonden',
+            self::IS_EXPORTING => 'Wordt gesynchroniseerd naar Twinfield',
+            self::ERROR_EXPORTING => 'Fout bij synchroniseren naar Twinfield',
+            self::EXPORTED => 'Geboekt naar Twinfield',
+            self::PAID => 'Betaald',
+            self::IRRECOVERABLE => 'Oninbaar',
+        };
     }
 }

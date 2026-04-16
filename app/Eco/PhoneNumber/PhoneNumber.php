@@ -17,6 +17,7 @@ class PhoneNumber extends Model
 
     protected $casts = [
         'primary' => 'boolean',
+        'type_id' => PhoneNumberType::class,
     ];
 
     public function contact()

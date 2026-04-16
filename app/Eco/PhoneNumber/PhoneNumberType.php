@@ -1,29 +1,23 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Beheerder
- * Date: 06-10-2017
- * Time: 15:19
- */
 
 namespace App\Eco\PhoneNumber;
 
-
 use App\Eco\AbstractType\AbstractType;
 use App\Eco\AbstractType\TypeCollection;
-use JosKolenberg\Enum\EnumWithIdAndName;
+use App\Support\Enum\HasLegacyEnumHelpers;
 
-class PhoneNumberType extends EnumWithIdAndName
+enum PhoneNumberType: string
 {
+    use HasLegacyEnumHelpers;
 
-    const WORK = 'work';
-    const HOME = 'home';
+    case WORK = 'work';
+    case HOME = 'home';
 
-    protected static function seed()
+    public function getName(): string
     {
-        return [
-            new static(static::WORK, 'Werk'),
-            new static(static::HOME, 'Prive'),
-        ];
+        return match ($this) {
+            self::WORK => 'Werk',
+            self::HOME => 'Prive',
+        };
     }
 }

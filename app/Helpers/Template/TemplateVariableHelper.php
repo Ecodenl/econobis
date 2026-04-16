@@ -536,7 +536,7 @@ class TemplateVariableHelper
             case 'contact_telefoonnummer':
                 return optional(optional($model->contact)->primaryphoneNumber)->number;
             case 'type':
-                return $model->type->name;
+                return $model->typ?->getName() ?? '';
             case 'notitie':
                 return $model->note;
             case 'datum_afhandelen':
@@ -1484,7 +1484,7 @@ class TemplateVariableHelper
             case 'project':
                 return $model->project->name;
             case 'type_verdeling':
-                return $model->getDistributionType() ? $model->getDistributionType()->name : '';
+                return $model->getDistributionType()?->getName() ?? '';
             case 'peildatum':
                 return $model->date_reference ? Carbon::parse($model->date_reference)->format('d-m-Y') : null;
             case 'datum_definitief':
@@ -1624,7 +1624,7 @@ class TemplateVariableHelper
             case 'project':
                 return $model->project->name;
             case 'type_verdeling':
-                return ProjectRevenueDistributionType::get('inPossessionOf') ? ProjectRevenueDistributionType::get('inPossessionOf')->name : '';
+                return ProjectRevenueDistributionType::get('inPossessionOf')?->getName() ?? '';
             case 'datum_definitief':
                 return $model->date_confirmed ? Carbon::parse($model->date_confirmed)->format('d-m-Y') : null;
             case 'datum_uitkeren':
@@ -1672,7 +1672,7 @@ class TemplateVariableHelper
             case 'project':
                 return $model->revenuesKwh->project->name;
             case 'type_verdeling':
-                return ProjectRevenueDistributionType::get('inPossessionOf') ? ProjectRevenueDistributionType::get('inPossessionOf')->name : '';
+                return ProjectRevenueDistributionType::get('inPossessionOf')?->getName() ?? '';
             case 'datum_definitief':
                 return $model->date_confirmed ? Carbon::parse($model->date_confirmed)->format('d-m-Y') : null;
             case 'datum_uitkeren':
@@ -2098,7 +2098,7 @@ class TemplateVariableHelper
                 foreach($model->opportunity->intake->measuresRequested as $measureRequested){
                     $tabel .= "
                     <tr>
-                      <td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal'>" . ( $measureRequested->name ? $measureRequested->name : '' ) . "</td>
+                      <td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal'>" . ( $measureRequested->name ?: '' ) . "</td>
                     </tr>";
                 }
                 $tabel .= "</table>";
@@ -2217,9 +2217,9 @@ class TemplateVariableHelper
             case 'status':
                 return $model->getStatus() ? $model->getStatus()->name : '';
             case 'betaalwijze':
-                return $model->getPaymentType() ? $model->getPaymentType()->name : '';
+                return $model->getPaymentType()?->getName() ?? '';
             case 'incasso_frequentie':
-                return $model->getCollectionFrequency() ? $model->getCollectionFrequency()->name : '';
+                return $model->getCollectionFrequency()?->getName() ?? '';
             case 'contact_naam':
                 if ($model->contact->type_id == 'person') {
                     $prefix = $model->contact->person->last_name_prefix;

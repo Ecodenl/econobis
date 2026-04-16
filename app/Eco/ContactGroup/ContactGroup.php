@@ -424,7 +424,7 @@ class ContactGroup extends Model
 
     //prevents deleting in grid
     public function getIsUsedInComposedGroupAttribute(){
-        $composedGroups = ContactGroup::where('type_id', 'composed')->get();
+        $composedGroups = ContactGroup::where('type_id', ContactGroupType::COMPOSED->value)->get();
 
         foreach ($composedGroups as $composedGroup){
             foreach ($composedGroup->contactGroups as $contactGroup){
@@ -441,7 +441,7 @@ class ContactGroup extends Model
     }
 
     public function getParentGroupsArrayAttribute(){
-        $composedGroups = ContactGroup::where('type_id', 'composed')->get();
+        $composedGroups = ContactGroup::where('type_id', ContactGroupType::COMPOSED->value)->get();
 
         $parentGroups = [];
 
@@ -457,7 +457,7 @@ class ContactGroup extends Model
     }
 
     public function getParentGroupsExceptedArrayAttribute(){
-        $composedGroups = ContactGroup::where('type_id', 'composed')->get();
+        $composedGroups = ContactGroup::where('type_id', ContactGroupType::COMPOSED->value)->get();
 
         $parentGroups = [];
 

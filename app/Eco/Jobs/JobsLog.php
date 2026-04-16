@@ -25,6 +25,9 @@ class JobsLog extends Model
         = [
             'id'
         ];
+    protected $casts = [
+        'job_category_id' => JobCategory::class,
+    ];
 
     public function user()
     {
@@ -42,6 +45,6 @@ class JobsLog extends Model
     {
         if (!$this->job_category_id) return '';
 
-        return JobCategory::get($this->job_category_id)->name;
+        return $this->job_category_id?->getName() ?? '';
     }
 }

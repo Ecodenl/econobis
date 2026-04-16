@@ -1,26 +1,25 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Beheerder
- * Date: 11-10-2017
- * Time: 11:29
- */
-
 namespace App\Eco\ContactGroup;
 
-use JosKolenberg\Enum\EnumWithIdAndName;
+use App\Support\Enum\HasLegacyEnumHelpers;
 
-class ContactGroupType extends EnumWithIdAndName
+enum ContactGroupType: string
 {
-    protected static function seed()
-    {
-        return [
-            new static('static', 'Statisch'),
-            new static('dynamic', 'Dynamisch'),
-            new static('composed', 'Samengesteld'),
-            new static('simulated', 'Gesimuleerd'),
-        ];
-    }
+    use HasLegacyEnumHelpers;
 
+    case STATIC = 'static';
+    case DYNAMIC = 'dynamic';
+    case COMPOSED = 'composed';
+    case SIMULATED = 'SIMULATED';
+
+    public function getName(): string
+    {
+        return match ($this) {
+            self::STATIC => 'Statisch',
+            self::DYNAMIC => 'Dynamisch',
+            self::COMPOSED => 'Samengesteld',
+            self::SIMULATED => 'Gesimuleerd',
+        };
+    }
 }

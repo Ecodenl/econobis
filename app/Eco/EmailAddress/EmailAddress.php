@@ -20,6 +20,7 @@ class EmailAddress extends Model
 
     protected $casts = [
         'primary' => 'boolean',
+        'type_id' => EmailAddressType::class,
     ];
 
     public function contact()

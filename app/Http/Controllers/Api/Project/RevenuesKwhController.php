@@ -16,9 +16,10 @@ use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Helpers\CSV\RevenueDistributionKwhCSVHelper;
 use App\Helpers\Delete\Models\DeleteRevenueDistributionKwh;
 use App\Helpers\Delete\Models\DeleteRevenuesKwh;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Project\RevenuesKwhHelper;
 use App\Helpers\RequestInput\RequestInput;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
@@ -33,7 +34,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -524,8 +524,8 @@ class RevenuesKwhController extends ApiController
     public function previewEmail(Request $request, RevenueDistributionKwh $distributionKwh)
     {
         $subject = $request->input('subject');
-        $portalName = PortalSettings::get('portalName');
-        $cooperativeName = PortalSettings::get('cooperativeName');
+        $portalName = PortalSettings::first()?->portal_name;
+        $cooperativeName = PortalSettings::first()?->cooperative_name;
         $subject = str_replace('{cooperatie_portal_naam}', $portalName, $subject);
         $subject = str_replace('{cooperatie_naam}', $cooperativeName, $subject);
 
@@ -560,7 +560,7 @@ class RevenuesKwhController extends ApiController
                     $fromEmail = \Config::get('mail.from.address');
                 }
 
-                $email = Mail::fromMailbox($mailbox)
+                $email = MailHelper::fromMailbox($mailbox)
                     ->to($primaryEmailAddress->email);
                 if (!$subject) {
                     $subject = 'Participant rapportage Econobis';
@@ -681,8 +681,8 @@ class RevenuesKwhController extends ApiController
 
     public function createParticipantRevenueReport($subject, $distributionKwhId, ?DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate, $showOnPortal)
     {
-        $portalName = PortalSettings::get('portalName');
-        $cooperativeName = PortalSettings::get('cooperativeName');
+        $portalName = PortalSettings::first()?->portal_name;
+        $cooperativeName = PortalSettings::first()?->cooperative_name;
         $subject = str_replace('{cooperatie_portal_naam}', $portalName, $subject);
         $subject = str_replace('{cooperatie_naam}', $cooperativeName, $subject);
 
@@ -819,7 +819,7 @@ class RevenuesKwhController extends ApiController
                         $fromName = \Config::get('mail.from.name');
                     }
 
-                    $email = Mail::fromMailbox($mailbox)
+                    $email = MailHelper::fromMailbox($mailbox)
                         ->to($primaryEmailAddress->email);
 
                     if (!$subject) {

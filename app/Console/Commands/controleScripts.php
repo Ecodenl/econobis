@@ -51,6 +51,7 @@ class controleScripts extends Command
         Artisan::call('revenue:checkWrongRevenueDistributionPartsKwhIndicatorFields');
         Artisan::call('revenue:checkMissingRevenueDistributionParts');
         Artisan::call('addressEnergySupplier:checkOverlappingEnergySuppliers');
+        Artisan::call('addressEnergySupplier:checkInvalidEnergySupplierPeriods');
         Artisan::call('participants:checkFirstStartingDate');
         Artisan::call('participants:checkTerminationDate');
 //        Artisan::call('project:checkWrongProjectDataForLastProjectRevenue');
@@ -58,13 +59,7 @@ class controleScripts extends Command
         Artisan::call('email:checkSoftDeletedEmailAddressesInEmails');
         Artisan::call('participation:checkWrongDateFirstDepositMutationsLoan');
 
-//        Artisan::call('check:controleScriptsSoftDeletedContacts');
-        Artisan::call('contact:checkSoftDeletedContactsInContactEmailManual');
-        Artisan::call('contact:checkSoftDeletedContactsInAdministrationContactTwinfield');
-        Artisan::call('contact:checkSoftDeletedContactsInContactAvailabilities');
-        Artisan::call('contact:checkSoftDeletedContactsInFinancialOverviewContacts');
-        Artisan::call('contact:checkSoftDeletedContactsInFreeFieldsFieldRecords');
-        Artisan::call('contact:checkSoftDeletedContactsInTwinfieldLog');
+        Artisan::call('check:controleScriptsSoftDeletedContacts');
 
         $commandRun->end_at = Carbon::now();
         $commandRun->finished = true;

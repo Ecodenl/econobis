@@ -8,6 +8,7 @@ export default {
         sorts,
         pagination,
         financialOverviewId,
+        onlyInterimFinancialOverviewContacts,
         onlyEmailFinancialOverviewContacts,
         onlyPostFinancialOverviewContacts
     ) => {
@@ -15,6 +16,7 @@ export default {
         return getAxiosInstance().get(requestUrl, {
             params: {
                 financialOverviewId: JSON.stringify(financialOverviewId),
+                onlyInterimFinancialOverviewContacts: JSON.stringify(onlyInterimFinancialOverviewContacts),
                 onlyEmailFinancialOverviewContacts: JSON.stringify(onlyEmailFinancialOverviewContacts),
                 onlyPostFinancialOverviewContacts: JSON.stringify(onlyPostFinancialOverviewContacts),
                 filters: JSON.stringify(filters),
@@ -29,6 +31,24 @@ export default {
         const requestUrl = `${URL_FINANCIAL_OVERVIEW_CONTACT}/${financialOverviewContactId}/get`;
 
         return getAxiosInstance().get(requestUrl);
+    },
+    fetchFinancialOverviewContactForInterim: financialOverviewContactId => {
+        const requestUrl = `${URL_FINANCIAL_OVERVIEW_CONTACT}/${financialOverviewContactId}/get-for-interim`;
+
+        return getAxiosInstance().get(requestUrl);
+    },
+
+    updateFinancialOverviewContactForInterim: (
+        financialOverviewContactId,
+        emailTemplateFinancialOverviewId,
+        documentTemplateFinancialOverviewId
+    ) => {
+        const requestUrl = `${URL_FINANCIAL_OVERVIEW_CONTACT}/${financialOverviewContactId}/update-for-interim`;
+
+        return getAxiosInstance().post(requestUrl, {
+            emailTemplateFinancialOverviewId,
+            documentTemplateFinancialOverviewId,
+        });
     },
 
     getFinancialOverviewContactsForSending: (financialOverviewId, ids, type) => {
@@ -51,6 +71,24 @@ export default {
 
         document.body.style.cursor = 'wait';
         let response = getAxiosInstance().post(requestUrl, { ids: ids }, { responseType: 'blob' });
+        document.body.style.cursor = 'default';
+        return response;
+    },
+
+    sendInterim: financialOverviewContactId => {
+        const requestUrl = `${URL_FINANCIAL_OVERVIEW_CONTACT}/${financialOverviewContactId}/send-interim`;
+
+        document.body.style.cursor = 'wait';
+        let response = getAxiosInstance().post(requestUrl, { responseType: 'blob' });
+        document.body.style.cursor = 'default';
+        return response;
+    },
+
+    sendInterimPost: financialOverviewContactId => {
+        const requestUrl = `${URL_FINANCIAL_OVERVIEW_CONTACT}/${financialOverviewContactId}/send-interim-post`;
+
+        document.body.style.cursor = 'wait';
+        let response = getAxiosInstance().post(requestUrl, { responseType: 'blob' });
         document.body.style.cursor = 'default';
         return response;
     },

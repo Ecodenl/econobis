@@ -1,68 +1,65 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../../components/button/ButtonIcon';
-import FinancialOverviewCreateConfirm from './FinancialOverviewCreateConfirm';
 import ButtonText from '../../../../components/button/ButtonText';
+import FinancialOverviewCreateConfirm from './FinancialOverviewCreateConfirm';
 import FinancialOverviewCreateConfirmPost from './FinancialOverviewCreateConfirmPost';
 
-// Functionele wrapper voor de class component
-const FinancialOverviewCreateToolbarWrapper = props => {
+export default function FinancialOverviewCreateToolbar({
+    type,
+    selectedIds = [],
+    amountOfFinancialOverviewContacts = 0,
+    financialOverviewId,
+    financialOverviewContactId,
+    isInterimMode,
+}) {
     const navigate = useNavigate();
-    return <FinancialOverviewCreateToolbar {...props} navigate={navigate} />;
-};
+    const [showSend, setShowSend] = useState(false);
 
-class FinancialOverviewCreateToolbar extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            showSend: false,
-        };
-    }
+    const toggleSend = () => setShowSend(prev => !prev);
 
-    showSend = () => {
-        this.setState({ showSend: !this.state.showSend });
-    };
+    return (
+        <div className="row">
+            <div className="col-md-4">
+                <div className="btn-group btn-group-flex margin-small" role="group">
+                    <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
 
-    render() {
-        return (
-            <div className="row">
-                <div className="col-md-4">
-                    <div className="btn-group btn-group-flex margin-small" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => this.props.navigate(-1)} />
-                        {this.props.amountOfFinancialOverviewContacts > 0 && this.props.type === 'email' && (
-                            <ButtonText buttonText={'Waardestaten e-mailen'} onClickAction={this.showSend} />
-                        )}
-                        {this.props.amountOfFinancialOverviewContacts > 0 && this.props.type === 'post' && (
-                            <ButtonText buttonText={'Waardestaten downloaden'} onClickAction={this.showSend} />
-                        )}
-                    </div>
+                    {amountOfFinancialOverviewContacts > 0 && type === 'email' && (
+                        <ButtonText buttonText={'Waardestaten e-mailen'} onClickAction={toggleSend} />
+                    )}
+
+                    {amountOfFinancialOverviewContacts > 0 && type === 'post' && (
+                        <ButtonText buttonText={'Waardestaten downloaden'} onClickAction={toggleSend} />
+                    )}
                 </div>
-                <div className="col-md-4">
-                    <h4 className="text-center">
-                        Te verzenden waardestaten versturen ({this.props.amountOfFinancialOverviewContacts})
-                    </h4>
-                </div>
-                <div className="col-md-4" />
-                {this.state.showSend && this.props.type === 'email' && (
-                    <FinancialOverviewCreateConfirm
-                        type={this.props.type}
-                        financialOverviewContactIds={this.props.selectedIds}
-                        closeModal={this.showSend}
-                        financialOverviewId={this.props.financialOverviewId}
-                    />
-                )}
-                {this.state.showSend && this.props.type === 'post' && (
-                    <FinancialOverviewCreateConfirmPost
-                        type={this.props.type}
-                        financialOverviewContactIds={this.props.selectedIds}
-                        closeModal={this.showSend}
-                        financialOverviewId={this.props.financialOverviewId}
-                    />
-                )}
             </div>
-        );
-    }
-}
+            <div className="col-md-4">
+                <h4 className="text-center">
+                    Te verzenden waardestaten versturen ({amountOfFinancialOverviewContacts})
+                </h4>
+            </div>
+            <div className="col-md-4" />
 
-export default FinancialOverviewCreateToolbarWrapper;
+            {showSend && type === 'email' && (
+                <FinancialOverviewCreateConfirm
+                    financialOverviewContactIds={selectedIds}
+                    closeModal={toggleSend}
+                    financialOverviewId={financialOverviewId}
+                    financialOverviewContactId={financialOverviewContactId}
+                    isInterimMode={isInterimMode}
+                />
+            )}
+
+            {showSend && type === 'post' && (
+                <FinancialOverviewCreateConfirmPost
+                    financialOverviewContactIds={selectedIds}
+                    closeModal={toggleSend}
+                    financialOverviewId={financialOverviewId}
+                    financialOverviewContactId={financialOverviewContactId}
+                    isInterimMode={isInterimMode}
+                />
+            )}
+        </div>
+    );
+}

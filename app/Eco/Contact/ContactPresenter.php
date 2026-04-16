@@ -29,7 +29,7 @@ class ContactPresenter extends Presenter
 
         if(!$status) return '';
 
-        return $status->name;
+        return $status?->getName() ?? '';
     }
 
 }

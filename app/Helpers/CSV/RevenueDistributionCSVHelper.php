@@ -46,7 +46,7 @@ class RevenueDistributionCSVHelper
                 $distribution->period_start = $this->formatDate($distribution->revenue->date_begin);
                 $distribution->period_end = $this->formatDate($distribution->revenue->date_end);
 
-                $distribution->type = $distribution->contact->getType()->name;
+                $distribution->type = $distribution->contact->getType()?->getName() ?? '';
 
                 $address = $distribution->contact->primaryAddress;
 

@@ -37,7 +37,7 @@ class RevenueDistributionPartsKwhCSVHelper
                 $distributionPartsKwh->period_start = $this->formatDate($distributionPartsKwh->partsKwh->date_begin);
                 $distributionPartsKwh->period_end = $this->formatDate($distributionPartsKwh->partsKwh->date_end);
 
-                $distributionPartsKwh->type = $distributionPartsKwh->distributionKwh->contact->getType()->name;
+                $distributionPartsKwh->type = $distributionPartsKwh->distributionKwh->contact->getType()?->getName() ?? '';
 
                 $address = $distributionPartsKwh->distributionKwh->contact->primaryAddress;
 

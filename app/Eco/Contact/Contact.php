@@ -189,16 +189,27 @@ class Contact extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function getStatus()
+    public function getStatus(): ?ContactStatus
     {
-        if (!$this->status_id) return null;
+        if (!$this->status_id) {
+            return null;
+        }
+
+        if ($this->status_id instanceof ContactStatus) {
+            return $this->status_id;
+        }
 
         return ContactStatus::get($this->status_id);
     }
-
-    public function getInspectionPersonType()
+    public function getInspectionPersonType(): ?InspectionPersonType
     {
-        if (!$this->inspection_person_type_id) return null;
+        if (!$this->inspection_person_type_id) {
+            return null;
+        }
+
+        if ($this->inspection_person_type_id instanceof InspectionPersonType) {
+            return $this->inspection_person_type_id;
+        }
 
         return InspectionPersonType::get($this->inspection_person_type_id);
     }
@@ -298,9 +309,15 @@ class Contact extends Model
         return $this->hasMany(ContactAvailability::class);
     }
 
-    public function getType()
+    public function getType(): ?ContactType
     {
-        if (!$this->type_id) return null;
+        if (!$this->type_id) {
+            return null;
+        }
+
+        if ($this->type_id instanceof ContactType) {
+            return $this->type_id;
+        }
 
         return ContactType::get($this->type_id);
     }

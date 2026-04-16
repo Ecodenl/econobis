@@ -99,18 +99,28 @@ class ContactGroup extends Model
         return $this->hasMany(Document::class)->orderBy('documents.id', 'desc');
     }
 
-    public function getType()
+    public function getType(): ?ContactGroupType
     {
         if (!$this->type_id) {
             return null;
         }
 
+        if ($this->type_id instanceof ContactGroupType) {
+            return $this->type_id;
+        }
+
         return ContactGroupType::get($this->type_id);
     }
 
-    public function getInspectionPersonType()
+    public function getInspectionPersonType(): ?InspectionPersonType
     {
-        if(!$this->inspection_person_type_id) return null;
+        if (!$this->inspection_person_type_id) {
+            return null;
+        }
+
+        if ($this->inspection_person_type_id instanceof InspectionPersonType) {
+            return $this->inspection_person_type_id;
+        }
 
         return InspectionPersonType::get($this->inspection_person_type_id);
     }

@@ -153,6 +153,8 @@ class FullAdministration extends JsonResource
 
                 'usesMollie' => $this->uses_mollie,
                 'mollieApiKey' => $this->mollie_api_key,
+
+                'usesInterimFinancialOverviews' => $this->uses_interim_financial_overviews,
             ];
     }
 }

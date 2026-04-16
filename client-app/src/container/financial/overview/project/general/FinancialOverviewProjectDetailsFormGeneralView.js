@@ -17,6 +17,14 @@ const FinancialOverviewProjectDetailsFormGeneralView = props => {
                     <div className="row">
                         <ViewText label={'Aantal deelnemers'} value={props.numberOfParticipantProjects} />
                     </div>
+                    {props.financialOverview.usesInterimFinancialOverviews ? (
+                        <div className="row">
+                            <ViewText
+                                label={'Aantal contacten reeds verwerkt'}
+                                value={props.numberOfFinancialOverviewContactsSend}
+                            />
+                        </div>
+                    ) : null}
                     {(props.totalQuantityStartValue !== null || props.totalQuantityEndValue !== null) && (
                         <div className="row">
                             <ViewText

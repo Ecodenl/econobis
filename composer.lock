@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "421d167736c439cac6279a5583b39151",
+    "content-hash": "e60f3426b17d82db3b79306ebdd4e605",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -2484,55 +2484,6 @@
                 "source": "https://github.com/joskolenberg/eloquent-reflector/tree/v2.2.5"
             },
             "time": "2025-04-09T13:20:13+00:00"
-        },
-        {
-            "name": "joskolenberg/enum",
-            "version": "v1.6.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/joskolenberg/Enum.git",
-                "reference": "9b1f6f5d4a3e4d6550ef28d1d79e1ef671b82d97"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/joskolenberg/Enum/zipball/9b1f6f5d4a3e4d6550ef28d1d79e1ef671b82d97",
-                "reference": "9b1f6f5d4a3e4d6550ef28d1d79e1ef671b82d97",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/support": "^5.3|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "JosKolenberg\\Enum\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jos Kolenberg",
-                    "email": "joskolenberg@gmail.com"
-                }
-            ],
-            "description": "Enum implementation for PHP",
-            "keywords": [
-                "collections",
-                "enum",
-                "laravel"
-            ],
-            "support": {
-                "issues": "https://github.com/joskolenberg/Enum/issues",
-                "source": "https://github.com/joskolenberg/Enum/tree/v1.6.0"
-            },
-            "abandoned": true,
-            "time": "2025-04-15T12:32:41+00:00"
         },
         {
             "name": "joskolenberg/jory",

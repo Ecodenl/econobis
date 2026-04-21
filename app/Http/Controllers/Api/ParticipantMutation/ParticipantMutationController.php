@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewParticipantProje
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ParticipantMutationController extends ApiController
 {
@@ -228,8 +229,23 @@ class ParticipantMutationController extends ApiController
                 $financialOverviewParticipantProjects = FinancialOverviewParticipantProject::where('participant_project_id', $participantProject->id)->get();
                 foreach ($financialOverviewParticipantProjects as $financialOverviewParticipantProject){
                     if($financialOverviewParticipantProject->financialOverviewProject->financialOverview->definitive == false){
-                        $deleteFinancialOverviewParticipantProject = new DeleteFinancialOverviewParticipantProject($financialOverviewParticipantProject);
-                        $deleteFinancialOverviewParticipantProject->delete();
+                        try {
+                            DB::beginTransaction();
+
+                            $deleteFinancialOverviewParticipantProject = new DeleteFinancialOverviewParticipantProject($financialOverviewParticipantProject);
+                            $result = $deleteFinancialOverviewParticipantProject->delete();
+
+                            if(count($result) > 0){
+                                DB::rollBack();
+                                abort(412, implode(";", array_unique($result)));
+                            }
+
+                            DB::commit();
+                        } catch (\PDOException $e) {
+                            DB::rollBack();
+                            Log::error($e->getMessage());
+                            abort(501, 'Er is helaas een fout opgetreden.');
+                        }
                     }
                 }
 
@@ -285,11 +301,28 @@ class ParticipantMutationController extends ApiController
             {
                 // Verwijder eerst bestaande FinancialOverviewParticipantProject records behorende bij participantProject en nog niet definitieve waardestaten.
                 // Indien nodig worden ze via recalculateParticipantProjectForFinancialOverviews daarna eventueel weer nieuw aangemaakt.
-                $financialOverviewParticipantProjects = FinancialOverviewParticipantProject::where('participant_project_id', $participantMutation->participation->id)->get();
+                $financialOverviewParticipantProjects = FinancialOverviewParticipantProject::where('participant_project_id', $participantMutation->participation->id)
+                    ->where('status_id', '!=', 'sent')
+                    ->get();
                 foreach ($financialOverviewParticipantProjects as $financialOverviewParticipantProject){
                     if($financialOverviewParticipantProject->financialOverviewProject->financialOverview->definitive == false){
-                        $deleteFinancialOverviewParticipantProject = new DeleteFinancialOverviewParticipantProject($financialOverviewParticipantProject);
-                        $deleteFinancialOverviewParticipantProject->delete();
+                        try {
+                            DB::beginTransaction();
+
+                            $deleteFinancialOverviewParticipantProject = new DeleteFinancialOverviewParticipantProject($financialOverviewParticipantProject);
+                            $result = $deleteFinancialOverviewParticipantProject->delete();
+
+                            if(count($result) > 0){
+                                DB::rollBack();
+                                abort(412, implode(";", array_unique($result)));
+                            }
+
+                            DB::commit();
+                        } catch (\PDOException $e) {
+                            DB::rollBack();
+                            Log::error($e->getMessage());
+                            abort(501, 'Er is helaas een fout opgetreden.');
+                        }
                     }
                 }
 

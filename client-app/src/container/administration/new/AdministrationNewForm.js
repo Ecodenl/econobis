@@ -76,6 +76,7 @@ class AdministrationNewForm extends Component {
                 portalSettingsLayoutId: '',
                 usesMollie: false,
                 mollieApiKey: '',
+                usesInterimFinancialOverviews: false,
             },
             errors: {
                 name: false,
@@ -304,6 +305,7 @@ class AdministrationNewForm extends Component {
             data.append('logoName', administration.logoName);
             data.append('usesMollie', administration.usesMollie);
             data.append('mollieApiKey', administration.mollieApiKey);
+            data.append('usesInterimFinancialOverviews', administration.usesInterimFinancialOverviews);
 
             AdministrationDetailsAPI.newAdministration(data)
                 .then(payload => {
@@ -349,6 +351,7 @@ class AdministrationNewForm extends Component {
             portalSettingsLayoutId,
             usesMollie,
             mollieApiKey,
+            usesInterimFinancialOverviews,
         } = this.state.administration;
 
         return (
@@ -634,22 +637,32 @@ class AdministrationNewForm extends Component {
 
                         {(this.props.meDetails.email === 'support@econobis.nl' ||
                             this.props.meDetails.email === 'software@xaris.nl') && (
-                            <div className="row">
-                                <InputToggle
-                                    label={'Gebruikt Mollie'}
-                                    name={'usesMollie'}
-                                    value={usesMollie}
-                                    onChangeAction={this.handleInputChange}
-                                />
-                                {usesMollie && (
-                                    <InputText
-                                        label="Mollie API key"
-                                        name={'mollieApiKey'}
-                                        value={mollieApiKey}
+                            <>
+                                <div className="row">
+                                    <InputToggle
+                                        label={'Gebruikt Mollie'}
+                                        name={'usesMollie'}
+                                        value={usesMollie}
                                         onChangeAction={this.handleInputChange}
                                     />
-                                )}
-                            </div>
+                                    {usesMollie && (
+                                        <InputText
+                                            label="Mollie API key"
+                                            name={'mollieApiKey'}
+                                            value={mollieApiKey}
+                                            onChangeAction={this.handleInputChange}
+                                        />
+                                    )}
+                                </div>
+                                <div className="row">
+                                    <InputToggle
+                                        label={'Gebruikt tussentijdse waardestaten'}
+                                        name={'usesInterimFinancialOverviews'}
+                                        value={usesInterimFinancialOverviews}
+                                        onChangeAction={this.handleInputChange}
+                                    />
+                                </div>
+                            </>
                         )}
 
                         {this.state.showModalUploadImage && (

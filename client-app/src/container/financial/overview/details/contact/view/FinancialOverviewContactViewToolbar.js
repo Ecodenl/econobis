@@ -28,25 +28,15 @@ class FinancialOverviewContactViewToolbar extends Component {
                 <div className="col-md-6">
                     <h4 className="text-center">
                         {'Contact: ' +
-                            (this.props.financialOverviewContactDetails &&
-                            this.props.financialOverviewContactDetails.financialOverviewContact &&
-                            this.props.financialOverviewContactDetails.financialOverviewContact.contact
-                                ? this.props.financialOverviewContactDetails.financialOverviewContact.contact.full_name
-                                : '')}
+                            (this.props.financialOverviewContactDetails?.financialOverviewContact?.contactFullNameFnf ??
+                                '')}
                         <br />
                         {'Waardestaat: ' +
-                            (this.props.financialOverviewContactDetails &&
-                            this.props.financialOverviewContactDetails.financialOverviewContact &&
-                            this.props.financialOverviewContactDetails.financialOverviewContact.financial_overview
-                                ? this.props.financialOverviewContactDetails.financialOverviewContact.financial_overview
-                                      .description
-                                : '')}
+                            (this.props.financialOverviewContactDetails?.financialOverviewContact?.financial_overview
+                                ?.description ?? '')}
                         <br />
                         {'Status: ' +
-                            (this.props.financialOverviewContactDetails &&
-                            this.props.financialOverviewContactDetails.financialOverviewContact
-                                ? this.props.financialOverviewContactDetails.financialOverviewContact.status
-                                : '')}
+                            (this.props.financialOverviewContactDetails?.financialOverviewContact?.status ?? '')}
                     </h4>
                 </div>
                 <div className="col-md-3" />

@@ -1,56 +1,58 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import PdfViewer from '../../../../components/pdf/PdfViewer';
 import FinancialOverviewContactAPI from '../../../../api/financial/overview/FinancialOverviewContactAPI';
 
-class FinancialOverviewCreateViewPdf extends Component {
-    constructor(props) {
-        super(props);
+const FinancialOverviewCreateViewPdf = ({
+    financialOverviewContactId,
+    isLoading = false,
+    amountOfFinancialOverviewContacts = 0,
+}) => {
+    const [file, setFile] = useState(null);
 
-        this.state = {
-            file: null,
-        };
-    }
+    const downloadFile = useCallback(
+        (id, attempt = 0) => {
+            if (!id) return;
 
-    componentDidUpdate(prevProps) {
-        if (this.props.financialOverviewContactId !== prevProps.financialOverviewContactId) {
-            if (this.props.financialOverviewContactId) {
-                this.downloadFile(this.props.financialOverviewContactId);
-            }
-        }
-    }
-
-    downloadFile(financialOverviewContactId, i = 0) {
-        FinancialOverviewContactAPI.download(financialOverviewContactId)
-            .then(payload => {
-                this.setState({
-                    file: payload.data,
+            FinancialOverviewContactAPI.download(id)
+                .then(payload => {
+                    setFile(payload.data);
+                })
+                .catch(() => {
+                    if (attempt < 2) {
+                        setTimeout(() => {
+                            downloadFile(id, attempt + 1);
+                        }, 500);
+                    }
                 });
-            })
-            .catch(() => {
-                if (i < 2) {
-                    setTimeout(() => {
-                        this.downloadFile(financialOverviewContactId, i);
-                    }, 500);
-                }
-                i++;
-            });
+        },
+        [] // downloadFile zelf heeft geen externe deps
+    );
+
+    // telkens als de id verandert → opnieuw downloaden
+    useEffect(() => {
+        setFile(null); // even leeg zodat we "selecteer links..." kunnen tonen
+        if (financialOverviewContactId) {
+            downloadFile(financialOverviewContactId, 0);
+        }
+    }, [financialOverviewContactId, downloadFile]);
+
+    if (isLoading) {
+        return <div>Gegevens aan het laden.</div>;
     }
 
-    render() {
-        return this.props.isLoading ? (
-            <div>Gegevens aan het laden.</div>
-        ) : !this.state.file ? (
-            this.props.amountOfFinancialOverviewContacts > 0 ? (
-                <div>Selecteer links in het scherm een contact om een preview te zien.</div>
-            ) : (
-                <div>Geen gegevens gevonden.</div>
-            )
-        ) : (
-            <div>
-                <PdfViewer file={this.state.file} />
-            </div>
-        );
+    if (!file) {
+        // geen file gedownload
+        if (amountOfFinancialOverviewContacts > 0) {
+            return <div>Selecteer links in het scherm een contact om een preview te zien.</div>;
+        }
+        return <div>Geen gegevens gevonden.</div>;
     }
-}
+
+    return (
+        <div>
+            <PdfViewer file={file} />
+        </div>
+    );
+};
 
 export default FinancialOverviewCreateViewPdf;

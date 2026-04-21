@@ -55,13 +55,18 @@ class checkMailboxes extends Command
 
         $mailboxes = Mailbox::where('valid', 0)->where('is_active', 1)->where('login_tries', '<', 5)->get();
         foreach ($mailboxes as $mailbox) {
-            //In construct wordt gelijk valid gekeken
+            if ($mailbox->only_outgoing_mailbox) {
+                continue;
+            }
+
             if ($mailbox->incoming_server_type === 'ms-oauth') {
-                new MailFetcherMsOauth($mailbox);
-            } else if ($mailbox->incoming_server_type !== 'mailgun'){
-                new MailFetcher($mailbox);
+                $mailFetcher = new MailFetcherMsOauth($mailbox);
+                $mailFetcher->checkMailbox();
+            } else if ($mailbox->incoming_server_type === 'imap') {
+                $mailFetcher = new MailFetcher($mailbox);
+                $mailFetcher->checkMailbox();
             } else {
-                return;
+                continue;
             }
         }
 

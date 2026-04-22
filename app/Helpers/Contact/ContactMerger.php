@@ -4,6 +4,7 @@ namespace App\Helpers\Contact;
 
 use App\Eco\Address\Address;
 use App\Eco\Contact\Contact;
+use App\Helpers\AddressEnergySupplier\AddressEnergySupplierHelper;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -92,8 +93,60 @@ class ContactMerger
 
             }
         }
+
+        $this->validateAddressEnergySuppliersCanBeRemovedOnMerge();
+
+        $this->validateNoDuplicateFinancialOverviewContacts();
     }
 
+    private function validateAddressEnergySuppliersCanBeRemovedOnMerge(): void
+    {
+        foreach ($this->fromContact->addresses as $fromAddress) {
+            $existingAddress = $this->toContact->addresses
+                ->where('postal_code', $fromAddress->postal_code)
+                ->where('number', $fromAddress->number)
+                ->where('addition', $fromAddress->addition)
+                ->first();
+
+            // Alleen relevant als dit adres bij mergeAddress() zou worden samengevoegd
+            // en de AES-records van fromAddress dus verwijderd zouden worden.
+            if (!$existingAddress) {
+                continue;
+            }
+
+            foreach ($fromAddress->addressEnergySuppliers as $addressEnergySupplier) {
+                $messages = AddressEnergySupplierHelper::getDeleteBlockingMessages($addressEnergySupplier);
+
+                if (!empty($messages)) {
+                    throw new ContactMergeException(
+                        'Contacten kunnen niet worden samengevoegd omdat bij adres '
+                        . $fromAddress->street . ' ' . $fromAddress->number
+                        . ($fromAddress->addition ? $fromAddress->addition : '')
+                        . ' energieleveranciergegevens van het te verwijderen contact nog nodig zijn voor een nog niet verwerkte opbrengstverdeling.'
+                    );
+                }
+            }
+        }
+    }
+
+    private function validateNoDuplicateFinancialOverviewContacts(): void
+    {
+        $toFinancialOverviewIds = $this->toContact->financialOverviewContacts()
+            ->pluck('financial_overview_id')
+            ->toArray();
+
+        $fromFinancialOverviewIds = $this->fromContact->financialOverviewContacts()
+            ->pluck('financial_overview_id')
+            ->toArray();
+
+        $duplicateFinancialOverviewIds = array_intersect($toFinancialOverviewIds, $fromFinancialOverviewIds);
+
+        if (!empty($duplicateFinancialOverviewIds)) {
+            throw new ContactMergeException(
+                'Contacten kunnen niet worden samengevoegd omdat beide contacten voorkomen in één of meer dezelfde waardestaten.'
+            );
+        }
+    }
 
     private function doMerge()
     {
@@ -295,10 +348,18 @@ class ContactMerger
             $participation->save();
         }
 
+        /**
+         * Geen adres energieleverancier gegevens overzetten van het fromAddress, deze verwijderen.
+         * we houden bij zelfde adres alleen die van toAdress.
+         */
+
+//        foreach ($fromAddress->addressEnergySuppliers as $addressEnergySupplier) {
+//            $addressEnergySupplier->is_current_supplier = false;
+//            $addressEnergySupplier->address_id = $toAddress->id;
+//            $addressEnergySupplier->save();
+//        }
         foreach ($fromAddress->addressEnergySuppliers as $addressEnergySupplier) {
-            $addressEnergySupplier->is_current_supplier = false;
-            $addressEnergySupplier->address_id = $toAddress->id;
-            $addressEnergySupplier->save();
+            $addressEnergySupplier->delete();
         }
 
         foreach ($fromAddress->addressDongles as $addressDongle) {

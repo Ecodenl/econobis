@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { connect } from 'react-redux';
 
 import AddressDetailsFormAddressEnergySupplierList from './AddressDetailsFormAddressEnergySupplierList';
@@ -20,9 +20,15 @@ function AddressDetailsFormAddressEnergySupplier(props) {
         closeAddressEnergySupplier,
     } = props;
 
+    const [showNew, setShowNew] = useState(false);
+
     const toggleShowNew = useCallback(() => {
-        setAddressEnergySupplierNewOrEditOpen(!addressEnergySupplierNewOrEditOpen);
-    }, [addressEnergySupplierNewOrEditOpen, setAddressEnergySupplierNewOrEditOpen]);
+        setShowNew(prevShowNew => {
+            const nextShowNew = !prevShowNew;
+            setAddressEnergySupplierNewOrEditOpen(nextShowNew);
+            return nextShowNew;
+        });
+    }, [setAddressEnergySupplierNewOrEditOpen]);
 
     const canCreate = permissions.createContactAddress && (permissions.updatePerson || permissions.updateOrganisation);
 
@@ -47,7 +53,7 @@ function AddressDetailsFormAddressEnergySupplier(props) {
                 </div>
 
                 <div className="col-md-12 margin-10-top">
-                    {canCreate && addressEnergySupplierNewOrEditOpen && (
+                    {canCreate && showNew && (
                         <AddressDetailsFormAddressEnergySupplierNew
                             contactId={address.contactId}
                             addressId={address.id}

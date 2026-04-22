@@ -149,6 +149,9 @@ class AddressEnergySupplierController extends ApiController
                         $addressEnergySupplier->member_since,
                         $addressEnergySupplier
                     );
+
+                    $revenuesKwhHelper->refreshDistributionPartsKwhEnergySupplierDataForParticipation($participation);
+
                     if ($splitRevenuePartsKwhResponse) {
                         $revenuePartsKwhArray[] = $splitRevenuePartsKwhResponse;
                     }
@@ -229,15 +232,23 @@ class AddressEnergySupplierController extends ApiController
 
         $revenuePartsKwhArray = [];
         // indien membersince gewijzigd en er was een vorige einddatum, dan check voor splitsen opbrengstverdelingen.
-        if($aesMemberSince!=$aesMemberSinceOriginal && Carbon::parse($addressEnergySupplier->end_date_previous)->format('Y-m-d') != '1900-01-01' ) {
+        if($aesMemberSince != $aesMemberSinceOriginal && Carbon::parse($addressEnergySupplier->end_date_previous)->format('Y-m-d') != '1900-01-01') {
             $participations = $addressEnergySupplier->address->participations;
             foreach ($participations as $participation) {
                 $projectType = $participation->project->projectType;
                 if ($projectType->code_ref === 'postalcode_link_capital') {
                     $revenuesKwhHelper = new RevenuesKwhHelper();
-                    $splitRevenuePartsKwhResponse = $revenuesKwhHelper->checkAndSplitRevenuePartsKwh($participation, $addressEnergySupplier->member_since, $addressEnergySupplier);
+
+                    $splitRevenuePartsKwhResponse = $revenuesKwhHelper->checkAndSplitRevenuePartsKwh(
+                        $participation,
+                        $addressEnergySupplier->member_since,
+                        $addressEnergySupplier
+                    );
+
+                    $revenuesKwhHelper->refreshDistributionPartsKwhEnergySupplierDataForParticipation($participation);
+
                     if($splitRevenuePartsKwhResponse){
-                        $revenuePartsKwhArray [] = $splitRevenuePartsKwhResponse;
+                        $revenuePartsKwhArray[] = $splitRevenuePartsKwhResponse;
                     }
                 }
             }

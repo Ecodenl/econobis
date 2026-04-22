@@ -561,7 +561,6 @@ class RevenuesKwhHelper
 
     public function checkAndSplitRevenuePartsKwh(ParticipantProject $participant, $splitDate, AddressEnergySupplier $addressEnergySupplier = null)
     {
-        Log::info('checkAndSplitRevenuePartsKwh');
         $projectName = $participant ? $participant->project->name : '?';
         $projectId = $participant ? $participant->project->id : 'onbekend';
 // todo WM: clenanup
@@ -942,6 +941,36 @@ class RevenuesKwhHelper
         return $revenuePartsKwh;
     }
 
+    public function refreshDistributionPartsKwhEnergySupplierDataForParticipation(ParticipantProject $participant): void
+    {
+        $distributionPartsKwhRecords = RevenueDistributionPartsKwh::query()
+            ->where('status', '!=', 'processed')
+            ->whereHas('distributionKwh', function ($query) use ($participant) {
+                $query->where('participation_id', $participant->id);
+            })
+            ->get();
+
+        foreach ($distributionPartsKwhRecords as $distributionPartKwh) {
+            $address = $distributionPartKwh->distributionKwh->participation->address;
+
+            if (!$address) {
+                continue;
+            }
+
+            $addressEnergySupplier = $this->getAddressEnergySupplierForPart(
+                $address->id,
+                Carbon::parse($distributionPartKwh->partsKwh->date_begin)->format('Y-m-d')
+            );
+
+            $this->applyAddressEnergySupplierToDistributionPart($distributionPartKwh, $addressEnergySupplier);
+
+            $this->setIndicatorFields(
+                $participant,
+                $distributionPartKwh,
+                $distributionPartKwh->partsKwh
+            );
+        }
+    }
     /**
      * @param RevenuesKwh $revenuesKwh
      * @return array

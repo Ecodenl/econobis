@@ -464,12 +464,13 @@ class RevenuesKwhHelper
 
                 $addressEnergySupplier->save();
             }
-            Log::info('AES bijwerken in saveDistributionPartsKwh', [
-                'id' => $addressEnergySupplier->id,
-                'energy_supplier_id' => $addressEnergySupplier->energy_supplier_id,
-                'energySupplier->name' => $addressEnergySupplier->energySupplier->name,
-                'es_number' => $addressEnergySupplier->es_number,
-            ]);
+
+//            Log::info('AES bijwerken in saveDistributionPartsKwh', [
+//                'id' => $addressEnergySupplier->id,
+//                'energy_supplier_id' => $addressEnergySupplier->energy_supplier_id,
+//                'energySupplier->name' => $addressEnergySupplier->energySupplier->name,
+//                'es_number' => $addressEnergySupplier->es_number,
+//            ]);
 
             $distributionPartsKwh->es_id = $addressEnergySupplier ? $addressEnergySupplier->energy_supplier_id : null;
             $distributionPartsKwh->energy_supplier_name = $addressEnergySupplier && $addressEnergySupplier->energySupplier

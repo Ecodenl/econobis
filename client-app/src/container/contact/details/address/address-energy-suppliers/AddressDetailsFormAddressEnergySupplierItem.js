@@ -1,440 +1,376 @@
-import React, { Component } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
+import { isEqual } from 'lodash';
 
 import { setError } from '../../../../../actions/general/ErrorActions';
 import AddressEnergySupplierAPI from '../../../../../api/contact/AddressEnergySupplierAPI';
-import { updateStateAddressEnergySupplier } from '../../../../../actions/contact/ContactDetailsActions';
-import { fetchContactDetails } from '../../../../../actions/contact/ContactDetailsActions';
+import {
+    updateStateAddressEnergySupplier,
+    fetchContactDetails,
+} from '../../../../../actions/contact/ContactDetailsActions';
+
 import AddressDetailsFormAddressEnergySupplierView from './AddressDetailsFormAddressEnergySupplierView';
 import AddressDetailsFormAddressEnergySupplierEdit from './AddressDetailsFormAddressEnergySupplierEdit';
 import AddressDetailsFormAddressEnergySupplierDelete from './AddressDetailsFormAddressEnergySupplierDelete';
-import { isEqual } from 'lodash';
 import Modal from '../../../../../components/modal/Modal';
-import { useNavigate } from 'react-router-dom';
 
-// Functionele wrapper voor de class component
-const AddressDetailsFormAddressEnergySupplierItemWrapper = props => {
+function AddressDetailsFormAddressEnergySupplierItemContainer(props) {
     const navigate = useNavigate();
+
     return <AddressDetailsFormAddressEnergySupplierItem {...props} navigate={navigate} />;
-};
+}
 
-class AddressDetailsFormAddressEnergySupplierItem extends Component {
-    constructor(props) {
-        super(props);
+function AddressDetailsFormAddressEnergySupplierItem(props) {
+    const {
+        addressEnergySupplier: addressEnergySupplierProp,
+        address,
+        permissions,
+        addressEnergySupplierNewOrEditOpen,
+        setAddressEnergySupplierNewOrEditOpen,
+        updateStateAddressEnergySupplier,
+        fetchContactDetails,
+        setError,
+        navigate,
+    } = props;
 
-        this.state = {
-            showActionButtons: false,
-            highlightLine: '',
-            showEdit: false,
-            showDelete: false,
-            showConfirmValidatePeriodOverlap: false,
-            showMessageDoubleEsNumber: false,
-            messageDoubleEsNumber: '',
-            messageDoubleEsName: '',
-            messageDoubleEsNumberArray: [],
-            showMessageHasParticipations: false,
-            messageHasParticipations: false,
-            messageHasParticipationsRedirect: '',
-            messageHasParticipationsProjectsArray: [],
+    const [showActionButtons, setShowActionButtons] = useState(false);
+    const [highlightLine, setHighlightLine] = useState('');
+    const [showEdit, setShowEdit] = useState(false);
+    const [showDelete, setShowDelete] = useState(false);
 
-            addressEnergySupplier: {
-                ...props.addressEnergySupplier,
-            },
-            address: { ...props.address },
-            errors: {
-                memberSince: false,
-                endDate: false,
-            },
-        };
+    const [showMessageDoubleEsNumber, setShowMessageDoubleEsNumber] = useState(false);
+    const [messageDoubleEsNumber, setMessageDoubleEsNumber] = useState('');
+    const [messageDoubleEsName, setMessageDoubleEsName] = useState('');
+    const [messageDoubleEsNumberArray, setMessageDoubleEsNumberArray] = useState([]);
 
-        this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
-    }
+    const [showMessageHasParticipations, setShowMessageHasParticipations] = useState(false);
+    const [messageHasParticipations, setMessageHasParticipations] = useState(false);
+    const [messageHasParticipationsRedirect, setMessageHasParticipationsRedirect] = useState('');
+    const [messageHasParticipationsProjectsArray, setMessageHasParticipationsProjectsArray] = useState([]);
 
-    UNSAFE_componentWillReceiveProps(nextProps) {
-        if (!isEqual(this.state.addressEnergySupplier, nextProps.addressEnergySupplier)) {
-            this.setState({
-                ...this.state,
-                addressEnergySupplier: {
-                    ...nextProps.addressEnergySupplier,
-                },
-            });
+    const [localAddressEnergySupplier, setLocalAddressEnergySupplier] = useState({
+        ...addressEnergySupplierProp,
+    });
+
+    const [errors, setErrors] = useState({
+        memberSince: false,
+        endDate: false,
+    });
+
+    useEffect(() => {
+        if (!isEqual(localAddressEnergySupplier, addressEnergySupplierProp) && !showEdit) {
+            setLocalAddressEnergySupplier({ ...addressEnergySupplierProp });
         }
-    }
+    }, [addressEnergySupplierProp, showEdit]); // bewust geen localAddressEnergySupplier dependency
 
-    onLineEnter = () => {
-        this.setState({
-            showActionButtons: true,
-            highlightLine: 'highlight-line',
+    const onLineEnter = useCallback(() => {
+        setShowActionButtons(true);
+        setHighlightLine('highlight-line');
+    }, []);
+
+    const onLineLeave = useCallback(() => {
+        setShowActionButtons(false);
+        setHighlightLine('');
+    }, []);
+
+    const openEdit = useCallback(() => {
+        setShowEdit(true);
+        setAddressEnergySupplierNewOrEditOpen(true);
+    }, [setAddressEnergySupplierNewOrEditOpen]);
+
+    const closeEdit = useCallback(() => {
+        setShowEdit(false);
+        setAddressEnergySupplierNewOrEditOpen(false);
+    }, [setAddressEnergySupplierNewOrEditOpen]);
+
+    const cancelEdit = useCallback(() => {
+        setLocalAddressEnergySupplier({ ...addressEnergySupplierProp });
+        setErrors({
+            memberSince: false,
+            endDate: false,
         });
-    };
+        closeEdit();
+    }, [addressEnergySupplierProp, closeEdit]);
 
-    onLineLeave = () => {
-        this.setState({
-            showActionButtons: false,
-            highlightLine: '',
-        });
-    };
+    const toggleDelete = useCallback(() => {
+        setShowDelete(prev => !prev);
+    }, []);
 
-    openEdit = () => {
-        this.setState({ showEdit: true });
-        this.props.setAddressEnergySupplierNewOrEditOpen(true);
-    };
+    const reloadContact = useCallback(() => {
+        fetchContactDetails(address.contactId);
+    }, [fetchContactDetails, address.contactId]);
 
-    closeEdit = () => {
-        this.setState({ showEdit: false });
-        this.props.setAddressEnergySupplierNewOrEditOpen(false);
-    };
-
-    cancelEdit = () => {
-        this.setState({
-            ...this.state,
-            addressEnergySupplier: { ...this.props.addressEnergySupplier },
-        });
-        this.closeEdit();
-    };
-
-    toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
-    };
-
-    reloadContact = () => {
-        this.props.fetchContactDetails(this.props.address.contactId);
-    };
-
-    handleInputChange = event => {
+    const handleInputChange = useCallback(event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
-        this.setState({
-            ...this.state,
-            addressEnergySupplier: {
-                ...this.state.addressEnergySupplier,
-                [name]: value,
-            },
-        });
-    };
+        setLocalAddressEnergySupplier(prev => ({
+            ...prev,
+            [name]: value,
+        }));
+    }, []);
 
-    handleInputChangeDate(value, name) {
-        this.setState({
-            ...this.state,
-            addressEnergySupplier: {
-                ...this.state.addressEnergySupplier,
-                [name]: value,
-            },
-        });
-    }
+    const handleInputChangeDate = useCallback((value, name) => {
+        setLocalAddressEnergySupplier(prev => ({
+            ...prev,
+            [name]: value,
+        }));
+    }, []);
 
-    setMessageDoubleEsNumber(esNumber, energySupplierName, messageDoubleEsNumberArray) {
-        this.setState({
-            ...this.state,
-            messageDoubleEsNumber: esNumber,
-            messageDoubleEsName: energySupplierName,
-            messageDoubleEsNumberArray: messageDoubleEsNumberArray,
-        });
-    }
-    setShowMessageDoubleEsNumber() {
-        this.setState({
-            ...this.state,
-            showMessageDoubleEsNumber: true,
-        });
-    }
-    setHideMessageDoubleEsNumber = () => {
-        this.setState({
-            ...this.state,
-            showMessageDoubleEsNumber: false,
-            messageDoubleEsNumber: '',
-            messageDoubleEsName: '',
-            messageDoubleEsNumberArray: [],
-        });
-        if (this.state.messageHasParticipations) {
-            this.setShowMessageHasParticipations();
+    const handleSetMessageDoubleEsNumber = useCallback((esNumber, energySupplierName, duplicateArray) => {
+        setMessageDoubleEsNumber(esNumber);
+        setMessageDoubleEsName(energySupplierName);
+        setMessageDoubleEsNumberArray(duplicateArray);
+    }, []);
+
+    const hideMessageDoubleEsNumber = useCallback(() => {
+        setShowMessageDoubleEsNumber(false);
+        setMessageDoubleEsNumber('');
+        setMessageDoubleEsName('');
+        setMessageDoubleEsNumberArray([]);
+
+        if (messageHasParticipations) {
+            setShowMessageHasParticipations(true);
         } else {
-            this.closeEdit();
-            this.reloadContact();
+            closeEdit();
+            reloadContact();
         }
-    };
+    }, [messageHasParticipations, closeEdit, reloadContact]);
 
-    setMessageHasParticipations(messageHasParticipations, messageHasParticipationsRedirect, projectsArray) {
-        this.setState({
-            ...this.state,
-            messageHasParticipations: messageHasParticipations,
-            messageHasParticipationsRedirect: messageHasParticipationsRedirect,
-            messageHasParticipationsProjectsArray: projectsArray,
-        });
-    }
-    setShowMessageHasParticipations() {
-        this.setState({
-            ...this.state,
-            showMessageHasParticipations: true,
-        });
-    }
-    setHideMessageHasParticipations = () => {
-        this.setState({
-            ...this.state,
-            showMessageHasParticipations: false,
-            messageHasParticipations: false,
-            messageHasParticipationsRedirect: '',
-            messageHasParticipationsProjectsArray: [],
-        });
-        this.closeEdit();
-        this.reloadContact();
-    };
+    const handleSetMessageHasParticipations = useCallback((hasParticipations, redirect, projectsArray) => {
+        setMessageHasParticipations(hasParticipations);
+        setMessageHasParticipationsRedirect(redirect);
+        setMessageHasParticipationsProjectsArray(projectsArray);
+    }, []);
 
-    setShowConfirmValidatePeriodOverlap(message) {
-        this.setState({
-            ...this.state,
-            showConfirmValidatePeriodOverlap: true,
-            messageConfirmValidatePeriodOverlap: message,
-        });
-    }
-    closeValidatePeriodOverlap = () => {
-        this.setState({
-            ...this.state,
-            showConfirmValidatePeriodOverlap: false,
-            messageConfirmValidatePeriodOverlap: '',
-        });
-    };
-    confirmActionValidatePeriodOverlap = () => {
-        const { addressEnergySupplier } = this.state;
+    const hideMessageHasParticipations = useCallback(() => {
+        setShowMessageHasParticipations(false);
+        setMessageHasParticipations(false);
+        setMessageHasParticipationsRedirect('');
+        setMessageHasParticipationsProjectsArray([]);
+        closeEdit();
+        reloadContact();
+    }, [closeEdit, reloadContact]);
 
-        this.doUpdateAddressEnergySupplier(addressEnergySupplier);
-
-        this.setState({
-            ...this.state,
-            showConfirmValidatePeriodOverlap: false,
-            messageConfirmValidatePeriodOverlap: '',
-        });
-    };
-
-    handleSubmit = event => {
-        event.preventDefault();
-
-        const { addressEnergySupplier } = this.state;
-
-        let errors = {};
-        let hasErrors = false;
-
-        if (!addressEnergySupplier.memberSince || validator.isEmpty(addressEnergySupplier.memberSince)) {
-            errors.memberSince = true;
-            hasErrors = true;
-        }
-
-        if (
-            addressEnergySupplier.disabledAfter != '9999-12-31' &&
-            (!addressEnergySupplier.endDate || validator.isEmpty(addressEnergySupplier.endDate))
-        ) {
-            errors.endDate = true;
-            hasErrors = true;
-        }
-
-        if (
-            !hasErrors &&
-            addressEnergySupplier.endDate &&
-            !validator.isEmpty(addressEnergySupplier.endDate) &&
-            addressEnergySupplier.endDate < addressEnergySupplier.memberSince
-        ) {
-            errors.memberSince = true;
-            errors.endDate = true;
-            hasErrors = true;
-        }
-
-        this.setState({ ...this.state, errors: errors });
-
-        // If no errors send form
-        if (!hasErrors) {
-            AddressEnergySupplierAPI.validateAddressEnergySupplierForm(addressEnergySupplier)
+    const doUpdateAddressEnergySupplier = useCallback(
+        addressEnergySupplierToSave => {
+            AddressEnergySupplierAPI.updateAddressEnergySupplier(addressEnergySupplierToSave)
                 .then(payload => {
-                    // indien geen overlap dan direct verwerken
-                    if (!payload.data.responseOverlap.hasOverlap) {
-                        this.doUpdateAddressEnergySupplier(addressEnergySupplier);
+                    updateStateAddressEnergySupplier(payload.data.addressEnergySupplier);
+
+                    if (payload.data.responseParticipations.hasParticipations) {
+                        handleSetMessageHasParticipations(
+                            payload.data.responseParticipations.hasParticipations,
+                            payload.data.responseParticipations.revenuePartsKwhRedirect,
+                            payload.data.responseParticipations.projectsArray
+                        );
+                    }
+
+                    if (payload.data.addressEnergySupplier.addressEnergySuppliersWithDoubleEsNumber) {
+                        handleSetMessageDoubleEsNumber(
+                            payload.data.addressEnergySupplier.esNumber,
+                            payload.data.addressEnergySupplier.energySupplier.name,
+                            payload.data.addressEnergySupplier.addressEnergySuppliersWithDoubleEsNumber
+                        );
+                    }
+
+                    if (payload.data.addressEnergySupplier.addressEnergySuppliersWithDoubleEsNumber) {
+                        setShowMessageDoubleEsNumber(true);
+                    } else if (payload.data.responseParticipations.hasParticipations) {
+                        setShowMessageHasParticipations(true);
                     } else {
-                        // indien wel overlap dan eerst bevestigen
-                        this.setShowConfirmValidatePeriodOverlap(payload.data.responseOverlap.message);
+                        closeEdit();
+                        reloadContact();
                     }
                 })
                 .catch(error => {
-                    hasErrors = true;
                     if (error.response) {
-                        this.props.setError(error.response.status, error.response.data.message);
+                        setError(error.response.status, error.response.data.message);
                     } else {
-                        // this.props.setError(error);
                         console.log(error);
                     }
                 });
-        }
-    };
+        },
+        [
+            updateStateAddressEnergySupplier,
+            handleSetMessageHasParticipations,
+            handleSetMessageDoubleEsNumber,
+            closeEdit,
+            reloadContact,
+            setError,
+        ]
+    );
 
-    doUpdateAddressEnergySupplier = addressEnergySupplier => {
-        AddressEnergySupplierAPI.updateAddressEnergySupplier(addressEnergySupplier)
-            .then(payload => {
-                this.props.updateStateAddressEnergySupplier(payload.data.addressEnergySupplier);
+    const handleSubmit = useCallback(
+        event => {
+            event.preventDefault();
 
-                if (payload.data.responseParticipations.hasParticipations) {
-                    this.setMessageHasParticipations(
-                        payload.data.responseParticipations.hasParticipations,
-                        payload.data.responseParticipations.revenuePartsKwhRedirect,
-                        payload.data.responseParticipations.projectsArray
-                    );
-                }
-                if (payload.data.addressEnergySupplier.addressEnergySuppliersWithDoubleEsNumber) {
-                    this.setMessageDoubleEsNumber(
-                        payload.data.addressEnergySupplier.esNumber,
-                        payload.data.addressEnergySupplier.energySupplier.name,
-                        payload.data.addressEnergySupplier.addressEnergySuppliersWithDoubleEsNumber
-                    );
-                }
-                if (payload.data.addressEnergySupplier.addressEnergySuppliersWithDoubleEsNumber) {
-                    this.setShowMessageDoubleEsNumber();
-                } else if (payload.data.responseParticipations.hasParticipations) {
-                    this.setShowMessageHasParticipations();
-                } else {
-                    this.closeEdit();
-                    this.reloadContact();
-                }
-            })
-            .catch(error => {
-                if (error.response) {
-                    this.props.setError(error.response.status, error.response.data.message);
-                } else {
-                    console.log(error);
-                }
-            });
-    };
+            const addressEnergySupplier = localAddressEnergySupplier;
 
-    render() {
-        return (
-            <div>
-                <AddressDetailsFormAddressEnergySupplierView
-                    highlightLine={this.state.highlightLine}
-                    showActionButtons={this.state.showActionButtons}
-                    onLineEnter={this.onLineEnter}
-                    onLineLeave={this.onLineLeave}
-                    openEdit={this.openEdit}
-                    toggleDelete={this.toggleDelete}
-                    addressEnergySupplier={this.state.addressEnergySupplier}
-                    addressEnergySupplierNewOrEditOpen={this.props.addressEnergySupplierNewOrEditOpen}
+            let newErrors = {};
+            let hasErrors = false;
+
+            if (!addressEnergySupplier.memberSince || validator.isEmpty(addressEnergySupplier.memberSince)) {
+                newErrors.memberSince = true;
+                hasErrors = true;
+            }
+
+            if (
+                addressEnergySupplier.disabledAfter !== '9999-12-31' &&
+                (!addressEnergySupplier.endDate || validator.isEmpty(addressEnergySupplier.endDate))
+            ) {
+                newErrors.endDate = true;
+                hasErrors = true;
+            }
+
+            if (
+                !hasErrors &&
+                addressEnergySupplier.endDate &&
+                !validator.isEmpty(addressEnergySupplier.endDate) &&
+                addressEnergySupplier.endDate < addressEnergySupplier.memberSince
+            ) {
+                newErrors.memberSince = true;
+                newErrors.endDate = true;
+                hasErrors = true;
+            }
+
+            setErrors(newErrors);
+
+            if (!hasErrors) {
+                AddressEnergySupplierAPI.validateAddressEnergySupplierForm(addressEnergySupplier)
+                    .then(payload => {
+                        if (!payload.data.responseValidation.hasErrors) {
+                            doUpdateAddressEnergySupplier(addressEnergySupplier);
+                        } else {
+                            setError(422, payload.data.responseValidation.message);
+                        }
+                    })
+                    .catch(error => {
+                        if (error.response) {
+                            setError(error.response.status, error.response.data.message);
+                        } else {
+                            console.log(error);
+                        }
+                    });
+            }
+        },
+        [localAddressEnergySupplier, doUpdateAddressEnergySupplier, setError]
+    );
+
+    const canEdit = permissions.updateContactAddress && (permissions.updatePerson || permissions.updateOrganisation);
+
+    const canDelete = permissions.deleteContactAddress;
+
+    const canRedirectToFinalSettlement =
+        messageHasParticipationsProjectsArray.length === 1 && !!messageHasParticipationsRedirect;
+
+    return (
+        <div>
+            <AddressDetailsFormAddressEnergySupplierView
+                highlightLine={highlightLine}
+                showActionButtons={showActionButtons}
+                onLineEnter={onLineEnter}
+                onLineLeave={onLineLeave}
+                openEdit={openEdit}
+                toggleDelete={toggleDelete}
+                addressEnergySupplier={localAddressEnergySupplier}
+                addressEnergySupplierNewOrEditOpen={addressEnergySupplierNewOrEditOpen}
+            />
+
+            {canEdit && showEdit && (
+                <AddressDetailsFormAddressEnergySupplierEdit
+                    addressEnergySupplier={localAddressEnergySupplier}
+                    errors={errors}
+                    handleInputChange={handleInputChange}
+                    handleInputChangeDate={handleInputChangeDate}
+                    handleSubmit={handleSubmit}
+                    cancelEdit={cancelEdit}
                 />
-                {this.props.permissions.updateContactAddress &&
-                    this.state.showEdit &&
-                    (this.props.permissions.updatePerson || this.props.permissions.updateOrganisation) && (
-                        <AddressDetailsFormAddressEnergySupplierEdit
-                            addressEnergySupplier={this.state.addressEnergySupplier}
-                            errors={this.state.errors}
-                            handleInputChange={this.handleInputChange}
-                            handleInputChangeDate={this.handleInputChangeDate}
-                            handleSubmit={this.handleSubmit}
-                            cancelEdit={this.cancelEdit}
-                        />
-                    )}
-                {this.props.permissions.deleteContactAddress && this.state.showDelete && (
-                    <AddressDetailsFormAddressEnergySupplierDelete
-                        closeDeleteItemModal={this.toggleDelete}
-                        reloadContact={this.reloadContact}
-                        address={this.state.address}
-                        {...this.state.addressEnergySupplier}
-                    />
-                )}
-                {this.state.showConfirmValidatePeriodOverlap && (
-                    <Modal
-                        buttonConfirmText="Bevestigen"
-                        buttonClassName={'btn-danger'}
-                        closeModal={this.closeValidatePeriodOverlap}
-                        confirmAction={() => this.confirmActionValidatePeriodOverlap()}
-                        title="Bevestig periode afsluiting"
-                    >
-                        {this.state.messageConfirmValidatePeriodOverlap}
-                        <br />
-                        <br />
-                        {'Deze periode afsluiten op dag voor nieuwe Klant sinds datum?'}
-                    </Modal>
-                )}
-                {this.state.showMessageDoubleEsNumber && (
-                    <Modal
-                        title={'Waarschuwing'}
-                        closeModal={this.setHideMessageDoubleEsNumber}
-                        // modalClassName="modal-lg"
-                        showConfirmAction={false}
-                        buttonCancelText="Ok"
-                    >
-                        {'Klantnummer leverancier '} <strong>{this.state.messageDoubleEsNumber}</strong>
-                        {' komt al voor bij een andere adres voor leverancier '}
-                        <strong>{this.state.messageDoubleEsName}</strong>
-                        {
-                            '. (N.B. dit kan ook bij een ander contact zijn). Eventueel gewijzigde gegevens van deze adres/energie leverancier zijn wel opgeslagen.'
-                        }
-                        <br /> <br />
-                        {'Contacten/adressen met dezelfde klantnummer leverancier zijn:'} <br />
-                        <ul>
-                            {this.state.messageDoubleEsNumberArray.map(item => (
-                                <li>
-                                    Contact: {item.contactName} ({item.contactNumber}) met adres:{' '}
-                                    {item.addressStreetPostalCodeCity}
-                                </li>
-                            ))}
-                        </ul>
-                    </Modal>
-                )}
-                {this.state.showMessageHasParticipations && (
-                    <Modal
-                        title={'Waarschuwing'}
-                        closeModal={this.setHideMessageHasParticipations}
-                        // modalClassName="modal-lg"
-                        // buttonCancelText="Ok"
-                        buttonCancelText="Sluiten"
-                        showConfirmAction={
-                            this.state.messageHasParticipationsProjectsArray.length == 1 &&
-                            this.state.messageHasParticipationsRedirect
-                                ? true
-                                : false
-                        }
-                        buttonConfirmText={
-                            this.state.messageHasParticipationsProjectsArray.length == 1 &&
-                            this.state.messageHasParticipationsRedirect
-                                ? 'Naar eindafrekening'
-                                : ''
-                        }
-                        confirmAction={
-                            this.state.messageHasParticipationsProjectsArray.length == 1 &&
-                            this.state.messageHasParticipationsRedirect
-                                ? () => this.props.navigate(`${this.state.messageHasParticipationsRedirect}`)
-                                : {}
-                        }
-                    >
-                        Beëindigde adres/energieleverancier komt voor bij deelnames in volgende projecten: <br />
-                        <ul>
-                            {this.state.messageHasParticipationsProjectsArray.map(item => (
-                                <li>{item.projectMessage}</li>
-                            ))}
-                        </ul>
-                        <br />
-                        {this.state.messageHasParticipationsProjectsArray.length == 1
-                            ? 'Hiervoor kan nu eindafrekening voor teruggave EB gemaakt worden'
-                            : 'Hiervoor kunnen nu eindafrekeningen voor teruggave EB gemaakt worden'}
-                    </Modal>
-                )}
-            </div>
-        );
-    }
+            )}
+
+            {canDelete && showDelete && (
+                <AddressDetailsFormAddressEnergySupplierDelete
+                    closeDeleteItemModal={toggleDelete}
+                    reloadContact={reloadContact}
+                    address={address}
+                    {...localAddressEnergySupplier}
+                />
+            )}
+
+            {showMessageDoubleEsNumber && (
+                <Modal
+                    title="Waarschuwing"
+                    closeModal={hideMessageDoubleEsNumber}
+                    showConfirmAction={false}
+                    buttonCancelText="Ok"
+                >
+                    {'Klantnummer leverancier '}
+                    <strong>{messageDoubleEsNumber}</strong>
+                    {' komt al voor bij een andere adres voor leverancier '}
+                    <strong>{messageDoubleEsName}</strong>
+                    {
+                        '. (N.B. dit kan ook bij een ander contact zijn). Eventueel gewijzigde gegevens van deze adres/energie leverancier zijn wel opgeslagen.'
+                    }
+                    <br />
+                    <br />
+                    {'Contacten/adressen met dezelfde klantnummer leverancier zijn:'}
+                    <br />
+                    <ul>
+                        {messageDoubleEsNumberArray.map(item => (
+                            <li key={`${item.contactNumber}-${item.addressStreetPostalCodeCity}`}>
+                                Contact: {item.contactName} ({item.contactNumber}) met adres:{' '}
+                                {item.addressStreetPostalCodeCity}
+                            </li>
+                        ))}
+                    </ul>
+                </Modal>
+            )}
+
+            {showMessageHasParticipations && (
+                <Modal
+                    title="Waarschuwing"
+                    closeModal={hideMessageHasParticipations}
+                    buttonCancelText="Sluiten"
+                    showConfirmAction={canRedirectToFinalSettlement}
+                    buttonConfirmText={canRedirectToFinalSettlement ? 'Naar eindafrekening' : ''}
+                    confirmAction={
+                        canRedirectToFinalSettlement ? () => navigate(messageHasParticipationsRedirect) : undefined
+                    }
+                >
+                    Beëindigde adres/energieleverancier komt voor bij deelnames in volgende projecten:
+                    <br />
+                    <ul>
+                        {messageHasParticipationsProjectsArray.map((item, index) => (
+                            <li key={`${index}-${item.projectMessage}`}>{item.projectMessage}</li>
+                        ))}
+                    </ul>
+                    <br />
+                    {messageHasParticipationsProjectsArray.length === 1
+                        ? 'Hiervoor kan nu eindafrekening voor teruggave EB gemaakt worden'
+                        : 'Hiervoor kunnen nu eindafrekeningen voor teruggave EB gemaakt worden'}
+                </Modal>
+            )}
+        </div>
+    );
 }
 
-const mapStateToProps = state => {
-    return {
-        permissions: state.meDetails.permissions,
-    };
-};
+const mapStateToProps = state => ({
+    permissions: state.meDetails.permissions,
+});
 
 const mapDispatchToProps = dispatch => ({
-    updateStateAddressEnergySupplier: addressEnergySuppliers => {
-        dispatch(updateStateAddressEnergySupplier(addressEnergySuppliers));
+    updateStateAddressEnergySupplier: addressEnergySupplier => {
+        dispatch(updateStateAddressEnergySupplier(addressEnergySupplier));
     },
     fetchContactDetails: id => {
         dispatch(fetchContactDetails(id));
     },
-    setError: (http_code, message) => {
-        dispatch(setError(http_code, message));
+    setError: (httpCode, message) => {
+        dispatch(setError(httpCode, message));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddressDetailsFormAddressEnergySupplierItemWrapper);
+export default connect(mapStateToProps, mapDispatchToProps)(AddressDetailsFormAddressEnergySupplierItemContainer);

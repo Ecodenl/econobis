@@ -571,6 +571,9 @@ class ParticipationProjectController extends ApiController
             if($projectType->code_ref === 'postalcode_link_capital') {
                 $revenuesKwhHelper = new RevenuesKwhHelper();
                 $revenuesKwhPart = $revenuesKwhHelper->checkAndSplitRevenuePartsKwh($participantProject, Carbon::parse($participantProject->date_terminated)->addDay(), null);
+// Hier is bijwerken distributionParts niet nodig volgens mij.
+// Bij beeindigen deelname wijzigen energieleverancier gegevens niet. RevenuePart wordt alleen gesplitst.
+//                $revenuesKwhHelper->refreshDistributionPartsKwhEnergySupplierDataForParticipation($participantProject);
 
                 if($revenuesKwhPart){
                     $revenuePartsKwhRedirect = null;
@@ -580,9 +583,16 @@ class ParticipationProjectController extends ApiController
                     if($revenuesKwhPart['success'] && !$revenuesKwhPart['newRevenue'] ){
                         $revenuePartsKwhRedirect = '/project/opbrengst-kwh/' . $revenuesKwhPart['revenuesId']  . '/deelperiode/' . $revenuesKwhPart['revenuePartsId'];
                     }
-                    $responseParticipations = ['hasParticipations' => true, 'revenuePartsKwhRedirect' => $revenuePartsKwhRedirect,  'projectsArray' => $revenuesKwhPart];
+                    $responseParticipations = [
+                        'hasParticipations' => true,
+                        'revenuePartsKwhRedirect' => $revenuePartsKwhRedirect,
+                        'projectsArray' => $revenuesKwhPart];
                 }else{
-                    $responseParticipations = ['hasParticipations' => false, null, 'projectsArray' => []];
+                    $responseParticipations = [
+                        'hasParticipations' => false,
+                        'revenuePartsKwhRedirect' => null,
+                        'projectsArray' => []
+                    ];
                 }
 
                 return $responseParticipations;

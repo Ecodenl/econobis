@@ -80,6 +80,7 @@ use App\Eco\Webform\Webform;
 use App\Helpers\Address\AddressHelper;
 use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
+use App\Helpers\Project\RevenuesKwhHelper;
 use App\Helpers\Workflow\IntakeWorkflowHelper;
 use App\Helpers\Workflow\TaskWorkflowHelper;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
@@ -2213,11 +2214,10 @@ class ExternalWebformController extends Controller
 
             $energySupplierStatusId = null;
             if ($data['energy_supplier_id'] != '' && $data['energy_supply_status_id'] != '') {
-                $energySupplierStatus
-                    = EnergySupplierStatus::find($data['energy_supply_status_id']);
+                $energySupplierStatus = EnergySupplierStatus::find($data['energy_supply_status_id']);
                 if (!$energySupplierStatus) {
                     $this->log('Ongeldige waarde voor energie leverancier status meegegeven. Default naar null');
-                }else{
+                } else {
                     $energySupplierStatusId = $energySupplierStatus->id;
                 }
             }
@@ -2227,19 +2227,6 @@ class ExternalWebformController extends Controller
                 return;
             }
 
-//            $addressEnergySupplier = AddressEnergySupplier::create([
-//                'address_id' => $address->id,
-//                'energy_supplier_id' => $energySupplier->id,
-//                'es_number' => $data['es_number'],
-//                'energy_supply_type_id' => $energySupplierType->id,
-//                'member_since' => $data['member_since'] ?: null,
-////                'ean_electricity' => $data['ean_electricity'],
-//                'energy_supply_status_id' => $energySupplierStatusId,
-////                'is_current_supplier' => (bool)$data['is_current_supplier'],
-//            ]);
-//            $addressEnergySupplier->save();
-//            $this->log('Koppeling met energieleverancier ' . $energySupplier->name . ' gemaakt.');
-
             $addressEnergySupplierData = [
                 'address_id' => $address->id,
                 'energy_supplier_id' => $energySupplier->id,
@@ -2248,8 +2235,12 @@ class ExternalWebformController extends Controller
                 'member_since' => $data['member_since'] ?: '2000-01-01',
                 'energy_supply_status_id' => $energySupplierStatusId,
             ];
+
             $addressEnergySupplier = new AddressEnergySupplier();
             $addressEnergySupplier->fill($addressEnergySupplierData);
+
+            $this->syncPreviousAddressEnergySupplierEndDate($addressEnergySupplier);
+
             $addressEnergySupplierController = new AddressEnergySupplierController();
             $response = $addressEnergySupplierController->validateAddressEnergySupplier($addressEnergySupplier, false);
 
@@ -2259,10 +2250,61 @@ class ExternalWebformController extends Controller
             } else {
                 $addressEnergySupplier->save();
                 $this->log('Koppeling met energieleverancier ' . $energySupplier->name . ' gemaakt.');
+
+                $participations = $address->participations;
+                foreach ($participations as $participation) {
+                    $projectType = $participation->project->projectType;
+                    if ($projectType->code_ref === 'postalcode_link_capital') {
+                        $revenuesKwhHelper = new RevenuesKwhHelper();
+
+                        $revenuesKwhHelper->checkAndSplitRevenuePartsKwh(
+                            $participation,
+                            $addressEnergySupplier->member_since,
+                            $addressEnergySupplier
+                        );
+
+                        $revenuesKwhHelper->refreshDistributionPartsKwhEnergySupplierDataForParticipation($participation);
+                    }
+                }
             }
         } else {
             $this->log('Er is geen energie leverancier meegegeven, niet koppelen.');
         }
+    }
+
+    protected function getPreviousRelevantAddressEnergySupplier(AddressEnergySupplier $addressEnergySupplier): ?AddressEnergySupplier
+    {
+        if (!$addressEnergySupplier->member_since) {
+            return null;
+        }
+
+        return AddressEnergySupplier::query()
+            ->where('address_id', $addressEnergySupplier->address_id)
+            ->where('id', '!=', $addressEnergySupplier->id)
+            ->whereIn('energy_supply_type_id', [2, 3])
+            ->whereNotNull('member_since')
+            ->where('member_since', '<', $addressEnergySupplier->member_since)
+            ->orderBy('member_since', 'desc')
+            ->orderBy('id', 'desc')
+            ->first();
+    }
+
+    protected function syncPreviousAddressEnergySupplierEndDate(AddressEnergySupplier $addressEnergySupplier): void
+    {
+        if (!$addressEnergySupplier->member_since) {
+            return;
+        }
+
+        $previousAddressEnergySupplier = $this->getPreviousRelevantAddressEnergySupplier($addressEnergySupplier);
+
+        if (!$previousAddressEnergySupplier) {
+            return;
+        }
+
+        $newEndDate = Carbon::parse($addressEnergySupplier->member_since)->subDay()->format('Y-m-d');
+
+        $previousAddressEnergySupplier->end_date = $newEndDate;
+        $previousAddressEnergySupplier->save();
     }
 
     protected function addEnergyConsumptionGasToAddress(Address $address, $data)
@@ -4497,4 +4539,5 @@ class ExternalWebformController extends Controller
             }
         }
     }
+
 }

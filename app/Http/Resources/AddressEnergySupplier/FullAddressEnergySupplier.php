@@ -25,11 +25,8 @@ class FullAddressEnergySupplier extends JsonResource
             $addressEnergySuppliersWithDoubleEsNumber = $addressEnergySupplierHelper->addressEnergySuppliersWithDoubleEsNumber($this->id, $this->energy_supplier_id, $this->es_number);
         }
 
-        if($this->end_date_previous != '1900-01-01') {
-            $disabledBefore = Carbon::parse($this->end_date_previous)->addDay()->format('Y-m-d');
-        } else {
-            $disabledBefore = $this->end_date_previous;
-        }
+        $disabledBefore = Carbon::parse($this->previous_relevant_member_since)->addDay()->format('Y-m-d');
+
         if($this->member_since_next != '9999-12-31') {
             $disabledAfter = Carbon::parse($this->member_since_next)->subDay()->format('Y-m-d');
         } else {

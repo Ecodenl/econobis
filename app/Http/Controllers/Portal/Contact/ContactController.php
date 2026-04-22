@@ -801,6 +801,25 @@ class ContactController extends ApiController
                 return;
             }
             $currentAddressEnergySupplierElectricityNew = $this->createNewAddressEnergySupplier($address, $currentAddressEnergySupplierElectricityData);
+
+//            Log::info('PORTAL AES new 1 - before sync', [
+//                'address_id' => $currentAddressEnergySupplierElectricityNew->address_id,
+//                'energy_supplier_id' => $currentAddressEnergySupplierElectricityNew->energy_supplier_id,
+//                'member_since' => $currentAddressEnergySupplierElectricityNew->member_since,
+//            ]);
+
+            $this->syncPreviousAddressEnergySupplierEndDate($currentAddressEnergySupplierElectricityNew);
+
+//            Log::info('PORTAL AES new 1 - after sync previous', [
+//                'previous_records' => AddressEnergySupplier::where('address_id', $currentAddressEnergySupplierElectricityNew->address_id)
+//                    ->orderBy('member_since')
+//                    ->get(['id', 'energy_supplier_id', 'member_since', 'end_date'])
+//                    ->toArray(),
+//            ]);
+
+            $addressEnergySupplierController = new AddressEnergySupplierController();
+            $addressEnergySupplierController->validateAddressEnergySupplier($currentAddressEnergySupplierElectricityNew, true);
+
             $currentAddressEnergySupplierElectricityNew->save();
             $this->checkSplitRevenuePart($currentAddressEnergySupplierElectricityNew);
         } else {
@@ -811,20 +830,60 @@ class ContactController extends ApiController
                 if($currentAddressEnergySupplierElectricityData['memberSince'] == null) {
                     return;
                 }
+
+//                Log::info('PORTAL AES - check', [
+//                    'address_id' => $currentAddressEnergySupplierElectricityOld->address_id,
+//                    'current energy_supplier_id data' => $currentAddressEnergySupplierElectricityData['energySupplierId'],
+//                    'current energy_supplier_id old' => $currentAddressEnergySupplierElectricityOld->energy_supplier_id,
+//                    'member_since data' => $currentAddressEnergySupplierElectricityData['memberSince'],
+//                    'member_since old' => $currentAddressEnergySupplierElectricityOld->member_since,
+//                ]);
+
                 if($currentAddressEnergySupplierElectricityData['energySupplierId'] == $currentAddressEnergySupplierElectricityOld->energy_supplier_id) {
                     // update
                     $currentAddressEnergySupplierElectricityNew = clone $currentAddressEnergySupplierElectricityOld;
                     $currentAddressEnergySupplierElectricityNew->member_since = $currentAddressEnergySupplierElectricityData['memberSince'];
                     $currentAddressEnergySupplierElectricityNew->es_number = $currentAddressEnergySupplierElectricityData['esNumber'];
 
+//                    Log::info('PORTAL AES new 2 - before sync', [
+//                        'address_id' => $currentAddressEnergySupplierElectricityNew->address_id,
+//                        'energy_supplier_id' => $currentAddressEnergySupplierElectricityNew->energy_supplier_id,
+//                        'member_since' => $currentAddressEnergySupplierElectricityNew->member_since,
+//                    ]);
+
+                    $this->syncPreviousAddressEnergySupplierEndDate($currentAddressEnergySupplierElectricityNew);
+
+//                    Log::info('PORTAL AES new 2 - after sync previous', [
+//                        'previous_records' => AddressEnergySupplier::where('address_id', $currentAddressEnergySupplierElectricityNew->address_id)
+//                            ->orderBy('member_since')
+//                            ->get(['id', 'energy_supplier_id', 'member_since', 'end_date'])
+//                            ->toArray(),
+//                    ]);
+
                     $addressEnergySupplierController = new AddressEnergySupplierController();
                     $addressEnergySupplierController->validateAddressEnergySupplier($currentAddressEnergySupplierElectricityNew, true);
 
                     $currentAddressEnergySupplierElectricityNew->save();
-                }else{
+                    $this->checkSplitRevenuePart($currentAddressEnergySupplierElectricityNew);
+                } else {
 
                     // new
                     $currentAddressEnergySupplierElectricityNew = $this->createNewAddressEnergySupplier($address, $currentAddressEnergySupplierElectricityData);
+
+//                    Log::info('PORTAL AES new 3 - before sync', [
+//                        'address_id' => $currentAddressEnergySupplierElectricityNew->address_id,
+//                        'energy_supplier_id' => $currentAddressEnergySupplierElectricityNew->energy_supplier_id,
+//                        'member_since' => $currentAddressEnergySupplierElectricityNew->member_since,
+//                    ]);
+
+                    $this->syncPreviousAddressEnergySupplierEndDate($currentAddressEnergySupplierElectricityNew);
+
+//                    Log::info('PORTAL AES new 3 - after sync previous', [
+//                        'previous_records' => AddressEnergySupplier::where('address_id', $currentAddressEnergySupplierElectricityNew->address_id)
+//                            ->orderBy('member_since')
+//                            ->get(['id', 'energy_supplier_id', 'member_since', 'end_date'])
+//                            ->toArray(),
+//                    ]);
 
                     $addressEnergySupplierController = new AddressEnergySupplierController();
                     $addressEnergySupplierController->validateAddressEnergySupplier($currentAddressEnergySupplierElectricityNew, true);
@@ -833,7 +892,6 @@ class ContactController extends ApiController
                     $this->checkSplitRevenuePart($currentAddressEnergySupplierElectricityNew);
 
                 }
-
                 $currentAddressEnergySupplierElectricityNew->save();
             }
         }
@@ -1174,38 +1232,70 @@ class ContactController extends ApiController
             'energySupplyTypeId' => new EnumExists(EnergySupplierType::class),
             'isCurrentSupplier' => 'boolean',
         ]);
+
         $currentAddressEnergySupplierElectricityData = $this->sanitizeData($currentAddressEnergySupplierElectricityData, [
             'energySupplyTypeId' => 'nullable',
             'isCurrentSupplier' => 'boolean',
         ]);
-        $currentAddressEnergySupplierElectricityNew = new AddressEnergySupplier($this->arrayKeysToSnakeCase($currentAddressEnergySupplierElectricityData));
 
-        $addressEnergySupplierController = new AddressEnergySupplierController();
-        if ($addressEnergySupplierController->validateAddressEnergySupplier($currentAddressEnergySupplierElectricityNew, false)) {
-            $addressEnergySupplierController->setEndDateAddressEnergySupplier($currentAddressEnergySupplierElectricityNew);
-        }
-        return $currentAddressEnergySupplierElectricityNew;
+        return new AddressEnergySupplier($this->arrayKeysToSnakeCase($currentAddressEnergySupplierElectricityData));
     }
-
     /**
      * @param AddressEnergySupplier $currentAddressEnergySupplierElectricityNew
      */
     protected function checkSplitRevenuePart(AddressEnergySupplier $currentAddressEnergySupplierElectricityNew): void
     {
-        $revenuePartsKwhArray = [];
         if (Carbon::parse($currentAddressEnergySupplierElectricityNew->end_date_previous)->format('Y-m-d') != '1900-01-01') {
             $participations = $currentAddressEnergySupplierElectricityNew->address->participations;
             foreach ($participations as $participation) {
                 $projectType = $participation->project->projectType;
                 if ($projectType->code_ref === 'postalcode_link_capital') {
                     $revenuesKwhHelper = new RevenuesKwhHelper();
-                    $splitRevenuePartsKwhResponse = $revenuesKwhHelper->checkAndSplitRevenuePartsKwh($participation, $currentAddressEnergySupplierElectricityNew->member_since, $currentAddressEnergySupplierElectricityNew);
-                    if ($splitRevenuePartsKwhResponse) {
-                        $revenuePartsKwhArray [] = $splitRevenuePartsKwhResponse;
-                    }
+
+                    $revenuesKwhHelper->checkAndSplitRevenuePartsKwh(
+                        $participation,
+                        $currentAddressEnergySupplierElectricityNew->member_since,
+                        $currentAddressEnergySupplierElectricityNew
+                    );
+
+                    $revenuesKwhHelper->refreshDistributionPartsKwhEnergySupplierDataForParticipation($participation);
                 }
             }
         }
     }
 
+    protected function getPreviousRelevantAddressEnergySupplier(AddressEnergySupplier $addressEnergySupplier): ?AddressEnergySupplier
+    {
+        if (!$addressEnergySupplier->member_since) {
+            return null;
+        }
+
+        return AddressEnergySupplier::query()
+            ->where('address_id', $addressEnergySupplier->address_id)
+            ->where('id', '!=', $addressEnergySupplier->id)
+            ->whereIn('energy_supply_type_id', [2, 3])
+            ->whereNotNull('member_since')
+            ->where('member_since', '<', $addressEnergySupplier->member_since)
+            ->orderBy('member_since', 'desc')
+            ->orderBy('id', 'desc')
+            ->first();
+    }
+
+    protected function syncPreviousAddressEnergySupplierEndDate(AddressEnergySupplier $addressEnergySupplier): void
+    {
+        if (!$addressEnergySupplier->member_since) {
+            return;
+        }
+
+        $previousAddressEnergySupplier = $this->getPreviousRelevantAddressEnergySupplier($addressEnergySupplier);
+
+        if (!$previousAddressEnergySupplier) {
+            return;
+        }
+
+        $newEndDate = Carbon::parse($addressEnergySupplier->member_since)->subDay()->format('Y-m-d');
+
+        $previousAddressEnergySupplier->end_date = $newEndDate;
+        $previousAddressEnergySupplier->save();
+    }
 }

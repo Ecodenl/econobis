@@ -139,6 +139,7 @@ Modal.defaultProps = {
     modalBodyClassName: '',
     buttonConfirmText: 'Opslaan',
     buttonCancelText: 'Annuleren',
+    title: 'Melding',
     showConfirmAction: true,
     confirmAction: () => {},
     draggableDisabled: false,

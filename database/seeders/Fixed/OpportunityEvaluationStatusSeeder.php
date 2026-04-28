@@ -9,10 +9,17 @@ class OpportunityEvaluationStatusSeeder extends Seeder
 {
     public function run(): void
     {
-        OpportunityEvaluationStatus::upsert([
+        $opportunityEvaluationStatuses = [
             ['id' => 1, 'name' => 'Onbekend'],
             ['id' => 2, 'name' => 'Ja'],
             ['id' => 3, 'name' => 'Nee'],
-        ], ['id'], ['name']);
+        ];
+
+        foreach ($opportunityEvaluationStatuses as $opportunityEvaluationStatus) {
+            OpportunityEvaluationStatus::updateOrCreate(
+                ['id' => $opportunityEvaluationStatus['id']],
+                $opportunityEvaluationStatus
+            );
+        }
     }
 }

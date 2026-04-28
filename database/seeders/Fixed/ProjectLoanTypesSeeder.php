@@ -9,9 +9,16 @@ class ProjectLoanTypesSeeder extends Seeder
 {
     public function run(): void
     {
-        ProjectLoanType::upsert([
+        $projectLoanTypes = [
             ['name' => 'Aflossing over initiële inleg', 'code_ref' => 'lineair'],
             ['name' => 'Aflossing over actuele waarde', 'code_ref' => 'annuitair'],
-        ], ['code_ref'], ['name']);
+        ];
+
+        foreach ($projectLoanTypes as $projectLoanType) {
+            ProjectLoanType::updateOrCreate(
+                ['code_ref' => $projectLoanType['code_ref']],
+                $projectLoanType
+            );
+        }
     }
 }

@@ -9,10 +9,17 @@ class EnergySupplierTypesSeeder extends Seeder
 {
     public function run(): void
     {
-        EnergySupplierType::upsert([
+        $energySupplierTypes = [
             ['name' => 'Gas'],
             ['name' => 'Elektriciteit'],
             ['name' => 'Elektriciteit en gas'],
-        ], ['name'], []);
+        ];
+
+        foreach ($energySupplierTypes as $energySupplierType) {
+            EnergySupplierType::updateOrCreate(
+                ['name' => $energySupplierType['name']],
+                $energySupplierType
+            );
+        }
     }
 }

@@ -9,7 +9,7 @@ class MeasureCategoriesSeeder extends Seeder
 {
     public function run(): void
     {
-        MeasureCategory::upsert([
+        $measureCategories = [
             ['name' => 'Vloerisolatie', 'uses_wf_create_opportunity' => 0, 'measure_id_wf_create_opportunity' => null, 'opportunity_status_id_wf_create_opportunity' => null, 'uses_wf_create_quotation_request' => 0, 'organisation_id_wf_create_quotation_request' => null, 'uses_wf_email_quotation_request' => 0, 'email_template_id_wf_create_quotation_request' => null, 'calendar_background_color' => '#265985', 'calendar_text_color' => '#ffffff'],
             ['name' => 'Gevelisolatie', 'uses_wf_create_opportunity' => 0, 'measure_id_wf_create_opportunity' => null, 'opportunity_status_id_wf_create_opportunity' => null, 'uses_wf_create_quotation_request' => 0, 'organisation_id_wf_create_quotation_request' => null, 'uses_wf_email_quotation_request' => 0, 'email_template_id_wf_create_quotation_request' => null, 'calendar_background_color' => '#265985', 'calendar_text_color' => '#ffffff'],
             ['name' => 'Dakisolatie', 'uses_wf_create_opportunity' => 0, 'measure_id_wf_create_opportunity' => null, 'opportunity_status_id_wf_create_opportunity' => null, 'uses_wf_create_quotation_request' => 0, 'organisation_id_wf_create_quotation_request' => null, 'uses_wf_email_quotation_request' => 0, 'email_template_id_wf_create_quotation_request' => null, 'calendar_background_color' => '#265985', 'calendar_text_color' => '#ffffff'],
@@ -38,16 +38,13 @@ class MeasureCategoriesSeeder extends Seeder
             ['name' => 'Woningaanpassingen', 'uses_wf_create_opportunity' => 0, 'measure_id_wf_create_opportunity' => null, 'opportunity_status_id_wf_create_opportunity' => null, 'uses_wf_create_quotation_request' => 0, 'organisation_id_wf_create_quotation_request' => null, 'uses_wf_email_quotation_request' => 0, 'email_template_id_wf_create_quotation_request' => null, 'calendar_background_color' => '#265985', 'calendar_text_color' => '#ffffff'],
             ['name' => 'Witgoed', 'uses_wf_create_opportunity' => 0, 'measure_id_wf_create_opportunity' => null, 'opportunity_status_id_wf_create_opportunity' => null, 'uses_wf_create_quotation_request' => 0, 'organisation_id_wf_create_quotation_request' => null, 'uses_wf_email_quotation_request' => 0, 'email_template_id_wf_create_quotation_request' => null, 'calendar_background_color' => '#265985', 'calendar_text_color' => '#ffffff'],
             ['name' => 'Energie aansluiting', 'uses_wf_create_opportunity' => 0, 'measure_id_wf_create_opportunity' => null, 'opportunity_status_id_wf_create_opportunity' => null, 'uses_wf_create_quotation_request' => 0, 'organisation_id_wf_create_quotation_request' => null, 'uses_wf_email_quotation_request' => 0, 'email_template_id_wf_create_quotation_request' => null, 'calendar_background_color' => '#265985', 'calendar_text_color' => '#ffffff'],
-        ], ['name'], [
-            'uses_wf_create_opportunity',
-            'measure_id_wf_create_opportunity',
-            'opportunity_status_id_wf_create_opportunity',
-            'uses_wf_create_quotation_request',
-            'organisation_id_wf_create_quotation_request',
-            'uses_wf_email_quotation_request',
-            'email_template_id_wf_create_quotation_request',
-            'calendar_background_color',
-            'calendar_text_color',
-        ]);
+        ];
+
+        foreach ($measureCategories as $measureCategory) {
+            MeasureCategory::updateOrCreate(
+                ['name' => $measureCategory['name']],
+                $measureCategory
+            );
+        }
     }
 }

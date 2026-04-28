@@ -9,7 +9,7 @@ class ProjectTypesSeeder extends Seeder
 {
     public function run(): void
     {
-        ProjectType::upsert([
+        $projectTypes = [
             ['id' => 1, 'name' => 'SDE', 'code_ref' => '', 'is_active' => 0],
             ['id' => 2, 'name' => 'PCR', 'code_ref' => '', 'is_active' => 0],
             ['id' => 3, 'name' => 'Investering', 'code_ref' => '', 'is_active' => 0],
@@ -18,6 +18,13 @@ class ProjectTypesSeeder extends Seeder
             ['id' => 6, 'name' => 'Obligatie', 'code_ref' => 'obligation', 'is_active' => 1],
             ['id' => 7, 'name' => 'Kapitaal', 'code_ref' => 'capital', 'is_active' => 1],
             ['id' => 8, 'name' => 'Postcoderoos kapitaal', 'code_ref' => 'postalcode_link_capital', 'is_active' => 1],
-        ], ['id'], ['name', 'code_ref', 'is_active']);
+        ];
+
+        foreach ($projectTypes as $projectType) {
+            ProjectType::updateOrCreate(
+                ['id' => $projectType['id']],
+                $projectType
+            );
+        }
     }
 }

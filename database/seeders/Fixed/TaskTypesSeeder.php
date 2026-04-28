@@ -9,7 +9,7 @@ class TaskTypesSeeder extends Seeder
 {
     public function run(): void
     {
-        TaskType::upsert([
+        $taskTypes = [
             ['id' => 1, 'name' => 'Bellen', 'default_portal_task_type' => 0, 'uses_wf_new_task' => 0, 'email_template_id_wf_new_task' => null, 'uses_wf_completed_task' => 0, 'email_template_id_wf_completed_task' => null, 'number_of_days_to_send_email_completed_task' => 0, 'uses_wf_expired_task' => 0, 'email_template_id_wf_expired_task' => null],
             ['id' => 2, 'name' => 'E-mail', 'default_portal_task_type' => 0, 'uses_wf_new_task' => 0, 'email_template_id_wf_new_task' => null, 'uses_wf_completed_task' => 0, 'email_template_id_wf_completed_task' => null, 'number_of_days_to_send_email_completed_task' => 0, 'uses_wf_expired_task' => 0, 'email_template_id_wf_expired_task' => null],
             ['id' => 3, 'name' => 'Offerte maken', 'default_portal_task_type' => 0, 'uses_wf_new_task' => 0, 'email_template_id_wf_new_task' => null, 'uses_wf_completed_task' => 0, 'email_template_id_wf_completed_task' => null, 'number_of_days_to_send_email_completed_task' => 0, 'uses_wf_expired_task' => 0, 'email_template_id_wf_expired_task' => null],
@@ -28,16 +28,13 @@ class TaskTypesSeeder extends Seeder
             ['id' => 18, 'name' => 'Adreswijziging deelnemer', 'default_portal_task_type' => 0, 'uses_wf_new_task' => 0, 'email_template_id_wf_new_task' => null, 'uses_wf_completed_task' => 0, 'email_template_id_wf_completed_task' => null, 'number_of_days_to_send_email_completed_task' => 0, 'uses_wf_expired_task' => 0, 'email_template_id_wf_expired_task' => null],
             ['id' => 19, 'name' => 'Nazorg', 'default_portal_task_type' => 0, 'uses_wf_new_task' => 0, 'email_template_id_wf_new_task' => null, 'uses_wf_completed_task' => 0, 'email_template_id_wf_completed_task' => null, 'number_of_days_to_send_email_completed_task' => 0, 'uses_wf_expired_task' => 0, 'email_template_id_wf_expired_task' => null],
             ['id' => 20, 'name' => 'Subsidieaanvraag', 'default_portal_task_type' => 0, 'uses_wf_new_task' => 0, 'email_template_id_wf_new_task' => null, 'uses_wf_completed_task' => 0, 'email_template_id_wf_completed_task' => null, 'number_of_days_to_send_email_completed_task' => 0, 'uses_wf_expired_task' => 0, 'email_template_id_wf_expired_task' => null],
-        ], ['id'], [
-            'name',
-            'default_portal_task_type',
-            'uses_wf_new_task',
-            'email_template_id_wf_new_task',
-            'uses_wf_completed_task',
-            'email_template_id_wf_completed_task',
-            'number_of_days_to_send_email_completed_task',
-            'uses_wf_expired_task',
-            'email_template_id_wf_expired_task',
-        ]);
+        ];
+
+        foreach ($taskTypes as $taskType) {
+            TaskType::updateOrCreate(
+                ['id' => $taskType['id']],
+                $taskType
+            );
+        }
     }
 }

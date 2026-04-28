@@ -9,11 +9,18 @@ class ParticipantMutationStatusesSeeder extends Seeder
 {
     public function run(): void
     {
-        ParticipantMutationStatus::upsert([
+        $participantMutationStatuses = [
             ['name' => 'Interesse', 'code_ref' => 'interest'],
             ['name' => 'Inschrijving', 'code_ref' => 'option'],
             ['name' => 'Toegekend', 'code_ref' => 'granted'],
             ['name' => 'Definitief', 'code_ref' => 'final'],
-        ], ['code_ref'], ['name']);
+        ];
+
+        foreach ($participantMutationStatuses as $participantMutationStatus) {
+            ParticipantMutationStatus::updateOrCreate(
+                ['code_ref' => $participantMutationStatus['code_ref']],
+                $participantMutationStatus
+            );
+        }
     }
 }

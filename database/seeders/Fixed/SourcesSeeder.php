@@ -9,7 +9,7 @@ class SourcesSeeder extends Seeder
 {
     public function run(): void
     {
-        IntakeSource::upsert([
+        $sources = [
             ['id' => 1, 'name' => 'E-mail', 'name_custom' => null, 'code_ref' => null, 'visible' => 1],
             ['id' => 2, 'name' => 'Website', 'name_custom' => null, 'code_ref' => null, 'visible' => 1],
             ['id' => 3, 'name' => 'Evenement', 'name_custom' => null, 'code_ref' => null, 'visible' => 1],
@@ -44,6 +44,13 @@ class SourcesSeeder extends Seeder
             ['id' => 32, 'name' => 'Aanmeldingsbron32', 'name_custom' => null, 'code_ref' => null, 'visible' => 0],
             ['id' => 33, 'name' => 'Aanmeldingsbron33', 'name_custom' => null, 'code_ref' => null, 'visible' => 0],
             ['id' => 34, 'name' => 'Aanmeldingsbron34', 'name_custom' => null, 'code_ref' => null, 'visible' => 0],
-        ], ['id'], ['name', 'name_custom', 'code_ref', 'visible']);
+        ];
+
+        foreach ($sources as $source) {
+            IntakeSource::updateOrCreate(
+                ['id' => $source['id']],
+                $source
+            );
+        }
     }
 }

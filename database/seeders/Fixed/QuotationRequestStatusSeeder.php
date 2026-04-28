@@ -13,7 +13,7 @@ class QuotationRequestStatusSeeder extends Seeder
         $opportunityActionIds = OpportunityAction::query()
             ->pluck('id', 'code_ref');
 
-        QuotationRequestStatus::upsert([
+        $quotationRequestStatuses = [
             ['name' => 'In overweging bij bewoner', 'code_ref' => 'under-review-occupant', 'opportunity_action_id' => $opportunityActionIds['quotation-request'], 'uses_wf' => 0, 'email_template_id_wf' => null, 'mail_cc_to_coach_wf' => 0, 'number_of_days_to_send_email' => 0, 'send_email_reminder' => 0, 'order' => 4, 'is_pending_status' => 1],
             ['name' => 'Bewoner is akkoord', 'code_ref' => 'approved', 'opportunity_action_id' => $opportunityActionIds['quotation-request'], 'uses_wf' => 0, 'email_template_id_wf' => null, 'mail_cc_to_coach_wf' => 0, 'number_of_days_to_send_email' => 0, 'send_email_reminder' => 0, 'order' => 5, 'is_pending_status' => 0],
             ['name' => 'Bewoner heeft afgewezen', 'code_ref' => 'not-approved', 'opportunity_action_id' => $opportunityActionIds['quotation-request'], 'uses_wf' => 0, 'email_template_id_wf' => null, 'mail_cc_to_coach_wf' => 0, 'number_of_days_to_send_email' => 0, 'send_email_reminder' => 0, 'order' => 6, 'is_pending_status' => 0],
@@ -46,15 +46,16 @@ class QuotationRequestStatusSeeder extends Seeder
             ['name' => 'In behandeling', 'code_ref' => 'under-review', 'opportunity_action_id' => $opportunityActionIds['redirection'], 'uses_wf' => 0, 'email_template_id_wf' => null, 'mail_cc_to_coach_wf' => 0, 'number_of_days_to_send_email' => 0, 'send_email_reminder' => 0, 'order' => 20, 'is_pending_status' => 0],
             ['name' => 'Afgehandeld', 'code_ref' => 'handled', 'opportunity_action_id' => $opportunityActionIds['redirection'], 'uses_wf' => 0, 'email_template_id_wf' => null, 'mail_cc_to_coach_wf' => 0, 'number_of_days_to_send_email' => 0, 'send_email_reminder' => 0, 'order' => 30, 'is_pending_status' => 0],
             ['name' => 'Nog doorverwijzen', 'code_ref' => 'still_refer', 'opportunity_action_id' => $opportunityActionIds['redirection'], 'uses_wf' => 0, 'email_template_id_wf' => null, 'mail_cc_to_coach_wf' => 0, 'number_of_days_to_send_email' => 0, 'send_email_reminder' => 0, 'order' => 5, 'is_pending_status' => 0],
-        ], ['opportunity_action_id', 'code_ref'], [
-            'name',
-            'uses_wf',
-            'email_template_id_wf',
-            'mail_cc_to_coach_wf',
-            'number_of_days_to_send_email',
-            'send_email_reminder',
-            'order',
-            'is_pending_status',
-        ]);
+        ];
+
+        foreach ($quotationRequestStatuses as $quotationRequestStatus) {
+            QuotationRequestStatus::updateOrCreate(
+                [
+                    'opportunity_action_id' => $quotationRequestStatus['opportunity_action_id'],
+                    'code_ref' => $quotationRequestStatus['code_ref'],
+                ],
+                $quotationRequestStatus
+            );
+        }
     }
 }

@@ -9,7 +9,7 @@ class OpportunityStatusSeeder extends Seeder
 {
     public function run(): void
     {
-        OpportunityStatus::upsert([
+        $opportunityStatuses = [
             ['name' => 'Actief', 'uses_wf' => 0, 'email_template_id_wf' => null, 'number_of_days_to_send_email' => 0, 'active' => 1, 'external_hoom_id' => 1, 'code_ref' => 'active', 'order' => 2],
             ['name' => 'In afwachting', 'uses_wf' => 0, 'email_template_id_wf' => null, 'number_of_days_to_send_email' => 0, 'active' => 1, 'external_hoom_id' => 3, 'code_ref' => 'pending', 'order' => 3],
             ['name' => 'Uitgevoerd', 'uses_wf' => 0, 'email_template_id_wf' => null, 'number_of_days_to_send_email' => 0, 'active' => 1, 'external_hoom_id' => 5, 'code_ref' => 'executed', 'order' => 5],
@@ -23,14 +23,13 @@ class OpportunityStatusSeeder extends Seeder
             ['name' => 'Subsidie aanvaag in afwachting', 'uses_wf' => 0, 'email_template_id_wf' => null, 'number_of_days_to_send_email' => 0, 'active' => 1, 'external_hoom_id' => null, 'code_ref' => 'subsidy-request_pending', 'order' => 10],
             ['name' => 'Subsidie aanvraag toegekend', 'uses_wf' => 0, 'email_template_id_wf' => null, 'number_of_days_to_send_email' => 0, 'active' => 1, 'external_hoom_id' => null, 'code_ref' => 'subsidy-request_granted', 'order' => 11],
             ['name' => 'Subsidie aanvraag afgewezen', 'uses_wf' => 0, 'email_template_id_wf' => null, 'number_of_days_to_send_email' => 0, 'active' => 1, 'external_hoom_id' => null, 'code_ref' => 'subsidy-request_rejected', 'order' => 12],
-        ], ['code_ref'], [
-            'name',
-            'uses_wf',
-            'email_template_id_wf',
-            'number_of_days_to_send_email',
-            'active',
-            'external_hoom_id',
-            'order',
-        ]);
+        ];
+
+        foreach ($opportunityStatuses as $opportunityStatus) {
+            OpportunityStatus::updateOrCreate(
+                ['code_ref' => $opportunityStatus['code_ref']],
+                $opportunityStatus
+            );
+        }
     }
 }

@@ -2,14 +2,14 @@
 
 namespace Database\Seeders\Fixed;
 
-use App\Eco\Contact\LastNamePrefix;
+use App\Eco\LastNamePrefix\LastNamePrefix;
 use Illuminate\Database\Seeder;
 
 class LastNamePrefixesSeeder extends Seeder
 {
     public function run(): void
     {
-        LastNamePrefix::upsert([
+        $lastNamePrefixes = [
             ['name' => 'van'],
             ['name' => 'de'],
             ['name' => 'van der'],
@@ -42,6 +42,13 @@ class LastNamePrefixesSeeder extends Seeder
             ['name' => 'op der'],
             ['name' => 'in den'],
             ['name' => 'aan den'],
-        ], ['name'], []);
+        ];
+
+        foreach ($lastNamePrefixes as $lastNamePrefix) {
+            LastNamePrefix::updateOrCreate(
+                ['name' => $lastNamePrefix['name']],
+                $lastNamePrefix
+            );
+        }
     }
 }

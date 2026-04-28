@@ -9,11 +9,19 @@ class EnergySupplierStatusSeeder extends Seeder
 {
     public function run(): void
     {
-        EnergySupplierStatus::upsert([
+        $energySupplierStatuses = [
             ['name' => 'Geïnteresseerd'],
             ['name' => 'Geen interesse'],
             ['name' => 'Stapt over'],
             ['name' => 'Overgestapt'],
-        ], ['name'], []);
+        ];
+
+        foreach ($energySupplierStatuses as $energySupplierStatus) {
+            EnergySupplierStatus::updateOrCreate(
+                ['name' => $energySupplierStatus['name']],
+                $energySupplierStatus
+            );
+        }
+
     }
 }

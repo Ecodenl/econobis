@@ -9,10 +9,17 @@ class OrganisationTypesSeeder extends Seeder
 {
     public function run(): void
     {
-        OrganisationType::upsert([
+        $organisationTypes = [
             ['name' => 'Leverancier'],
             ['name' => 'Afnemer'],
             ['name' => 'Coöperatie'],
-        ], ['name'], []);
+        ];
+
+        foreach ($organisationTypes as $organisationType) {
+            OrganisationType::updateOrCreate(
+                ['name' => $organisationType['name']],
+                $organisationType
+            );
+        }
     }
 }

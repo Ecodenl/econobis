@@ -9,10 +9,16 @@ class ParticipantProjectPayoutTypesSeeder extends Seeder
 {
     public function run(): void
     {
-        ParticipantProjectPayoutType::upsert([
+        $participantProjectPayoutTypes = [
             ['name' => 'Uitbetalen (Rekening klant)', 'code_ref' => 'account'],
             ['name' => 'Naar kapitaalrekening (niet uitbetalen)', 'code_ref' => 'credit'],
-            ['name' => 'Energieleverancier', 'code_ref' => ''],
-        ], ['code_ref'], ['name']);
+        ];
+
+        foreach ($participantProjectPayoutTypes as $participantProjectPayoutType) {
+            ParticipantProjectPayoutType::updateOrCreate(
+                ['code_ref' => $participantProjectPayoutType['code_ref']],
+                $participantProjectPayoutType
+            );
+        }
     }
 }

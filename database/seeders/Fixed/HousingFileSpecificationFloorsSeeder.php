@@ -9,10 +9,17 @@ class HousingFileSpecificationFloorsSeeder extends Seeder
 {
     public function run(): void
     {
-        HousingFileSpecificationFloor::upsert([
+        $housingFileSpecificationFloors = [
             ['name' => 'Begane grond'],
             ['name' => 'Eerste verdieping'],
             ['name' => 'Tweede verdieping'],
-        ], ['name'], []);
+        ];
+
+        foreach ($housingFileSpecificationFloors as $housingFileSpecificationFloor) {
+            HousingFileSpecificationFloor::updateOrCreate(
+                ['name' => $housingFileSpecificationFloor['name']],
+                $housingFileSpecificationFloor
+            );
+        }
     }
 }

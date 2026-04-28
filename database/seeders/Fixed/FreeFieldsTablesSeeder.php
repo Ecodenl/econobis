@@ -9,10 +9,17 @@ class FreeFieldsTablesSeeder extends Seeder
 {
     public function run(): void
     {
-        FreeFieldsTable::upsert([
+        $freeFieldsTables = [
             ['table' => 'contacts', 'name' => 'Contacten', 'prefix_field_name_webform' => 'contact_'],
             ['table' => 'addresses', 'name' => 'Adressen', 'prefix_field_name_webform' => 'adres_'],
             ['table' => 'projects', 'name' => 'Projecten', 'prefix_field_name_webform' => null],
-        ], ['table'], ['name', 'prefix_field_name_webform']);
+        ];
+
+        foreach ($freeFieldsTables as $freeFieldsTable) {
+            FreeFieldsTable::updateOrCreate(
+                ['table' => $freeFieldsTable['table']],
+                $freeFieldsTable
+            );
+        }
     }
 }

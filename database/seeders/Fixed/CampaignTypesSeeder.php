@@ -9,7 +9,7 @@ class CampaignTypesSeeder extends Seeder
 {
     public function run(): void
     {
-        CampaignType::upsert([
+        $campaignTypes = [
             ['name' => 'Huis aan huis'],
             ['name' => 'E-mail'],
             ['name' => 'Internet/digitaal'],
@@ -17,6 +17,13 @@ class CampaignTypesSeeder extends Seeder
             ['name' => 'Energiecafé'],
             ['name' => 'Buurtaanpak'],
             ['name' => 'Subsidie'],
-        ], ['name'], []);
+        ];
+
+        foreach ($campaignTypes as $campaignType) {
+            CampaignType::updateOrCreate(
+                ['name' => $campaignType['name']],
+                $campaignType
+            );
+        }
     }
 }

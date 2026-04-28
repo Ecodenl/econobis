@@ -9,7 +9,7 @@ class OccupationsSeeder extends Seeder
 {
     public function run(): void
     {
-        Occupation::upsert([
+        $occupations = [
             ['primary_occupation' => 'Directeur', 'secondary_occupation' => 'Directeur', 'occupation_for_portal' => 0],
             ['primary_occupation' => 'Eigenaar', 'secondary_occupation' => 'Eigenaar', 'occupation_for_portal' => 0],
             ['primary_occupation' => 'Verkoper', 'secondary_occupation' => 'Verkoper', 'occupation_for_portal' => 0],
@@ -40,6 +40,17 @@ class OccupationsSeeder extends Seeder
             ['primary_occupation' => 'Politicus', 'secondary_occupation' => 'Politicus van', 'occupation_for_portal' => 0],
             ['primary_occupation' => 'Coördinator', 'secondary_occupation' => 'Coördinator van', 'occupation_for_portal' => 0],
             ['primary_occupation' => 'VvE lid', 'secondary_occupation' => 'VvE lid van', 'occupation_for_portal' => 0],
-        ], ['primary_occupation', 'secondary_occupation'], ['occupation_for_portal']);
+        ];
+
+        foreach ($occupations as $occupation) {
+            Occupation::updateOrCreate(
+                [
+                    'primary_occupation' => $occupation['primary_occupation'],
+                    'secondary_occupation' => $occupation['secondary_occupation'],
+                ],
+                $occupation
+            );
+        }
+
     }
 }

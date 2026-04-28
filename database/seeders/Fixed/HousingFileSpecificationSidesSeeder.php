@@ -9,7 +9,7 @@ class HousingFileSpecificationSidesSeeder extends Seeder
 {
     public function run(): void
     {
-        HousingFileSpecificationSide::upsert([
+        $housingFileSpecificationSides = [
             ['name' => 'Voorzijde'],
             ['name' => 'Achterzijde'],
             ['name' => 'Links'],
@@ -18,6 +18,13 @@ class HousingFileSpecificationSidesSeeder extends Seeder
             ['name' => 'Linkerachterzijde'],
             ['name' => 'Rechtervoorzijde'],
             ['name' => 'Rechterachterzijde'],
-        ], ['name'], []);
+        ];
+
+        foreach ($housingFileSpecificationSides as $housingFileSpecificationSide) {
+            HousingFileSpecificationSide::updateOrCreate(
+                ['name' => $housingFileSpecificationSide['name']],
+                $housingFileSpecificationSide
+            );
+        }
     }
 }

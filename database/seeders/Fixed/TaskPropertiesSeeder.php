@@ -9,7 +9,7 @@ class TaskPropertiesSeeder extends Seeder
 {
     public function run(): void
     {
-        TaskProperty::upsert([
+        $taskProperties = [
             ['name' => 'Aantal', 'code' => 'aantal'],
             ['name' => 'Advies', 'code' => 'advies'],
             ['name' => 'Conceptovereenkomst', 'code' => 'conceptovereenkomst'],
@@ -34,6 +34,14 @@ class TaskPropertiesSeeder extends Seeder
             ['name' => 'Brochure aanvragen', 'code' => 'brochure_aanvragen'],
             ['name' => 'Buurt initiatief', 'code' => 'buurt_initiatief'],
             ['name' => 'Verzendwijze', 'code' => 'verzendwijze'],
-        ], ['code'], ['name']);
+        ];
+
+        foreach ($taskProperties as $taskProperty) {
+            TaskProperty::updateOrCreate(
+                ['code' => $taskProperty['code']],
+                $taskProperty
+            );
+        }
+
     }
 }

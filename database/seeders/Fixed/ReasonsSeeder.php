@@ -2,17 +2,24 @@
 
 namespace Database\Seeders\Fixed;
 
-use App\Eco\Reason\Reason;
+use App\Eco\Intake\IntakeReason;
 use Illuminate\Database\Seeder;
 
 class ReasonsSeeder extends Seeder
 {
     public function run(): void
     {
-        Reason::upsert([
+        $reasons = [
             ['name' => 'Milieu'],
             ['name' => 'Comfort'],
             ['name' => 'Besparing'],
-        ], ['name'], []);
+        ];
+
+        foreach ($reasons as $reason) {
+            IntakeReason::updateOrCreate(
+                ['name' => $reason['name']],
+                $reason
+            );
+        }
     }
 }

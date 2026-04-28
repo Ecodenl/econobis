@@ -9,7 +9,7 @@ class HousingFileHoomLinksSeeder extends Seeder
 {
     public function run(): void
     {
-        HousingFileHoomLink::upsert([
+        $housingFileHoomLinks = [
             ['external_hoom_short_name' => 'surface', 'econobis_field_name' => 'surface', 'housing_file_data_type' => 'B', 'label' => 'Gebruiksoppervlakte', 'import_from_hoom' => 1, 'visible_in_econobis' => 1],
             ['external_hoom_short_name' => 'roof-type', 'econobis_field_name' => 'roof_type_id', 'housing_file_data_type' => 'B', 'label' => 'Daktype', 'import_from_hoom' => 1, 'visible_in_econobis' => 1],
             ['external_hoom_short_name' => 'building-layers', 'econobis_field_name' => 'floors', 'housing_file_data_type' => 'B', 'label' => 'Aantal bouwlagen', 'import_from_hoom' => 1, 'visible_in_econobis' => 1],
@@ -48,12 +48,13 @@ class HousingFileHoomLinksSeeder extends Seeder
             ['external_hoom_short_name' => 'crack-sealing-type', 'econobis_field_name' => NULL, 'housing_file_data_type' => 'W', 'label' => 'Status kierdichting', 'import_from_hoom' => 1, 'visible_in_econobis' => 1],
             ['external_hoom_short_name' => 'has-cavity-wall', 'econobis_field_name' => NULL, 'housing_file_data_type' => 'W', 'label' => 'Spouwmuur', 'import_from_hoom' => 1, 'visible_in_econobis' => 1],
             ['external_hoom_short_name' => 'has-solar-panels', 'econobis_field_name' => NULL, 'housing_file_data_type' => 'W', 'label' => 'Zonnepanelen', 'import_from_hoom' => 1, 'visible_in_econobis' => 1],
-        ], ['external_hoom_short_name'], [
-            'econobis_field_name',
-            'housing_file_data_type',
-            'label',
-            'import_from_hoom',
-            'visible_in_econobis',
-        ]);
+        ];
+
+        foreach ($housingFileHoomLinks as $housingFileHoomLink) {
+            HousingFileHoomLink::updateOrCreate(
+                ['external_hoom_short_name' => $housingFileHoomLink['external_hoom_short_name']],
+                $housingFileHoomLink
+            );
+        }
     }
 }

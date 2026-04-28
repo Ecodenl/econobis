@@ -9,7 +9,7 @@ class PersonTypesSeeder extends Seeder
 {
     public function run(): void
     {
-        PersonType::upsert([
+        $personTypes = [
             ['name' => 'Particulier'],
             ['name' => 'Adviseur'],
             ['name' => 'Eigenaar bedrijf'],
@@ -18,6 +18,13 @@ class PersonTypesSeeder extends Seeder
             ['name' => 'Wethouder'],
             ['name' => 'Kunstenaar'],
             ['name' => 'Collega coöperatie'],
-        ], ['name'], []);
+        ];
+
+        foreach ($personTypes as $personType) {
+            PersonType::updateOrCreate(
+                ['name' => $personType['name']],
+                $personType
+            );
+        }
     }
 }

@@ -9,13 +9,20 @@ class ProjectRevenueTypesSeeder extends Seeder
 {
     public function run(): void
     {
-        ProjectRevenueType::upsert([
+        $projectRevenueTypes = [
             ['name' => 'Rente'],
             ['name' => 'Dividend'],
             ['name' => 'Productie'],
             ['name' => 'Rendement'],
             ['name' => 'Aflossing'],
             ['name' => 'Rente en aflossing'],
-        ], ['name'], []);
+        ];
+
+        foreach ($projectRevenueTypes as $projectRevenueType) {
+            ProjectRevenueType::updateOrCreate(
+                ['name' => $projectRevenueType['name']],
+                $projectRevenueType
+            );
+        }
     }
 }

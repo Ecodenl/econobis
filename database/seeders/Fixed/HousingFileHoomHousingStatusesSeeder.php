@@ -9,7 +9,7 @@ class HousingFileHoomHousingStatusesSeeder extends Seeder
 {
     public function run(): void
     {
-        HousingFileHoomHousingStatus::upsert([
+        $housingFileHoomHousingStatuses = [
             ['external_hoom_short_name' => 'building-type-category', 'hoom_status_question' => 'Wat voor soort woning heb je?', 'hoom_status_value' => '1', 'hoom_status_name' => 'Appartement'],
             ['external_hoom_short_name' => 'building-type-category', 'hoom_status_question' => 'Wat voor soort woning heb je?', 'hoom_status_value' => '2', 'hoom_status_name' => 'Hoekwoning'],
             ['external_hoom_short_name' => 'building-type-category', 'hoom_status_question' => 'Wat voor soort woning heb je?', 'hoom_status_value' => '3', 'hoom_status_name' => 'Vrijstaand'],
@@ -501,9 +501,16 @@ class HousingFileHoomHousingStatusesSeeder extends Seeder
             ['external_hoom_short_name' => 'use-door-closers-coach-help', 'hoom_status_question' => 'De energiecoach heeft voor deze maatregel', 'hoom_status_value' => 'helped', 'hoom_status_name' => 'Geholpen bij uitvoering (zie omschrijving)'],
             ['external_hoom_short_name' => 'has-cavity-wall', 'hoom_status_question' => 'Zijn er spouwmuren?', 'hoom_status_value' => 'yes', 'hoom_status_name' => 'Ja'],
             ['external_hoom_short_name' => 'has-cavity-wall', 'hoom_status_question' => 'Zijn er spouwmuren?', 'hoom_status_value' => 'no', 'hoom_status_name' => 'Nee'],
-        ], ['external_hoom_short_name', 'hoom_status_value'], [
-            'hoom_status_question',
-            'hoom_status_name',
-        ]);
+        ];
+
+        foreach ($housingFileHoomHousingStatuses as $housingFileHoomHousingStatus) {
+            HousingFileHoomHousingStatus::updateOrCreate(
+                [
+                    'external_hoom_short_name' => $housingFileHoomHousingStatus['external_hoom_short_name'],
+                    'hoom_status_value' => $housingFileHoomHousingStatus['hoom_status_value'],
+                ],
+                $housingFileHoomHousingStatus
+            );
+        }
     }
 }

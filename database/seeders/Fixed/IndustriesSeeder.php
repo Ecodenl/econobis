@@ -9,7 +9,7 @@ class IndustriesSeeder extends Seeder
 {
     public function run(): void
     {
-        Industry::upsert([
+        $industries = [
             ['name' => 'ICT'],
             ['name' => 'Pharmacie'],
             ['name' => 'Verpakking'],
@@ -32,6 +32,13 @@ class IndustriesSeeder extends Seeder
             ['name' => 'Verhuur'],
             ['name' => 'Winkel'],
             ['name' => 'Energie'],
-        ], ['name'], []);
+        ];
+
+        foreach ($industries as $industry) {
+            Industry::updateOrCreate(
+                ['name' => $industry['name']],
+                $industry
+            );
+        }
     }
 }

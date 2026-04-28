@@ -9,7 +9,7 @@ class TitlesSeeder extends Seeder
 {
     public function run(): void
     {
-        Title::upsert([
+        $titles = [
             ['name' => 'Dhr', 'address' => 'De heer', 'salutation' => 'heer', 'active' => 1],
             ['name' => 'Mevr', 'address' => 'Mevrouw', 'salutation' => 'mevrouw', 'active' => 1],
             ['name' => 'De heer, Mevrouw', 'address' => 'De heer, Mevrouw', 'salutation' => 'heer, mevrouw', 'active' => 1],
@@ -19,6 +19,13 @@ class TitlesSeeder extends Seeder
             ['name' => 'De dames', 'address' => 'De dames', 'salutation' => 'dames', 'active' => 1],
             ['name' => 'Erven', 'address' => 'Erven van', 'salutation' => 'erven van', 'active' => 0],
             ['name' => 'Geen voorkeur', 'address' => '', 'salutation' => '', 'active' => 1],
-        ], ['name'], ['address', 'salutation', 'active']);
+        ];
+
+        foreach ($titles as $title) {
+            Title::updateOrCreate(
+                ['name' => $title['name']],
+                $title
+            );
+        }
     }
 }

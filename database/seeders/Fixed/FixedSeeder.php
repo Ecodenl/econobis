@@ -45,7 +45,7 @@ class FixedSeeder extends Seeder
             // Energy supplier / supply
             EnergySuppliersSeeder::class,
             EnergySupplierStatusSeeder::class,
-            EnergySupplierTypeSeeder::class,
+            EnergySupplierTypesSeeder::class,
 
             // Financial
             VatCodesSeeder::class,

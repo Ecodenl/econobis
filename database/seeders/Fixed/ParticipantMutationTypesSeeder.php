@@ -9,7 +9,7 @@ class ParticipantMutationTypesSeeder extends Seeder
 {
     public function run(): void
     {
-        ParticipantMutationType::upsert([
+        $participantMutationTypes = [
             ['name' => 'Lening afsluiten', 'description' => 'Inleg', 'code_ref' => 'first_deposit', 'project_type_id' => 5],
             ['name' => 'Bijstorten', 'description' => 'Inleg', 'code_ref' => 'deposit', 'project_type_id' => 5],
             ['name' => 'Aflossing', 'description' => 'Opname', 'code_ref' => 'withDrawal', 'project_type_id' => 5],
@@ -37,6 +37,13 @@ class ParticipantMutationTypesSeeder extends Seeder
             ['name' => 'Resultaat', 'description' => 'Resultaat bijschrijven', 'code_ref' => 'result_deposit', 'project_type_id' => 8],
             ['name' => 'Resultaat', 'description' => 'Resultaat bijschrijven', 'code_ref' => 'result_deposit', 'project_type_id' => 5],
             ['name' => 'Resultaat', 'description' => 'Uitkering handmatig', 'code_ref' => 'result_deposit', 'project_type_id' => 6],
-        ], ['code_ref', 'project_type_id'], ['name', 'description']);
+        ];
+
+        foreach ($participantMutationTypes as $participantMutationType) {
+            ParticipantMutationType::updateOrCreate(
+                ['code_ref' => $participantMutationType['code_ref']],
+                $participantMutationType
+            );
+        }
     }
 }

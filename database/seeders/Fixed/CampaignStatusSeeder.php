@@ -9,11 +9,18 @@ class CampaignStatusSeeder extends Seeder
 {
     public function run(): void
     {
-        CampaignStatus::upsert([
+        $campaignStatuses = [
             ['name' => 'Niet gestart'],
             ['name' => 'Gestart'],
             ['name' => 'In afwachting'],
             ['name' => 'Klaar'],
-        ], ['name'], []);
+        ];
+
+        foreach ($campaignStatuses as $campaignStatus) {
+            CampaignStatus::updateOrCreate(
+                ['name' => $campaignStatus['name']],
+                $campaignStatus
+            );
+        }
     }
 }

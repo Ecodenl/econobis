@@ -379,12 +379,6 @@ class MeasuresSeeder extends Seeder
         ];
 
         foreach ($measures as $measure) {
-            Measure::firstOrCreate(
-                ['number' => $measure['number']],
-                $measure
-            );
-        }
-        foreach ($measures as $measure) {
             $existingMeasure = Measure::firstOrCreate(
                 ['number' => $measure['number']],
                 $measure
@@ -401,5 +395,6 @@ class MeasuresSeeder extends Seeder
                 'import_from_hoom' => $measure['import_from_hoom'],
                 'visible_in_econobis' => $measure['visible_in_econobis'],
             ]);
-        }    }
+        }
+    }
 }

@@ -5,7 +5,7 @@ namespace Database\Seeders\Fixed;
 use App\Eco\Intake\IntakeStatus;
 use Illuminate\Database\Seeder;
 
-class IntakeStatusSeeder extends Seeder
+class IntakeStatusesSeeder extends Seeder
 {
     public function run(): void
     {

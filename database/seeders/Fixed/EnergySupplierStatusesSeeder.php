@@ -2,23 +2,26 @@
 
 namespace Database\Seeders\Fixed;
 
-use App\Eco\HousingFile\EnergyLabelStatus;
+use App\Eco\EnergySupplier\EnergySupplierStatus;
 use Illuminate\Database\Seeder;
 
-class EnergyLabelStatusSeeder extends Seeder
+class EnergySupplierStatusesSeeder extends Seeder
 {
     public function run(): void
     {
         $energySupplierStatuses = [
-            ['name' => 'Voorlopig'],
-            ['name' => 'Definitief'],
+            ['name' => 'Geïnteresseerd'],
+            ['name' => 'Geen interesse'],
+            ['name' => 'Stapt over'],
+            ['name' => 'Overgestapt'],
         ];
 
         foreach ($energySupplierStatuses as $energySupplierStatus) {
-            EnergyLabelStatus::updateOrCreate(
+            EnergySupplierStatus::updateOrCreate(
                 ['name' => $energySupplierStatus['name']],
                 $energySupplierStatus
             );
         }
+
     }
 }

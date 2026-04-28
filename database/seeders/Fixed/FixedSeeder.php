@@ -21,7 +21,7 @@ class FixedSeeder extends Seeder
             // Housing file basis
             BuildingTypesSeeder::class,
             EnergyLabelsSeeder::class,
-            EnergyLabelStatusSeeder::class,
+            EnergyLabelStatusesSeeder::class,
             RoofTypesSeeder::class,
             HousingFileSpecificationFloorsSeeder::class,
             HousingFileSpecificationSidesSeeder::class,
@@ -34,7 +34,7 @@ class FixedSeeder extends Seeder
             AddressDongleTypesSeeder::class,
 
             // Campaign
-            CampaignStatusSeeder::class,
+            CampaignStatusesSeeder::class,
             CampaignTypesSeeder::class,
 
             // Contact import / free fields
@@ -44,7 +44,7 @@ class FixedSeeder extends Seeder
 
             // Energy supplier / supply
             EnergySuppliersSeeder::class,
-            EnergySupplierStatusSeeder::class,
+            EnergySupplierStatusesSeeder::class,
             EnergySupplierTypesSeeder::class,
 
             // Financial
@@ -54,14 +54,14 @@ class FixedSeeder extends Seeder
             // Opportunity basis
             OpportunityActionsSeeder::class,
             OpportunityEvaluationStatusSeeder::class,
-            OpportunityStatusSeeder::class,
+            OpportunityStatusesSeeder::class,
 
             // Measure basis: categories vóór measures
             MeasureCategoriesSeeder::class,
             MeasuresSeeder::class,
 
             // Intake / sources / tasks
-            IntakeStatusSeeder::class,
+            IntakeStatusesSeeder::class,
             SourcesSeeder::class,
             TaskPropertiesSeeder::class,
             TaskTypesSeeder::class,
@@ -81,7 +81,7 @@ class FixedSeeder extends Seeder
             PortalSettingsDashboardWidgetsSeeder::class,
 
             // Quotation request: na opportunity_actions
-            QuotationRequestStatusSeeder::class,
+            QuotationRequestStatusesSeeder::class,
 
             // Misc
             OccupationsSeeder::class,

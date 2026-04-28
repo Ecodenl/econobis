@@ -6,7 +6,7 @@ use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
 use Illuminate\Database\Seeder;
 
-class QuotationRequestStatusSeeder extends Seeder
+class QuotationRequestStatusesSeeder extends Seeder
 {
     public function run(): void
     {

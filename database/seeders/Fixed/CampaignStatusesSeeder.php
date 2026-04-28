@@ -5,7 +5,7 @@ namespace Database\Seeders\Fixed;
 use App\Eco\Campaign\CampaignStatus;
 use Illuminate\Database\Seeder;
 
-class CampaignStatusSeeder extends Seeder
+class CampaignStatusesSeeder extends Seeder
 {
     public function run(): void
     {

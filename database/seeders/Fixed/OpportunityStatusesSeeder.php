@@ -5,7 +5,7 @@ namespace Database\Seeders\Fixed;
 use App\Eco\Opportunity\OpportunityStatus;
 use Illuminate\Database\Seeder;
 
-class OpportunityStatusSeeder extends Seeder
+class OpportunityStatusesSeeder extends Seeder
 {
     public function run(): void
     {

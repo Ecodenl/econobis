@@ -86,6 +86,12 @@ class FixedSeeder extends Seeder
 
             // Misc
             OccupationsSeeder::class,
+
+            // Permissions / Roles / AdminUsers
+            PermissionsSeeder::class,
+            RolesSeeder::class,
+            RolePermissionsSeeder::class,
+            AdminUsersSeeder::class,
         ]);
     }
 }

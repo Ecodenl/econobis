@@ -27,6 +27,6 @@ class AdminUsersSeeder extends Seeder
             ]
         );
 
-        $adminUser->assignRole(Role::findByName('superuser'));
+        $adminUser->assignRole(Role::findByName('Beheerder', 'api'));
     }
 }

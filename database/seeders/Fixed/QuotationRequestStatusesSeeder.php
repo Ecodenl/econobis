@@ -48,14 +48,22 @@ class QuotationRequestStatusesSeeder extends Seeder
             ['name' => 'Nog doorverwijzen', 'code_ref' => 'still_refer', 'opportunity_action_id' => $opportunityActionIds['redirection'], 'uses_wf' => 0, 'email_template_id_wf' => null, 'mail_cc_to_coach_wf' => 0, 'number_of_days_to_send_email' => 0, 'send_email_reminder' => 0, 'order' => 5, 'is_pending_status' => 0],
         ];
 
+        // We voegen ontbrekende (nieuwe) records toe en van bestaande wijzigen we alleen: name, order, is_pending_status.
+        // We gebruiken hier daarom firstOrCreate() en doen daarna een update() voor niet-muteerbare velden (voor gebruiker).
         foreach ($quotationRequestStatuses as $quotationRequestStatus) {
-            QuotationRequestStatus::updateOrCreate(
+            $existingQuotationRequestStatus = QuotationRequestStatus::firstOrCreate(
                 [
                     'opportunity_action_id' => $quotationRequestStatus['opportunity_action_id'],
                     'code_ref' => $quotationRequestStatus['code_ref'],
                 ],
                 $quotationRequestStatus
             );
+
+            $existingQuotationRequestStatus->update([
+                'name' => $quotationRequestStatus['name'],
+                'order' => $quotationRequestStatus['order'],
+                'is_pending_status' => $quotationRequestStatus['is_pending_status'],
+            ]);
         }
     }
 }

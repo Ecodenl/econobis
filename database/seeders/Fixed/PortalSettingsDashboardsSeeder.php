@@ -13,8 +13,11 @@ class PortalSettingsDashboardsSeeder extends Seeder
             ['id' => 1, 'welcome_title' => 'Welkom op jouw energie gemeenschap', 'welcome_message' => '', 'default_widget_background_color' => '#ffffff', 'default_widget_text_color' => '#000000'],
         ];
 
+        // Alle velden (op id na natuurlijk), zijn muteerbaar voor gebruiker.
+        // We voegen alleen ontbrekende (nieuwe) records toe en laten bestaande ongemoeid.
+        // We gebruiken hier daarom firstOrCreate() ipv updateOrCreate() en doen geen update().
         foreach ($portalSettingsDashboards as $portalSettingsDashboard) {
-            PortalSettingsDashboard::updateOrCreate(
+            PortalSettingsDashboard::firstOrCreate(
                 ['id' => $portalSettingsDashboard['id']],
                 $portalSettingsDashboard
             );

@@ -27,8 +27,11 @@ class LedgersSeeder extends Seeder
             [ 'description' => 'Omzet binnen de EU', 'vat_code_id' => $vatGeenId, 'twinfield_ledger_code' => '8024'],
         ];
 
+        // Alle velden (op id na natuurlijk), zijn muteerbaar voor gebruiker.
+        // We voegen alleen ontbrekende (nieuwe) records toe en laten bestaande ongemoeid.
+        // We gebruiken hier daarom firstOrCreate() ipv updateOrCreate() en doen geen update().
         foreach ($ledgers as $ledger) {
-            Ledger::updateOrCreate(
+            Ledger::firstOrCreate(
                 ['twinfield_ledger_code' => $ledger['twinfield_ledger_code']],
                 $ledger
             );

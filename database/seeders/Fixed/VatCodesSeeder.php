@@ -18,7 +18,7 @@ class VatCodesSeeder extends Seeder
         ];
 
         foreach ($vatCodes as $vatCode) {
-            VatCode::updateOrCreate(
+            VatCode::firstOrCreate(
                 ['twinfield_code' => $vatCode['twinfield_code']],
                 $vatCode
             );

@@ -16,8 +16,11 @@ class PortalSettingsDashboardWidgetsSeeder extends Seeder
             ['portal_settings_dashboard_id' => 1, 'code_ref' => 'groepen-beheer', 'order' => 999, 'title' => 'Groepen beheer', 'text' => 'Beheer hier de groepen waar je in zit', 'button_text' => 'Groepen', 'button_link' => 'groepen-beheer', 'widget_image_file_name' => 'groepen-beheer.png', 'show_group_id' => null, 'background_color' => '', 'text_color' => '', 'active' => 0, 'hide_group_id' => null],
         ];
 
+        // Alle velden (op id na natuurlijk en code_ref), zijn muteerbaar voor gebruiker.
+        // We voegen alleen ontbrekende (nieuwe) records toe en laten bestaande ongemoeid.
+        // We gebruiken hier daarom firstOrCreate() ipv updateOrCreate() en doen geen update().
         foreach ($portalSettingsDashboardWidgets as $portalSettingsDashboardWidget) {
-            PortalSettingsDashboardWidget::updateOrCreate(
+            PortalSettingsDashboardWidget::firstOrCreate(
                 ['code_ref' => $portalSettingsDashboardWidget['code_ref']],
                 $portalSettingsDashboardWidget
             );

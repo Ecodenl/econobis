@@ -9,6 +9,9 @@ class OpportunityStatusesSeeder extends Seeder
 {
     public function run(): void
     {
+        // Volgens mij worden deze niet meer gebruikt (zijn dacht ik verplaatst naar campaign_workflows): email_template_id_wf, number_of_days_to_send_email,
+        // De volgende zouden denk ik nog wel eens ergens gebruikt kunnen worden: active, external_hoom_id, order
+
         $opportunityStatuses = [
             ['name' => 'Actief', 'uses_wf' => 0, 'email_template_id_wf' => null, 'number_of_days_to_send_email' => 0, 'active' => 1, 'external_hoom_id' => 1, 'code_ref' => 'active', 'order' => 2],
             ['name' => 'In afwachting', 'uses_wf' => 0, 'email_template_id_wf' => null, 'number_of_days_to_send_email' => 0, 'active' => 1, 'external_hoom_id' => 3, 'code_ref' => 'pending', 'order' => 3],
@@ -25,11 +28,19 @@ class OpportunityStatusesSeeder extends Seeder
             ['name' => 'Subsidie aanvraag afgewezen', 'uses_wf' => 0, 'email_template_id_wf' => null, 'number_of_days_to_send_email' => 0, 'active' => 1, 'external_hoom_id' => null, 'code_ref' => 'subsidy-request_rejected', 'order' => 12],
         ];
 
+        // We voegen ontbrekende (nieuwe) records toe en van bestaande wijzigen we alleen: name, active, external_hoom_id, order
+        // We gebruiken hier daarom firstOrCreate() en doen daarna een update() voor niet muteerbare velden (voor gebruiker).
         foreach ($opportunityStatuses as $opportunityStatus) {
-            OpportunityStatus::updateOrCreate(
+            $existingOpportunityStatus = OpportunityStatus::firstOrCreate(
                 ['code_ref' => $opportunityStatus['code_ref']],
                 $opportunityStatus
             );
+            $existingOpportunityStatus->update([
+                'name' => $opportunityStatus['name'],
+                'active' => $opportunityStatus['active'],
+                'external_hoom_id' => $opportunityStatus['external_hoom_id'],
+                'order' => $opportunityStatus['order'],
+            ]);
         }
     }
 }

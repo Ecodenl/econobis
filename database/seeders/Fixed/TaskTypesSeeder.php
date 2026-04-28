@@ -30,11 +30,18 @@ class TaskTypesSeeder extends Seeder
             ['id' => 20, 'name' => 'Subsidieaanvraag', 'default_portal_task_type' => 0, 'uses_wf_new_task' => 0, 'email_template_id_wf_new_task' => null, 'uses_wf_completed_task' => 0, 'email_template_id_wf_completed_task' => null, 'number_of_days_to_send_email_completed_task' => 0, 'uses_wf_expired_task' => 0, 'email_template_id_wf_expired_task' => null],
         ];
 
+        // We voegen ontbrekende (nieuwe) records toe en van bestaande wijzigen we alleen: name, default_portal_task_type.
+        // We gebruiken hier daarom firstOrCreate() en doen daarna een update() voor niet-muteerbare velden (voor gebruiker).
         foreach ($taskTypes as $taskType) {
-            TaskType::updateOrCreate(
+            $existingTaskType = TaskType::firstOrCreate(
                 ['id' => $taskType['id']],
                 $taskType
             );
+
+            $existingTaskType->update([
+                'name' => $taskType['name'],
+                'default_portal_task_type' => $taskType['default_portal_task_type'],
+            ]);
         }
     }
 }

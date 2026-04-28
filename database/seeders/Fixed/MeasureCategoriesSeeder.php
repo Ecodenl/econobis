@@ -40,8 +40,13 @@ class MeasureCategoriesSeeder extends Seeder
             ['name' => 'Energie aansluiting', 'uses_wf_create_opportunity' => 0, 'measure_id_wf_create_opportunity' => null, 'opportunity_status_id_wf_create_opportunity' => null, 'uses_wf_create_quotation_request' => 0, 'organisation_id_wf_create_quotation_request' => null, 'uses_wf_email_quotation_request' => 0, 'email_template_id_wf_create_quotation_request' => null, 'calendar_background_color' => '#265985', 'calendar_text_color' => '#ffffff'],
         ];
 
+        // Alle velden (op id en name na), zijn muteerbaar voor gebruiker.
+        // Omdat we name nu voor matchen gebruik zal die ook nooit wijzigen.
+        // Daarvoor zouden we eerst code_ref moeten toevoegen.
+        // We voegen alleen ontbrekende (nieuwe) records toe en laten bestaande ongemoeid.
+        // We gebruiken hier daarom firstOrCreate() ipv updateOrCreate() en doen geen update().
         foreach ($measureCategories as $measureCategory) {
-            MeasureCategory::updateOrCreate(
+            MeasureCategory::firstOrCreate(
                 ['name' => $measureCategory['name']],
                 $measureCategory
             );

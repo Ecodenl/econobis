@@ -9,7 +9,7 @@ class DocumentCreatedFromsSeeder extends Seeder
 {
     public function run(): void
     {
-        DocumentCreatedFrom::upsert([
+        $documentCreatedFroms = [
             ['name' => 'Administratie', 'code_ref' => 'administration'],
             ['name' => 'Campagne', 'code_ref' => 'campaign'],
             ['name' => 'Contact', 'code_ref' => 'contact'],
@@ -25,6 +25,13 @@ class DocumentCreatedFromsSeeder extends Seeder
             ['name' => 'Project', 'code_ref' => 'project'],
             ['name' => 'Taak', 'code_ref' => 'task'],
             ['name' => 'Woningdossier', 'code_ref' => 'housingfile'],
-        ], ['code_ref'], ['name']);
+        ];
+
+        foreach ($documentCreatedFroms as $documentCreatedFrom) {
+            DocumentCreatedFrom::updateOrCreate(
+                ['code_ref' => $documentCreatedFrom['code_ref']],
+                $documentCreatedFrom
+            );
+        }
     }
 }

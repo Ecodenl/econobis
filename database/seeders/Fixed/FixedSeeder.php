@@ -17,6 +17,7 @@ class FixedSeeder extends Seeder
             OrganisationTypesSeeder::class,
             IndustriesSeeder::class,
             ReasonsSeeder::class,
+            DocumentCreatedFromsSeeder::class,
 
             // Housing file basis
             BuildingTypesSeeder::class,

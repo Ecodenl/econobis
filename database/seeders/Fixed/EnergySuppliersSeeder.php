@@ -46,7 +46,7 @@ class EnergySuppliersSeeder extends Seeder
             ['id' => 31, 'name' => 'Sepa Green', 'does_postal_code_links' => 1, 'excel_template_id' => 2, 'abbreviation' => 'SG', 'file_format_id' => null, 'order' => null, 'end_date' => null],
             ['id' => 32, 'name' => 'Servicehouse', 'does_postal_code_links' => 1, 'excel_template_id' => 6, 'abbreviation' => 'SH', 'file_format_id' => null, 'order' => null, 'end_date' => null],
 // voorheen 33 Holthausen Clean Energy (HCE)
-            ['id' => 33, 'name' => 'Holthausen Clean Energy (HCE) (vervallen)', 'does_postal_code_links' => 1, 'excel_template_id' => 2, 'abbreviation' => '', 'file_format_id' => null, 'order' => null, 'end_date' => '2022-08-09'],
+            ['id' => 33, 'name' => 'Holthausen Clean Energy (HCE) (vervallen)', 'does_postal_code_links' => 1, 'excel_template_id' => 2, 'abbreviation' => 'HCE', 'file_format_id' => null, 'order' => null, 'end_date' => '2022-08-09'],
             ['id' => 34, 'name' => 'Total', 'does_postal_code_links' => 1, 'excel_template_id' => 2, 'abbreviation' => 'TL', 'file_format_id' => null, 'order' => null, 'end_date' => null],
             ['id' => 35, 'name' => 'Fenor energie', 'does_postal_code_links' => 1, 'excel_template_id' => 2, 'abbreviation' => 'FE', 'file_format_id' => null, 'order' => null, 'end_date' => '2022-12-31'],
             ['id' => 36, 'name' => 'Power peers', 'does_postal_code_links' => 1, 'excel_template_id' => 2, 'abbreviation' => 'PP', 'file_format_id' => null, 'order' => null, 'end_date' => null],
@@ -92,7 +92,7 @@ class EnergySuppliersSeeder extends Seeder
             ['id' => 76, 'name' => 'Mega Energie', 'does_postal_code_links' => 0, 'excel_template_id' => 2, 'abbreviation' => 'MG', 'file_format_id' => null, 'order' => null, 'end_date' => null],
             ['id' => 77, 'name' => 'Live Energy', 'does_postal_code_links' => 0, 'excel_template_id' => 2, 'abbreviation' => 'LE', 'file_format_id' => null, 'order' => null, 'end_date' => null],
             ['id' => 78, 'name' => 'Gulf Gas and Power', 'does_postal_code_links' => 0, 'excel_template_id' => 2, 'abbreviation' => 'GGP', 'file_format_id' => null, 'order' => null, 'end_date' => null],
-            ['id' => 79, 'name' => 'Atlas Power and Gas', 'does_postal_code_links' => 1, 'excel_template_id' => 2, 'abbreviation' => 'APG', 'file_format_id' => null, 'order' => null, 'end_date' => null],
+            ['id' => 79, 'name' => 'Atlas Power and Gas', 'does_postal_code_links' => 0, 'excel_template_id' => 2, 'abbreviation' => 'APG', 'file_format_id' => null, 'order' => null, 'end_date' => null],
             ['id' => 80, 'name' => 'Noordstroom', 'does_postal_code_links' => 1, 'excel_template_id' => 2, 'abbreviation' => 'NST', 'file_format_id' => null, 'order' => null, 'end_date' => null],
             ['id' => 81, 'name' => 'GroenStroomLokaal', 'does_postal_code_links' => 1, 'excel_template_id' => 2, 'abbreviation' => 'GSL', 'file_format_id' => null, 'order' => null, 'end_date' => null],
             ['id' => 82, 'name' => 'Volti', 'does_postal_code_links' => 1, 'excel_template_id' => 2, 'abbreviation' => 'VLT', 'file_format_id' => null, 'order' => null, 'end_date' => null],

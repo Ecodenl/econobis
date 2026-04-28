@@ -17,6 +17,9 @@ class VatCodesSeeder extends Seeder
             ['start_date' => '2000-01-01', 'description' => 'Leveringen buiten EU', 'percentage' => 0, 'twinfield_code' => 'EXP-BUI-EU', 'twinfield_ledger_code' => '1518'],
         ];
 
+        // Alle velden (op id na) kunnen in de toekomst muteerbaar worden voor gebruiker (zie: VatCodeDetailsFormGeneral.js switchToEdit).
+        // We voegen alleen ontbrekende (nieuwe) records toe en laten bestaande ongemoeid.
+        // We gebruiken hier daarom firstOrCreate() ipv updateOrCreate() en doen geen update().
         foreach ($vatCodes as $vatCode) {
             VatCode::firstOrCreate(
                 ['twinfield_code' => $vatCode['twinfield_code']],

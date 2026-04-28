@@ -41,7 +41,10 @@ class ParticipantMutationTypesSeeder extends Seeder
 
         foreach ($participantMutationTypes as $participantMutationType) {
             ParticipantMutationType::updateOrCreate(
-                ['code_ref' => $participantMutationType['code_ref']],
+                [
+                    'code_ref' => $participantMutationType['code_ref'],
+                    'project_type_id' => $participantMutationType['project_type_id']
+                ],
                 $participantMutationType
             );
         }

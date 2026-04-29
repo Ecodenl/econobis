@@ -34,17 +34,21 @@ class JobsLog extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function getCategory()
+    public function getCategory(): ?JobCategory
     {
-        if (!$this->job_category_id) return null;
+        if (!$this->job_category_id) {
+            return null;
+        }
+
+        if ($this->job_category_id instanceof JobCategory) {
+            return $this->job_category_id;
+        }
 
         return JobCategory::get($this->job_category_id);
     }
 
     public function getJobCategoryNameAttribute()
     {
-        if (!$this->job_category_id) return '';
-
-        return $this->job_category_id?->getName() ?? '';
+        return $this->getCategory()?->getName() ?? '';
     }
 }

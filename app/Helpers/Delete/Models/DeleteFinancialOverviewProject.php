@@ -69,9 +69,11 @@ class DeleteFinancialOverviewProject implements DeleteInterface
     {
         foreach ($this->financialOverviewProject->financialOverviewParticipantProjects as $financialOverviewParticipantProject){
             $deleteFinancialOverviewParticipantProject = new DeleteFinancialOverviewParticipantProject($financialOverviewParticipantProject);
-            // this can resolve in a lot of messages, we not going to share them.
-//            $this->errorMessage = array_merge($this->errorMessage, $deleteFinancialOverviewParticipantProject->delete());
-            $deleteFinancialOverviewParticipantProject->delete();
+            // this can resolve in a lot of messages, we not going to share them all, just a general error.
+            $errorMessagesDeleteFOPP = $deleteFinancialOverviewParticipantProject->delete();
+            if($errorMessagesDeleteFOPP){
+                $this->errorMessage = array_merge($this->errorMessage, ['Fouten bij verwijderen waardestaat deelnames']);
+            }
         }
 
     }

@@ -56,7 +56,17 @@ class FinancialOverviewListItem extends Component {
     }
 
     render() {
-        const { id, description, year, administration, definitive, statusId, dateProcessed, permissions } = this.props;
+        const {
+            id,
+            description,
+            year,
+            administration,
+            definitive,
+            statusId,
+            dateProcessed,
+            hasInterimFinancialOverviewContacts,
+            permissions,
+        } = this.props;
 
         // list of administration ids that the current user has access to
         const administrationIds = this.props.administrations.map(administration => administration.id);
@@ -68,7 +78,11 @@ class FinancialOverviewListItem extends Component {
                 status = 'Wordt aangemaakt...';
                 break;
             case 'concept':
-                status = 'Concept';
+                if (hasInterimFinancialOverviewContacts) {
+                    status = 'Concept / Verwerkt';
+                } else {
+                    status = 'Concept';
+                }
                 break;
             case 'definitive':
                 status = 'Definitief';
@@ -111,6 +125,7 @@ class FinancialOverviewListItem extends Component {
                     permissions.manageFinancialOverview &&
                     !definitive &&
                     hasAccessToAdministration &&
+                    !hasInterimFinancialOverviewContacts &&
                     statusId === 'concept' ? (
                         <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, description)}>
                             <Icon className="mybtn-danger" size={14} icon={trash} />

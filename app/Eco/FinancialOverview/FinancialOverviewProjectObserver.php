@@ -33,7 +33,7 @@ class FinancialOverviewProjectObserver
             $financialOverview = FinancialOverview::find($financialOverviewId);
             $financialOverview->definitive = $financialOverviewDefinitive;
             $financialOverview->save();
-            // if all financial overview project is set to definitive, then set (default) date_entry to null)
+            // if financial overview project is set to definitive, then set (default) date_entry to null)
             if($financialOverviewProject->definitive){
                 $financialOverviewProject->project->date_entry = null;
                 $financialOverviewProject->project->save();

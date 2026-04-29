@@ -458,6 +458,10 @@ const AppRoutes = () => {
                         <Route path="waardestaten" element={<FinancialOverviewListApp />} />
                         <Route path="waardestaat/nieuw" element={<FinancialOverviewNewApp />} />
                         <Route path="waardestaat/:id" element={<FinancialOverviewDetailsApp />} />
+                        <Route
+                            path="waardestaat/:id/aanmaken/:type/:financialOverviewContactId"
+                            element={<FinancialOverviewCreateApp />}
+                        />
                         <Route path="waardestaat/:id/aanmaken/:type" element={<FinancialOverviewCreateApp />} />
                         <Route path="waardestaat-project/:id" element={<FinancialOverviewProjectDetailsApp />} />
                         <Route

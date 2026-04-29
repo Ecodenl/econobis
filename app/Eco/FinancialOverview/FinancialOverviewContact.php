@@ -3,6 +3,8 @@
 namespace App\Eco\FinancialOverview;
 
 use App\Eco\Contact\Contact;
+use App\Eco\DocumentTemplate\DocumentTemplate;
+use App\Eco\EmailTemplate\EmailTemplate;
 use Illuminate\Database\Eloquent\Model;
 
 class FinancialOverviewContact extends Model
@@ -26,6 +28,14 @@ class FinancialOverviewContact extends Model
     public function financialOverviewsToSend()
     {
         return $this->hasOne(FinancialOverviewsToSend::class);
+    }
+    public function documentTemplateFinancialOverview()
+    {
+        return $this->belongsTo(DocumentTemplate::class, 'document_template_financial_overview_id');
+    }
+    public function emailTemplateFinancialOverview()
+    {
+        return $this->belongsTo(EmailTemplate::class, 'email_template_financial_overview_id');
     }
 
     public function getStatusAttribute()

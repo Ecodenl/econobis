@@ -51,7 +51,8 @@ class ControleScripts extends Command
         Artisan::call('revenue:checkWrongRevenueDistributionPartsKwhIndicatorFields');
         Artisan::call('revenue:checkMissingRevenueDistributionParts');
         Artisan::call('addressEnergySupplier:checkOverlappingEnergySuppliers');
-        Artisan::call('addressEnergySupplier:checkInvalidEnergySupplierPeriods');
+// Even in hold tot huidige invalid periods is opgelost
+//        Artisan::call('addressEnergySupplier:checkInvalidEnergySupplierPeriods');
         Artisan::call('participants:checkFirstStartingDate');
         Artisan::call('participants:checkTerminationDate');
 //        Artisan::call('project:checkWrongProjectDataForLastProjectRevenue');

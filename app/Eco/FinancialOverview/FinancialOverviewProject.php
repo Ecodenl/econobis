@@ -29,17 +29,34 @@ class FinancialOverviewProject extends Model
     {
         return $this->hasMany(FinancialOverviewParticipantProject::class);
     }
+    public function financialOverviewContactsForThisProject()
+    {
+        return $this->hasMany(FinancialOverviewContact::class, 'financial_overview_id', 'financial_overview_id')
+            ->whereRelation('contact.participations', function ($q) {
+                $q->where('participation_project.project_id', $this->project_id);
+            });
+    }
     public function getStatusAttribute()
     {
         if(!$this->status_id) return null;
 
         switch ($this->status_id) {
             case 'in-progress':
-                return 'Wordt toegevoegd';
+                return 'Wordt toegevoegd...';
             case 'concept':
-                return 'Concept';
+                if( $this->has_interim_financial_overview_contacts ) {
+                    return 'Concept / Verwerkt';
+                } else {
+                    return 'Concept';
+                }
             case 'definitive':
-                return 'Definitief';
+                if( $this->has_interim_financial_overview_contacts ) {
+                    return 'Definitief / Verwerkt';
+                } else {
+                    return 'Definitief';
+                }
+            case 'processed':
+                return 'Verwerkt';
             default:
                 return null;
         }
@@ -56,6 +73,18 @@ class FinancialOverviewProject extends Model
     public function getNumberOfParticipantProjectsAttribute()
     {
         return $this->financialOverviewParticipantProjects->count();
+    }
+
+    public function getNumberOfFinancialOverviewContactsSendAttribute()
+    {
+        return $this->financialOverviewContactsForThisProject()
+            ->where('status_id', 'sent')
+            ->count();    }
+    public function getHasInterimFinancialOverviewContactsAttribute()
+    {
+        return $this->financialOverviewContactsForThisProject()
+            ->where('status_id', 'sent')
+            ->exists();
     }
 
     public function getTotalQuantityStartValueAttribute()

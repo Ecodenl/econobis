@@ -13,8 +13,6 @@ return [
     'allowed_emails' => [
         'support@econobis.nl',
         'software@xaris.nl',
-        'bar@mossy.nl',
-        'wim-test@mosmania.nl',
         // evt later meer:
     ],
     // oauth client naming:

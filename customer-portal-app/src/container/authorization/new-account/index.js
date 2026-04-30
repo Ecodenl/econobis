@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+import React, { useState, useEffect } from 'react';
 import AuthAPI from '../../../api/auth/AuthAPI';
 import Alert from 'react-bootstrap/Alert';
 import Container from 'react-bootstrap/Container';
@@ -11,9 +10,9 @@ import { Link, Redirect } from 'react-router-dom';
 import { Button, ButtonToolbar } from 'react-bootstrap';
 import ButtonText from '../../../components/button/ButtonText';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import { getPrivateCaptchaSiteKeyByDomain } from '../../../helpers/privateCaptcha';
 
 const NewAccount = props => {
-    const { executeRecaptcha } = useGoogleReCaptcha();
     const [contactType, setContactType] = useState('person');
     const [showError, toggleError] = useState(false);
     const [showSuccessMessage, toggleSuccessMessage] = useState(false);
@@ -21,13 +20,57 @@ const NewAccount = props => {
     const [redirectToReferrer, toggleRedirect] = useState(false);
     const [imageHash, setImageHash] = useState(Date.now());
 
+    useEffect(() => {
+        const t = setTimeout(() => {
+            ensurePrivateCaptchaReady();
+            // window.privateCaptcha?.reset?.();   // <-- deze eruit
+        }, 0);
+        return () => clearTimeout(t);
+    }, [contactType]);
+
+    useEffect(() => {
+        const t = setTimeout(() => {
+            ensurePrivateCaptchaReady();
+        }, 0);
+        return () => clearTimeout(t);
+    }, []);
+
+    function getPrivateCaptchaToken() {
+        // Dit is de canonical manier volgens docs
+        const el = document.querySelector('input[name="private-captcha-solution"]');
+        const token = el?.value?.trim();
+        return token ? token : null;
+    }
+
+    function ensurePrivateCaptchaReady() {
+        const sitekey = getPrivateCaptchaSiteKeyByDomain();
+
+        if (!window.privateCaptcha || !sitekey) return false;
+
+        try {
+            window.privateCaptcha.setup?.({ sitekey });
+            window.privateCaptcha.render?.();
+            return true;
+        } catch (e) {
+            console.error('PrivateCaptcha init failed', e);
+            return false;
+        }
+    }
+
     async function handleSubmit(values, actions) {
-        if (!executeRecaptcha) {
+        const captchaToken = getPrivateCaptchaToken();
+        // console.log('PrivateCaptcha token on submit:', captchaToken);
+        const el = document.querySelector('input[name="private-captcha-solution"]');
+        // console.log('solution input exists?', !!el, 'value length:', el?.value?.length);
+
+        if (!captchaToken) {
+            toggleError(true);
+            setErrorMessage('Bevestig dat je geen robot bent en probeer opnieuw.');
+            actions.setSubmitting(false);
             return;
         }
-        const reCaptchaToken = await executeRecaptcha('signup_page');
 
-        AuthAPI.newAccount({ ...values, contactType: contactType, reCaptchaToken })
+        AuthAPI.newAccount({ ...values, contactType: contactType, captchaToken })
             .then(payload => {
                 toggleError(false);
                 toggleSuccessMessage(true);
@@ -50,11 +93,14 @@ const NewAccount = props => {
                     setErrorMessage(
                         'Er bestaat al een contact met het e-mailadres, voornaam en achternaam dat je hebt ingevuld. Wil je een nieuw account aanmaken? Gebruik dan alsjeblieft een ander e-mailadres, voornaam of achternaam.'
                     );
+                } else if (error.response && error.response.status === 422) {
+                    setErrorMessage('Captcha verificatie mislukt. Probeer opnieuw.');
                 } else {
                     setErrorMessage('Fout bij aanmaken nieuw account!');
                 }
 
                 actions.setSubmitting(false);
+                window.privateCaptcha?.reset?.();
             });
     }
 
@@ -161,25 +207,4 @@ const NewAccount = props => {
     );
 };
 
-function NewAccountWithProvider() {
-    const RE_CAPTCHA_KEY = getRecaptchaKeyByDomain();
-
-    return (
-        <GoogleReCaptchaProvider reCaptchaKey={RE_CAPTCHA_KEY} language={'nl'}>
-            <NewAccount />
-        </GoogleReCaptchaProvider>
-    );
-}
-function getRecaptchaKeyByDomain() {
-    const hostname = window.location.hostname;
-
-    // Check of het om een .eu domein gaat
-    if (hostname.endsWith('.eu')) {
-        return process.env.REACT_APP_RE_CAPTCHA_KEY_EU;
-    }
-
-    // Standaard: oude key
-    return process.env.REACT_APP_RE_CAPTCHA_KEY;
-}
-
-export default NewAccountWithProvider;
+export default NewAccount;

@@ -33,15 +33,16 @@ class MailgunDomainsList extends Component {
                 <DataTable>
                     <DataTableHead>
                         <tr className="thead-title">
-                            <DataTableHeadTitle title={'Domeinnaam'} width={'50%'} />
-                            <DataTableHeadTitle title={'Geverifieerd'} width={'45%'} />
+                            <DataTableHeadTitle title={'Domeinnaam'} width={'65%'} />
+                            <DataTableHeadTitle title={'Geverifieerd'} width={'15%'} />
+                            <DataTableHeadTitle title={'Systeem'} width={'15%'} />
                             <DataTableHeadTitle title={''} width={'5%'} />
                         </tr>
                     </DataTableHead>
                     <DataTableBody>
                         {loading ? (
                             <tr>
-                                <td colSpan={3}>{loadingText}</td>
+                                <td colSpan={4}>{loadingText}</td>
                             </tr>
                         ) : (
                             this.props.mailgunDomains.map(mailgunDomain => {

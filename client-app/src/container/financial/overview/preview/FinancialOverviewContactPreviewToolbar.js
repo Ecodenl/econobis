@@ -17,20 +17,22 @@ function FinancialOverviewContactPreviewToolbar({ financialOverviewContactDetail
             </div>
             <div className="col-md-6">
                 <h4 className="text-center">
-                    {'Contact: ' + financialOverviewContactDetails.financialOverviewContact.contact.full_name}
+                    {'Contact: ' +
+                        (financialOverviewContactDetails?.financialOverviewContact?.contactFullNameFnf ?? '')}
                     <br />
                     {'Waardestaat: ' +
-                        financialOverviewContactDetails.financialOverviewContact.financial_overview.description}
+                        (financialOverviewContactDetails?.financialOverviewContact?.financial_overview?.description ??
+                            '')}
                     <br />
 
                     <span
                         className={
-                            financialOverviewContactDetails.financialOverviewContact.status_id === 'concept'
+                            financialOverviewContactDetails?.financialOverviewContact?.status_id === 'concept'
                                 ? 'text-danger'
                                 : ''
                         }
                     >
-                        {'Status: ' + financialOverviewContactDetails.financialOverviewContact.status}
+                        {'Status: ' + (financialOverviewContactDetails?.financialOverviewContact?.status ?? '')}
                     </span>
                 </h4>
             </div>

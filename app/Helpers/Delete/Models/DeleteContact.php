@@ -126,7 +126,6 @@ class DeleteContact implements DeleteInterface
             $deleteAddress = new DeleteAddress($address);
             $this->errorMessage = array_merge($this->errorMessage, ( $deleteAddress->delete() ?? [] ) );
         }
-
         foreach ($this->contact->tasks as $task){
             $deleteTask = new DeleteTask($task);
             $this->errorMessage = array_merge($this->errorMessage, ( $deleteTask->delete() ?? [] ) );
@@ -218,8 +217,16 @@ class DeleteContact implements DeleteInterface
         $this->contact->phoneNumbers()->delete();
         $this->contact->emailAddresses()->delete();
         $this->contact->contactNotes()->delete();
-        $this->contact->freeFieldsFieldRecords()->delete();
-        $this->contact->portalFreeFieldsFieldRecords()->delete();
+
+        foreach ($this->contact->freeFieldsFieldRecords as $freeFieldsFieldRecord){
+            $freeFieldsFieldRecord->freeFieldsFieldLogs()->delete();
+            $freeFieldsFieldRecord->delete();
+        }
+        foreach ($this->contact->portalFreeFieldsFieldRecords as $portalFreeFieldsFieldRecord){
+            $portalFreeFieldsFieldRecord->freeFieldsFieldLogs()->delete();
+            $portalFreeFieldsFieldRecord->delete();
+        }
+
         if($this->contact->isPerson()) {
             $this->contact->person->delete();
         }

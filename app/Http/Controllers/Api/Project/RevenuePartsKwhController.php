@@ -21,6 +21,7 @@ use App\Eco\RevenuesKwh\RevenueValuesKwh;
 use App\Helpers\CSV\RevenueDistributionPartsKwhCSVHelper;
 use App\Helpers\Delete\Models\DeleteRevenuePartsKwh;
 use App\Helpers\Excel\EnergySupplierExcelHelper;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Project\RevenueDistributionKwhHelper;
 use App\Helpers\Project\RevenuesKwhHelper;
 use App\Helpers\RequestInput\RequestInput;
@@ -43,7 +44,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
@@ -78,8 +78,21 @@ class RevenuePartsKwhController extends ApiController
         $limit = 100;
         $offset = $request->input('page') ? $request->input('page') * $limit : 0;
 
-        $total = $revenuePartsKwh->distributionPartsKwhVisible()->count();
-        $distributionPartsKwh = $revenuePartsKwh->distributionPartsKwhVisible()->limit($limit)->offset($offset)->orderBy('status')->get();
+        $base = $revenuePartsKwh->distributionPartsKwhVisible();
+
+        $total = (clone $base)->count();
+
+        $distributionPartsKwh = (clone $base)
+            ->join('revenue_distribution_kwh', 'revenue_distribution_kwh.id', '=', 'revenue_distribution_parts_kwh.distribution_id')
+            ->join('contacts', 'contacts.id', '=', 'revenue_distribution_kwh.contact_id')
+            ->orderBy('contacts.full_name', 'asc')
+            ->orderBy('revenue_distribution_parts_kwh.id', 'asc')
+            ->select('revenue_distribution_parts_kwh.*')
+            ->with(['distributionKwh.contact'])
+            ->limit($limit)
+            ->offset($offset)
+            ->get();
+
         $distributionPartsKwhTotal = $revenuePartsKwh->distributionPartsKwhVisible()->whereNull('date_participant_report')->get();
         $distributionPartsKwhIdsTotal = [];
         foreach ($distributionPartsKwhTotal as $distributionPartKwhTotal){
@@ -388,10 +401,20 @@ class RevenuePartsKwhController extends ApiController
     {
         $this->authorize('manage', RevenuesKwh::class);
 
-        $ids = $request->input('ids') ? $request->input('ids') : [];
+        $ids = $request->input('ids', []);
 
-        $distributionPartsKwh = RevenueDistributionPartsKwh::whereIn('id', $ids)->with(['partsKwh'])->get();
+        if (empty($ids)) {
+            return FullRevenueDistributionPartsKwh::collection(collect());
+        }
 
+        $distributionPartsKwh = RevenueDistributionPartsKwh::query()->whereIn('revenue_distribution_parts_kwh.id', $ids)
+            ->join('revenue_distribution_kwh', 'revenue_distribution_kwh.id', '=', 'revenue_distribution_parts_kwh.distribution_id')
+            ->join('contacts', 'contacts.id', '=', 'revenue_distribution_kwh.contact_id')
+            ->orderBy('contacts.full_name', 'asc')
+            ->orderBy('revenue_distribution_parts_kwh.id', 'asc')
+            ->select('revenue_distribution_parts_kwh.*')
+            ->with(['partsKwh', 'distributionKwh.contact'])
+            ->get();
         return FullRevenueDistributionPartsKwh::collection($distributionPartsKwh);
     }
 
@@ -521,7 +544,7 @@ class RevenuePartsKwhController extends ApiController
                     $fromEmail = \Config::get('mail.from.address');
                 }
 
-                $email = Mail::fromMailbox($mailbox)
+                $email = MailHelper::fromMailbox($mailbox)
                     ->to($primaryEmailAddress->email);
                 if (!$subject) {
                     $subject = 'Participant rapportage Econobis';
@@ -782,7 +805,7 @@ class RevenuePartsKwhController extends ApiController
                         $fromName = \Config::get('mail.from.name');
                     }
 
-                    $email = Mail::fromMailbox($mailbox)
+                    $email = MailHelper::fromMailbox($mailbox)
                         ->to($primaryEmailAddress->email);
 
                     if (!$subject) {

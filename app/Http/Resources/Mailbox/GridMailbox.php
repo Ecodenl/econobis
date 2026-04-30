@@ -20,6 +20,7 @@ class GridMailbox extends JsonResource
                 'id' => $this->id,
                 'name' => $this->name,
                 'email' => $this->email,
+                'onlyOutgoingMailbox' => $this->only_outgoing_mailbox,
                 'incomingServerType' => $this->incoming_server_type,
                 'incomingServerTypeName' => $this->getIncomingServerType()->name,
                 'imapHost' => $this->imap_host,
@@ -32,6 +33,7 @@ class GridMailbox extends JsonResource
                 'valid' => $this->valid,
                 'mailgunDomainId' => $this->mailgun_domain_id,
                 'mailgunDomain' => $this->mailgunDomain ? $this->mailgunDomain->domain : '',
+                'isSystemMailgunDomain' => $this->mailgunDomain ? $this->mailgunDomain->is_system_mailgun_domain : false,
                 'primary' => $this->primary,
                 'isActive' => $this->is_active,
             ];

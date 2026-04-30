@@ -125,22 +125,22 @@ class SystemData extends JsonResource
     public function toArray($request)
     {
         $environment = App::environment();
-        //for testing
-        if ($environment == 'production' && \Auth::user()->email != 'support@econobis.nl' && \Auth::user()->email != 'software@xaris.nl') {
+
+        if (Auth::user()->email != 'support@econobis.nl' && Auth::user()->email != 'software@xaris.nl') {
             $allUsers = User::orderBy('last_name', 'asc')->get();
 
-            $usersWithInactive= UserPeek::collection($allUsers->where('id', '!=', '1'));
+            $usersWithInactive = UserPeek::collection($allUsers->where('id', '!=', '1'));
             $users = UserPeek::collection($allUsers->where('active', true));
             $usersExtraAdministration = UserPeek::collection($allUsers->where('id', '1'));
-        }
-        else {
+            $mailgunDomains = MailgunDomain::select(['id', 'domain'])->where('is_system_mailgun_domain', false)->get();
+        } else {
             $allUsers = User::orderBy('last_name', 'asc')->get();
 
             $usersWithInactive = UserPeek::collection($allUsers);
             $users = UserPeek::collection($allUsers->where('active', true));
             $usersExtraAdministration = null;
+            $mailgunDomains = MailgunDomain::select(['id', 'domain'])->get();
         }
-
         /*
          * Energie leveranciers 2018-11-28 Op aanvraag René
          *
@@ -226,7 +226,7 @@ class SystemData extends JsonResource
             'mailboxIgnoreTypes' => FullEnumWithIdAndName::collection(MailboxIgnoreType::collection()),
             'mailboxServerTypes' => ['incomingServerTypes' => FullEnumWithIdAndName::collection(IncomingServerType::collection()), 'outgoingServerTypes' => FullEnumWithIdAndName::collection(OutgoingServerType::collection())],
             'mailboxesInvalid' => Mailbox::where('is_active', 1)->where('valid', 0)->count(),
-            'mailgunDomain' => MailgunDomain::select(['id', 'domain'])->get(),
+            'mailgunDomain' => $mailgunDomains,
             'measureCategories' => MeasureCategory::select(['id', 'name'])->orderBy('name')->get(),
             'measures' => MeasurePeek::collection(Measure::orderBy('name')->get()),
             'occupations' => FullOccupation::collection(Occupation::orderBy('primary_occupation')->get()),

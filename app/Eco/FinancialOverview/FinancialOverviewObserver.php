@@ -18,10 +18,6 @@ class FinancialOverviewObserver
         if(empty($financialOverview->description)) {
             $financialOverview->description = $financialOverview->year . ' ' . $financialOverview->administration->name;
         }
-//        // default 'concept' alleen bij nieuw maken
-//        if(!$financialOverview->definitive && empty($financialOverview->definitive)) {
-//            $financialOverview->status_id = 'concept';
-//        }
         if($financialOverview->definitive && empty($financialOverview->date_processed)) {
             $financialOverview->status_id = 'definitive';
         }

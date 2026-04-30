@@ -24,6 +24,7 @@ class MailgunDomainJoryResource extends JoryResource
         $this->field('domain')->filterable()->sortable();
         $this->field('secret')->filterable()->sortable();
         $this->field('is_verified')->filterable()->sortable();
+        $this->field('is_system_mailgun_domain')->filterable()->sortable();
         $this->field('created_at')->filterable()->sortable();
         $this->field('updated_at')->filterable()->sortable();
     }

@@ -78,6 +78,7 @@ class FixedSeeder extends Seeder
             ParticipantProjectPayoutTypesSeeder::class,
 
             // Portal dashboard: dashboard vóór widgets
+            PortalSettingsSeeder::class,
             PortalSettingsDashboardsSeeder::class,
             PortalSettingsDashboardWidgetsSeeder::class,
 

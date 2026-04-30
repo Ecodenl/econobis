@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Install;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -39,8 +39,9 @@ class SetProviderOauthClients extends Command
      */
     public function handle()
     {
-        DB::table('oauth_clients')->where('id', 2)->update(["provider" => null]);
-
+        DB::table('oauth_clients')
+            ->where('id', config('app.oauth_client_id'))
+            ->update(['provider' => null]);
 
         Log::info('Provider goedzetten in OauthClients klaar');
     }

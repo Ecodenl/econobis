@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Install;
 
 use App\Jobs\Portal\GeneratePortalCss;
 use Illuminate\Console\Command;

@@ -8,6 +8,7 @@
 
 namespace App\Helpers\CSV;
 
+use App\Eco\Contact\ContactType;
 use Carbon\Carbon;
 use League\Csv\Reader;
 use App\Eco\Order\OrderProduct;
@@ -50,16 +51,16 @@ class OrderCSVHelper
 
             $this->csvExporter->beforeEach(function ($order) {
                 // person/organisation fields
-                if($order->contact->type_id === 'person'){
+                if($order->contact->type_id === ContactType::PERSON){
                     $order->title = $order->contact->person->title ? $order->contact->person->title->name : '';
                     $order->initials = $order->contact->person->initials;
                     $order->first_name = $order->contact->person->first_name;
                     $order->last_name_prefix = $order->contact->person->last_name_prefix ? $order->contact->person->last_name_prefix : '';
                     $order->last_name = $order->contact->person->last_name;
                 }
-                else if($order->contact->type_id === 'organisation'){
+                else if($order->contact->type_id === ContactType::ORGANISATION){
                     $order->organisation = $order->contact->organisation->name;
-                    if($order->contact->contactPerson && $order->contact->contactPerson->exists() && $order->contact->contactPerson->contact->type_id === 'person'){
+                    if($order->contact->contactPerson && $order->contact->contactPerson->exists() && $order->contact->contactPerson->contact->type_id === ContactType::PERSON){
                         $contactPerson = $order->contact->contactPerson->contact;
 
                         $order->title = $contactPerson->person->title ? $contactPerson->person->title->name : '';
@@ -234,16 +235,16 @@ class OrderCSVHelper
 
             $this->csvExporter->beforeEach(function ($ordersProduct) {
                 // person/organisation fields
-                if($ordersProduct->order->contact->type_id === 'person'){
+                if($ordersProduct->order->contact->type_id === ContactType::PERSON){
                     $ordersProduct->order->title = $ordersProduct->order->contact->person->title ? $ordersProduct->order->contact->person->title->name : '';
                     $ordersProduct->order->initials = $ordersProduct->order->contact->person->initials;
                     $ordersProduct->order->first_name = $ordersProduct->order->contact->person->first_name;
                     $ordersProduct->order->last_name_prefix = $ordersProduct->order->contact->person->last_name_prefix ? $ordersProduct->order->contact->person->last_name_prefix : '';
                     $ordersProduct->order->last_name = $ordersProduct->order->contact->person->last_name;
                 }
-                else if($ordersProduct->order->contact->type_id === 'organisation'){
+                else if($ordersProduct->order->contact->type_id === ContactType::ORGANISATION){
                     $ordersProduct->order->organisation = $ordersProduct->order->contact->organisation->name;
-                    if($ordersProduct->order->contact->contactPerson && $ordersProduct->order->contact->contactPerson->exists() && $ordersProduct->order->contact->contactPerson->contact->type_id === 'person'){
+                    if($ordersProduct->order->contact->contactPerson && $ordersProduct->order->contact->contactPerson->exists() && $ordersProduct->order->contact->contactPerson->contact->type_id === ContactType::PERSON){
                         $contactPerson = $ordersProduct->order->contact->contactPerson->contact;
 
                         $ordersProduct->order->title = $contactPerson->person->title ? $contactPerson->person->title->name : '';

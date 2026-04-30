@@ -9,6 +9,7 @@
 namespace App\Helpers\CSV;
 
 use App\Eco\Address\AddressType;
+use App\Eco\Contact\ContactType;
 use App\Eco\FreeFields\FreeFieldsField;
 use App\Eco\FreeFields\FreeFieldsTable;
 use Carbon\Carbon;
@@ -202,7 +203,7 @@ class ContactCSVHelper
 
             $this->csvExporter->beforeEach(function ($contact) {
                 // person/organisation fields
-                if ($contact->type_id === 'person') {
+                if ($contact->type_id === ContactType::PERSON) {
                     $contact->title = $contact->person->title;
                     $contact->initials = $contact->person->initials;
                     $contact->first_name = $contact->person->first_name;
@@ -405,7 +406,7 @@ class ContactCSVHelper
 
             $this->csvExporter->beforeEach(function ($contact) {
                 // person/organisation fields
-                if ($contact->type_id === 'person') {
+                if ($contact->type_id === ContactType::PERSON) {
                     $contact->title = $contact->person->title;
                     $contact->initials = $contact->person->initials;
                     $contact->first_name = $contact->person->first_name;
@@ -553,7 +554,7 @@ class ContactCSVHelper
 
             $this->csvExporter->beforeEach(function ($address) {
                 // person/organisation fields
-                if ($address->contact->type_id === 'person') {
+                if ($address->contact->type_id === ContactType::PERSON) {
                     $address->contact->first_name = $address->contact->person->first_name;
                     $address->contact->last_name_prefix = $address->contact->person->last_name_prefix;
                     $address->contact->last_name = $address->contact->person->last_name;

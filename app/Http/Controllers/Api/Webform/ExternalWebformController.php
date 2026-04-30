@@ -3422,7 +3422,7 @@ class ExternalWebformController extends Controller
         }
 
         // indien contact organisatie is en verbinding met contact is persoon, dan switchen primary en secondary contact
-        if ($contact->type_id == ContactType::ORGANISATION && $occupationContact->type_id == ContactType::PERSON) {
+        if ($contact->type_id === ContactType::ORGANISATION && $occupationContact->type_id === ContactType::PERSON) {
             $primaryContact = $contact;
             $secondaryContact = $occupationContact;
         } else {

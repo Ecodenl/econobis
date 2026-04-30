@@ -242,12 +242,12 @@ class Contact extends Model
 
     public function isPerson()
     {
-        return ($this->type_id == ContactType::PERSON);
+        return ($this->type_id === ContactType::PERSON);
     }
 
     public function isOrganisation()
     {
-        return ($this->type_id == ContactType::ORGANISATION);
+        return ($this->type_id === ContactType::ORGANISATION);
     }
 
     public function isCoach()
@@ -589,7 +589,7 @@ class Contact extends Model
         $emailAddresses = $this->emailAddresses->reverse();
 
         foreach ($emailAddresses as $emailAddress) {
-            if ($emailAddress->type_id === 'invoice') {
+            if ($emailAddress->type_id === EmailAddressType::INVOICE) {
                 return $emailAddress;
             }
         }
@@ -699,7 +699,7 @@ class Contact extends Model
     // Contact fullname, firstname first.
     public function getFullNameFnfAttribute()
     {
-        if ($this->type_id == 'person') {
+        if ($this->type_id === ContactType::PERSON) {
             $firstName = $this->person->first_name ? $this->person->first_name . ' ' : ($this->person->initials ? $this->person->initials . ' ' : "");
             $prefix = $this->person->last_name_prefix ? $this->person->last_name_prefix . ' ' : '';
             $fullNameFnf = ($firstName . $prefix . $this->person->last_name);
@@ -733,7 +733,7 @@ class Contact extends Model
     // Contact initials (only if person).
     public function getInitialsAttribute()
     {
-        if ($this->type_id == 'person') {
+        if ($this->type_id === ContactType::PERSON) {
             return $this->person->initials;
         } else {
             return '';
@@ -742,7 +742,7 @@ class Contact extends Model
     // Contact firstname (only if person).
     public function getFirstNameAttribute()
     {
-        if ($this->type_id == 'person') {
+        if ($this->type_id === ContactType::PERSON) {
             return $this->person->first_name;
         } else {
             return '';
@@ -752,7 +752,7 @@ class Contact extends Model
     // Contact lastname prefix (only if person).
     public function getLastNamePrefixAttribute()
     {
-        if ($this->type_id == 'person') {
+        if ($this->type_id === ContactType::PERSON) {
             return $this->person->last_name_prefix;
         } else {
             return '';
@@ -762,7 +762,7 @@ class Contact extends Model
     // Contact lastname (only if person).
     public function getLastNameAttribute()
     {
-        if ($this->type_id == 'person') {
+        if ($this->type_id === ContactType::PERSON) {
             return $this->person->last_name;
         } else {
             return '';

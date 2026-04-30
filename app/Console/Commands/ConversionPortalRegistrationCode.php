@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Eco\Contact\Contact;
+use App\Eco\Contact\ContactType;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -55,7 +56,7 @@ class ConversionPortalRegistrationCode extends Command
         Log::info("Start Herstel ontbrekende portal registration codes.");
         $contacts = Contact::all();
         foreach ($contacts as $contact){
-            if($contact->type_id == 'person' && !$contact->portal_registration_code && $contact->portalUser()->count() == 0)
+            if($contact->type_id === ContactType::PERSON && !$contact->portal_registration_code && $contact->portalUser()->count() == 0)
             {
                 $contact->portal_registration_code = Str::random(32);
                 $contact->save();

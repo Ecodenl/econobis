@@ -22,17 +22,23 @@ const ContactDetails = function(props) {
     const [editForm, setEditForm] = useState(false);
 
     useEffect(() => {
-        const keys =
-            '?keys[]=portalName' +
-            '&keys[]=portalWebsite' +
-            '&keys[]=portalLoginInfoText' +
-            '&keys[]=portalUrl' +
-            '&keys[]=responsibleUserId' +
-            '&keys[]=checkContactTaskResponsibleUserId' +
-            '&keys[]=linkPrivacyPolicy' +
-            '&keys[]=pcrPowerKwhConsumptionPercentage' +
-            '&keys[]=pcrGeneratingCapacityOneSolorPanel';
-        PortalSettingsAPI.fetchPortalSettings(keys)
+        // const keys =
+        //     '?keys[]=portalName' +
+        //     '&keys[]=portalWebsite' +
+        //     '&keys[]=portalLoginInfoText' +
+        //     '&keys[]=portalUrl' +
+        //     '&keys[]=responsibleUserId' +
+        //     '&keys[]=checkContactTaskResponsibleUserId' +
+        //     '&keys[]=linkPrivacyPolicy' +
+        //     '&keys[]=pcrPowerKwhConsumptionPercentage' +
+        //     '&keys[]=pcrGeneratingCapacityOneSolorPanel';
+        // PortalSettingsAPI.fetchPortalSettings(keys)
+
+        // todo WM: check / anders
+        //
+        const portalSettingsId = 1;
+
+        PortalSettingsAPI.fetchPortalSettings(portalSettingsId)
             .then(payload => {
                 setPortalSettings({ ...payload.data });
             })

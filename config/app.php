@@ -3,9 +3,9 @@
 return [
 
     //Version number displayed in the header, change this with every update
-    'version_major' => '5',
-    'version_minor' => '4',
-    'version_fix' => '0.1',
+    'version_major' => '6',
+    'version_minor' => '0',
+    'version_fix' => '0',
 
     //Alfresco envs
 //    'ALFRESCO_ADMIN_USERNAME' => env('ALFRESCO_ADMIN_USERNAME'),
@@ -176,6 +176,7 @@ return [
     'url_api' => env('URL_API', env('APP_URL')),
 
     'oauth_client_id' => env('OAUTH_CLIENT_ID', '2'),
+    'oauth_client_secret' => env('OAUTH_CLIENT_SECRET', ''),
 
     // //locale (linux/windows verschil)
     'LC_TIME' => env('LC_TIME', 'nl_NL.utf8'),

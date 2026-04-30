@@ -20,6 +20,7 @@ class EmailAddress extends Model
 
     protected $casts = [
         'primary' => 'boolean',
+        'type_id' => EmailAddressType::class,
     ];
 
     public function contact()
@@ -36,11 +37,16 @@ class EmailAddress extends Model
         return $this->hasMany(ContactEmail::class, 'email_address_id');
     }
 
-    public function getType()
+    public function getType(): ?EmailAddressType
     {
-        if(!$this->type_id) return null;
+        if (!$this->type_id) {
+            return null;
+        }
+
+        if ($this->type_id instanceof EmailAddressType) {
+            return $this->type_id;
+        }
 
         return EmailAddressType::get($this->type_id);
     }
-
 }

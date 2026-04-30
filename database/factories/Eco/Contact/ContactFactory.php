@@ -18,7 +18,7 @@ class ContactFactory extends Factory
         return [
             'type_id' => null,
             'number' => null,
-            'status_id' => ContactStatus::random()->id,
+            'status_id' => ContactStatus::random()->value,
             'member_since' => function() use ($faker) {
                 if(random_int(0,10) < 5) return null;
                 return $faker->date();

@@ -1,29 +1,23 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Beheerder
- * Date: 26-10-2017
- * Time: 11:55
- */
 
 namespace App\Eco\Order;
 
-use JosKolenberg\Enum\EnumWithIdAndName;
+use App\Support\Enum\HasLegacyEnumHelpers;
 
-class OrderStatusToSelect extends EnumWithIdAndName
+enum OrderStatusToSelect: string
 {
+    use HasLegacyEnumHelpers;
 
-    /**
-     * Seed the class with Enum instances
-     *
-     * @return array
-     */
-    protected static function seed()
+    case CONCEPT = 'concept';
+    case ACTIVE = 'active';
+    case CLOSED = 'closed';
+
+    public function getName(): string
     {
-        return [
-            new static('concept', 'Concept'),
-            new static('active', 'Actief'),
-            new static('closed', 'Beëindigd'),
-        ];
+        return match ($this) {
+            self::CONCEPT => 'Concept',
+            self::ACTIVE => 'Actief',
+            self::CLOSED => 'Beëindigd',
+        };
     }
 }

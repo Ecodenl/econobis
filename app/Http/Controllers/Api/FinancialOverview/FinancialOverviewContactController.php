@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\FinancialOverview;
 
 use App\Eco\Contact\Contact;
+use App\Eco\Contact\ContactType;
+use App\Eco\EmailAddress\EmailAddressType;
 use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\FinancialOverview\FinancialOverviewContact;
 use App\Eco\FinancialOverview\FinancialOverviewParticipantProject;
@@ -451,13 +453,13 @@ class FinancialOverviewContactController extends Controller
 
             if($contact->contactPerson()->exists()){
                 $contactPerson = '';
-                if ($contact->contactPerson->contact->type_id == 'person') {
+                if ($contact->contactPerson->contact->type_id === ContactType::PERSON) {
                     $title = $contact->contactPerson->contact->person->title ? $contact->contactPerson->contact->person->title->address . ' ' : '';
                     $initials = $contact->contactPerson->contact->person->initials ? $contact->contactPerson->contact->person->initials : ($contact->contactPerson->contact->person->first_name ? substr($contact->contactPerson->contact->person->first_name, 0, 1).".": "");
                     $prefix = $contact->contactPerson->contact->person->last_name_prefix ? $contact->contactPerson->contact->person->last_name_prefix . ' ' : '';
 
                     $contactPerson = $title . ( $initials . ' ' . $prefix . $contact->contactPerson->contact->person->last_name );
-                } elseif ($contact->contactPerson->contact->type_id == 'organisation') {
+                } elseif ($contact->contactPerson->contact->type_id === ContactType::ORGANISATION) {
                     $contactPerson = $contact->contactPerson->contact->full_name;
                 }
 
@@ -488,7 +490,7 @@ class FinancialOverviewContactController extends Controller
         $emailAddresses = $contact->emailAddresses->reverse();
 
         foreach($emailAddresses as $emailAddress) {
-            if ($emailAddress->type_id === 'invoice') {
+            if ($emailAddress->type_id === EmailAddressType::INVOICE) {
                 return $emailAddress;
             }
         }

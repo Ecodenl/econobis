@@ -1,28 +1,21 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Beheerder
- * Date: 26-10-2017
- * Time: 11:55
- */
 
 namespace App\Eco\PaymentInvoice;
 
-use JosKolenberg\Enum\EnumWithIdAndName;
+use App\Support\Enum\HasLegacyEnumHelpers;
 
-class PaymentInvoiceStatus extends EnumWithIdAndName
+enum PaymentInvoiceStatus: string
 {
+    use HasLegacyEnumHelpers;
 
-    /**
-     * Seed the class with Enum instances
-     *
-     * @return array
-     */
-    protected static function seed()
+    case SENT = 'sent';
+    case NOT_PAID = 'not-paid';
+
+    public function getName(): string
     {
-        return [
-            new static('sent', 'Verzonden'),
-            new static('not-paid', 'Niet betaald'),
-        ];
+        return match ($this) {
+            self::SENT => 'Verzonden',
+            self::NOT_PAID => 'Niet betaald',
+        };
     }
 }

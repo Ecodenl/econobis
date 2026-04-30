@@ -95,7 +95,7 @@ class HoomdossierHelper
             $errorsCheckBefore[] = 'Primair mailadres ontbreekt';
         }
 
-        if($this->contact->type_id == 'person') {
+        if($this->contact->type_id === ContactType::PERSON) {
             if(!$this->contact->person->first_name) {
                 $errorsCheckBefore[] = 'Voornaam ontbreekt';
             }

@@ -2,6 +2,7 @@
 
 namespace App\Helpers\Excel;
 
+use App\Eco\Contact\ContactType;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
 use App\Eco\RevenuesKwh\RevenuePartsKwh;
@@ -653,7 +654,7 @@ class EnergySupplierExcelHelper
                                 : '' : '';
                             $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
                             $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
-                            if ($distribution->contact->type_id == 'organisation') {
+                            if ($distribution->contact->type_id === ContactType::ORGANISATION) {
                                 $rowData[] = $distribution->contact->full_name;
                             } else {
                                 $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
@@ -680,7 +681,7 @@ class EnergySupplierExcelHelper
                                 : '' : '';
                             $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
                             $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
-                            if ($distribution->contact->type_id == 'organisation') {
+                            if ($distribution->contact->type_id === ContactType::ORGANISATION) {
                                 $rowData[] = $distribution->contact->full_name;
                             } else {
                                 $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
@@ -706,7 +707,7 @@ class EnergySupplierExcelHelper
                                 : '' : '';
                             $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
                             $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
-                            if ($distribution->contact->type_id == 'organisation') {
+                            if ($distribution->contact->type_id === ContactType::ORGANISATION) {
                                 $rowData[] = $distribution->contact->full_name;
                             } else {
                                 $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
@@ -907,7 +908,7 @@ class EnergySupplierExcelHelper
                                 : '' : '';
                             $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
                             $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
-                            if ($distribution->contact->type_id == 'organisation') {
+                            if ($distribution->contact->type_id === ContactType::ORGANISATION) {
                                 $rowData[] = $distribution->contact->full_name;
                             } else {
                                 $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
@@ -932,7 +933,7 @@ class EnergySupplierExcelHelper
                                 : '' : '';
                             $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
                             $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
-                            if ($distribution->contact->type_id == 'organisation') {
+                            if ($distribution->contact->type_id === ContactType::ORGANISATION) {
                                 $rowData[] = $distribution->contact->full_name;
                             } else {
                                 $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
@@ -956,7 +957,7 @@ class EnergySupplierExcelHelper
                                 : '' : '';
                             $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
                             $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
-                            if ($distribution->contact->type_id == 'organisation') {
+                            if ($distribution->contact->type_id === ContactType::ORGANISATION) {
                                 $rowData[] = $distribution->contact->full_name;
                             } else {
                                 $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';

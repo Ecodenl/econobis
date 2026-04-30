@@ -8,6 +8,7 @@
 
 namespace App\Helpers\CSV;
 
+use App\Eco\Contact\ContactType;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\Project\ProjectRevenue;
 use App\Eco\Project\ProjectType;
@@ -46,7 +47,7 @@ class RevenueDistributionCSVHelper
                 $distribution->period_start = $this->formatDate($distribution->revenue->date_begin);
                 $distribution->period_end = $this->formatDate($distribution->revenue->date_end);
 
-                $distribution->type = $distribution->contact->getType()->name;
+                $distribution->type = $distribution->contact->getType()?->getName() ?? '';
 
                 $address = $distribution->contact->primaryAddress;
 
@@ -58,7 +59,7 @@ class RevenueDistributionCSVHelper
                 $distribution->country = (($address && $address->country) ? $address->country->name : '');
 
                 // person/organisation fields
-                if ($distribution->contact->type_id === 'person') {
+                if ($distribution->contact->type_id === ContactType::PERSON) {
                     $distribution->title = $distribution->contact->person->title;
                     $distribution->initials = $distribution->contact->person->initials;
                     $distribution->first_name = $distribution->contact->person->first_name;

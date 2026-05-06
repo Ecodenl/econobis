@@ -27,7 +27,6 @@ use App\EcoShared\SharedArea\SharedArea;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
-use JosKolenberg\Enum\EnumNotFoundException;
 
 class DynamicContactGroupFilter extends Model
 {
@@ -148,7 +147,7 @@ class DynamicContactGroupFilter extends Model
             // orderStatus omzetten
             if ($this->field == 'orderStatus'){
                 if($this->data){
-                    return OrderStatus::get($this->data)->name;
+                    return OrderStatus::get($this->data)?->getName() ?? '';
                 }
                 return '';
             }
@@ -282,28 +281,28 @@ class DynamicContactGroupFilter extends Model
             return $this->data;
         }
 
-        try {
-            $model = $this->model_name::find($this->data);
-
-            if($model)
-            {
-                switch ($this->model_name) {
-                    case Occupation::class:
-                        $name = $model->primary_occupation;
-                        break;
-                    case Contact::class:
-                        $name = $model->full_name;
-                        break;
-                    default:
-                        $name = $model->name;
-                }
-            }else{
-                $name = '';
-            }
-       } catch (EnumNotFoundException $e) {
-            $name = $this->model_name::get($this->data)->name;
+        if (!$this->data) {
+            return '';
         }
 
-        return $name ? $name : '';
+        if (method_exists($this->model_name, 'find')) {
+            $model = $this->model_name::find($this->data);
+
+            if (!$model) {
+                return '';
+            }
+
+            return match ($this->model_name) {
+                Occupation::class => $model->primary_occupation ?: '',
+                Contact::class => $model->full_name ?: '',
+                default => $model->name ?: '',
+            };
+        }
+
+        if (method_exists($this->model_name, 'get')) {
+            return $this->model_name::get($this->data)?->getName() ?? '';
+        }
+
+        return '';
     }
 }

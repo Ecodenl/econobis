@@ -1,28 +1,21 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Beheerder
- * Date: 11-10-2017
- * Time: 11:29
- */
-
 namespace App\Eco\Project;
 
-use JosKolenberg\Enum\EnumWithIdAndName;
+use App\Support\Enum\HasLegacyEnumHelpers;
 
-class ProjectRevenueDistributionType extends EnumWithIdAndName
+enum ProjectRevenueDistributionType: string
 {
+    use HasLegacyEnumHelpers;
 
-    const INPOSSESSIONOF = 'inPossessionOf';
-    const HOWLONGINPOSSESSION = 'howLongInPossession';
+    case IN_POSSESSION_OF = 'inPossessionOf';
+    case HOW_LONG_IN_POSSESSION = 'howLongInPossession';
 
-    protected static function seed()
+    public function getName(): string
     {
-        return [
-            new static(static::INPOSSESSIONOF, 'In bezit op'),
-            new static(static::HOWLONGINPOSSESSION, 'Hoe lang in bezit'),
-        ];
+        return match ($this) {
+            self::IN_POSSESSION_OF => 'In bezit op',
+            self::HOW_LONG_IN_POSSESSION => 'Hoe lang in bezit',
+        };
     }
-
 }

@@ -8,6 +8,7 @@ use App\Notifications\UserPermanentlyBlocked;
 use App\Notifications\UserTemporarilyBlocked;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class LoginAttemptThrottle
 {
@@ -123,6 +124,10 @@ class LoginAttemptThrottle
                 (bool) $user->blocked_permanent
             );
 
+            Log::info('OAuth token failure 1', [
+                'status' => $status,
+                'body' => method_exists($response, 'getContent') ? $response->getContent() : null,
+            ]);
             return $this->genericUnauthorized();
         }
 
@@ -137,6 +142,10 @@ class LoginAttemptThrottle
             $user->blocked_until,
             (bool) $user->blocked_permanent
         );
+        Log::info('OAuth token failure 2', [
+            'status' => $status,
+            'body' => method_exists($response, 'getContent') ? $response->getContent() : null,
+        ]);
         return $this->genericUnauthorized();
     }
 

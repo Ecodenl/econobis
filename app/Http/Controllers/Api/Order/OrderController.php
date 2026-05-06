@@ -9,6 +9,8 @@
 namespace App\Http\Controllers\Api\Order;
 
 use App\Eco\Contact\Contact;
+use App\Eco\Contact\ContactType;
+use App\Eco\EmailAddress\EmailAddressType;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Order\Order;
 use App\Eco\Order\OrderProduct;
@@ -400,12 +402,12 @@ class OrderController extends ApiController
 
             if($contact->contactPerson()->exists()){
                 $contactPerson = '';
-                if ($contact->contactPerson->contact->type_id == 'person') {
+                if ($contact->contactPerson->contact->type_id === ContactType::PERSON) {
                     $initials = $contact->contactPerson->contact->person->initials;
                     $prefix = $contact->contactPerson->contact->person->last_name_prefix;
                     $contactInitialsOrFirstName = $initials ? $initials : $contact->contactPerson->contact->person->first_name;
                     $contactPerson = $prefix ? ($contactInitialsOrFirstName . ' ' . $prefix . ' ' . $contact->contactPerson->contact->person->last_name) : $contactInitialsOrFirstName . ' ' . $contact->contactPerson->contact->person->last_name;
-                } elseif ($contact->contactPerson->contact->type_id == 'organisation') {
+                } elseif ($contact->contactPerson->contact->type_id === ContactType::ORGANISATION) {
                     $contactPerson = $contact->contactPerson->contact->full_name;
                 }
 
@@ -425,7 +427,7 @@ class OrderController extends ApiController
         $emailAddresses = $contact->emailAddresses->reverse();
 
         foreach($emailAddresses as $emailAddress) {
-            if ($emailAddress->type_id === 'invoice') {
+            if ($emailAddress->type_id === EmailAddressType::INVOICE) {
                 return $emailAddress;
             }
         }

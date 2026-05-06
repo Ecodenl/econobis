@@ -1,28 +1,21 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Beheerder
- * Date: 26-10-2017
- * Time: 11:55
- */
 
 namespace App\Eco\Mailbox;
 
-use JosKolenberg\Enum\EnumWithIdAndName;
+use App\Support\Enum\HasLegacyEnumHelpers;
 
-class MailboxIgnoreType extends EnumWithIdAndName
+enum MailboxIgnoreType: string
 {
+    use HasLegacyEnumHelpers;
 
-    /**
-     * Seed the class with Enum instances
-     *
-     * @return array
-     */
-    protected static function seed()
+    case EMAIL = 'e-mail';
+    case DOMAIN = 'domain';
+
+    public function getName(): string
     {
-        return [
-            new static('e-mail', 'E-mail'),
-            new static('domain', 'Domein'),
-        ];
+        return match ($this) {
+            self::EMAIL => 'E-mail',
+            self::DOMAIN => 'Domein',
+        };
     }
 }

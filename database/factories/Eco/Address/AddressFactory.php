@@ -26,7 +26,7 @@ class AddressFactory extends Factory
             },
             'type_id' => function(){
                 if(random_int(0,10) < 2) return null;
-                return AddressType::random()->id;
+                return AddressType::random()->value;
             },
         ];
     }

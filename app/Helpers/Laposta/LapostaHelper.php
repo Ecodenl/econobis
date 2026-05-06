@@ -5,6 +5,7 @@ namespace App\Helpers\Laposta;
 
 
 use App\Eco\ContactGroup\ContactGroup;
+use App\Eco\ContactGroup\ContactGroupType;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Http\Controllers\Api\ContactGroup\ContactGroupController;
@@ -239,7 +240,7 @@ class LapostaHelper
             if ($contactGroup->is_used_in_laposta) {
                 $lapostaContacts = $checkContactGroup->contacts->whereNotNull('pivot.laposta_member_id')->where('pivot.laposta_member_state', 'inprogress');
                 foreach ($lapostaContacts as $lapostaContact) {
-                    if ($checkContactGroup->type_id == 'simulated') {
+                    if ($checkContactGroup->type_id === ContactGroupType::SIMULATED) {
                         $checkContactGroup->contacts()->detach($lapostaContact);
                     } else {
                         $checkContactGroup->contacts()->updateExistingPivot($lapostaContact->id, ['laposta_member_state' => 'unknown', 'laposta_last_error_message' => null]);

@@ -9,6 +9,7 @@
 namespace App\Helpers\CSV;
 
 use App\Eco\Address\AddressType;
+use App\Eco\Contact\ContactType;
 use App\Eco\FreeFields\FreeFieldsField;
 use App\Eco\FreeFields\FreeFieldsTable;
 use Carbon\Carbon;
@@ -61,10 +62,10 @@ class ContactCSVHelper
                 // Addresses
                 if ($contact->addresses) {
                     foreach (AddressType::collection() as $type) {
-                        $address = $contact->addresses()->where('type_id', $type->id)->where('primary', true)->first();
+                        $address = $contact->addresses()->where('type_id', $type->value)->where('primary', true)->first();
                         if(empty($address))
                         {
-                            $address = $contact->addresses()->where('type_id', $type->id)->first();
+                            $address = $contact->addresses()->where('type_id', $type->value)->first();
                         }
 
                         $addressArr = [];
@@ -78,7 +79,7 @@ class ContactCSVHelper
                         $addressArr['districtName'] = (($address && $address->getSharedPostalCodesHouseNumber()) ? $address->getSharedPostalCodesHouseNumber()->sharedArea->district_name : '');
                         $addressArr['country'] = (($address && $address->country) ? $address->country->name : '');
 
-                        $contact['address_' . $type->id] = $addressArr;
+                        $contact['address_' . $type->value] = $addressArr;
                     }
                 }
 
@@ -202,7 +203,7 @@ class ContactCSVHelper
 
             $this->csvExporter->beforeEach(function ($contact) {
                 // person/organisation fields
-                if ($contact->type_id === 'person') {
+                if ($contact->type_id === ContactType::PERSON) {
                     $contact->title = $contact->person->title;
                     $contact->initials = $contact->person->initials;
                     $contact->first_name = $contact->person->first_name;
@@ -398,14 +399,14 @@ class ContactCSVHelper
                     $addressArr['postal_code'] = ($address ? $address->postal_code : '');
                     $addressArr['city'] = ($address ? $address->city : '');
                     $addressArr['country'] = (($address && $address->country) ? $address->country->name : '');
-                    $addressArr['type'] = (($address && $address->getType() && $address->getType()->name) ? $address->getType()->name : '');
+                    $addressArr['type'] = $address?->getType()?->getName() ?? '';
                     $contact['address'] = $addressArr;
                 }
             }
 
             $this->csvExporter->beforeEach(function ($contact) {
                 // person/organisation fields
-                if ($contact->type_id === 'person') {
+                if ($contact->type_id === ContactType::PERSON) {
                     $contact->title = $contact->person->title;
                     $contact->initials = $contact->person->initials;
                     $contact->first_name = $contact->person->first_name;
@@ -553,7 +554,7 @@ class ContactCSVHelper
 
             $this->csvExporter->beforeEach(function ($address) {
                 // person/organisation fields
-                if ($address->contact->type_id === 'person') {
+                if ($address->contact->type_id === ContactType::PERSON) {
                     $address->contact->first_name = $address->contact->person->first_name;
                     $address->contact->last_name_prefix = $address->contact->person->last_name_prefix;
                     $address->contact->last_name = $address->contact->person->last_name;

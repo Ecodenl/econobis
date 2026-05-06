@@ -42,7 +42,7 @@ class FinancialOverviewContact extends Model
     {
         if(!$this->status_id) return null;
 
-        return FinancialOverviewContactStatus::get($this->status_id)->name;
+        return FinancialOverviewContactStatus::get($this->status_id)?->getName() ?? '';
     }
 
 

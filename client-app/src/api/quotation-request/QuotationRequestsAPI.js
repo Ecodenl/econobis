@@ -63,4 +63,16 @@ export default {
             },
         });
     },
+
+    getExcel: ({ filters, sorts, type }) => {
+        const requestUrl = `${getApiUrl()}/api/quotation-request/excel/` + type;
+
+        return getAxiosInstance().get(requestUrl, {
+            params: {
+                filters: JSON.stringify(filters),
+                sorts: JSON.stringify(sorts),
+            },
+            responseType: 'blob',
+        });
+    },
 };

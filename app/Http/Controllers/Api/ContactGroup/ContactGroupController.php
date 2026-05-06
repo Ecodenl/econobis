@@ -196,6 +196,10 @@ class ContactGroupController extends Controller
                 }
             }
 
+            $groupContactIds = $contactGroup->contacts()?->pluck('contact_id')?->toArray() ?? [];
+            Log::info('Group ' . $contactGroup->id . ' met ' . count($groupContactIds) . ' contacten verwijderd. contact ids:' );
+            Log::info(implode(',', $groupContactIds));
+
             $deleteContactGroup = new DeleteContactGroup($contactGroup);
             $result = $deleteContactGroup->delete();
 

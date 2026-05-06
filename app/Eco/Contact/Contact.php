@@ -13,7 +13,9 @@ use App\Eco\ContactNote\ContactNote;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
+use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\FinancialOverview\FinancialOverviewContact;
+use App\Eco\FinancialOverview\FinancialOverviewParticipantProject;
 use App\Eco\FreeFields\FreeFieldsField;
 use App\Eco\FreeFields\FreeFieldsFieldRecord;
 use App\Eco\FreeFields\FreeFieldsTable;
@@ -41,7 +43,7 @@ use App\Eco\Task\Task;
 use App\Eco\Twinfield\TwinfieldCustomerNumber;
 use App\Eco\Twinfield\TwinfieldLog;
 use App\Eco\User\User;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 use App\Http\Resources\ContactGroup\GridContactGroup;
 use App\Http\Traits\Encryptable;
 use Carbon\Carbon;
@@ -514,10 +516,26 @@ class Contact extends Model
     {
         return $this->hasMany(FinancialOverviewContact::class);
     }
+    public function financialOverviewParticipantProjects()
+    {
+        return $this->hasMany(FinancialOverviewParticipantProject::class);
+    }
 
     public function financialOverviewContactsSend()
     {
         return $this->hasMany(FinancialOverviewContact::class)->where('status_id', 'sent')->orderBy('date_sent', 'desc');
+    }
+
+    public function financialOverviewContactsConceptOrderedByYear()
+    {
+        return $this->hasMany(FinancialOverviewContact::class)
+            ->where('financial_overview_contacts.status_id', 'concept')
+            ->join('financial_overviews', 'financial_overview_contacts.financial_overview_id', '=', 'financial_overviews.id')
+            ->join('administrations', 'financial_overviews.administration_id', '=', 'administrations.id')
+            ->where('administrations.uses_interim_financial_overviews', 1)
+            ->orderBy('financial_overviews.year', 'asc')
+            ->orderBy('financial_overview_contacts.id', 'asc')
+            ->select('financial_overview_contacts.*');
     }
 
     public function twinfieldLogs()
@@ -673,6 +691,21 @@ class Contact extends Model
     {
         return $this->financialOverviewContactsSend()->exists();
     }
+    public function getLastYearFinancialOverviewSentAttribute()
+    {
+        $financialOverviewIds = $this->financialOverviewContactsSend()->get()->pluck('financial_overview_id')->toArray();
+
+        $financialOverview = FinancialOverview::whereIn('id', $financialOverviewIds)
+            ->get()
+            ->sortByDesc('year')
+            ->first();
+        return $financialOverview ? (int) $financialOverview->year : null;
+    }
+
+    public function getOldestFinancialOverviewContactConceptAttribute()
+    {
+        return $this->financialOverviewContactsConceptOrderedByYear()->first();
+    }
 
     // Contact initials (only if person).
     public function getInitialsAttribute()
@@ -787,7 +820,7 @@ class Contact extends Model
             });
         })->orderBy('name')->get();
         if ($administrations->count() == 0) {
-            $defaultAdministrationId = PortalSettings::get('defaultAdministrationId');
+            $defaultAdministrationId = PortalSettings::first()?->default_administration_id;
             if (!empty($defaultAdministrationId)) {
                 $administrations = Administration::whereId($defaultAdministrationId)->get();
             }

@@ -198,19 +198,19 @@ class ProjectFormEdit extends Component {
         this.setDisableBeforeEntryDate();
 
         if (this.state.project && !this.state.project.showQuestionAboutMembership) {
-            const keys =
-                '?keys[]=cooperativeName' +
-                '&keys[]=defaultContactGroupMemberId' +
-                '&keys[]=defaultContactGroupNoMemberId';
-            PortalSettingsAPI.fetchPortalSettings(keys).then(payload => {
+            // todo WM: check / anders
+            //
+            const portalSettingsId = 1;
+
+            PortalSettingsAPI.fetchPortalSettingsDetails(portalSettingsId).then(payload => {
                 let defaultTextIsMember = '';
                 let defaultTextIsNoMember = '';
                 let defaultTextBecomeMember = '';
                 let defaultTextBecomeNoMember = '';
                 let defaultContactGroupMemberId = '';
                 let defaultContactGroupNoMemberId = '';
-                if (payload.data.cooperativeName) {
-                    let cooperatie_naam = payload.data.cooperativeName;
+                if (payload.data.data.cooperativeName) {
+                    let cooperatie_naam = payload.data.data.cooperativeName;
                     defaultTextIsMember = 'Ik ben lid van ' + cooperatie_naam + ' en ik betaal geen inschrijfkosten';
                     defaultTextIsNoMember = 'Ik ben geen lid van ' + cooperatie_naam;
                     defaultTextBecomeMember =
@@ -223,11 +223,11 @@ class ProjectFormEdit extends Component {
                     defaultTextBecomeMember = 'Ik wil lid worden en betaal daarom geen inschrijfkosten';
                     defaultTextBecomeNoMember = 'Ik wil geen lid wordenen betaal inschrijfkosten';
                 }
-                defaultContactGroupMemberId = payload.data.defaultContactGroupMemberId
-                    ? payload.data.defaultContactGroupMemberId
+                defaultContactGroupMemberId = payload.data.data.defaultContactGroupMemberId
+                    ? payload.data.data.defaultContactGroupMemberId
                     : null;
-                defaultContactGroupNoMemberId = payload.data.defaultContactGroupNoMemberId
-                    ? payload.data.defaultContactGroupNoMemberId
+                defaultContactGroupNoMemberId = payload.data.data.defaultContactGroupNoMemberId
+                    ? payload.data.data.defaultContactGroupNoMemberId
                     : null;
 
                 this.setState({

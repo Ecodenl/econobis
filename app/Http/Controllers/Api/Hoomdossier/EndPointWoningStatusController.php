@@ -128,7 +128,7 @@ class EndPointWoningStatusController extends EndPointHoomDossierController
         if($dataContent->status->short === 'executed'){
             // Als bezoek nog op Geen afspraakt gemaakt stond, dan zetten we datum Afspraak gemaakt ook op vandaag.
             $bezoekStatusDefault = QuotationRequestStatus::where('opportunity_action_id', $bezoekAction->id)->where('code_ref', 'default')->first();
-            if($quotationRequest->status_id = $bezoekStatusDefault->id){
+            if($quotationRequest->status_id === $bezoekStatusDefault->id){
                 $quotationRequest->date_planned = Carbon::parse(Carbon::parse('now')->format('Y-m-d') . ' 00:00:00');
                 $this->log('Afspraak (nog niet gemaakt) automatisch voorzien van datum afpraak ' .  ($quotationRequest->date_planned ? Carbon::parse($quotationRequest->date_planned)->format('d-m-Y H:i') : 'onbekend') );
             }

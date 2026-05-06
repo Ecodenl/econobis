@@ -9,13 +9,13 @@ use App\Eco\Email\Email;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Portal\PortalUser;
 use App\Eco\QuotationRequest\QuotationRequest;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class QuotationRequestController
@@ -79,7 +79,7 @@ class QuotationRequestController
 
         $this->authorizeQuotationRequest($portalUser, $quotationRequest);
 
-        $responsibleUserId = PortalSettings::get('responsibleUserId');
+        $responsibleUserId = PortalSettings::first()?->responsible_user_id;
         if (!$responsibleUserId) {
             abort(501, 'Er is helaas een fout opgetreden (onbekende klanten portaal verantwoordelijke).');
         }
@@ -169,7 +169,7 @@ class QuotationRequestController
 
         $this->authorizeQuotationRequest($portalUser, $quotationRequest);
 
-        $responsibleUserId = PortalSettings::get('responsibleUserId');
+        $responsibleUserId = PortalSettings::first()?->responsible_user_id;
         if (!$responsibleUserId) {
             abort(501, 'Er is helaas een fout opgetreden (onbekende klanten portaal verantwoordelijke).');
         }
@@ -397,8 +397,8 @@ class QuotationRequestController
             $mailbox = Mailbox::getDefault();
         }
 
-        $mail = Mail::fromMailbox($mailbox)
-            ->to($contact->primaryEmailAddress);
+        $mail = MailHelper::fromMailbox($mailbox)
+            ->to($contact->primaryEmailAddress->email);
 
         $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Afspraak schouwen';
         $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail, $mailbox);
@@ -432,8 +432,8 @@ class QuotationRequestController
             $mailbox = Mailbox::getDefault();
         }
 
-        $mail = Mail::fromMailbox($mailbox)
-            ->to($contact->primaryEmailAddress);
+        $mail = MailHelper::fromMailbox($mailbox)
+            ->to($contact->primaryEmailAddress->email);
 
         $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Opname schouwen';
         $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail, $mailbox);
@@ -467,8 +467,8 @@ class QuotationRequestController
             $mailbox = Mailbox::getDefault();
         }
 
-        $mail = Mail::fromMailbox($mailbox)
-            ->to($contact->primaryEmailAddress);
+        $mail = MailHelper::fromMailbox($mailbox)
+            ->to($contact->primaryEmailAddress->email);
         $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Opname schouwen';
 
         $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail, $mailbox);

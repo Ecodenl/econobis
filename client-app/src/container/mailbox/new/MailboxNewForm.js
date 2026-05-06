@@ -14,6 +14,7 @@ function MailboxNewForm({ fetchSystemData }) {
         id: '',
         name: '',
         email: '',
+        onlyOutgoingMailbox: false,
         username: '',
         password: '',
         smtpHost: '',

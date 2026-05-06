@@ -5,12 +5,14 @@ namespace App\Jobs\Mailgun;
 
 use App\Eco\Mailbox\MailgunDomain;
 use App\Eco\Mailbox\MailgunEvent;
+use App\Http\Traits\Mailgun\MailgunDomainSuppressionGuard;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Mailgun\Mailgun;
 use Mailgun\Model\Event\Event;
 use Mailgun\Model\Event\EventResponse;
@@ -18,6 +20,7 @@ use Mailgun\Model\Event\EventResponse;
 class FetchMailgunEvents implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use MailgunDomainSuppressionGuard;
 
     protected MailgunDomain $mailgunDomain;
 
@@ -31,7 +34,22 @@ class FetchMailgunEvents implements ShouldQueue
 
     public function handle()
     {
-        $mailgunClient = Mailgun::create($this->mailgunDomain->secret, 'https://' . config('services.mailgun.endpoint'));
+        if ($this->mailgunDomain->is_system_mailgun_domain) {
+            // optioneel: alleen lokaal loggen
+            if (app()->environment('local')) {
+                Log::info('Skipping Mailgun events fetch for system domain', [
+                    'mailgun_domain_id' => $this->mailgunDomain->id,
+                    'domain' => $this->mailgunDomain->domain,
+                ]);
+            }
+
+            return; // <- klaar, geen client, geen calls, geen DB writes
+        }
+
+        $mailgunClient = Mailgun::create(
+            $this->mailgunDomain->secret,
+            'https://' . config('services.mailgun.endpoint')
+        );
 
         $events = $this->getPaginatedEvents($mailgunClient);
 
@@ -102,6 +120,8 @@ class FetchMailgunEvents implements ShouldQueue
             $eventCode = 'failed_' . $event->getSeverity();
         }
 
+        $recipient = mb_strtolower(trim((string) $event->getRecipient()));
+
         $subjectEvent = $event->getMessage()['headers']['subject'] ?? '';
         $subject = strlen($subjectEvent)>191 ? ( substr($subjectEvent,0,188) . '...') : $subjectEvent;
 
@@ -113,7 +133,7 @@ class FetchMailgunEvents implements ShouldQueue
             'mailgun_id' => $event->getId(),
             'mailgun_message_id' => $event->getMessage()['headers']['message-id'] ?? '',
             'event' => $eventCode,
-            'recipient' => $event->getRecipient(),
+            'recipient' => $recipient,
             'subject' => $subject,
             'event_date' => $event->getEventDate(),
             'delivery_status' => $deliveryStatus,

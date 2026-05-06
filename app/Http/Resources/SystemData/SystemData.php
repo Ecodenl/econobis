@@ -63,6 +63,7 @@ use App\Eco\PaymentInvoice\PaymentInvoiceStatus;
 use App\Eco\PersonType\PersonType;
 use App\Eco\PhoneNumber\PhoneNumberType;
 use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
+use App\Eco\PortalSettings\PortalSettings;
 use App\Eco\Product\Product;
 use App\Eco\Product\ProductDuration;
 use App\Eco\Product\ProductInvoiceFrequency;
@@ -101,6 +102,7 @@ use App\Http\Resources\OrganisationType\FullOrganisationType;
 use App\Http\Resources\ParticipantMutation\FullParticipantMutationStatus;
 use App\Http\Resources\ParticipantMutation\FullParticipantMutationType;
 use App\Http\Resources\PersonType\FullPersonType;
+use App\Http\Resources\PortalSettings\FullPortalSettings;
 use App\Http\Resources\Product\FullProduct;
 use App\Http\Resources\QuotationRequest\FullQuotationRequestStatus;
 use App\Http\Resources\Team\FullTeam;
@@ -123,22 +125,22 @@ class SystemData extends JsonResource
     public function toArray($request)
     {
         $environment = App::environment();
-        //for testing
-        if ($environment == 'production' && \Auth::user()->email != 'support@econobis.nl' && \Auth::user()->email != 'software@xaris.nl') {
+
+        if (Auth::user()->email != 'support@econobis.nl' && Auth::user()->email != 'software@xaris.nl') {
             $allUsers = User::orderBy('last_name', 'asc')->get();
 
-            $usersWithInactive= UserPeek::collection($allUsers->where('id', '!=', '1'));
+            $usersWithInactive = UserPeek::collection($allUsers->where('id', '!=', '1'));
             $users = UserPeek::collection($allUsers->where('active', true));
             $usersExtraAdministration = UserPeek::collection($allUsers->where('id', '1'));
-        }
-        else {
+            $mailgunDomains = MailgunDomain::select(['id', 'domain'])->where('is_system_mailgun_domain', false)->get();
+        } else {
             $allUsers = User::orderBy('last_name', 'asc')->get();
 
             $usersWithInactive = UserPeek::collection($allUsers);
             $users = UserPeek::collection($allUsers->where('active', true));
             $usersExtraAdministration = null;
+            $mailgunDomains = MailgunDomain::select(['id', 'domain'])->get();
         }
-
         /*
          * Energie leveranciers 2018-11-28 Op aanvraag René
          *
@@ -224,7 +226,7 @@ class SystemData extends JsonResource
             'mailboxIgnoreTypes' => FullEnumWithIdAndName::collection(MailboxIgnoreType::collection()),
             'mailboxServerTypes' => ['incomingServerTypes' => FullEnumWithIdAndName::collection(IncomingServerType::collection()), 'outgoingServerTypes' => FullEnumWithIdAndName::collection(OutgoingServerType::collection())],
             'mailboxesInvalid' => Mailbox::where('is_active', 1)->where('valid', 0)->count(),
-            'mailgunDomain' => MailgunDomain::select(['id', 'domain'])->get(),
+            'mailgunDomain' => $mailgunDomains,
             'measureCategories' => MeasureCategory::select(['id', 'name'])->orderBy('name')->get(),
             'measures' => MeasurePeek::collection(Measure::orderBy('name')->get()),
             'occupations' => FullOccupation::collection(Occupation::orderBy('primary_occupation')->get()),
@@ -242,6 +244,7 @@ class SystemData extends JsonResource
             'permissions' => FullEnumWithIdAndName::collection(Permission::all()),
             'personTypes' => FullPersonType::collection(PersonType::all()),
             'phoneNumberTypes' => FullEnumWithIdAndName::collection(PhoneNumberType::collection()),
+            'portalSettings' => FullPortalSettings::collection(PortalSettings::all())->first(),
             'portalSettingsLayouts' => PortalSettingsLayout::select(['id', 'description'])->get(),
             'primaryOccupations' => PrimaryOccupation::collection(Occupation::all()),
             'productDurations' => FullEnumWithIdAndName::collection(ProductDuration::collection()),

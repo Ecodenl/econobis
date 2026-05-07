@@ -23,8 +23,11 @@ Route::group(['prefix' => 'portal'], function () {
     // Bridge voor portal login
     Route::post('/auth/token', [PortalOauthTokenBridgeController::class, 'issuePortalToken'])
         ->middleware([LoginPortalAttemptThrottle::class, 'throttle:oauth-login-portal']);
+
+    // Bridge voor portal refresh token
+    Route::post('/auth/token/refresh', [PortalOauthTokenBridgeController::class, 'refreshPortalToken']);
 });
 
-Route::group(['middleware' => ['passport-portal', 'scope.portal'], 'prefix' => 'portal/oauth'], function () {
+Route::group(['middleware' => ['scope.portal'], 'prefix' => 'portal/oauth'], function () {
     Route::post('/token', [AccessTokenController::class, 'issueToken']);
 });

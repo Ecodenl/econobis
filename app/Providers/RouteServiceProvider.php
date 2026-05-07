@@ -78,7 +78,7 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapPortalRoutes()
     {
         Route::prefix('portal')
-            ->middleware(['passport-portal', 'api'])
+            ->middleware(['api'])
             ->namespace('\App\Http\Controllers\Portal')
             ->group(base_path('routes/portal.php'));
     }

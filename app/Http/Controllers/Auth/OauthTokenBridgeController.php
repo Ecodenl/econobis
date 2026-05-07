@@ -20,6 +20,7 @@ class OauthTokenBridgeController extends Controller
             'client_secret' => (string) config('app.oauth_client_secret'),
             'username' => $request->input('username'),
             'password' => $request->input('password'),
+            'scope' => 'use-app',
         ]);
 
         return app()->handle($subRequest);
@@ -36,6 +37,7 @@ class OauthTokenBridgeController extends Controller
             'refresh_token' => $request->input('refresh_token'),
             'client_id' => (string) config('app.oauth_client_id'),
             'client_secret' => (string) config('app.oauth_client_secret'),
+            'scope' => 'use-app',
         ]);
 
         return app()->handle($subRequest);

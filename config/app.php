@@ -177,6 +177,8 @@ return [
 
     'oauth_client_id' => env('OAUTH_CLIENT_ID', '2'),
     'oauth_client_secret' => env('OAUTH_CLIENT_SECRET', ''),
+    'oauth_portal_client_id' => env('OAUTH_PORTAL_CLIENT_ID', '3'),
+    'oauth_portal_client_secret' => env('OAUTH_PORTAL_CLIENT_SECRET', ''),
 
     // //locale (linux/windows verschil)
     'LC_TIME' => env('LC_TIME', 'nl_NL.utf8'),

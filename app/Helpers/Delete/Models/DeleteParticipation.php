@@ -79,8 +79,12 @@ class DeleteParticipation implements DeleteInterface
      */
     public function canDelete()
     {
-        if($this->participation->mutations()->count() > 0){
-            array_push($this->errorMessage, "Er zijn nog deelname mutaties in een project. Verwijder de deelname mutaties eerst.");
+        $projectCode = $this->participation?->project?->code ?? '*onbekend*';
+        $projectId = $this->participation?->project?->id ?? '?';
+        $participationId = $this->participation?->id ?? '?';
+        $contactName = $this->participation?->contact?->full_name_fnf ?? '*contact onbekend*';
+        if($this->participation->mutations()->exists()){
+            array_push($this->errorMessage, "Bij deelnemer " . $contactName . " (" . $participationId . ") zijn er nog deelname mutaties in project " . $projectCode . " (" . $projectId . "). Verwijder de deelname mutaties eerst.");
             return false;
         }
 

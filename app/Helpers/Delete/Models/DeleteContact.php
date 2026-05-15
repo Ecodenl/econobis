@@ -77,40 +77,42 @@ class DeleteContact implements DeleteInterface
      */
     public function canDelete()
     {
+        $contactFullName = $this->contact->full_name_fnf;
+        $contactId = $this->contact->id;
         if($this->contact->primaryOccupations()->count() > 0){
-            array_push($this->errorMessage, "Er is nog een verbinding aanwezig, Verwijder de verbinding bij het contact en verwijder dan het contact opnieuw.");
+            array_push($this->errorMessage, "Bij contact " . $contactFullName . " (" . $contactId . ") is nog een verbinding aanwezig, Verwijder de verbinding bij het contact en verwijder dan het contact opnieuw.");
             return false;
         }
 
         if($this->contact->occupations()->count() > 0){
-            array_push($this->errorMessage, "Er is nog een verbinding aanwezig, Verwijder de verbinding bij het contact en verwijder dan het contact opnieuw.");
+            array_push($this->errorMessage, "Bij contact " . $contactFullName . " (" . $contactId . ") is nog een verbinding aanwezig, Verwijder de verbinding bij het contact en verwijder dan het contact opnieuw.");
             return false;
         }
 
         if($this->contact->portalUser()->count() > 0){
-            array_push($this->errorMessage, "Dit contact maakt gebruik van de 'mijn coöperatie portal'. Ga naar het contact en verwijder 'Portal gebruiker gegevens'. Verwijder dan het contact opnieuw.");
+            array_push($this->errorMessage, "Contact " . $contactFullName . " (" . $contactId . ") maakt gebruik van de 'mijn coöperatie portal'. Ga naar het contact en verwijder 'Portal gebruiker gegevens'. Verwijder dan het contact opnieuw.");
             return false;
         }
 
         if($this->contact->organisation && $this->contact->organisation->campaigns->count() > 0){
             $campaignNumbers = $this->contact->organisation->campaigns->pluck('number')->toArray();
-            array_push($this->errorMessage, "Organisatie is nog betrokken bij een of meer campagnes: " . implode(',', $campaignNumbers) . " Verwijder de organisatie als betrokken bedrijf bij campagne(s) en verwijder dan het contact opnieuw.");
+            array_push($this->errorMessage, "Organisatie " . $contactFullName . " (" . $contactId . ") is nog betrokken bij een of meer campagnes: " . implode(',', $campaignNumbers) . " Verwijder de organisatie als betrokken bedrijf bij campagne(s) en verwijder dan het contact opnieuw.");
             return false;
         }
 
         if($this->contact->coachCampaigns->count() > 0){
             $campaignNumbers = $this->contact->coachCampaigns->pluck('number')->toArray();
-            array_push($this->errorMessage, "Persoon is als coach nog betrokken bij een of meer campagnes: " . implode(',', $campaignNumbers) . " Verwijder de persoon als betrokken coach bij campagne(s) en verwijder dan het contact opnieuw.");
+            array_push($this->errorMessage, "Persoon " . $contactFullName . " (" . $contactId . ") is als coach nog betrokken bij een of meer campagnes: " . implode(',', $campaignNumbers) . " Verwijder de persoon als betrokken coach bij campagne(s) en verwijder dan het contact opnieuw.");
             return false;
         }
         if($this->contact->projectManagerCampaigns->count() > 0){
             $campaignNumbers = $this->contact->projectManagerCampaigns->pluck('number')->toArray();
-            array_push($this->errorMessage, "Persoon is als projectleider nog betrokken bij een of meer campagnes: " . implode(',', $campaignNumbers) . " Verwijder de persoon als betrokken projectleider bij campagne(s) en verwijder dan het contact opnieuw.");
+            array_push($this->errorMessage, "Persoon " . $contactFullName . " (" . $contactId . ") is als projectleider nog betrokken bij een of meer campagnes: " . implode(',', $campaignNumbers) . " Verwijder de persoon als betrokken projectleider bij campagne(s) en verwijder dan het contact opnieuw.");
             return false;
         }
         if($this->contact->externalPartyCampaigns->count() > 0){
             $campaignNumbers = $this->contact->externalPartyCampaigns->pluck('number')->toArray();
-            array_push($this->errorMessage, "Persoon is als externe partij nog betrokken bij een of meer campagnes: " . implode(',', $campaignNumbers) . " Verwijder de persoon als betrokken externe partij bij campagne(s) en verwijder dan het contact opnieuw.");
+            array_push($this->errorMessage, "Persoon " . $contactFullName . " (" . $contactId . ") is als externe partij nog betrokken bij een of meer campagnes: " . implode(',', $campaignNumbers) . " Verwijder de persoon als betrokken externe partij bij campagne(s) en verwijder dan het contact opnieuw.");
             return false;
         }
 

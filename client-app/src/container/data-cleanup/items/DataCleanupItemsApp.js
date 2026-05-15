@@ -177,12 +177,16 @@ export default function DataCleanupItemsApp() {
                 if (failed.length) {
                     setGlobalAlert({
                         type: 'danger',
-                        text: `Opschonen alles uitgevoerd, maar ${failed.length} item(s) hadden fouten. Klik op details voor meer informatie.`,
+                        text: `Opschonen alles uitgevoerd, maar ${failed.length} ${
+                            failed.length === 1 ? 'onderdeel had' : 'onderdelen hadden'
+                        } fouten. Klik op details voor meer informatie.`,
                     });
 
                     openDetails({
                         title: 'Details opschonen alles',
-                        summary: `Opschonen alles uitgevoerd, maar ${failed.length} item(s) hadden fouten. Klik op details voor meer informatie.`,
+                        summary: `Opschonen alles uitgevoerd, maar ${failed.length} ${
+                            failed.length === 1 ? 'onderdeel had' : 'onderdelen hadden'
+                        } fouten. Klik op details voor meer informatie.`,
                         rows: failed.map(r => ({
                             label: r?.item?.name || r?.codeRef || `Item ${r?.item?.id ?? ''}`,
                             statusCode: r?.statusCode ?? 0,
@@ -209,12 +213,16 @@ export default function DataCleanupItemsApp() {
                 if (failed.length) {
                     setGlobalAlert({
                         type: 'danger',
-                        text: `Opschonen alles uitgevoerd, maar ${failed.length} item(s) hadden fouten. Klik op details voor meer informatie.`,
+                        text: `Opschonen alles uitgevoerd, maar ${failed.length} ${
+                            failed.length === 1 ? 'onderdeel had' : 'onderdelen hadden'
+                        } fouten. Klik op details voor meer informatie.`,
                     });
 
                     openDetails({
                         title: 'Details opschonen alles',
-                        summary: `Opschonen alles uitgevoerd, maar ${failed.length} item(s) hadden fouten. Klik op details voor meer informatie.`,
+                        summary: `Opschonen alles uitgevoerd, maar ${failed.length} ${
+                            failed.length === 1 ? 'onderdeel had' : 'onderdelen hadden'
+                        } fouten. Klik op details voor meer informatie.`,
                         rows: failed.map(r => ({
                             label: r?.item?.name || r?.codeRef || `Item ${r?.item?.id ?? ''}`,
                             statusCode: r?.statusCode ?? 0,
@@ -264,7 +272,7 @@ export default function DataCleanupItemsApp() {
 
                 setGlobalAlert({
                     type: 'danger',
-                    text: `Er is iets misgegaan met opschonen van de gegevens van onderdeel ${cleanupItem.name}.`,
+                    text: `Er waren problemen of geweigerde items bij het  opschonen van de gegevens van onderdeel ${cleanupItem.name}.`,
                 });
 
                 throw err;
@@ -278,7 +286,7 @@ export default function DataCleanupItemsApp() {
     const onConfirmForceDeleteContacts = () => {
         setForceDeleteBusy(true);
 
-        setGlobalAlert({ type: 'info', text: 'Hard verwijderen van soft-verwijderde contacten wordt uitgevoerd…' });
+        setGlobalAlert({ type: 'info', text: 'Hard verwijderen van soft-verwijderde contacten wordt uitgevoerd...' });
 
         DataCleanupAPI.forceDeleteContacts()
             .then(res => {
@@ -461,9 +469,7 @@ export default function DataCleanupItemsApp() {
                         <div style={{ maxHeight: 400, overflowY: 'auto' }}>
                             {(resultDetails.rows || []).map((row, idx) => (
                                 <div key={idx} style={{ marginBottom: 10 }}>
-                                    <strong>
-                                        {row.label} ({row.statusCode})
-                                    </strong>
+                                    <strong>{row.label}</strong>
                                     {row.errors?.length ? (
                                         <ul style={{ marginTop: 6 }}>
                                             {row.errors.map((e, i) => (

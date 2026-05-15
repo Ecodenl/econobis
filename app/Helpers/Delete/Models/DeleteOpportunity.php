@@ -82,7 +82,7 @@ class DeleteOpportunity implements DeleteInterface
 //        }
         // 25-04-2024: Verwijderen mag niet meer als er nog kansacties onder hangen
         if($this->opportunity->quotationRequests()->count() > 0){
-            array_push($this->errorMessage, "Onder kans bij contact " . ($this->opportunity->intake && $this->opportunity->intake->contact ? $this->opportunity->intake->contact->full_name : '*contact onbekend*') . " met maatregel " . ($this->opportunity->measureCategory ? $this->opportunity->measureCategory->name : '*maatregel onbekend*') . " hangen nog kansacties, verwijderen kans niet mogelijk.");
+            array_push($this->errorMessage, "Onder kans " . $this->opportunity->number . " bij contact " . ($this->opportunity->intake && $this->opportunity->intake->contact ? $this->opportunity->intake->contact->full_name : '*contact onbekend*') . " met maatregel " . ($this->opportunity->measureCategory ? $this->opportunity->measureCategory->name : '*maatregel onbekend*') . " hangen nog kansacties, verwijderen kans niet mogelijk.");
             return false;
         }
 

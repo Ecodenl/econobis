@@ -68,6 +68,9 @@ class CleanupController extends Controller
 
     public function cleanupItemsAll()
     {
+        // voorlopig geven we cleanup maximal 5 minuten de tijd
+        set_time_limit(300);
+
         $cooperation = Cooperation::firstOrFail();
 
         // Alleen registry types

@@ -76,6 +76,7 @@ class DeleteIntake implements DeleteInterface
      */
     public function canDelete(): bool
     {
+        $intakeAddress = $this->intake->address?->fullAddress ?? '*adres onbekend*';
         // 25-04-2024: Verwijderen 1 voor 1 mag ook ongeacht de status van de intake
 //        if(!($this->intake->intake_status_id === 2 || $this->intake->intake_status_id === 3)){
 //            array_push($this->errorMessage, "Er is nog een intake die niet gesloten is.");
@@ -83,7 +84,7 @@ class DeleteIntake implements DeleteInterface
 //        }
         // 25-04-2024: Verwijderen mag niet meer als er nog kansen onder hangen
         if($this->intake->opportunities()->count() > 0){
-            array_push($this->errorMessage, "Onder intake " . ($this->intake->address ? $this->intake->address->fullAddress : '*adres onbekend*') . " hangen nog kansen, verwijderen intake niet mogelijk.");
+            array_push($this->errorMessage, "Onder intake (" . $this->intake->id . ") " . $intakeAddress . " hangen nog kansen, verwijderen intake niet mogelijk.");
             return false;
         }
 

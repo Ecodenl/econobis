@@ -114,6 +114,7 @@ export default function DataCleanupItemsItem({
                     buttonClassName={'btn-danger'}
                     title={`Bevestig opschonen ${cleanupDataItem.name}`}
                     loading={!showActionButtons}
+                    showConfirmAction={modalErrorMessage.length > 0 ? false : true}
                 >
                     <div>
                         Weet u zeker dat u <strong>{cleanupDataItem.name}</strong>,{' '}

@@ -2,20 +2,24 @@
 
 namespace App\Eco\Project;
 
-use JosKolenberg\Enum\EnumWithIdAndName;
+use App\Support\Enum\HasLegacyEnumHelpers;
 
-class TransactionCostsCodeRef extends EnumWithIdAndName
+enum TransactionCostsCodeRef: string
 {
+    use HasLegacyEnumHelpers;
 
-    static $all;
+    case NONE = 'none';
+    case AMOUNT_ONCE = 'amount-once';
+    case AMOUNT = 'amount';
+    case PERCENTAGE = 'percentage';
 
-    protected static function seed()
+    public function getName(): string
     {
-        return [
-            new static('none', 'Geen'),
-            new static('amount-once', 'Vast bedrag'),
-            new static('amount', 'Bedrag per participatie'),
-            new static('percentage', '% van de inleg'),
-        ];
+        return match ($this) {
+            self::NONE => 'Geen',
+            self::AMOUNT_ONCE => 'Vast bedrag',
+            self::AMOUNT => 'Bedrag per participatie',
+            self::PERCENTAGE => '% van de inleg',
+        };
     }
 }

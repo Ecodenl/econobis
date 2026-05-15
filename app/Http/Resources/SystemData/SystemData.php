@@ -81,7 +81,6 @@ use App\Eco\Task\TaskProperty;
 use App\Eco\Task\TaskType;
 use App\Eco\Team\Team;
 use App\Eco\Title\Title;
-//use App\Eco\Twinfield\TwinfieldConnectionTypeWithIdAndName;
 use App\Eco\User\User;
 use App\Eco\VatCode\VatCode;
 use App\Http\Resources\Administration\AdministrationPeek;
@@ -267,7 +266,7 @@ class SystemData extends JsonResource
             'teams' => FullTeam::collection(Team::orderBy('name', 'asc')->get()),
             'titles' => FullTitle::collection(Title::all()),
             'transactionCostsCodeRefs' => FullEnumWithIdAndName::collection(TransactionCostsCodeRef::collection()),
-//            'twinfieldConnectionTypes' => FullEnumWithIdAndName::collection(TwinfieldConnectionTypeWithIdAndName::collection()),
+//            'twinfieldConnectionTypes' => FullEnumWithIdAndName::collection(TwinfieldConnectionType::collection()),
             'users' => $users,
             'usersAll' => $usersWithInactive,
             'usersExtraAdministration' => $usersExtraAdministration,

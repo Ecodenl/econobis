@@ -2,22 +2,22 @@
 
 namespace App\Eco\Mailbox;
 
-use JosKolenberg\Enum\EnumWithIdAndName;
+use App\Support\Enum\HasLegacyEnumHelpers;
 
-class OutgoingServerType extends EnumWithIdAndName
+enum OutgoingServerType: string
 {
+    use HasLegacyEnumHelpers;
 
-    /**
-     * Seed the class with Enum instances
-     *
-     * @return array
-     */
-    protected static function seed()
+    case SMTP = 'smtp';
+    case MAILGUN = 'mailgun';
+    case MS_OAUTH = 'ms-oauth';
+
+    public function getName(): string
     {
-        return [
-            new static('smtp', 'SMTP'),
-            new static('mailgun', 'Mailgun'),
-            new static('ms-oauth', 'Microsoft Api'),
-        ];
+        return match ($this) {
+            self::SMTP => 'SMTP',
+            self::MAILGUN => 'Mailgun',
+            self::MS_OAUTH => 'Microsoft Api',
+        };
     }
 }

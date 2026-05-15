@@ -8,22 +8,17 @@
 
 namespace App\Helpers\Delete\Models;
 
-
 use App\Helpers\Delete\DeleteInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class DeleteParticipation
- *
- * Relation: 1-n Revenue distribution. Action: call DeleteRevenueDistribution
- * Relation: 1-n Documents. Action: dissociate
- * Relation: 1-n Tasks. Action: call DeleteTask
  *
  * @package App\Helpers\Delete\Models
  */
 class DeleteParticipation implements DeleteInterface
 {
-
     private $errorMessage = [];
     private $participation;
 
@@ -31,25 +26,51 @@ class DeleteParticipation implements DeleteInterface
      *
      * @param Model $participation the model to delete
      */
-
     public function __construct(Model $participation)
     {
         $this->participation = $participation;
     }
 
-    /** Main method for deleting this model and all it's relations
+    /** If it's called by the cleanup functionality, we land on this function, else on the delete function
      *
      * @return array
      * @throws
      */
+    public function cleanup()
+    {
+        try{
+            $this->delete();
+            if(!empty($this->errorMessage)) {
+                return $this->errorMessage;
+            }
+        }catch (\Exception $exception){
+            Log::error('Fout bij opschonen Deelnames', [
+                'exception' => $exception->getMessage(),
+                'errormessages' => implode(' | ', $this->errorMessage),
+            ]);
+            array_push($this->errorMessage, "Fout bij opschonen Deelnames. (meld dit bij Econobis support)");
+            return $this->errorMessage;
+
+        }
+    }
+
+    /** Main method for deleting this model and all it's relations
+     *
+     * @return array errorMessage array
+     * @throws
+     */
     public function delete()
     {
-        $this->canDelete();
+        if (! $this->canDelete()) {
+            return $this->errorMessage;
+        }
         $this->deleteModels();
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->participation->delete();
+        if( count($this->errorMessage) === 0 ) {
+            $this->participation->delete();
+        }
 
         return $this->errorMessage;
     }
@@ -58,9 +79,16 @@ class DeleteParticipation implements DeleteInterface
      */
     public function canDelete()
     {
-        if($this->participation->mutations()->count() > 0){
-            array_push($this->errorMessage, "Er zijn nog deelname mutaties in een project. Verwijder de deelname mutaties eerst.");
+        $projectCode = $this->participation?->project?->code ?? '*onbekend*';
+        $projectId = $this->participation?->project?->id ?? '?';
+        $participationId = $this->participation?->id ?? '?';
+        $contactName = $this->participation?->contact?->full_name_fnf ?? '*contact onbekend*';
+        if($this->participation->mutations()->exists()){
+            array_push($this->errorMessage, "Bij deelnemer " . $contactName . " (" . $participationId . ") zijn er nog deelname mutaties in project " . $projectCode . " (" . $projectId . "). Verwijder de deelname mutaties eerst.");
+            return false;
         }
+
+        return true;
     }
 
     /** Deletes models recursive
@@ -69,21 +97,21 @@ class DeleteParticipation implements DeleteInterface
     {
         foreach ($this->participation->projectRevenueDistributions as $revenueDistribution){
             $deleteRevenueDistribution = new DeleteRevenueDistribution($revenueDistribution);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteRevenueDistribution->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteRevenueDistribution->delete() ?? [] ) );
         }
         foreach ($this->participation->revenueDistributionKwh as $revenueDistributionKwh){
             $deleteRevenueDistributionKwh = new DeleteRevenueDistributionKwh($revenueDistributionKwh);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteRevenueDistributionKwh->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteRevenueDistributionKwh->delete() ?? [] ) );
         }
 
         foreach ($this->participation->tasks as $task){
             $deleteTask = new DeleteTask($task);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteTask->delete() ?? [] ) );
         }
 
         foreach ($this->participation->financialOverviewParticipantProjects as $financialOverviewParticipantProject){
             $deleteFinancialOverviewParticipantProject = new DeleteFinancialOverviewParticipantProject($financialOverviewParticipantProject);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteFinancialOverviewParticipantProject->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteFinancialOverviewParticipantProject->delete() ?? [] ) );
         }
     }
 

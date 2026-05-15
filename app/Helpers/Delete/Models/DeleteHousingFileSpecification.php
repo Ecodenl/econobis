@@ -70,7 +70,7 @@ class DeleteHousingFileSpecification implements DeleteInterface
     {
         foreach ($this->housingFileSpecification->opportunities as $opportunity) {
             $deleteOpportunity = new DeleteOpportunity($opportunity);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteOpportunity->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteOpportunity->delete() ?? [] ) );
         }
     }
 

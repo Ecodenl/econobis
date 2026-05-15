@@ -8,17 +8,12 @@
 
 namespace App\Helpers\Delete\Models;
 
-
 use App\Helpers\Delete\DeleteInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class DeleteOpportunity
- *
- * Relation: 1-n Emails. Action: dissociate
- * Relation: 1-n Documents. Action: dissociate
- * Relation: 1-n Tasks & notes. Action: call DeleteTask
- * Relation: 1-n Quotation requests. Action: call DeleteQuotationRequest
  *
  * @package App\Helpers\Delete\Models
  */
@@ -31,10 +26,28 @@ class DeleteOpportunity implements DeleteInterface
      *
      * @param Model $opportunity the model to delete
      */
-
     public function __construct(Model $opportunity)
     {
         $this->opportunity = $opportunity;
+    }
+
+    /** If it's called by the cleanup functionality, we land on this function, else on the delete function
+     *
+     * @return array
+     * @throws
+     */
+    public function cleanup()
+    {
+        try{
+            return $this->delete();
+        }catch (\Exception $exception){
+            Log::error('Fout bij opschonen Kansen', [
+                'exception' => $exception->getMessage(),
+                'errormessages' => implode(' | ', $this->errorMessage),
+            ]);
+            array_push($this->errorMessage, "Fout bij opschonen Kansen. (meld dit bij Econobis support)");
+            return $this->errorMessage;
+        }
     }
 
     /** Main method for deleting this model and all it's relations
@@ -44,17 +57,22 @@ class DeleteOpportunity implements DeleteInterface
      */
     public function delete()
     {
-        $this->canDelete();
+        if (! $this->canDelete()) {
+            return $this->errorMessage;
+        }
         $this->deleteModels();
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->opportunity->delete();
+        if( count($this->errorMessage) === 0 ) {
+            $this->opportunity->delete();
+        }
 
         return $this->errorMessage;
     }
 
     /** Checks if the model can be deleted and sets error messages
+     *
      */
     public function canDelete()
     {
@@ -64,8 +82,11 @@ class DeleteOpportunity implements DeleteInterface
 //        }
         // 25-04-2024: Verwijderen mag niet meer als er nog kansacties onder hangen
         if($this->opportunity->quotationRequests()->count() > 0){
-            array_push($this->errorMessage, "Onder kans bij contact " . ($this->opportunity->intake && $this->opportunity->intake->contact ? $this->opportunity->intake->contact->full_name : '*contact onbekend*') . " met maatregel " . ($this->opportunity->measureCategory ? $this->opportunity->measureCategory->name : '*maatregel onbekend*') . " hangen nog kansacties, verwijderen kans niet mogelijk.");
+            array_push($this->errorMessage, "Onder kans " . $this->opportunity->number . " bij contact " . ($this->opportunity->intake && $this->opportunity->intake->contact ? $this->opportunity->intake->contact->full_name : '*contact onbekend*') . " met maatregel " . ($this->opportunity->measureCategory ? $this->opportunity->measureCategory->name : '*maatregel onbekend*') . " hangen nog kansacties, verwijderen kans niet mogelijk.");
+            return false;
         }
+
+        return true;
     }
 
     /** Deletes models recursive
@@ -74,18 +95,18 @@ class DeleteOpportunity implements DeleteInterface
     {
         foreach ($this->opportunity->tasks as $task) {
             $deleteTask = new DeleteTask($task);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteTask->delete() ?? [] ) );
         }
 
         foreach ($this->opportunity->notes as $note) {
             $deleteTask = new DeleteTask($note);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteTask->delete() ?? [] ) );
         }
 
         // 25-04-2024: Verwijderen mag niet meer als er nog kansacties onder hangen
 //        foreach ($this->opportunity->quotationRequests as $quotationRequest) {
 //            $deleteQuotationRequest = new DeleteQuotationRequest($quotationRequest);
-//            $this->errorMessage = array_merge($this->errorMessage, $deleteQuotationRequest->delete());
+//            $this->errorMessage = array_merge($this->errorMessage, ( $deleteQuotationRequest->delete() ?? [] ) );
 //        }
     }
 

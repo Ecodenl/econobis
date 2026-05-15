@@ -3,16 +3,19 @@
 namespace App\Eco\Contact;
 
 use App\Eco\Address\Address;
+use App\Eco\Address\AddressType;
 use App\Eco\AddressDongle\AddressDongle;
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\Administration\Administration;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Campaign\CampaignResponse;
 use App\Eco\ContactGroup\ContactGroup;
+use App\Eco\ContactGroup\ContactGroupType;
 use App\Eco\ContactNote\ContactNote;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
+use App\Eco\EmailAddress\EmailAddressType;
 use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\FinancialOverview\FinancialOverviewContact;
 use App\Eco\FinancialOverview\FinancialOverviewParticipantProject;
@@ -68,6 +71,7 @@ class Contact extends Model
         'coach_max_appointments_per_week' => 'integer',
         'coach_max_appointments_per_month' => 'integer',
         'coach_min_minutes_between_appointments' => 'integer',
+        'type_id' => ContactType::class,
     ];
 
     protected $encryptable = [
@@ -87,7 +91,7 @@ class Contact extends Model
 
     public function addressesWithoutOld()
     {
-        return $this->hasMany(Address::class)->where('type_id', '!=', 'old')->orderByDesc('primary')->orderByDesc('id');
+        return $this->hasMany(Address::class)->where('type_id', '!=', AddressType::OLD->value)->orderByDesc('primary')->orderByDesc('id');
     }
 
     public function freeFieldsFieldRecords()
@@ -118,7 +122,7 @@ class Contact extends Model
 
     public function addressesActive()
     {
-        return $this->addresses()->where('type_id', '!=', 'old')->orWhere('end_date', '>=', Carbon::parse('now')->format('Y-m-d'));
+        return $this->addresses()->where('type_id', '!=', AddressType::OLD->value)->orWhere('end_date', '>=', Carbon::parse('now')->format('Y-m-d'));
     }
 
     public function primaryAddress()
@@ -137,7 +141,7 @@ class Contact extends Model
     }
     public function latestEmailAddressInvoice()
     {
-        return $this->hasOne(EmailAddress::class)->where('type_id', 'invoice')->latestOfMany();
+        return $this->hasOne(EmailAddress::class)->where('type_id', EmailAddressType::INVOICE->value)->latestOfMany();
     }
 
     public function emails()
@@ -187,16 +191,27 @@ class Contact extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function getStatus()
+    public function getStatus(): ?ContactStatus
     {
-        if (!$this->status_id) return null;
+        if (!$this->status_id) {
+            return null;
+        }
+
+        if ($this->status_id instanceof ContactStatus) {
+            return $this->status_id;
+        }
 
         return ContactStatus::get($this->status_id);
     }
-
-    public function getInspectionPersonType()
+    public function getInspectionPersonType(): ?InspectionPersonType
     {
-        if (!$this->inspection_person_type_id) return null;
+        if (!$this->inspection_person_type_id) {
+            return null;
+        }
+
+        if ($this->inspection_person_type_id instanceof InspectionPersonType) {
+            return $this->inspection_person_type_id;
+        }
 
         return InspectionPersonType::get($this->inspection_person_type_id);
     }
@@ -210,6 +225,7 @@ class Contact extends Model
     {
         return $this->belongsTo(User::class);
     }
+
 
     public function groups()
     {
@@ -227,12 +243,12 @@ class Contact extends Model
 
     public function isPerson()
     {
-        return ($this->type_id == ContactType::PERSON);
+        return ($this->type_id === ContactType::PERSON);
     }
 
     public function isOrganisation()
     {
-        return ($this->type_id == ContactType::ORGANISATION);
+        return ($this->type_id === ContactType::ORGANISATION);
     }
 
     public function isCoach()
@@ -254,7 +270,7 @@ class Contact extends Model
     {
         $contactOrganisationOccupations = $this->occupations()
             ->whereHas('primaryContact', function ($query) {
-                $query->where('type_id', 'organisation')
+                $query->where('type_id', ContactType::ORGANISATION->value)
                     ->where('primary', true);
             })->first();
         if($contactOrganisationOccupations && $contactOrganisationOccupations->primaryContact){
@@ -277,7 +293,7 @@ class Contact extends Model
     {
         $contactOrganisationOccupations = $this->occupations()
             ->whereHas('primaryContact', function ($query) {
-                $query->where('type_id', 'organisation')
+                $query->where('type_id', ContactType::ORGANISATION->value)
                     ->where('primary', true);
             })->first();
         if($contactOrganisationOccupations && $contactOrganisationOccupations->primaryContact){
@@ -296,9 +312,15 @@ class Contact extends Model
         return $this->hasMany(ContactAvailability::class);
     }
 
-    public function getType()
+    public function getType(): ?ContactType
     {
-        if (!$this->type_id) return null;
+        if (!$this->type_id) {
+            return null;
+        }
+
+        if ($this->type_id instanceof ContactType) {
+            return $this->type_id;
+        }
 
         return ContactType::get($this->type_id);
     }
@@ -431,37 +453,6 @@ class Contact extends Model
             ->select('contacts.*', 'occupation_contact.*', 'occupation_contact.id as ocid')
             ->orderBy('contacts.full_name');
     }
-    public function occupationsActive()
-    {
-        return $this->occupations()
-            ->where(function ($query) {
-                $query->where('occupation_contact.end_date', '>=', Carbon::today()->format('Y-m-d'))
-                    ->orWhereNull('occupation_contact.end_date');
-            })
-            ->where(function ($query) {
-                $query->where('occupation_contact.start_date', '<=', Carbon::today()->format('Y-m-d'))
-                    ->orWhereNull('occupation_contact.start_date');
-            })
-            ->select('contacts.*', 'occupation_contact.*', 'occupation_contact.id as ocid')
-            ->orderBy('contacts.full_name');
-    }
-
-    public function organisationNamePrimaryOccupation()
-    {
-        return $this->occupations()
-            ->where(function ($query) {
-                $query->where('occupation_contact.end_date', '>=', Carbon::today()->format('Y-m-d'))
-                    ->orWhereNull('occupation_contact.end_date');
-            })
-            ->where(function ($query) {
-                $query->where('occupation_contact.start_date', '<=', Carbon::today()->format('Y-m-d'))
-                    ->orWhereNull('occupation_contact.start_date');
-            })
-            ->where('contacts.type_id', ContactType::ORGANISATION)
-            ->where('occupation_contact.primary', true)
-            ->select('contacts.*', 'occupation_contact.*', 'occupation_contact.id as ocid')
-            ->orderBy('occupation_contact.created_at')->first();
-    }
     public function isPrimaryOccupant()
     {
         return $this->hasMany(OccupationContact::class, 'primary_contact_id');
@@ -543,6 +534,38 @@ class Contact extends Model
         return $this->hasMany(TwinfieldLog::class);
     }
 
+    public function occupationsActive()
+    {
+        return $this->occupations()
+            ->where(function ($query) {
+                $query->where('occupation_contact.end_date', '>=', Carbon::today()->format('Y-m-d'))
+                    ->orWhereNull('occupation_contact.end_date');
+            })
+            ->where(function ($query) {
+                $query->where('occupation_contact.start_date', '<=', Carbon::today()->format('Y-m-d'))
+                    ->orWhereNull('occupation_contact.start_date');
+            })
+            ->select('contacts.*', 'occupation_contact.*', 'occupation_contact.id as ocid')
+            ->orderBy('contacts.full_name');
+    }
+
+    public function organisationNamePrimaryOccupation()
+    {
+        return $this->occupations()
+            ->where(function ($query) {
+                $query->where('occupation_contact.end_date', '>=', Carbon::today()->format('Y-m-d'))
+                    ->orWhereNull('occupation_contact.end_date');
+            })
+            ->where(function ($query) {
+                $query->where('occupation_contact.start_date', '<=', Carbon::today()->format('Y-m-d'))
+                    ->orWhereNull('occupation_contact.start_date');
+            })
+            ->where('contacts.type_id', ContactType::ORGANISATION)
+            ->where('occupation_contact.primary', true)
+            ->select('contacts.*', 'occupation_contact.*', 'occupation_contact.id as ocid')
+            ->orderBy('occupation_contact.created_at')->first();
+    }
+
     //Returns addresses array as Type - Streetname - Number
     //Primary address always comes first
     public function getPrettyAddresses()
@@ -550,10 +573,12 @@ class Contact extends Model
         $this->load('addresses');
         $addresses = [];
         foreach ($this->addresses as $address) {
+            $typeName = $address->getType()?->getName() ?? '';
+            $line = $typeName . ' - ' . $address->street . ' - ' . $address->number;
             if ($address->primary == 1) {
-                array_unshift($addresses, $address->getType()->name . ' - ' . $address->street . ' - ' . $address->number);
+                array_unshift($addresses, $line);
             } else {
-                $addresses[] = $address->getType()->name . ' - ' . $address->street . ' - ' . $address->number;
+                $addresses[] = $line;
             }
         }
 
@@ -566,7 +591,7 @@ class Contact extends Model
         $emailAddresses = $this->emailAddresses->reverse();
 
         foreach ($emailAddresses as $emailAddress) {
-            if ($emailAddress->type_id === 'invoice') {
+            if ($emailAddress->type_id === EmailAddressType::INVOICE) {
                 return $emailAddress;
             }
         }
@@ -588,7 +613,7 @@ class Contact extends Model
 //        $staticGroups = $this->groups()->get()->pluck('id')->toArray();
 //
 //        //dynamische groepen
-//        $dynamicGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())->where('type_id', 'dynamic')->get();
+//        $dynamicGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())->where('type_id', ContactGroupType::DYNAMIC->value)->get();
 //
 //        $dynamicGroupsForContact = $dynamicGroups->filter(function ($dynamicGroup) {
 //            foreach ($dynamicGroup->all_contacts as $dynamic_contact) {
@@ -608,7 +633,7 @@ class Contact extends Model
         $staticGroups = $this->groups()->get()->pluck('id')->toArray();
 
         //dynamische groepen
-        $dynamicGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())->where('type_id', 'dynamic')->get();
+        $dynamicGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())->where('type_id', ContactGroupType::DYNAMIC->value)->get();
 
         $dynamicGroupsForContact = $dynamicGroups->filter(function ($dynamicGroup) {
             foreach ($dynamicGroup->all_contacts as $dynamic_contact) {
@@ -620,7 +645,7 @@ class Contact extends Model
         })->pluck('id')->toArray();
 
         //samengestelde groepen
-        $composedGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())->where('type_id', 'composed')->get();
+        $composedGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())->where('type_id', ContactGroupType::COMPOSED->value)->get();
 
         $composedGroupsForContact = $composedGroups->filter(function ($composedGroup) {
             foreach ($composedGroup->all_contacts as $composed_contact) {
@@ -641,7 +666,7 @@ class Contact extends Model
 
         //dynamische groepen
         $dynamicGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())
-            ->where('show_contact_form', true)->where('type_id', 'dynamic')->get();
+            ->where('show_contact_form', true)->where('type_id', ContactGroupType::DYNAMIC->value)->get();
 
         $dynamicGroupsForContact = $dynamicGroups->filter(function ($dynamicGroup) {
             foreach ($dynamicGroup->all_contacts as $dynamic_contact) {
@@ -656,7 +681,7 @@ class Contact extends Model
 
         //samengestelde groepen
         $composedGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())
-            ->where('show_contact_form', true)->where('type_id', 'composed')->get();
+            ->where('show_contact_form', true)->where('type_id', ContactGroupType::COMPOSED->value)->get();
 
         $composedGroupsForContact = $composedGroups->filter(function ($composedGroup) {
             foreach ($composedGroup->all_contacts as $composed_contact) {
@@ -676,7 +701,7 @@ class Contact extends Model
     // Contact fullname, firstname first.
     public function getFullNameFnfAttribute()
     {
-        if ($this->type_id == 'person') {
+        if ($this->type_id === ContactType::PERSON) {
             $firstName = $this->person->first_name ? $this->person->first_name . ' ' : ($this->person->initials ? $this->person->initials . ' ' : "");
             $prefix = $this->person->last_name_prefix ? $this->person->last_name_prefix . ' ' : '';
             $fullNameFnf = ($firstName . $prefix . $this->person->last_name);
@@ -710,7 +735,7 @@ class Contact extends Model
     // Contact initials (only if person).
     public function getInitialsAttribute()
     {
-        if ($this->type_id == 'person') {
+        if ($this->type_id === ContactType::PERSON) {
             return $this->person->initials;
         } else {
             return '';
@@ -719,7 +744,7 @@ class Contact extends Model
     // Contact firstname (only if person).
     public function getFirstNameAttribute()
     {
-        if ($this->type_id == 'person') {
+        if ($this->type_id === ContactType::PERSON) {
             return $this->person->first_name;
         } else {
             return '';
@@ -729,7 +754,7 @@ class Contact extends Model
     // Contact lastname prefix (only if person).
     public function getLastNamePrefixAttribute()
     {
-        if ($this->type_id == 'person') {
+        if ($this->type_id === ContactType::PERSON) {
             return $this->person->last_name_prefix;
         } else {
             return '';
@@ -739,7 +764,7 @@ class Contact extends Model
     // Contact lastname (only if person).
     public function getLastNameAttribute()
     {
-        if ($this->type_id == 'person') {
+        if ($this->type_id === ContactType::PERSON) {
             return $this->person->last_name;
         } else {
             return '';
@@ -748,10 +773,10 @@ class Contact extends Model
 
     public function getAddressLinesAttribute()
     {
-        if (Address::where('contact_id', $this->id)->where('primary', true)->where('type_id', 'invoice')->exists()) {
-            $address = Address::where('contact_id', $this->id)->where('primary', true)->where('type_id', 'invoice')->first();
-        } elseif (Address::where('contact_id', $this->id)->where('type_id', 'invoice')->exists()) {
-            $address = Address::where('contact_id', $this->id)->where('type_id', 'invoice')->first();
+        if (Address::where('contact_id', $this->id)->where('primary', true)->where('type_id', AddressType::INVOICE->value)->exists()) {
+            $address = Address::where('contact_id', $this->id)->where('primary', true)->where('type_id', AddressType::INVOICE->value)->first();
+        } elseif (Address::where('contact_id', $this->id)->where('type_id', AddressType::INVOICE->value)->exists()) {
+            $address = Address::where('contact_id', $this->id)->where('type_id', AddressType::INVOICE->value)->first();
         } elseif (Address::where('contact_id', $this->id)->where('primary', true)->exists()) {
             $address = Address::where('contact_id', $this->id)->where('primary', true)->first();
         } elseif (Address::where('contact_id', $this->id)->exists()) {
@@ -806,7 +831,7 @@ class Contact extends Model
             return $this->primaryAddress;
         }
         if ($this->type_id === ContactType::ORGANISATION) {
-            return Address::where('contact_id', $this->id)->where('type_id', 'visit')->first();
+            return Address::where('contact_id', $this->id)->where('type_id', AddressType::VISIT->value)->first();
         }
         return null;
     }
@@ -842,7 +867,7 @@ class Contact extends Model
             }
         }
         if ($this->type_id === ContactType::ORGANISATION) {
-            if (Address::where('contact_id', $this->id)->where('type_id', 'visit')->exists()) {
+            if (Address::where('contact_id', $this->id)->where('type_id', AddressType::VISIT->value)->exists()) {
                 return false;
             }
         }

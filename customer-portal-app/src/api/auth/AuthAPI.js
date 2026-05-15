@@ -1,11 +1,5 @@
 import axios from 'axios';
 
-const AUTH_KEY = {
-    client_id: window.__SERVER_DATA__.client_id,
-    client_secret: window.__SERVER_DATA__.client_key,
-    grant_type: 'password',
-};
-
 const BASE_URL = window.__SERVER_DATA__.base_url;
 
 export default {
@@ -15,6 +9,7 @@ export default {
 
         return axios.post(requestUrl, payload);
     },
+
     newAccountSuccess: payload => {
         const requestUrl = `${BASE_URL}/new-account-success`;
         delete axios.defaults.headers.common['Authorization'];
@@ -23,12 +18,11 @@ export default {
     },
 
     login: loginCredentials => {
-        const requestUrl = `${BASE_URL}/oauth/token`;
+        const requestUrl = `${BASE_URL}/auth/token`;
         delete axios.defaults.headers.common['Authorization'];
 
-        // return axios.post(requestUrl, { ...AUTH_KEY, ...loginCredentials });
         return axios
-            .post(requestUrl, { ...AUTH_KEY, ...loginCredentials })
+            .post(requestUrl, loginCredentials)
             .then(response => response)
             .catch(error => {
                 return { error: error?.response?.data?.error ?? 'Gebruikte logingegevens zijn onjuist!' };

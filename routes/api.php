@@ -279,6 +279,15 @@ Route::namespace('Api')
 
         Route::get('contact-group/{contactGroup}/tasks', 'ContactGroup\ContactGroupController@tasks');
 
+        Route::get('cleanup/items', 'DataCleanup\CleanupController@getCleanupItems');
+        Route::post('cleanup/update-items-all', 'DataCleanup\CleanupController@updateItemsAll');
+        Route::post('cleanup/update-item/{cleanupType}', 'DataCleanup\CleanupController@updateItem');
+        Route::post('cleanup/cleanup-items-all', 'DataCleanup\CleanupController@cleanupItemsAll');
+        Route::post('cleanup/cleanup-item/{cleanupType}', 'DataCleanup\CleanupController@cleanupItem');
+
+        Route::get('cleanup/force-delete-contacts-stats', 'DataCleanup\CleanupController@getForceDeleteContactsStats');
+        Route::post('cleanup/force-delete-contacts', 'DataCleanup\CleanupController@forceDeleteSoftDeletedContacts');
+
         Route::get('task/grid/tasks', 'Task\TaskController@gridTask');
         Route::get('task/grid/notes', 'Task\TaskController@gridNote');
         Route::get('task/peek', 'Task\TaskController@peek');
@@ -770,6 +779,10 @@ Route::namespace('Api')
         Route::post('cooperation-hoom-campaign', 'Cooperation\CooperationController@storeHoomCampaign');
         Route::post('cooperation-hoom-campaign/{cooperationHoomCampaign}', 'Cooperation\CooperationController@updateHoomCampaign');
         Route::post('cooperation-hoom-campaign/{cooperationHoomCampaign}/delete', 'Cooperation\CooperationController@destroyHoomCampaign');
+        Route::post('cooperation-cleanup-item/{cooperationCleanupItem}', 'Cooperation\CooperationController@updateCleanupItem');
+        Route::get('cooperation-cleanup-contacts-excluded-groups', 'Cooperation\CooperationController@getExcludedGroups');
+        Route::post('cooperation-cleanup-contacts-excluded-group', 'Cooperation\CooperationController@storeCleanupContactsExcludedGroup');
+        Route::post('cooperation-cleanup-contacts-excluded-group/{excludedGroup}/delete', 'Cooperation\CooperationController@destroyCleanupContactsExcludedGroup');
 
         // Free fields general
         Route::get('free-fields-field/get-for-filter/{tableType}', 'FreeFields\FreeFieldsFieldController@getForFilter');

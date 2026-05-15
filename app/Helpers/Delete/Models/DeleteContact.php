@@ -10,24 +10,10 @@ namespace App\Helpers\Delete\Models;
 
 use App\Helpers\Delete\DeleteInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class DeleteContact
- *
- * Relation: 1-1 Organisation. Action: call DeleteOrganisation
- * Relation: 1-1 Person. Action: delete
- * Relation: 1-n Documents. Action: dissociate
- * Relation: 1-n Email address. Action: delete
- * Relation: 1-n Intakes. Action: call DeleteIntake
- * Relation: 1-n Orders. Action: call DeleteOrder
- * Relation: 1-n Participation gifted by contact. Action: detach
- * Relation: 1-n Participation legal rep contact. Action: detach
- * Relation: 1-n Participations. Action: call DeleteParticipation
- * Relation: 1-n RevenueDistributions. Action: call DeleteRevenueDistribution
- * Relation: 1-n Addresses. Action: call DeleteAddress
- * Relation: 1-n Tasks & notes. Action: call DeleteTask
- * Relation: n-n Contact emails. Action: remove pivots
- * Relation: n-n Contact groups. Action: remove pivots
  *
  * @package App\Helpers\Delete
  */
@@ -46,19 +32,42 @@ class DeleteContact implements DeleteInterface
         $this->contact = $contact;
     }
 
-    /** Main method for deleting this model and all it's relations
+    /** If it's called by the cleanup functionality, we land on this function, else on the delete function
      *
      * @return array
      * @throws
      */
+    public function cleanup()
+    {
+        try{
+            return $this->delete();
+        }catch (\Exception $exception){
+            Log::error('Fout bij opschonen Contacten', [
+                'exception' => $exception->getMessage(),
+                'errormessages' => implode(' | ', $this->errorMessage),
+            ]);
+            array_push($this->errorMessage, "Fout bij opschonen Contacten. (meld dit bij Econobis support)");
+            return $this->errorMessage;
+        }
+    }
+
+    /** Main method for deleting this model and all it's relations
+     *
+     * @return array errorMessage array
+     * @throws
+     */
     public function delete()
     {
-        $this->canDelete();
+        if (! $this->canDelete()) {
+            return $this->errorMessage;
+        }
         $this->deleteModels();
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->contact->delete();
+        if( count($this->errorMessage) === 0 ) {
+            $this->contact->delete();
+        }
 
         return $this->errorMessage;
     }
@@ -68,36 +77,46 @@ class DeleteContact implements DeleteInterface
      */
     public function canDelete()
     {
+        $contactFullName = $this->contact->full_name_fnf;
+        $contactId = $this->contact->id;
         if($this->contact->primaryOccupations()->count() > 0){
-            array_push($this->errorMessage, "Er is nog een verbinding aanwezig, Verwijder de verbinding bij het contact en verwijder dan het contact opnieuw.");
+            array_push($this->errorMessage, "Bij contact " . $contactFullName . " (" . $contactId . ") is nog een verbinding aanwezig, Verwijder de verbinding bij het contact en verwijder dan het contact opnieuw.");
+            return false;
         }
 
         if($this->contact->occupations()->count() > 0){
-            array_push($this->errorMessage, "Er is nog een verbinding aanwezig, Verwijder de verbinding bij het contact en verwijder dan het contact opnieuw.");
+            array_push($this->errorMessage, "Bij contact " . $contactFullName . " (" . $contactId . ") is nog een verbinding aanwezig, Verwijder de verbinding bij het contact en verwijder dan het contact opnieuw.");
+            return false;
         }
 
         if($this->contact->portalUser()->count() > 0){
-            array_push($this->errorMessage, "Dit contact maakt gebruik van de 'mijn coöperatie portal'. Ga naar het contact en verwijder 'Portal gebruiker gegevens'. Verwijder dan het contact opnieuw.");
+            array_push($this->errorMessage, "Contact " . $contactFullName . " (" . $contactId . ") maakt gebruik van de 'mijn coöperatie portal'. Ga naar het contact en verwijder 'Portal gebruiker gegevens'. Verwijder dan het contact opnieuw.");
+            return false;
         }
 
         if($this->contact->organisation && $this->contact->organisation->campaigns->count() > 0){
             $campaignNumbers = $this->contact->organisation->campaigns->pluck('number')->toArray();
-            array_push($this->errorMessage, "Organisatie is nog betrokken bij een of meer campagnes: " . implode(',', $campaignNumbers) . " Verwijder de organisatie als betrokken bedrijf bij campagne(s) en verwijder dan het contact opnieuw.");
+            array_push($this->errorMessage, "Organisatie " . $contactFullName . " (" . $contactId . ") is nog betrokken bij een of meer campagnes: " . implode(',', $campaignNumbers) . " Verwijder de organisatie als betrokken bedrijf bij campagne(s) en verwijder dan het contact opnieuw.");
+            return false;
         }
 
         if($this->contact->coachCampaigns->count() > 0){
             $campaignNumbers = $this->contact->coachCampaigns->pluck('number')->toArray();
-            array_push($this->errorMessage, "Persoon is als coach nog betrokken bij een of meer campagnes: " . implode(',', $campaignNumbers) . " Verwijder de persoon als betrokken coach bij campagne(s) en verwijder dan het contact opnieuw.");
+            array_push($this->errorMessage, "Persoon " . $contactFullName . " (" . $contactId . ") is als coach nog betrokken bij een of meer campagnes: " . implode(',', $campaignNumbers) . " Verwijder de persoon als betrokken coach bij campagne(s) en verwijder dan het contact opnieuw.");
+            return false;
         }
         if($this->contact->projectManagerCampaigns->count() > 0){
             $campaignNumbers = $this->contact->projectManagerCampaigns->pluck('number')->toArray();
-            array_push($this->errorMessage, "Persoon is als projectleider nog betrokken bij een of meer campagnes: " . implode(',', $campaignNumbers) . " Verwijder de persoon als betrokken projectleider bij campagne(s) en verwijder dan het contact opnieuw.");
+            array_push($this->errorMessage, "Persoon " . $contactFullName . " (" . $contactId . ") is als projectleider nog betrokken bij een of meer campagnes: " . implode(',', $campaignNumbers) . " Verwijder de persoon als betrokken projectleider bij campagne(s) en verwijder dan het contact opnieuw.");
+            return false;
         }
         if($this->contact->externalPartyCampaigns->count() > 0){
             $campaignNumbers = $this->contact->externalPartyCampaigns->pluck('number')->toArray();
-            array_push($this->errorMessage, "Persoon is als externe partij nog betrokken bij een of meer campagnes: " . implode(',', $campaignNumbers) . " Verwijder de persoon als betrokken externe partij bij campagne(s) en verwijder dan het contact opnieuw.");
+            array_push($this->errorMessage, "Persoon " . $contactFullName . " (" . $contactId . ") is als externe partij nog betrokken bij een of meer campagnes: " . implode(',', $campaignNumbers) . " Verwijder de persoon als betrokken externe partij bij campagne(s) en verwijder dan het contact opnieuw.");
+            return false;
         }
 
+        return true;
     }
 
     /** Deletes models recursive
@@ -107,46 +126,45 @@ class DeleteContact implements DeleteInterface
     {
         foreach ($this->contact->addresses as $address){
             $deleteAddress = new DeleteAddress($address);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteAddress->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteAddress->delete() ?? [] ) );
         }
-
         foreach ($this->contact->tasks as $task){
             $deleteTask = new DeleteTask($task);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteTask->delete() ?? [] ) );
         }
 
         foreach ($this->contact->notes as $note){
             $deleteTask = new DeleteTask($note);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteTask->delete() ?? [] ) );
         }
 
         if($this->contact->isOrganisation()) {
             $deleteOrganisation = new DeleteOrganisation($this->contact->organisation);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteOrganisation->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteOrganisation->delete() ?? [] ) );
         }
 
         foreach ($this->contact->projectRevenueDistributions as $revenueDistribution){
             $deleteRevenueDistribution = new DeleteRevenueDistribution($revenueDistribution);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteRevenueDistribution->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteRevenueDistribution->delete() ?? [] ) );
         }
         foreach ($this->contact->revenueDistributionKwh as $revenueDistributionKwh){
             $deleteRevenueDistributionKwh = new DeleteRevenueDistributionKwh($revenueDistributionKwh);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteRevenueDistributionKwh->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteRevenueDistributionKwh->delete() ?? [] ) );
         }
 
         foreach ($this->contact->orders as $order){
             $deleteOrder = new DeleteOrder($order);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteOrder->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteOrder->delete() ?? [] ) );
         }
 
         foreach ($this->contact->participations as $participation){
             $deleteParticipation = new DeleteParticipation($participation);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteParticipation->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteParticipation->delete() ?? [] ) );
         }
 
         foreach ($this->contact->intakes as $intake){
             $deleteIntake = new DeleteIntake($intake);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteIntake->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteIntake->delete() ?? [] ) );
         }
 
         foreach ($this->contact->quotationRequests as $quotationRequest){
@@ -160,6 +178,11 @@ class DeleteContact implements DeleteInterface
         foreach ($this->contact->quotationRequestsAsExternalParty as $quotationRequest){
             $quotationRequest->external_party_id = null;
             $quotationRequest->save();
+        }
+
+        foreach ($this->contact->financialOverviewContacts as $financialOverviewContact){
+            $deleteFinancialOverviewContact = new DeleteFinancialOverviewContact($financialOverviewContact);
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteFinancialOverviewContact->delete() ?? [] ) );
         }
 
     }

@@ -66,7 +66,7 @@ class DeleteOrganisation implements DeleteInterface
 //             * 20221031; Jos; Deze relatie bestaat niet meer?
 //             */
 //            $deleteQuotationRequest = new DeleteQuotationRequest($quotationRequest);
-//            $this->errorMessage = array_merge($this->errorMessage, $deleteQuotationRequest->delete());
+//            $this->errorMessage = array_merge($this->errorMessage, ( $deleteQuotationRequest->delete() ?? [] ) );
 //        }
     }
 

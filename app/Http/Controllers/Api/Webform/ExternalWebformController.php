@@ -860,7 +860,7 @@ class ExternalWebformController extends Controller
             try {
                 $addressType = AddressType::get($data['address_type_id']);
                 $addressTypeId = $data['address_type_id'];
-                $this->log('Adres type ingesteld op: ' . $addressType->name . ' (' . $addressTypeId . ')');
+                $this->log('Adres type ingesteld op: ' . $addressType->getName() . ' (' . $addressTypeId . ')');
             } catch (\Exception $e) {
                 $addressTypeId = 'postal';
                 $this->log('Ongeldige waarde in adres_type_id (' . $data['address_type_id'] . ') , default naar "Post"');
@@ -904,7 +904,7 @@ class ExternalWebformController extends Controller
                     $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Nieuw adres toegevoegd aan contact " . $contact->full_name . " (".$contact->number.").\n";
-                    $note .= "Adres type : " . AddressType::get($addressTypeId)->name . "\n";
+                    $note .= "Adres type : " . AddressType::get($addressTypeId)->getName() . "\n";
                     $note .= "Voorletters : " . $data['initials'] . "\n";
                     $note .= "Voornaam : " . $data['first_name'] . "\n";
                     $note .= "Tussenvoegsel : " . $data['last_name_prefix'] . "\n";
@@ -963,7 +963,7 @@ class ExternalWebformController extends Controller
                 case 'CCT' :
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Gegevens contact met emailadres " . $data['email_address'] . " (".$contact->number.") gevonden bij op basis van e-mail maar zonder goede match op NAW.\n";
-                    $note .= "Adres type : " . AddressType::get($addressTypeId)->name . "\n";
+                    $note .= "Adres type : " . AddressType::get($addressTypeId)->getName() . "\n";
                     $note .= "Voorletters : " . $data['initials'] . "\n";
                     $note .= "Voornaam : " . $data['first_name'] . "\n";
                     $note .= "Tussenvoegsel : " . $data['last_name_prefix'] . "\n";
@@ -1386,7 +1386,7 @@ class ExternalWebformController extends Controller
                     try {
                         $addressType = AddressType::get($data['address_type_id']);
                         $addressTypeId = $data['address_type_id'];
-                        $this->log('Adres type ingesteld op: ' . $addressType->name . ' (' . $addressTypeId . ')');
+                        $this->log('Adres type ingesteld op: ' . $addressType->getName() . ' (' . $addressTypeId . ')');
                     } catch (\Exception $e) {
                         $addressTypeId = 'postal';
                         $this->log('Ongeldige waarde in adres_type_id (' . $data['address_type_id'] . ') , default naar "Post"');
@@ -3464,7 +3464,7 @@ class ExternalWebformController extends Controller
         }
 
         // indien contact organisatie is en verbinding met contact is persoon, dan switchen primary en secondary contact
-        if ($contact->type_id == ContactType::ORGANISATION && $occupationContact->type_id == ContactType::PERSON) {
+        if ($contact->type_id === ContactType::ORGANISATION && $occupationContact->type_id === ContactType::PERSON) {
             $primaryContact = $contact;
             $secondaryContact = $occupationContact;
         } else {
@@ -3638,7 +3638,7 @@ class ExternalWebformController extends Controller
         if (!$taskType) {
             $taskTypeId = 6;
             $taskType = TaskType::find($taskTypeId);
-            $this->log('Geen bekende waarde voor taak_type_id (' . $data['type_id'] . ') meegegeven, default naar ' . $taskTypeId . ' ' . $taskType->name . '.');
+            $this->log('Geen bekende waarde voor taak_type_id (' . $data['type_id'] . ') meegegeven, default naar ' . $taskTypeId . ' ' . $taskType->getName() . '.');
         }
 
         if($responsibleIds['responsible_user_id']) {
@@ -3713,7 +3713,7 @@ class ExternalWebformController extends Controller
     {
         $taskTypeId = 6;
         $taskType = TaskType::find($taskTypeId);
-        $this->log('Taak Controle contact met taak_type_id (default) ' . $taskTypeId . ' ' . $taskType->name . ' aanmaken.');
+        $this->log('Taak Controle contact met taak_type_id (default) ' . $taskTypeId . ' ' . $taskType->getName() . ' aanmaken.');
 
         if($responsibleIds['responsible_user_id']) {
             $responsibleUserId = $responsibleIds['responsible_user_id'];

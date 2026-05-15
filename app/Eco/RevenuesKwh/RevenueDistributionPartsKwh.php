@@ -5,9 +5,11 @@ namespace App\Eco\RevenuesKwh;
 use App\Eco\EnergySupplier\EnergySupplier;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class RevenueDistributionPartsKwh extends Model
 {
+    use SoftDeletes;
 
     protected $table = 'revenue_distribution_parts_kwh';
 

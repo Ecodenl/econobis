@@ -3,15 +3,13 @@
 namespace App\Eco\Invoice;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class InvoiceMolliePayment extends Model
 {
-    protected $guarded = ['id'];
+    use SoftDeletes;
 
-//    protected $casts = [
-//        'date_activated' => 'date:Y-m-d H:i:s',
-//        'date_paid' => 'date:Y-m-d H:i:s',
-//    ];
+    protected $guarded = ['id'];
 
     protected $casts = [
         'date_activated' => 'datetime',

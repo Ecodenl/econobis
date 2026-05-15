@@ -68,12 +68,12 @@ class DeleteProject implements DeleteInterface
     {
         foreach ($this->project->participantsProject as $participation){
             $deleteParticipation = new DeleteParticipation($participation);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteParticipation->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteParticipation->delete() ?? [] ) );
         }
 
         foreach ($this->project->tasks as $task) {
             $deleteTask = new DeleteTask($task);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteTask->delete() ?? [] ) );
         }
     }
 

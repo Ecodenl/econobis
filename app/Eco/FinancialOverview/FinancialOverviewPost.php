@@ -3,9 +3,12 @@
 namespace App\Eco\FinancialOverview;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FinancialOverviewPost extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'financial_overview_post';
 
      /**

@@ -9,6 +9,7 @@
 namespace App\Helpers\Template;
 
 
+use App\Eco\Contact\ContactType;
 use App\Eco\Document\Document;
 use App\Eco\Project\ProjectLoanType;
 use App\Eco\Project\ProjectRevenueDistributionType;
@@ -187,45 +188,45 @@ class TemplateVariableHelper
             case 'titel_aanhef':
                 return optional(optional($model->person)->title)->salutation;
             case 'naam':
-                if($model->type_id == 'person'){
+                if($model->type_id === ContactType::PERSON){
                     $prefix = $model->person->last_name_prefix;
                     return $prefix ? $model->person->first_name . ' ' . $prefix . ' ' . $model->person->last_name : $model->person->first_name . ' ' . $model->person->last_name;
                 }
-                elseif($model->type_id == 'organisation'){
+                elseif($model->type_id === ContactType::ORGANISATION){
                     return $model->full_name;
                 }
                 return '';
             case 'naam_officieel':
-                if($model->type_id == 'person'){
+                if($model->type_id === ContactType::PERSON){
                     $initials = $model->person->initials ? $model->person->initials : ($model->person->first_name ? substr($model->person->first_name, 0, 1).".": "");
                     $prefix = $model->person->last_name_prefix;
                     return $prefix ? $initials . ' ' . $prefix . ' ' . $model->person->last_name : $initials . ' ' . $model->person->last_name;
                 }
-                elseif($model->type_id == 'organisation'){
+                elseif($model->type_id === ContactType::ORGANISATION){
                     return $model->full_name;
                 }
                 return '';
             case 'voornaam':
-                if($model->type_id == 'person'){
+                if($model->type_id === ContactType::PERSON){
                     return $model->person->first_name;
                 }
                 return '';
             case 'achternaam':
-                if($model->type_id == 'person'){
+                if($model->type_id === ContactType::PERSON){
                     $prefix = $model->person->last_name_prefix;
                     return $prefix ? $prefix . ' ' . $model->person->last_name : $model->person->last_name;
                 }
-                elseif($model->type_id == 'organisation'){
+                elseif($model->type_id === ContactType::ORGANISATION){
                     return $model->full_name;
                 }
                 return '';
             case 'voorletters':
-                if($model->type_id == 'person'){
+                if($model->type_id === ContactType::PERSON){
                     return $model->person->initials;
                 }
                 return '';
             case 'geboortedatum':
-                if($model->type_id == 'person'){
+                if($model->type_id === ContactType::PERSON){
                     return $model->person->date_of_birth ? Carbon::parse($model->person->date_of_birth)->format('d-m-Y') : null;;
                 }
                 return '';
@@ -256,7 +257,7 @@ class TemplateVariableHelper
             case 'energieleverancier_mogelijke_overstap':
                 return optional(optional($model->primaryAddress)->currentAddressEnergySupplierElectricity)->switch_date ? Carbon::parse(optional(optional($model->primaryAddress)->currentAddressEnergySupplierElectricity)->switch_date)->format('d-m-Y') : null;
             case 'kvk':
-                if($model->type_id == 'organisation'){
+                if($model->type_id === ContactType::ORGANISATION){
                     $kvk = $model->organisation->chamber_of_commerce_number;
                 }
                 else{
@@ -264,7 +265,7 @@ class TemplateVariableHelper
                 }
                 return $kvk;
             case 'btwnr':
-                if($model->type_id == 'organisation'){
+                if($model->type_id === ContactType::ORGANISATION){
                     $btwnr = $model->organisation->vat_number;
                 }
                 else{
@@ -272,33 +273,33 @@ class TemplateVariableHelper
                 }
                 return $btwnr;
             case 'organisatie_statutaire_naam':
-                if($model->type_id == 'organisation') {
+                if($model->type_id === ContactType::ORGANISATION) {
                     return $model->organisation->statutory_name;
                 }
                 else{
                     return '';
                 }
             case 'organisatie_primair_contact':
-                if($model->type_id == 'organisation') {
+                if($model->type_id === ContactType::ORGANISATION) {
                     return optional(optional($model->contactPerson)->contact)->full_name;
                 }
                 else{
                     return '';
                 }
             case 'organisatie_primair_contact_voornaam':
-                if($model->type_id == 'organisation') {
-                    if(optional(optional($model->contactPerson)->contact)->type_id == 'person'){
+                if($model->type_id === ContactType::ORGANISATION) {
+                    if(optional(optional($model->contactPerson)->contact)->type_id === ContactType::PERSON){
                         return optional(optional($model->contactPerson)->contact)->person->first_name;
                     }
                 }
                 return '';
             case 'organisatie_primair_contact_achternaam':
-                if($model->type_id == 'organisation') {
-                    if(optional(optional($model->contactPerson)->contact)->type_id == 'person'){
+                if($model->type_id === ContactType::ORGANISATION) {
+                    if(optional(optional($model->contactPerson)->contact)->type_id === ContactType::PERSON){
                         $prefix = optional(optional($model->contactPerson)->contact)->person->last_name_prefix;
                         return $prefix ? $prefix . ' ' . optional(optional($model->organisation->contact->contactPerson)->contact)->person->last_name : optional(optional($model->organisation->contact->contactPerson)->contact)->person->last_name;
                     }
-                    elseif(optional(optional($model->contactPerson)->contact)->type_id == 'organisation'){
+                    elseif(optional(optional($model->contactPerson)->contact)->type_id === ContactType::ORGANISATION){
                         return optional(optional($model->contactPerson)->contact)->full_name;
                     }
                 }
@@ -323,12 +324,12 @@ class TemplateVariableHelper
             case 'iban_tnv':
                 return $model->iban_attn;
             case 'partner_voornaam':
-                if($model->type_id == 'person'){
+                if($model->type_id === ContactType::PERSON){
                     return $model->person->first_name_partner;
                 }
                 return '';
             case 'partner_achternaam':
-                if($model->type_id == 'person'){
+                if($model->type_id === ContactType::PERSON){
                     return $model->person->last_name_partner;
                 }
                 return '';
@@ -349,9 +350,9 @@ class TemplateVariableHelper
             case 'tussenvoegsel_voor_URL':
                 return rawurlencode($model?->person?->last_name_prefix);
             case 'achternaam_voor_URL':
-                if($model?->type_id == 'person'){
+                if($model?->type_id === ContactType::PERSON){
                     return rawurlencode($model?->person?->last_name);
-                } elseif($model?->type_id == 'organisation') {
+                } elseif($model?->type_id === ContactType::ORGANISATION) {
                     return rawurlencode($model?->full_name);
                 } else {
                     return '';
@@ -536,7 +537,7 @@ class TemplateVariableHelper
             case 'contact_telefoonnummer':
                 return optional(optional($model->contact)->primaryphoneNumber)->number;
             case 'type':
-                return $model->type->name;
+                return $model->typ?->getName() ?? '';
             case 'notitie':
                 return $model->note;
             case 'datum_afhandelen':
@@ -685,26 +686,26 @@ class TemplateVariableHelper
             case 'contact_naam':
                 return $model->contact->full_name_fnf;
             case 'contact_voornaam':
-                if($model->contact->type_id == 'person'){
+                if($model->contact->type_id === ContactType::PERSON){
                     return $model->contact->person->first_name;
                 }
                 return '';
             case 'contact_achternaam':
-                if($model->contact->type_id == 'person'){
+                if($model->contact->type_id === ContactType::PERSON){
                     $prefix = $model->contact->person->last_name_prefix;
                     return $prefix ? $prefix . ' ' . $model->contact->person->last_name : $model->contact->person->last_name;
                 }
-                elseif($model->contact->type_id == 'organisation'){
+                elseif($model->contact->type_id === ContactType::ORGANISATION){
                     return $model->contact->full_name;
                 }
                 return '';
             case 'contact_voorletters':
-                if($model->contact->type_id == 'person'){
+                if($model->contact->type_id === ContactType::PERSON){
                     return $model->contact->person->initials;
                 }
                 return '';
             case 'contact_geboortedatum':
-                if($model->contact->type_id == 'person'){
+                if($model->contact->type_id === ContactType::PERSON){
                     return $model->contact->person->date_of_birth ? Carbon::parse($model->contact->person->date_of_birth)->format('d-m-Y') : null;;
                 }
                 return '';
@@ -719,12 +720,12 @@ class TemplateVariableHelper
             case 'contact_iban_tnv':
                 return $model->contact->iban_attn;
             case 'contact_partner_voornaam':
-                if($model->contact->type_id == 'person'){
+                if($model->contact->type_id === ContactType::PERSON){
                     return $model->contact->person->first_name_partner;
                 }
                 return '';
             case 'contact_partner_achternaam':
-                if($model->contact->type_id == 'person'){
+                if($model->contact->type_id === ContactType::PERSON){
                     return $model->contact->person->last_name_partner;
                 }
                 return '';
@@ -835,11 +836,11 @@ class TemplateVariableHelper
             case 'geschonken_door':
             case 'schenker_naam':
                 if($model->giftedByContact) {
-                    if ($model->giftedByContact->type_id == 'person') {
+                    if ($model->giftedByContact->type_id === ContactType::PERSON) {
                         $prefix = $model->giftedByContact->person->last_name_prefix;
                         return $prefix ? $model->giftedByContact->person->first_name . ' ' . $prefix . ' ' . $model->giftedByContact->person->last_name
                             : $model->giftedByContact->person->first_name . ' ' . $model->giftedByContact->person->last_name;
-                    } elseif ($model->giftedByContact->type_id == 'organisation') {
+                    } elseif ($model->giftedByContact->type_id === ContactType::ORGANISATION) {
                         return $model->giftedByContact->full_name;
                     }
                 }
@@ -847,7 +848,7 @@ class TemplateVariableHelper
             case 'geschonken_door_voorletters':
             case 'schenker_voorletters':
                 if($model->giftedByContact) {
-                    if ($model->giftedByContact->type_id == 'person') {
+                    if ($model->giftedByContact->type_id === ContactType::PERSON) {
                         return $model->giftedByContact->person->initials;
                     }
                 }
@@ -855,7 +856,7 @@ class TemplateVariableHelper
             case 'geschonken_door_voornaam':
             case 'schenker_voornaam':
                 if($model->giftedByContact) {
-                    if($model->giftedByContact->type_id == 'person'){
+                    if($model->giftedByContact->type_id === ContactType::PERSON){
                         return $model->giftedByContact->person->first_name;
                     }
                 }
@@ -863,40 +864,40 @@ class TemplateVariableHelper
             case 'geschonken_door_achternaam':
             case 'schenker_achternaam':
                 if($model->giftedByContact) {
-                    if($model->giftedByContact->type_id == 'person'){
+                    if($model->giftedByContact->type_id === ContactType::PERSON){
                         $prefix = $model->giftedByContact->person->last_name_prefix;
                         return $prefix ? $prefix . ' ' . $model->giftedByContact->person->last_name : $model->giftedByContact->person->last_name;
                     }
-                    elseif($model->giftedByContact->type_id == 'organisation'){
+                    elseif($model->giftedByContact->type_id === ContactType::ORGANISATION){
                         return $model->giftedByContact->full_name;
                     }
                 }
                 return '';
             case 'wettelijke_vertegenwoordiger':
                 if($model->contact->legalRepContact && $model->contact->legalRepContact->contact) {
-                    if ($model->contact->legalRepContact->contact->type_id == 'person') {
+                    if ($model->contact->legalRepContact->contact->type_id === ContactType::PERSON) {
                         $prefix = $model->contact->legalRepContact->contact->person->last_name_prefix;
                         return $prefix ? $model->contact->legalRepContact->contact->person->first_name . ' ' . $prefix . ' ' . $model->contact->legalRepContact->contact->person->last_name
                             : $model->contact->legalRepContact->contact->person->first_name . ' ' . $model->contact->legalRepContact->contact->person->last_name;
-                    } elseif ($model->contact->legalRepContact->contact->type_id == 'organisation') {
+                    } elseif ($model->contact->legalRepContact->contact->type_id === ContactType::ORGANISATION) {
                         return $model->contact->legalRepContact->contact->full_name;
                     }
                 }
                 return '';
             case 'wettelijke_vertegenwoordiger_voornaam':
                 if($model->contact->legalRepContact && $model->contact->legalRepContact->contact) {
-                    if($model->contact->legalRepContact->contact->type_id == 'person'){
+                    if($model->contact->legalRepContact->contact->type_id === ContactType::PERSON){
                         return $model->contact->legalRepContact->contact->person->first_name;
                     }
                 }
                 return '';
             case 'wettelijke_vertegenwoordiger_achternaam':
                 if($model->contact->legalRepContact && $model->contact->legalRepContact->contact) {
-                    if($model->contact->legalRepContact->contact->type_id == 'person'){
+                    if($model->contact->legalRepContact->contact->type_id === ContactType::PERSON){
                         $prefix = $model->contact->legalRepContact->contact->person->last_name_prefix;
                         return $prefix ? $prefix . ' ' . $model->contact->legalRepContact->contact->person->last_name : $model->contact->legalRepContact->contact->person->last_name;
                     }
-                    elseif($model->contact->legalRepContact->contact->type_id == 'organisation'){
+                    elseif($model->contact->legalRepContact->contact->type_id === ContactType::ORGANISATION){
                         return $model->contact->legalRepContact->contact->full_name;
                     }
                 }
@@ -1484,7 +1485,7 @@ class TemplateVariableHelper
             case 'project':
                 return $model->project->name;
             case 'type_verdeling':
-                return $model->getDistributionType() ? $model->getDistributionType()->name : '';
+                return $model->getDistributionType()?->getName() ?? '';
             case 'peildatum':
                 return $model->date_reference ? Carbon::parse($model->date_reference)->format('d-m-Y') : null;
             case 'datum_definitief':
@@ -1624,7 +1625,7 @@ class TemplateVariableHelper
             case 'project':
                 return $model->project->name;
             case 'type_verdeling':
-                return ProjectRevenueDistributionType::get('inPossessionOf') ? ProjectRevenueDistributionType::get('inPossessionOf')->name : '';
+                return ProjectRevenueDistributionType::get('inPossessionOf')?->getName() ?? '';
             case 'datum_definitief':
                 return $model->date_confirmed ? Carbon::parse($model->date_confirmed)->format('d-m-Y') : null;
             case 'datum_uitkeren':
@@ -1672,7 +1673,7 @@ class TemplateVariableHelper
             case 'project':
                 return $model->revenuesKwh->project->name;
             case 'type_verdeling':
-                return ProjectRevenueDistributionType::get('inPossessionOf') ? ProjectRevenueDistributionType::get('inPossessionOf')->name : '';
+                return ProjectRevenueDistributionType::get('inPossessionOf')?->getName() ?? '';
             case 'datum_definitief':
                 return $model->date_confirmed ? Carbon::parse($model->date_confirmed)->format('d-m-Y') : null;
             case 'datum_uitkeren':
@@ -1939,33 +1940,33 @@ class TemplateVariableHelper
             case 'organisatie_primair_contact':
                 return optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->full_name_fnf;
             case 'organisatie_primair_contact_voornaam':
-                if(optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->type_id == 'person'){
+                if(optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->type_id === ContactType::PERSON){
                     return optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->person->first_name;
                 }
                 return '';
             case 'organisatie_primair_contact_achternaam':
-                if(optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->type_id == 'person'){
+                if(optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->type_id === ContactType::PERSON){
                     $prefix = optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->person->last_name_prefix;
                     return $prefix ? $prefix . ' ' . optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->person->last_name : optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->person->last_name;
                 }
-                elseif(optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->type_id == 'organisation'){
+                elseif(optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->type_id === ContactType::ORGANISATION){
                     return optional(optional(optional($model->organisationOrCoach)->contactPerson)->contact)->full_name;
                 }
                 return '';
             case 'organisatie_of_coach_naam':
                 return optional($model->organisationOrCoach)->full_name_fnf;
             case 'organisatie_of_coach_voornaam':
-                if(optional($model->organisationOrCoach)->type_id == 'person'){
+                if(optional($model->organisationOrCoach)->type_id === ContactType::PERSON){
                     return optional($model->organisationOrCoach)->first_name;
                 }
                 return '';
             case 'organisatie_of_coach_achternaam':
-                if(optional($model->organisationOrCoach)->type_id == 'person'){
+                if(optional($model->organisationOrCoach)->type_id === ContactType::PERSON){
 
                     $prefix = optional($model->organisationOrCoach)->last_name_prefix;
                     return $prefix ? $prefix . ' ' . optional($model->organisationOrCoach)->last_name : optional($model->organisationOrCoach)->last_name;
                 }
-                elseif(optional($model->organisationOrCoach)->type_id == 'organisation'){
+                elseif(optional($model->organisationOrCoach)->type_id === ContactType::ORGANISATION){
                     return optional($model->organisationOrCoach)->full_name;
                 }
                 return '';
@@ -2016,9 +2017,9 @@ class TemplateVariableHelper
             case 'contact_tussenvoegsel_voor_URL':
                 return rawurlencode($contact?->person?->last_name_prefix);
             case 'contact_achternaam_voor_URL':
-                if($contact?->type_id == 'person'){
+                if($contact?->type_id === ContactType::PERSON){
                     return rawurlencode($contact?->person?->last_name);
-                } elseif($contact?->type_id == 'organisation') {
+                } elseif($contact?->type_id === ContactType::ORGANISATION) {
                     return rawurlencode($contact?->full_name);
                 } else {
                     return '';
@@ -2054,11 +2055,11 @@ class TemplateVariableHelper
             case 'verzoek_voor_voornaam':
                 return $contact?->person?->first_name;
             case 'verzoek_voor_achternaam':
-                if($contact?->type_id == 'person'){
+                if($contact?->type_id === ContactType::PERSON){
                     $prefix = $contact?->person?->last_name_prefix;
                     return $prefix ? $prefix . ' ' . $contact?->person?->last_name : $contact?->person?->last_name;
                 }
-                elseif($model->type_id == 'organisation'){
+                elseif($model->type_id === ContactType::ORGANISATION){
                     return $contact?->full_name;
                 }
                 return '';
@@ -2098,7 +2099,7 @@ class TemplateVariableHelper
                 foreach($model->opportunity->intake->measuresRequested as $measureRequested){
                     $tabel .= "
                     <tr>
-                      <td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal'>" . ( $measureRequested->name ? $measureRequested->name : '' ) . "</td>
+                      <td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal'>" . ( $measureRequested->name ?: '' ) . "</td>
                     </tr>";
                 }
                 $tabel .= "</table>";
@@ -2217,37 +2218,37 @@ class TemplateVariableHelper
             case 'status':
                 return $model->getStatus() ? $model->getStatus()->name : '';
             case 'betaalwijze':
-                return $model->getPaymentType() ? $model->getPaymentType()->name : '';
+                return $model->getPaymentType()?->getName() ?? '';
             case 'incasso_frequentie':
-                return $model->getCollectionFrequency() ? $model->getCollectionFrequency()->name : '';
+                return $model->getCollectionFrequency()?->getName() ?? '';
             case 'contact_naam':
-                if ($model->contact->type_id == 'person') {
+                if ($model->contact->type_id === ContactType::PERSON) {
                     $prefix = $model->contact->person->last_name_prefix;
                     return $prefix ? $model->contact->person->first_name . ' ' . $prefix . ' ' . $model->contact->person->last_name : $model->contact->person->first_name . ' ' . $model->contact->person->last_name;
-                } elseif ($model->contact->type_id == 'organisation') {
+                } elseif ($model->contact->type_id === ContactType::ORGANISATION) {
                     return $model->contact->full_name;
                 }
                 return '';
             case 'contact_naam_officieel':
-                if ($model->contact->type_id == 'person') {
+                if ($model->contact->type_id === ContactType::PERSON) {
                     $initials = $model->contact->person->initials ? $model->contact->person->initials : ($model->contact->person->first_name ? substr($model->contact->person->first_name, 0, 1) . "." : "");
                     $prefix = $model->contact->person->last_name_prefix;
                     return $prefix ? $initials . ' ' . $prefix . ' ' . $model->contact->person->last_name : $initials . ' ' . $model->contact->person->last_name;
-                } elseif ($model->contact->type_id == 'organisation') {
+                } elseif ($model->contact->type_id === ContactType::ORGANISATION) {
                     return $model->contact->full_name;
                 }
                 return '';
 
             case 'contact_voornaam':
-                if ($model->contact->type_id == 'person') {
+                if ($model->contact->type_id === ContactType::PERSON) {
                     return $model->contact->person->first_name;
                 }
                 return '';
             case 'contact_achternaam':
-                if ($model->contact->type_id == 'person') {
+                if ($model->contact->type_id === ContactType::PERSON) {
                     $prefix = $model->contact->person->last_name_prefix;
                     return $prefix ? $prefix . ' ' . $model->contact->person->last_name : $model->contact->person->last_name;
-                } elseif ($model->contact->type_id == 'organisation') {
+                } elseif ($model->contact->type_id === ContactType::ORGANISATION) {
                     return $model->contact->full_name;
                 }
                 return '';

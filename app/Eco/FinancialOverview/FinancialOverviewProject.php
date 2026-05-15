@@ -6,10 +6,13 @@ use App\Eco\Project\Project;
 use App\Eco\Project\ProjectType;
 use App\Eco\Project\ProjectValueCourse;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 class FinancialOverviewProject extends Model
 {
+    use SoftDeletes;
+
     protected $guarded = ['id'];
 
     protected $casts = [

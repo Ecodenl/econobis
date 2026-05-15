@@ -11,14 +11,10 @@ namespace App\Helpers\Delete\Models;
 
 use App\Helpers\Delete\DeleteInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class DeleteOrder
- *
- * Relation: 1-n Invoices. Action: call DeleteInvoice
- * Relation: 1-n Emails. Action: dissociate
- * Relation: 1-n Documents. Action: dissociate
- * Relation: 1-n Tasks. Action: call DeleteTask
  *
  * @package App\Helpers\Delete\Models
  */
@@ -37,6 +33,29 @@ class DeleteOrder implements DeleteInterface
         $this->order = $order;
     }
 
+    /** If it's called by the cleanup functionality, we land on this function, else on the delete function
+     *
+     * @return array
+     * @throws
+     */
+    public function cleanup()
+    {
+        try{
+            $this->delete();
+            if(!empty($this->errorMessage)) {
+                return $this->errorMessage;
+            }
+        }catch (\Exception $exception){
+            Log::error('Fout bij opschonen Orders', [
+                'exception' => $exception->getMessage(),
+                'errormessages' => implode(' | ', $this->errorMessage),
+            ]);
+            array_push($this->errorMessage, "Fout bij opschonen Orders. (meld dit bij Econobis support)");
+            return $this->errorMessage;
+
+        }
+    }
+
     /** Main method for deleting this model and all it's relations
      *
      * @return array errorMessage array
@@ -44,12 +63,16 @@ class DeleteOrder implements DeleteInterface
      */
     public function delete()
     {
-        $this->canDelete();
+        if (! $this->canDelete()) {
+            return $this->errorMessage;
+        }
         $this->deleteModels();
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->order->delete();
+        if( count($this->errorMessage) === 0 ) {
+            $this->order->delete();
+        }
 
         return $this->errorMessage;
     }
@@ -58,20 +81,25 @@ class DeleteOrder implements DeleteInterface
      */
     public function canDelete()
     {
+        // van hieruit altijd true
+        return true;
     }
 
     /** Deletes models recursive
      */
     public function deleteModels()
     {
+        $this->order->orderProducts()->delete();
+
         foreach ($this->order->invoices as $invoices){
+
             $deleteInvoice = new DeleteInvoice($invoices);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteInvoice->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteInvoice->delete() ?? [] ) );
         }
 
         foreach ($this->order->tasks as $task) {
             $deleteTask = new DeleteTask($task);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteTask->delete() ?? [] ) );
         }
     }
 

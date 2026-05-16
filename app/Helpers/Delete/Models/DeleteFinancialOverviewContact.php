@@ -4,6 +4,7 @@ namespace App\Helpers\Delete\Models;
 
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\DataCleanup\CleanupRegistry;
+use App\Eco\FinancialOverview\FinancialOverviewContactStatus;
 use App\Eco\FinancialOverview\FinancialOverviewParticipantProject;
 use App\Helpers\Delete\DeleteInterface;
 use Carbon\Carbon;
@@ -77,9 +78,14 @@ class DeleteFinancialOverviewContact implements DeleteInterface
 
     public function canDelete(): bool
     {
+        $fo = $this->financialOverviewContact->financialOverview;
+        $foDescription = $this->financialOverviewContact->financialOverview?->description ?? '*onbekend*';
+        $focFullname = $this->financialOverviewContact?->contact?->full_name_fnf ?? '*onbekend*';
+        $focId = $this->financialOverviewContact?->contact?->id ?? '?';
+
         if ($this->financialOverviewContact->financialOverviewsToSend()->exists()) {
             $this->errorMessage[] =
-                "Waardestaat contact kan nu niet worden verwijderd: er staat nog een verzendproces open.";
+                "Waardestaat " . $foDescription . ", contact " . $focFullname . " (" . $focId . ") kan nu niet worden verwijderd: er staat nog een verzendproces open.";
             return false;
         }
 
@@ -93,21 +99,25 @@ class DeleteFinancialOverviewContact implements DeleteInterface
         }
 
         // Status guard: tijdens verstuur/maak-proces nooit verwijderen
-        $status = $this->financialOverviewContact->status_id ?? '';
+        $statusCode = $this->financialOverviewContact->status_id ?? '';
+        $statusName = $this->financialOverviewContact->status ?? '*onbekend*';
+        $conceptSatusName = FinancialOverviewContactStatus::get('concept')?->getName() ?? '*onbekend*';
+        $sendSatusName = FinancialOverviewContactStatus::get('sent')?->getName() ?? '*onbekend*';
+
 
         // UI: alleen concept toegestaan
         if (! $this->isCleanup) {
             $this->errorMessage[] =
                 "Waardestaat contact kan niet worden verwijderd. "
-                . "Verwijderen is alleen toegestaan bij status 'concept'.";
+                . "Verwijderen is alleen toegestaan bij status '{$conceptSatusName}'.";
             return false;
         }
 
         // Cleanup: alleen 'sent' toegestaan (na proces)
-        if ($status !== 'sent') {
+        if ($statusCode !== 'sent') {
             $this->errorMessage[] =
-                "Waardestaat contact kan niet worden opgeschoond (status: {$status}). "
-                . "Opschonen is alleen toegestaan bij status 'sent'.";
+                "Waardestaat contact kan niet worden opgeschoond (status: {$statusName}). "
+                . "Opschonen is alleen toegestaan bij status '{$sendSatusName}'.";
             return false;
         }
 
@@ -116,17 +126,16 @@ class DeleteFinancialOverviewContact implements DeleteInterface
             $contactId = $this->financialOverviewContact->contact_id;
             if ($contactId && in_array((int)$contactId, $this->getExcludedContactIds(), true)) {
                 $this->errorMessage[] =
-                    "Waardestaat contact kan niet worden verwijderd: gekoppeld contact valt in een uitgesloten contactgroep.";
+                    "Waardestaat " . $foDescription . ", contact " . $focFullname . " (" . $focId . ") kan niet worden verwijderd: gekoppeld contact valt in een uitgesloten contactgroep.";
                 return false;
             }
         }
 
         // Bewaarplicht voor definitieve waardestaten: year < cutoffYear
-        $fo = $this->financialOverviewContact->financialOverview;
         $year = (int) ($fo?->year ?? -1);
 
         if ($year <= 0) {
-            $this->errorMessage[] = "Waardestaat contact kan niet worden verwijderd: jaar ontbreekt (bewaarde waardestaat).";
+            $this->errorMessage[] = "Waardestaat " . $foDescription . ", contact " . $focFullname . " (" . $focId . ") kan niet worden verwijderd: jaar ontbreekt (bewaarde waardestaat).";
             return false;
         }
 
@@ -135,7 +144,7 @@ class DeleteFinancialOverviewContact implements DeleteInterface
         }
 
         $this->errorMessage[] =
-            "Deze waardestaat is al definitief. Waardestaat contact kan niet worden verwijderd vanwege de bewaarplicht: "
+            "Deze waardestaat " . $foDescription . " is al definitief. Waardestaat contact kan niet worden verwijderd vanwege de bewaarplicht: "
             . $this->yearsForDelete
             . " jaar (peiljaar: "
             . $this->cutoffYear()

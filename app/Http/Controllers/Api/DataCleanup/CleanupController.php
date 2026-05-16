@@ -118,6 +118,9 @@ class CleanupController extends Controller
 
     public function cleanupItem(string $cleanupType)
     {
+        // voorlopig geven we cleanup maximal 5 minuten de tijd
+        set_time_limit(300);
+
         $cooperation = Cooperation::firstOrFail();
 
         if (! CleanupRegistry::has($cleanupType)) {
@@ -283,12 +286,14 @@ class CleanupController extends Controller
 
         $errorMessageArray = [];
 
+        $hasCleanedAnySelection = false;
+
         CleanupItemSelection::where('cooperation_id', $cooperation->id)
             ->where('cleanup_item_id', $cleanupItem->id)
             ->where('batch_id', $batchId)
             ->where('status', 'determined')
             ->orderBy('id')
-            ->chunkById(500, function ($selections) use ($modelClass, $def, &$errorMessageArray) {
+            ->chunkById(500, function ($selections) use ($modelClass, $def, &$errorMessageArray, &$hasCleanedAnySelection) {
                 $now = now();
 
                 $ids = $selections->pluck('model_id')->all();
@@ -301,8 +306,8 @@ class CleanupController extends Controller
                     $model = $models->get($sel->model_id);
 
                     if (! $model) {
-                        $failed[$sel->id] = 'Model niet gevonden (mogelijk al verwijderd).';
-                        $errorMessageArray[] = 'Model niet gevonden (mogelijk al verwijderd).';
+                        $failed[$sel->id] = "In {$sel->code_ref} is id {$sel->model_id} niet gevonden ({} mogelijk al verwijderd).";
+                        $errorMessageArray[] = "In {$sel->code_ref} is id  $sel->model_id niet gevonden (mogelijk al verwijderd).";
                         continue;
                     }
 
@@ -337,6 +342,8 @@ class CleanupController extends Controller
                         'error' => null,
                         'updated_at' => $now,
                     ]);
+
+                    $hasCleanedAnySelection = true;
                 }
 
                 if (! empty($failed)) {
@@ -360,7 +367,7 @@ class CleanupController extends Controller
         $cleanupItem->refresh();
         $state->syncCountsAndStatusAfterCleanup($cleanupItem, false);
 
-        if (empty($errorMessageArray) && $cleanupItem->status === CooperationCleanupItem::STATUS_DONE) {
+        if ($hasCleanedAnySelection) {
             $cleanupItem->date_cleaned_up = now();
         }
 

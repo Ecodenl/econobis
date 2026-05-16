@@ -29,13 +29,9 @@ class ForceDeleteContact
     {
         try {
             return $this->forceDelete();
-        } catch (QueryException $exception) {
-            // hier zit parseConstraintName ook bruikbaar als fallback
-
-        } catch (\Exception $exception) {
+        } catch (\Throwable $exception) {
             Log::error('Fout bij hard verwijderen (force delete) Contact', [
                 'exception' => $exception->getMessage(),
-//                 'trace' => $exception->getTraceAsString(),
                 'contact_id' => $this->contact->id ?? null,
             ]);
 
@@ -128,6 +124,20 @@ class ForceDeleteContact
             return false;
         }
 
+        $this->contact->addresses()->withTrashed()->get()->each(function ($address) {
+            if ($address->housingFiles()->withTrashed()->exists()) {
+                $this->errorMessage[] = "Adres {$address->street_postal_code_city} ({$address->id}) heeft woningdossiers; hard verwijderen nog niet toegestaan.";
+            }
+
+            if ($address->participations()->withTrashed()->exists()) {
+                $this->errorMessage[] = "Adres {$address->street_postal_code_city} ({$address->id}) heeft deelnames; hard verwijderen nog niet toegestaan.";
+            }
+        });
+
+        if (count($this->errorMessage) > 0) {
+            return false;
+        }
+
         return true;
     }
 
@@ -151,9 +161,17 @@ class ForceDeleteContact
         });
 
         // QuotationRequests: FK’s nullen
-        $this->contact->quotationRequests()->update(['contact_id' => null]);
-        $this->contact->quotationRequestsAsProjectManager()->update(['project_manager_id' => null]);
-        $this->contact->quotationRequestsAsExternalParty()->update(['external_party_id' => null]);
+        DB::table('quotation_requests')
+            ->where('contact_id', $this->contact->id)
+            ->update(['contact_id' => null]);
+
+        DB::table('quotation_requests')
+            ->where('project_manager_id', $this->contact->id)
+            ->update(['project_manager_id' => null]);
+
+        DB::table('quotation_requests')
+            ->where('external_party_id', $this->contact->id)
+            ->update(['external_party_id' => null]);
 
         // Pivots
         $this->contact->manualEmails()->detach();
@@ -201,8 +219,9 @@ class ForceDeleteContact
                     $inv->invoiceProducts()->withTrashed()->get()->each->forceDelete();
                     $inv->molliePayments()->withTrashed()->get()->each->forceDelete();
                     $inv->payments()->withTrashed()->get()->each->forceDelete();
-                    $inv->tasks()->withTrashed()->get()->each->forceDelete();
-
+                    $inv->tasks()->withTrashed()->get()->each(function ($task) {
+                        $this->forceDeleteTask($task);
+                    });
 
                     $inv->forceDelete();
                 });
@@ -220,7 +239,9 @@ class ForceDeleteContact
 
             // Order products en tasks hard weg
             $order->orderProducts()->withTrashed()->get()->each->forceDelete();
-            $order->tasks()->withTrashed()->get()->each->forceDelete();
+            $order->tasks()->withTrashed()->get()->each(function ($task) {
+                $this->forceDeleteTask($task);
+            });
 
             // order zelf hard weg
             $order->forceDelete();
@@ -230,9 +251,14 @@ class ForceDeleteContact
         $this->contact->participations()->withTrashed()->get()->each(function ($pp) {
             // PP = ParticipantProject
             $pp->financialOverviewParticipantProjects()->withTrashed()->get()->each->forceDelete();
+
+            // Documents FK nullen
+            DB::table('documents')
+                ->where('participation_project_id', $pp->id)
+                ->update(['participation_project_id' => null]);
+
             $pp->forceDelete();
         });
-
         $this->contact->financialOverviewContacts()->withTrashed()->get()->each->forceDelete();
 
         // Intakes (softdeletable)
@@ -251,33 +277,38 @@ class ForceDeleteContact
 //                $this->forceDeleteIntake($intake);
 //            });
 
-            // housingfiles onder address eerst weg
-//            $address->housingFiles()->withTrashed()->get()->each->forceDelete();
-
-            if ($address->housingFiles()->withTrashed()->exists()) {
-                $this->errorMessage[] = "Contact/Adres {$this->contact->id}/{$address->id} heeft woningdossiers; hard verwijderen nog niet toegestaan.";
-                throw new \RuntimeException("Address {$address->id} heeft housingfiles; hard delete contact niet toegestaan (nog niet geïmplementeerd).");
-            }
-
-            if ($address->participations()->withTrashed()->exists()) {
-                $this->errorMessage[] = "Contact/Adres {$this->contact->id}/{$address->id} heeft deelnames; hard verwijderen nog niet toegestaan.";
-                throw new \RuntimeException("Address {$address->id} heeft participations; hard delete contact niet toegestaan.");
-            }
+            // housingfiles onder address eerst weg (nog niet geimplementeerd)
+//            if ($address->housingFiles()->withTrashed()->exists()) {
+//            }
+            // participations onder address eerst weg (nog niet geimplementeerd)
+//            if ($address->participations()->withTrashed()->exists()) {
+//            }
 
             $address->forceDelete();
         });
 
         // Tasks / Notes (softdeletable)
-        $this->contact->notes()->withTrashed()->get()->each->forceDelete();
-        $this->contact->tasks()->withTrashed()->get()->each->forceDelete();
+        $this->contact->tasks()->withTrashed()->get()->each(function ($task) {
+            $this->forceDeleteTask($task);
+        });
+        $this->contact->notes()->withTrashed()->get()->each(function ($note) {
+            $this->forceDeleteTask($note);
+        });
     }
 
     private function deleteRelations(): void
     {
         // softdeletable
         $this->contact->phoneNumbers()->withTrashed()->get()->each->forceDelete();
-        $this->contact->emailAddresses()->withTrashed()->get()->each->forceDelete();
         $this->contact->contactNotes()->withTrashed()->get()->each->forceDelete();
+
+        $this->contact->emailAddresses()->withTrashed()->get()->each(function ($emailAddress) {
+            DB::table('email_group_email_addresses')
+                ->where('email_address_id', $emailAddress->id)
+                ->delete();
+
+            $emailAddress->forceDelete();
+        });
 
         $this->contact->freeFieldsFieldRecords()->withTrashed()->get()->each(function ($fffr) {
             $fffr->freeFieldsFieldLogs()->delete();
@@ -288,6 +319,7 @@ class ForceDeleteContact
             $pfffr->freeFieldsFieldLogs()->delete();
             $pfffr->forceDelete();
         });
+
         // niet softdeletable
         $this->contact->contactEmails()->delete();
         $this->contact->responses()->delete();
@@ -299,6 +331,15 @@ class ForceDeleteContact
     private function customDeleteActions(): void
     {
         // evt. bestanden opschonen etc.
+    }
+
+    private function forceDeleteTask($task): void
+    {
+        DB::table('task_property_values')
+            ->where('task_id', $task->id)
+            ->delete();
+
+        $task->forceDelete();
     }
 
     private function forceDeleteIntake($intake): void
@@ -328,8 +369,12 @@ class ForceDeleteContact
             });
 
             // Opportunity tasks/notes hard weg (opportunity model filtert op finished, maar relation bestaat)
-            $opp->tasks()->withTrashed()->get()->each->forceDelete();
-            $opp->notes()->withTrashed()->get()->each->forceDelete();
+            $opp->tasks()->withTrashed()->get()->each(function ($task) {
+                $this->forceDeleteTask($task);
+            });
+            $opp->notes()->withTrashed()->get()->each(function ($note) {
+                $this->forceDeleteTask($note);
+            });
 
             // opportunity emails/docs dissociate (zoals DeleteOpportunity)
             $opp->emails()->withTrashed()->get()->each(function ($email) {
@@ -347,8 +392,12 @@ class ForceDeleteContact
         });
 
         // tasks + notes hard weg
-        $intake->tasks()->withTrashed()->get()->each->forceDelete();
-        $intake->notes()->withTrashed()->get()->each->forceDelete();
+        $intake->tasks()->withTrashed()->get()->each(function ($task) {
+            $this->forceDeleteTask($task);
+        });
+        $intake->notes()->withTrashed()->get()->each(function ($note) {
+            $this->forceDeleteTask($note);
+        });
 
         // emails/docs dissociate
         $intake->emails()->withTrashed()->get()->each(function ($email) {
@@ -377,8 +426,8 @@ class ForceDeleteContact
             $fn();
         } catch (QueryException $e) {
             $this->logDbException($e, $step);
-            throw $e; // transaction rollback + cleanup() vangt 'm
-        } catch (Throwable $e) {
+            throw $e;
+        } catch (\Throwable $e) {
             $this->logGenericException($e, $step);
             throw $e;
         } finally {

@@ -108,7 +108,7 @@ class DeleteFinancialOverviewContact implements DeleteInterface
         // UI: alleen concept toegestaan
         if (! $this->isCleanup) {
             $this->errorMessage[] =
-                "Waardestaat contact kan niet worden verwijderd. "
+                "Waardestaat " . $foDescription . ", contact " . $focFullname . " (" . $focId . ") kan niet worden verwijderd. "
                 . "Verwijderen is alleen toegestaan bij status '{$conceptSatusName}'.";
             return false;
         }
@@ -116,7 +116,7 @@ class DeleteFinancialOverviewContact implements DeleteInterface
         // Cleanup: alleen 'sent' toegestaan (na proces)
         if ($statusCode !== 'sent') {
             $this->errorMessage[] =
-                "Waardestaat contact kan niet worden opgeschoond (status: {$statusName}). "
+                "Waardestaat " . $foDescription . ", contact " . $focFullname . " (" . $focId . ") kan niet worden opgeschoond (status: {$statusName}). "
                 . "Opschonen is alleen toegestaan bij status '{$sendSatusName}'.";
             return false;
         }

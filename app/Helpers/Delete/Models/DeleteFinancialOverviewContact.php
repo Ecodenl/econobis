@@ -4,6 +4,7 @@ namespace App\Helpers\Delete\Models;
 
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\DataCleanup\CleanupRegistry;
+use App\Eco\FinancialOverview\FinancialOverviewContactStatus;
 use App\Eco\FinancialOverview\FinancialOverviewParticipantProject;
 use App\Helpers\Delete\DeleteInterface;
 use Carbon\Carbon;
@@ -98,21 +99,25 @@ class DeleteFinancialOverviewContact implements DeleteInterface
         }
 
         // Status guard: tijdens verstuur/maak-proces nooit verwijderen
-        $status = $this->financialOverviewContact->status_id ?? '';
+        $statusCode = $this->financialOverviewContact->status_id ?? '';
+        $statusName = $this->financialOverviewContact->status ?? '*onbekend*';
+        $conceptSatusName = FinancialOverviewContactStatus::get('concept')?->getName() ?? '*onbekend*';
+        $sendSatusName = FinancialOverviewContactStatus::get('sent')?->getName() ?? '*onbekend*';
+
 
         // UI: alleen concept toegestaan
         if (! $this->isCleanup) {
             $this->errorMessage[] =
                 "Waardestaat " . $foDescription . ", contact " . $focFullname . " (" . $focId . ") kan niet worden verwijderd. "
-                . "Verwijderen is alleen toegestaan bij status 'concept'.";
+                . "Verwijderen is alleen toegestaan bij status '{$conceptSatusName}'.";
             return false;
         }
 
         // Cleanup: alleen 'sent' toegestaan (na proces)
-        if ($status !== 'sent') {
+        if ($statusCode !== 'sent') {
             $this->errorMessage[] =
-                "Waardestaat " . $foDescription . ", contact " . $focFullname . " (" . $focId . ") kan niet worden opgeschoond (status: {$status}). "
-                . "Opschonen is alleen toegestaan bij status 'sent'.";
+                "Waardestaat " . $foDescription . ", contact " . $focFullname . " (" . $focId . ") kan niet worden opgeschoond (status: {$statusName}). "
+                . "Opschonen is alleen toegestaan bij status '{$sendSatusName}'.";
             return false;
         }
 

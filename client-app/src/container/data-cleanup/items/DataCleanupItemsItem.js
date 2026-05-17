@@ -63,6 +63,8 @@ export default function DataCleanupItemsItem({
         setShowModal(false);
     };
 
+    const hasItemsToDelete = Number(cleanupDataItem.determinedCount || 0) > 0;
+
     return (
         <>
             <tr>
@@ -97,12 +99,10 @@ export default function DataCleanupItemsItem({
                 </td>
                 <td>{cleanupDataItem.dateCleanedUp}</td>
                 <td>
-                    {showActionButtons && (
-                        <>
-                            <a role="button" title={`Opschonen ${cleanupDataItem.name}`} onClick={openModal}>
-                                <Icon className="mybtn-success" size={14} icon={trash} />
-                            </a>
-                        </>
+                    {showActionButtons && hasItemsToDelete && (
+                        <a role="button" title={`Opschonen ${cleanupDataItem.name}`} onClick={openModal}>
+                            <Icon className="mybtn-success" size={14} icon={trash} />
+                        </a>
                     )}
                 </td>
             </tr>
@@ -114,6 +114,7 @@ export default function DataCleanupItemsItem({
                     buttonClassName={'btn-danger'}
                     title={`Bevestig opschonen ${cleanupDataItem.name}`}
                     loading={!showActionButtons}
+                    showConfirmAction={modalErrorMessage.length > 0 ? false : true}
                 >
                     <div>
                         Weet u zeker dat u <strong>{cleanupDataItem.name}</strong>,{' '}

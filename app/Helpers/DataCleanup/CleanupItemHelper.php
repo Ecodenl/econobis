@@ -181,7 +181,13 @@ class CleanupItemHelper
         $exceptionProductIds = Product::where('cleanup_exception', 1)->pluck('id');
 
         $ordersOneoffToDelete = Order::where('collection_frequency_id', 'once')
-            ->whereDate('date_next_invoice', '<', $ordersOneoffCleanupOlderThen)
+            ->where(function ($query) use ($ordersOneoffCleanupOlderThen) {
+                $query->whereDate('date_next_invoice', '<', $ordersOneoffCleanupOlderThen)
+                    ->orWhere(function ($query) use ($ordersOneoffCleanupOlderThen) {
+                        $query->whereNull('date_next_invoice')
+                            ->whereDate('date_requested', '<', $ordersOneoffCleanupOlderThen);
+                    });
+            })
             ->whereDoesntHave('orderProducts', function ($query) use ($exceptionProductIds) {
                 $query->whereIn('id', $exceptionProductIds);
             });
@@ -200,7 +206,14 @@ class CleanupItemHelper
         $exceptionProductIds = Product::where('cleanup_exception', 1)->pluck('id');
 
         $ordersPeriodicToDelete = Order::whereNot('collection_frequency_id', 'once')
-            ->where('status_id', 'closed')->whereDate('date_next_invoice', '<', $ordersPeriodicCleanupOlderThen)
+            ->where('status_id', 'closed')
+            ->where(function ($query) use ($ordersPeriodicCleanupOlderThen) {
+                $query->whereDate('date_next_invoice', '<', $ordersPeriodicCleanupOlderThen)
+                    ->orWhere(function ($query) use ($ordersPeriodicCleanupOlderThen) {
+                        $query->whereNull('date_next_invoice')
+                            ->whereDate('date_requested', '<', $ordersPeriodicCleanupOlderThen);
+                    });
+            })
             ->whereDoesntHave('orderProducts', function ($query) use ($exceptionProductIds) {
                 $query->whereIn('id', $exceptionProductIds);
             });

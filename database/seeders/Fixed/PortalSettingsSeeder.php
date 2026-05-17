@@ -9,12 +9,6 @@ class PortalSettingsSeeder extends Seeder
 {
     public function run(): void
     {
-//        PortalSettings::query()->updateOrCreate(
-//            ['id' => 1],
-//            [
-//                'portal_active' => false,
-//            ]
-//        );
         $portalSettings = [
             ['id' => 1, 'portal_active' => false],
         ];

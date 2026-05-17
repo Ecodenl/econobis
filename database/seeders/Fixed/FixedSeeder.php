@@ -88,11 +88,13 @@ class FixedSeeder extends Seeder
             // Misc
             OccupationsSeeder::class,
 
-            // Permissions / Roles / AdminUsers
+            // Permissions / Roles / AdminUsers / Cooperations / CooperationCleanupItems
             PermissionsSeeder::class,
             RolesSeeder::class,
             RolePermissionsSeeder::class,
             AdminUsersSeeder::class,
+            CooperationsSeeder::class,
+            CooperationCleanupItemsSeeder::class,
         ]);
     }
 }

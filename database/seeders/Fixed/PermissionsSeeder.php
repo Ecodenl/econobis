@@ -141,7 +141,9 @@ class PermissionsSeeder extends Seeder
             'view_quotation_request',
             'menu_intake_sources',
             'manage_intake_sources',
-            'view_free_fields_field_log'
+            'view_free_fields_field_log',
+            'menu_data_cleanup',
+            'manage_cleanup_exception_products',
         ];
 
         foreach (array_unique($permissions) as $permission) {

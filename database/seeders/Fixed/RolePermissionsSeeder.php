@@ -808,6 +808,10 @@ class RolePermissionsSeeder extends Seeder
                 'view_quotation_request',
                 'view_task',
             ],
+            'Data opschoner' => [
+                'menu_data_cleanup',
+                'manage_cleanup_exception_products',
+            ],
         ];
 
         foreach ($rolePermissions as $roleName => $permissions) {

@@ -56,7 +56,7 @@ class AddContactsToDelete extends Migration
             $table->unsignedInteger('contact_id_deleted_contacts');
         });
 
-        $this->createContactDeletedContacts();
+//        $this->createContactDeletedContacts();
 
 
     }
@@ -92,67 +92,38 @@ class AddContactsToDelete extends Migration
     /**
      * @return void
      */
-    private function createContactDeletedContacts(): void
-    {
-        $adminUser = User::where('email', config('app.admin_user.email'))->first();
-        $timeStampNow = Carbon::now();
-
-        $contactOrganisation = Contact::create([
-            'type_id' => 'organisation',
-            'status_id' => 'system',
-            'number' => 'XXXXXX',
-            'created_by_id' => $adminUser ? $adminUser->id : 1,
-            'created_at' => $timeStampNow,
-            'created_with' => 'econobis',
-            'updated_by_id' => $adminUser ? $adminUser->id : 1,
-            'updated_at' => $timeStampNow,
-            'updated_with' => 'econobis',
-        ]);
-
-        Organisation::create([
-            'contact_id' => $contactOrganisation->id,
-            'name' => 'Contact verwijderd',
-            'statutory_name' => '',
-            'created_at' => $timeStampNow,
-            'updated_at' => $timeStampNow,
-            'deleted_at' => $timeStampNow,
-        ]);
-        $contactOrganisation->deleted_at = $timeStampNow;
-        $contactOrganisation->save();
-
-        $cooperation = Cooperation::first();
-        if ($cooperation) {
-            $cooperation->contact_id_deleted_contacts = $contactOrganisation->id;
-            $cooperation->saveQuietly();
-        }
-    }
-}
-
-//        $contactDeletedContacts = new Contact();
-//        $contactDeletedContacts->name = config('');
-//        $contactDeletedContacts->type_id = 'organisation';
-//        $contactDeletedContacts->xxx_is_coach = false;
-//        $contactDeletedContacts->full_name = 'Contact verwijderd';
-//        $contactDeletedContacts->number = 'XXXXXX';
-//        $contactDeletedContacts->newsletter = false;
-//        $contactDeletedContacts->liable = false;
-//        $contactDeletedContacts->liability_amount = 0;
-//        $contactDeletedContacts->did_agree_avg = false;
-//        $contactDeletedContacts->obligations_current = 0;
-//        $contactDeletedContacts->participations_current = 0;
-//        $contactDeletedContacts->postalcode_link_capital_current = 0;
-//        $contactDeletedContacts->loan_current = 0;
-//        $contactDeletedContacts->is_collect_mandate = false;
-//        $contactDeletedContacts->collect_mandate_code = '';
-//        $contactDeletedContacts->collect_mandate_collection_schema = '';
-//
+//    private function createContactDeletedContacts(): void
+//    {
 //        $adminUser = User::where('email', config('app.admin_user.email'))->first();
-//        $contactDeletedContacts->created_by_id = $adminUser ? $adminUser->id : 1;
-//        $contactDeletedContacts->updated_by_id = $adminUser ? $adminUser->id : 1;
-//        $contactDeletedContacts->created_at = Carbon::now();
-//        $contactDeletedContacts->created_with = 'econobis';
-//        $contactDeletedContacts->updated_at = Carbon::now();
-//        $contactDeletedContacts->updated_with = 'econobis';
-//        $contactDeletedContacts->deleted_at = Carbon::now();
+//        $timeStampNow = Carbon::now();
 //
-//        $contactDeletedContacts->saveQuietly();
+//        $contactOrganisation = Contact::create([
+//            'type_id' => 'organisation',
+//            'status_id' => 'system',
+//            'number' => 'XXXXXX',
+//            'created_by_id' => $adminUser ? $adminUser->id : 1,
+//            'created_at' => $timeStampNow,
+//            'created_with' => 'econobis',
+//            'updated_by_id' => $adminUser ? $adminUser->id : 1,
+//            'updated_at' => $timeStampNow,
+//            'updated_with' => 'econobis',
+//        ]);
+//
+//        Organisation::create([
+//            'contact_id' => $contactOrganisation->id,
+//            'name' => 'Contact verwijderd',
+//            'statutory_name' => '',
+//            'created_at' => $timeStampNow,
+//            'updated_at' => $timeStampNow,
+//            'deleted_at' => $timeStampNow,
+//        ]);
+//        $contactOrganisation->deleted_at = $timeStampNow;
+//        $contactOrganisation->save();
+//
+//        $cooperation = Cooperation::first();
+//        if ($cooperation) {
+//            $cooperation->contact_id_deleted_contacts = $contactOrganisation->id;
+//            $cooperation->saveQuietly();
+//        }
+//    }
+}

@@ -28,6 +28,7 @@ class RolesSeeder extends Seeder
             'Beheerder coöperatie instellingen',
             'Buurtaanpak manager',
             'Buurtaanpak coördinator',
+            'Data opschoner',
         ];
 
         foreach ($roles as $role) {

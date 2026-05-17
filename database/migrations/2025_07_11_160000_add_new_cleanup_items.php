@@ -170,12 +170,12 @@ class AddNewCleanupItems extends Migration
             [
                 'name' => 'Eenmalige orders',
                 'code_ref' => 'ordersOneoff',
-                'date_ref' => 'Ingangsdatum'
+                'date_ref' => 'Volgende notadatum (of Aanvraagdatum)'
             ],
             [
-                'name' => 'Periodieke orders',
+                'name' => 'Afgesloten periodieke orders',
                 'code_ref' => 'ordersPeriodic',
-                'date_ref' => 'Beëindigingsdatum'
+                'date_ref' => 'Volgende notadatum (of Aanvraagdatum)'
             ],
             [
                 'name' => 'Waardestaten contacten',

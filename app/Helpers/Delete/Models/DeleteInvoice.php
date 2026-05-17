@@ -4,6 +4,7 @@ namespace App\Helpers\Delete\Models;
 
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\DataCleanup\CleanupRegistry;
+use App\Eco\Invoice\InvoiceStatus;
 use App\Helpers\Delete\DeleteInterface;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -73,7 +74,7 @@ class DeleteInvoice implements DeleteInterface
     {
         if ($this->invoice->invoicesToSend()->exists()) {
             $this->errorMessage[] =
-                "Nota kan nu niet worden verwijderd: er staat nog een verzendproces open.";
+                "Nota {$this->invoice->number} ({$this->invoice->id}), administratie {$this->invoice->administration->name} kan nu niet worden verwijderd: er staat nog een verzendproces open.";
             return false;
         }
 
@@ -95,7 +96,7 @@ class DeleteInvoice implements DeleteInterface
 
         if (in_array($this->invoice->status_id, $processingStatuses, true)) {
             $this->errorMessage[] =
-                "Nota kan nu niet worden verwijderd: status is '{$this->invoice->status_id}' (verwerkingsproces bezig).";
+                "Nota {$this->invoice->number} ({$this->invoice->id}), administratie {$this->invoice->administration->name} kan nu niet worden verwijderd: status is '{$this->invoice->status_id}' (verwerkingsproces bezig).";
             return false;
         }
 
@@ -105,16 +106,28 @@ class DeleteInvoice implements DeleteInterface
             $contactId = $this->invoice->order?->contact_id;
             if ($contactId && in_array((int)$contactId, $this->getExcludedContactIds(), true)) {
                 $this->errorMessage[] =
-                    "Nota kan niet worden verwijderd: gekoppeld contact valt in een uitgesloten contactgroep.";
+                    "Nota {$this->invoice->number} ({$this->invoice->id}), administratie {$this->invoice->administration->name} kan niet worden verwijderd: gekoppeld contact valt in een uitgesloten contactgroep.";
                 return false;
             }
         }
 
         // Bewaarplicht check: date_sent moet ouder zijn dan cutoff
-        $dateSent = $this->invoice->date_sent ? Carbon::parse($this->invoice->date_sent)->startOfDay() : null;
+        $dateSent = $this->invoice->date_sent
+            ? Carbon::parse($this->invoice->date_sent)->startOfDay()
+            : null;
+
+        $isIrrecoverable = $this->invoice->status_id === InvoiceStatus::IRRECOVERABLE->value;
+
+        // Oninbare nota's kunnen nooit verzonden zijn en dus geen date_sent hebben.
+        // Voor bewaarplicht gebruiken we dan created_at als referentiedatum.
+        if (! $dateSent && $isIrrecoverable) {
+            $dateSent =$this->invoice->created_at
+                ? Carbon::parse($this->invoice->created_at)->startOfDay()
+                : null;
+        }
 
         if (! $dateSent) {
-            $this->errorMessage[] = "Nota kan niet worden verwijderd: verzenddatum ontbreekt (bewaarde nota).";
+            $this->errorMessage[] = "Nota {$this->invoice->number} ({$this->invoice->id}), administratie {$this->invoice->administration->name} kan niet worden verwijderd: referentiedatum ontbreekt (bewaarde nota).";
             return false;
         }
 
@@ -123,7 +136,7 @@ class DeleteInvoice implements DeleteInterface
         }
 
         $this->errorMessage[] =
-            "Er is al een nota aangemaakt. Nota kan niet worden verwijderd vanwege de bewaarplicht: "
+            "Er is al een nota aangemaakt. Nota {$this->invoice->number} ({$this->invoice->id}), administratie {$this->invoice->administration->name}, referentiedatum {$dateSent->format('d-m-Y')} kan niet worden verwijderd vanwege de bewaarplicht: "
             . $this->yearsForDelete
             . " jaar (peiljaar: "
             . $this->cutoffDate->year

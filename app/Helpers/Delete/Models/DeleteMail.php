@@ -9,6 +9,7 @@
 namespace App\Helpers\Delete\Models;
 
 
+use App\Eco\Cooperation\Cooperation;
 use App\Helpers\Delete\DeleteInterface;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -42,6 +43,9 @@ class DeleteMail implements DeleteInterface
     public function cleanup()
     {
         try{
+            if (! $this->canCleanup()) {
+                return $this->errorMessage;
+            }
             return $this->delete();
         }catch (\Exception $exception){
             Log::error('Fout bij opschonen Emails', [
@@ -78,12 +82,37 @@ class DeleteMail implements DeleteInterface
         return $this->errorMessage;
     }
 
-    /** Checks if the model can be deleted
-     *
-     */
-    public function canDelete()
+    public function canDelete(): bool
     {
         // van hier uit altijd true
+        return true;
+
+    }
+
+    public function canCleanup(): bool
+    {
+        $cooperation = Cooperation::first();
+
+        if (! $cooperation?->cleanup_email) {
+            $this->errorMessage[] =
+                "E-mailcorrespondentie opschonen staat uit voor deze coöperatie.";
+
+            return false;
+        }
+
+        if (
+            $this->mail->order_id !== null
+            || $this->mail->invoice_id !== null
+            || $this->mail->participation_project_id !== null
+            || $this->mail->intake_id !== null
+            || $this->mail->opportunity_id !== null
+        ) {
+            $this->errorMessage[] =
+                "Email {$this->mail->id} is nog gekoppeld aan een order, nota, deelname, intake of kans en mag daarom niet opgeschoond worden.";
+
+            return false;
+        }
+
         return true;
     }
 

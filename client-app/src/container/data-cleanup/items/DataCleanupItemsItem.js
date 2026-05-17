@@ -63,6 +63,8 @@ export default function DataCleanupItemsItem({
         setShowModal(false);
     };
 
+    const hasItemsToDelete = Number(cleanupDataItem.determinedCount || 0) > 0;
+
     return (
         <>
             <tr>
@@ -97,12 +99,10 @@ export default function DataCleanupItemsItem({
                 </td>
                 <td>{cleanupDataItem.dateCleanedUp}</td>
                 <td>
-                    {showActionButtons && (
-                        <>
-                            <a role="button" title={`Opschonen ${cleanupDataItem.name}`} onClick={openModal}>
-                                <Icon className="mybtn-success" size={14} icon={trash} />
-                            </a>
-                        </>
+                    {showActionButtons && hasItemsToDelete && (
+                        <a role="button" title={`Opschonen ${cleanupDataItem.name}`} onClick={openModal}>
+                            <Icon className="mybtn-success" size={14} icon={trash} />
+                        </a>
                     )}
                 </td>
             </tr>

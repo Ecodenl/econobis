@@ -3,6 +3,7 @@
 namespace App\Jobs\Email;
 
 use App\Eco\Contact\ContactEmail;
+use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Email\Email;
 use App\Eco\Email\EmailRecipient;
 use App\Eco\Email\EmailRecipientCollection;
@@ -28,6 +29,10 @@ class ProcessSendingGroupEmail implements ShouldQueue
     protected $firstCall;
 
     protected array $errors;
+
+    // Zet debugModus op true als je wilt debuggen zonder echt te mailen.
+    // Na debugtest wel eventueel gemaakte email weer verwijderen en uiteraard $debugModus weer op false.
+    protected $debugModus = false;
 
     public function __construct(Email $email, User $user, $firstCall = true, array $errors = [])
     {
@@ -83,23 +88,18 @@ class ProcessSendingGroupEmail implements ShouldQueue
             $jobLog->job_category_id = 'email';
             $jobLog->save();
 
-//            if ($this->email->folder !== 'sent') {
-//                // Voor de zekerheid: geen dubbele rows (bij herstart of retry)
-//                $resendErrors = ContactEmail::where('email_id', $this->email->id)
-//                    ->whereIn('status_code', [ContactEmail::STATUS_ERROR])
-//                    ->update([
-//                        'status_code' => ContactEmail::STATUS_TO_SEND,
-//                        'updated_at'  => now(),
-//                ]);
-//                if ($resendErrors > 0) {
-//                    Log::warning('ProcessSendingGroupEmail: resend error rows', [
-//                        'email_id' => $this->email->id,
-//                        'resendErrors' => $resendErrors,
-//                    ]);
-//                }
-//            }
-
             $this->prepareContactEmailsForGroup();
+
+            if ($this->debugModus) {
+                Log::warning('Debug: stoppen na prepareContactEmailsForGroup, geen mail verstuurd en email niet gemarkeerd als sent', [
+                    'email_id' => $this->email->id,
+                    'contact_email_to_send' => ContactEmail::where('email_id', $this->email->id)
+                        ->where('status_code', ContactEmail::STATUS_TO_SEND)
+                        ->count(),
+                ]);
+
+                return;
+            }
         }
 
         $hasMore = false;
@@ -201,7 +201,16 @@ class ProcessSendingGroupEmail implements ShouldQueue
             $this->email->save();
         }
 
-        $contactGroup = $this->email->contactGroup;
+//  Omdat dit een job is gebruikte deze waarschijnlijk een mee-geserialiseerde / stale relation-state van Contactgroup
+//  bij gebruik $this->email->contactGroup, terwijl ContactGroup::find(...) schoon begint.
+        $contactGroup = ContactGroup::find($this->email->contact_group_id);
+
+        Log::info('ProcessSendingGroupEmail contactGroup fresh check', [
+            'email_id' => $this->email->id,
+            'email_contact_group_id' => $this->email->contact_group_id,
+            'loaded_contact_group_id' => $contactGroup?->id,
+            'relation_loaded_before' => $this->email->relationLoaded('contactGroup'),
+        ]);
 
         if (!$contactGroup) {
             Log::warning('ProcessSendingGroupEmail: email heeft geen contactGroup', [

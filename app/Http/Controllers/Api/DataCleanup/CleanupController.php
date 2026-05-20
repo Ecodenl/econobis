@@ -161,8 +161,15 @@ class CleanupController extends Controller
         $has412 = false;
         $has500 = false;
 
-        // bepaal scope (jullie kunnen later filteren op cooperation_id als contact dat heeft)
+        // Tijdelijke/voorbereidende uitzondering:
+        // systeemcontact voor mogelijk toekomstig gebruik bij behoud van housingfiles/adressen.
+        // Dit contact mag nooit meegenomen worden in force-delete batches.
+        $deletedContactsContactId = Cooperation::first()?->contact_id_deleted_contacts;
+
         Contact::onlyTrashed()
+            ->when($deletedContactsContactId, function ($query) use ($deletedContactsContactId) {
+                $query->where('id', '<>', $deletedContactsContactId);
+            })
             ->orderBy('id')
             ->chunkById(200, function ($contacts) use (&$results, &$has412, &$has500) {
                 foreach ($contacts as $contact) {

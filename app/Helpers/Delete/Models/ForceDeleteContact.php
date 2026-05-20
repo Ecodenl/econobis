@@ -2,6 +2,7 @@
 
 namespace App\Helpers\Delete\Models;
 
+use App\Eco\Cooperation\Cooperation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -62,6 +63,15 @@ class ForceDeleteContact
 
     private function canForceDelete(): bool
     {
+        // Extra veiligheidscheck:
+        // systeemcontact voor verwijderde contacten mag nooit hard verwijderd worden.
+        // Mogelijk vervalt deze constructie later bij herziening address/housingfile-model.
+        $deletedContactsContactId = Cooperation::first()?->contact_id_deleted_contacts;
+        if ($deletedContactsContactId && (int) $this->contact->id === (int) $deletedContactsContactId) {
+            $this->errorMessage[] = 'Dit is het systeemcontact voor verwijderde contacten. Hard verwijderen is niet toegestaan.';
+            return false;
+        }
+
         if (! method_exists($this->contact, 'trashed') || ! $this->contact->trashed()) {
             $this->errorMessage[] = 'Hard verwijderen kan alleen op een contact dat al (soft) verwijderd is.';
             return false;

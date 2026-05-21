@@ -73,6 +73,14 @@ class ContactController extends ApiController
             abort(501, 'Er is helaas een fout opgetreden.');
         }
 
+        // contact type person of organisation
+        if (! in_array($request->input('typeId'), [
+            ContactType::PERSON->value,
+            ContactType::ORGANISATION->value,
+        ], true)) {
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
+
         $updateUser = User::find($responsibleUserId);
         $updateUser->occupation = '@portal-update@';
         Auth::setUser($updateUser);
@@ -97,8 +105,10 @@ class ContactController extends ApiController
                 $this->createTaskIbanChange($contact, $ibanOld, $ibanAttnOld);
             }
 
+            $typeId = $request->input('typeId');
+
             // PERSON
-            if ($request->typeId == ContactType::PERSON) {
+            if ($typeId === ContactType::PERSON->value) {
 
                 $this->updatePerson($contact, $request);
                 $this->updateEmailCorrespondence($contact, $request);
@@ -115,7 +125,7 @@ class ContactController extends ApiController
             }
 
             // ORGANISATION
-            if ($request->typeId == ContactType::ORGANISATION) {
+            if ($typeId === ContactType::ORGANISATION->value) {
 
                 $this->updateOrganisation($contact, $request);
                 $this->updateEmailCorrespondence($contact, $request);

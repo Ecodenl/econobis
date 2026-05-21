@@ -11,7 +11,7 @@ class BuildingTypesSeeder extends Seeder
     {
         $buildingTypes = [
             [ 'name' => 'Vrijstaand', 'external_hoom_id' => 3, 'external_hoom_short' => 'detached-house', 'order' => 1],
-            [ 'name' => 'Hoekwoning ', 'external_hoom_id' => 2, 'external_hoom_short' => '', 'order' => 2],
+            [ 'name' => 'Hoekwoning', 'external_hoom_id' => 2, 'external_hoom_short' => '', 'order' => 2],
             ['name' => 'Tussenwoning', 'external_hoom_id' => 5, 'external_hoom_short' => '', 'order' => 3],
             ['name' => 'Appartement','external_hoom_id' => 1, 'external_hoom_short' => '', 'order' => 4],
             [ 'name' => 'Appartement VVE', 'external_hoom_id' => null, 'external_hoom_short' => '', 'order' => 5],

@@ -78,11 +78,11 @@ class DeleteAddress implements DeleteInterface
      */
     public function canDelete(): bool
     {
-        if($this->address->participations()->count() > 0){
+        if ($this->address->participations()->exists()) {
             array_push($this->errorMessage, "Er zijn nog deelnames.");
             return false;
         }
-        if($this->address->housingFiles()->count() > 0){
+        if ($this->address->housingFiles()->exists()) {
             array_push($this->errorMessage, "Er zijn nog woningdossiers.");
             return false;
         }
@@ -122,7 +122,8 @@ class DeleteAddress implements DeleteInterface
      */
     public function deleteRelations()
     {
-
+        $this->address->addressEnergyConsumptionGasPeriods()->delete();
+        $this->address->addressEnergyConsumptionElectricityPeriods()->delete();
     }
 
     /** Model specific delete actions e.g. delete files from server

@@ -293,6 +293,8 @@ class ForceDeleteContact
             // participations onder address eerst weg (nog niet geimplementeerd)
 //            if ($address->participations()->withTrashed()->exists()) {
 //            }
+            $address->addressEnergyConsumptionGasPeriods()->delete();
+            $address->addressEnergyConsumptionElectricityPeriods()->delete();
 
             $address->forceDelete();
         });

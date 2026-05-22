@@ -71,7 +71,7 @@ Please do not report security vulnerabilities through public issue trackers.
 
 Security reports can be submitted to:
 
-support@econobis.nl
+klant@xaris.nl
 
 Please include:
 - Description of the vulnerability
@@ -129,7 +129,7 @@ This application supports:
 
 | Purpose | Contact              |
 | ------- |----------------------|
-| Security | support@econobis.nl  |
+| Security | klant@xaris.nl  |
 | Development | software@xaris.nl    |
 | Support | support@econobis.nl |
 

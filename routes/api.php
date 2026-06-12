@@ -163,11 +163,11 @@ Route::namespace('Api')
 
         Route::get('/user/grid', 'User\GridController@index');
         Route::get('/user/rolesPermissionsExcel', 'User\UserController@rolesPermissionsExcel');
+        Route::get('/user/with-permission-manage-group', 'User\UserController@withPermissionManageGroup');
         Route::post('/user', 'User\UserController@store');
         Route::get('/user/{user}', 'User\UserController@show');
         Route::post('/user/{user}', 'User\UserController@update');
         Route::post('/user/{user}/unblock', 'User\UserController@unblock');
-        Route::get('/user/with-permission/{permission}', 'User\UserController@withPermission');
         Route::post('/user/{user}/roles/add/{role}', 'User\UserController@addRole');
         Route::post('/user/{user}/roles/remove/{role}', 'User\UserController@removeRole');
         Route::post('/user/{user}/reset-two-factor', 'User\UserController@resetTwoFactor');

@@ -27,7 +27,7 @@ class ContactGroupNewForm extends Component {
         super(props);
 
         this.state = {
-            contactsWithPermission: [],
+            contactsWithPermissionManageGroup: [],
             contactGroups: [],
             inspectionPersonTypes: [],
             emailTemplates: [],
@@ -62,13 +62,9 @@ class ContactGroupNewForm extends Component {
     }
 
     componentDidMount() {
-        const { permissions } = this.props;
-
-        UsersAPI.fetchUsersWithPermission(permissions.find(permission => permission.name === 'manage_group').id).then(
-            payload => {
-                this.setState({ contactsWithPermission: payload });
-            }
-        );
+        UsersAPI.fetchUsersWithPermissionManageGroup().then(payload => {
+            this.setState({ contactsWithPermissionManageGroup: payload });
+        });
 
         ContactGroupAPI.peekActiveContactGroups().then(payload => {
             this.setState({ contactGroups: payload });
@@ -271,7 +267,7 @@ class ContactGroupNewForm extends Component {
                                 onChange={this.handleInputChange}
                             >
                                 <option value="" />
-                                {this.state.contactsWithPermission.map(option => {
+                                {this.state.contactsWithPermissionManageGroup.map(option => {
                                     return (
                                         <option key={option.id} value={option.id}>
                                             {option.fullName}
@@ -444,7 +440,6 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => {
     return {
         meDetails: state.meDetails,
-        permissions: state.systemData.permissions,
         inspectionPersonTypes: state.systemData.inspectionPersonTypes,
     };
 };

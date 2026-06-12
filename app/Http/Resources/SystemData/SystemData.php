@@ -110,7 +110,6 @@ use App\Http\Resources\User\UserPeek;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class SystemData extends JsonResource
@@ -240,7 +239,6 @@ class SystemData extends JsonResource
             'participantMutationTypes' => FullParticipantMutationType::collection(ParticipantMutationType::all()),
             'participantProjectPayoutTypes' => GenericResource::collection(ParticipantProjectPayoutType::all()),
             'paymentInvoiceStatuses' => FullEnumWithIdAndName::collection(PaymentInvoiceStatus::collection()),
-            'permissions' => FullEnumWithIdAndName::collection(Permission::all()),
             'personTypes' => FullPersonType::collection(PersonType::all()),
             'phoneNumberTypes' => FullEnumWithIdAndName::collection(PhoneNumberType::collection()),
             'portalSettings' => FullPortalSettings::collection(PortalSettings::all())->first(),

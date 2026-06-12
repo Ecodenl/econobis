@@ -183,9 +183,10 @@ class UserController extends Controller
         return $this->show($user);
     }
 
-    public function withPermission(Permission $permission)
+    public function withPermissionManageGroup()
     {
-        $users = User::permission($permission)->with(['lastNamePrefix', 'title'])->where('id', '!=', '1')->where('active', true)->get();
+        $permissionManageGroup = Permission::where('name', 'manage_group')->first();
+        $users = User::permission($permissionManageGroup)->with(['lastNamePrefix', 'title'])->where('id', '!=', '1')->where('active', true)->get();
         return FullUser::collection($users);
     }
 

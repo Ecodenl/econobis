@@ -50,6 +50,10 @@ class ContactMerger
             throw new ContactMergeException('Personen kunnen niet worden samengevoegd met organisaties.');
         }
 
+        $this->validateSameRole('isCoach', 'coach');
+        $this->validateSameRole('isProjectManager', 'projectleider');
+        $this->validateSameRole('isExternalParty', 'externe partij');
+
         $toHoomAccountId = $this->toContact->hoom_account_id;
         $fromHoomAccountId = $this->fromContact->hoom_account_id;
         if ($toHoomAccountId && $fromHoomAccountId && $toHoomAccountId !== $fromHoomAccountId) {
@@ -129,6 +133,12 @@ class ContactMerger
         }
     }
 
+    private function validateSameRole(string $method, string $label): void
+    {
+        if ($this->toContact->{$method}() !== $this->fromContact->{$method}()) {
+            throw new ContactMergeException("Contacten kunnen niet worden samengevoegd omdat één van beide {$label} is en de andere niet.");
+        }
+    }
     private function validateNoDuplicateFinancialOverviewContacts(): void
     {
         $toFinancialOverviewIds = $this->toContact->financialOverviewContacts()
@@ -165,7 +175,12 @@ class ContactMerger
         $this->mergeAddresses();
         $this->mergePhoneNumbers();
         $this->mergeGenericBelongsToManyRelation('emails');
+        $this->mergeGenericBelongsToManyRelation('manualEmails');
         $this->mergeGenericBelongsToManyRelation('groups');
+        $this->mergeGenericBelongsToManyRelation('coachCampaigns');
+        $this->mergeGenericBelongsToManyRelation('projectManagerCampaigns');
+        $this->mergeGenericBelongsToManyRelation('externalPartyCampaigns');
+        $this->mergeGenericHasManyRelation('availabilities');
         $this->mergeGenericHasManyRelation('responses');
         $this->mergeGenericHasManyRelation('documents');
         $this->mergeGenericHasManyRelation('financialOverviewContacts');
@@ -184,6 +199,8 @@ class ContactMerger
         $this->mergeGenericHasManyRelation('revenueDistributionKwh');
         $this->mergeGenericHasManyRelation('twinfieldLogs');
         $this->mergeGenericHasManyRelation('quotationRequests');
+        $this->mergeGenericHasManyRelation('quotationRequestsAsProjectManager');
+        $this->mergeGenericHasManyRelation('quotationRequestsAsExternalParty');
 
         /**
          * Totalen van obligations_current, etc herberekenen.
@@ -269,12 +286,12 @@ class ContactMerger
         }
 
         foreach ($fromOrganisation->campaigns as $campaign) {
-            $toOrganisation->campaigns()->attach($campaign);
+            $toOrganisation->campaigns()->syncWithoutDetaching($campaign);
             $fromOrganisation->campaigns()->detach($campaign);
         }
 
         foreach ($fromOrganisation->deliversMeasures as $measure) {
-            $toOrganisation->deliversMeasures()->attach($measure);
+            $toOrganisation->deliversMeasures()->syncWithoutDetaching($measure);
             $fromOrganisation->deliversMeasures()->detach($measure);
         }
 
@@ -291,7 +308,7 @@ class ContactMerger
         $toFreeFieldsFieldRecords = $this->toContact->freeFieldsFieldRecords;
         $fromFreeFieldsFieldRecords = $this->fromContact->freeFieldsFieldRecords;
 
-        $this->mergeFreeFieldsRecords($fromFreeFieldsFieldRecords, $toFreeFieldsFieldRecords, 'contacts');
+        $this->mergeFreeFieldsRecords($fromFreeFieldsFieldRecords, $toFreeFieldsFieldRecords, 'contacts', $this->toContact->id);
     }
 
     private function mergeAddresses()
@@ -377,10 +394,6 @@ class ContactMerger
             $addressEnergyConsumptionElectricityPeriod->save();
         }
 
-        //todo WM: hier nog mergen van free fields
-//        foreach ($fromAddress->freeFieldsFieldRecords as $freeFieldsFieldRecord) {
-//        }
-
         $fromAddress->delete();
     }
 
@@ -389,7 +402,7 @@ class ContactMerger
         $toFreeFieldsFieldRecords = $toAddress->freeFieldsFieldRecords;
         $fromFreeFieldsFieldRecords = $fromAddress->freeFieldsFieldRecords;
 
-        $this->mergeFreeFieldsRecords($fromFreeFieldsFieldRecords, $toFreeFieldsFieldRecords, 'addresses');
+        $this->mergeFreeFieldsRecords($fromFreeFieldsFieldRecords, $toFreeFieldsFieldRecords, 'addresses', $toAddress->id);
     }
 
     private function mergeGenericHasManyRelation(string $relationName)
@@ -501,7 +514,7 @@ class ContactMerger
      * @param mixed $toFreeFieldsFieldRecords
      * @return void
      */
-    private function mergeFreeFieldsRecords(mixed $fromFreeFieldsFieldRecords, mixed $toFreeFieldsFieldRecords, string $tableName): void
+    private function mergeFreeFieldsRecords(mixed $fromFreeFieldsFieldRecords, mixed $toFreeFieldsFieldRecords, string $tableName, int $toTableRecordId): void
     {
         foreach ($fromFreeFieldsFieldRecords as $fromRecord) {
             // Find matching record in $toFreeFieldsFieldRecords by field_id
@@ -528,7 +541,7 @@ class ContactMerger
             } else {
                 // Add the $fromRecord to $toFreeFieldsFieldRecords if field_id doesn't exist
                 $newRecord = $fromRecord->replicate();
-                $newRecord->table_record_id = $this->toContact->id; // Link to the new contact ID
+                $newRecord->table_record_id = $toTableRecordId; // Link to the new contact ID or address ID
                 $newRecord->save();
 
                 // Add the new record to the collection

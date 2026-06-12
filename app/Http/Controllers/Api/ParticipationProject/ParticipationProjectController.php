@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Api\ParticipationProject;
 use App\Eco\Address\Address;
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
+use App\Eco\ContactGroup\ContactGroupType;
 use App\Eco\ContactGroup\DynamicContactGroupFilter;
 use App\Eco\Document\Document;
 use App\Eco\Document\DocumentCreatedFrom;
@@ -94,7 +95,7 @@ class ParticipationProjectController extends ApiController
         $extraFilters = json_decode($request->input('extraFilters'));
 
         $contactGroup = new ContactGroup();
-        $contactGroup->type_id = 'dynamic';
+        $contactGroup->type_id = ContactGroupType::DYNAMIC;
         $contactGroup->composed_of = 'participants';
         $contactGroup->name =  ContactGroup::getAutoIncrementedName('Dynamische groep');
         $contactGroup->description = '';

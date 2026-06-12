@@ -613,7 +613,7 @@ class Contact extends Model
 //        $staticGroups = $this->groups()->get()->pluck('id')->toArray();
 //
 //        //dynamische groepen
-//        $dynamicGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())->where('type_id', ContactGroupType::DYNAMIC->value)->get();
+//        $dynamicGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())->where('type_id', ContactGroupType::DYNAMIC)->get();
 //
 //        $dynamicGroupsForContact = $dynamicGroups->filter(function ($dynamicGroup) {
 //            foreach ($dynamicGroup->all_contacts as $dynamic_contact) {
@@ -633,7 +633,7 @@ class Contact extends Model
         $staticGroups = $this->groups()->get()->pluck('id')->toArray();
 
         //dynamische groepen
-        $dynamicGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())->where('type_id', ContactGroupType::DYNAMIC->value)->get();
+        $dynamicGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())->where('type_id', ContactGroupType::DYNAMIC)->get();
 
         $dynamicGroupsForContact = $dynamicGroups->filter(function ($dynamicGroup) {
             foreach ($dynamicGroup->all_contacts as $dynamic_contact) {
@@ -645,7 +645,7 @@ class Contact extends Model
         })->pluck('id')->toArray();
 
         //samengestelde groepen
-        $composedGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())->where('type_id', ContactGroupType::COMPOSED->value)->get();
+        $composedGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())->where('type_id', ContactGroupType::COMPOSED)->get();
 
         $composedGroupsForContact = $composedGroups->filter(function ($composedGroup) {
             foreach ($composedGroup->all_contacts as $composed_contact) {
@@ -666,7 +666,7 @@ class Contact extends Model
 
         //dynamische groepen
         $dynamicGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())
-            ->where('show_contact_form', true)->where('type_id', ContactGroupType::DYNAMIC->value)->get();
+            ->where('show_contact_form', true)->where('type_id', ContactGroupType::DYNAMIC)->get();
 
         $dynamicGroupsForContact = $dynamicGroups->filter(function ($dynamicGroup) {
             foreach ($dynamicGroup->all_contacts as $dynamic_contact) {
@@ -681,7 +681,7 @@ class Contact extends Model
 
         //samengestelde groepen
         $composedGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())
-            ->where('show_contact_form', true)->where('type_id', ContactGroupType::COMPOSED->value)->get();
+            ->where('show_contact_form', true)->where('type_id', ContactGroupType::COMPOSED)->get();
 
         $composedGroupsForContact = $composedGroups->filter(function ($composedGroup) {
             foreach ($composedGroup->all_contacts as $composed_contact) {

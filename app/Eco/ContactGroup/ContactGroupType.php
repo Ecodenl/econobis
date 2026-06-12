@@ -11,7 +11,7 @@ enum ContactGroupType: string
     case STATIC = 'static';
     case DYNAMIC = 'dynamic';
     case COMPOSED = 'composed';
-    case SIMULATED = 'SIMULATED';
+    case SIMULATED = 'simulated';
 
     public function getName(): string
     {

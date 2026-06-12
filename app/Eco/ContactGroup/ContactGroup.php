@@ -30,7 +30,9 @@ class ContactGroup extends Model
         'closed' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
-    ];
+        'type_id' => ContactGroupType::class,
+        'inspection_person_type_id' => InspectionPersonType::class,
+        ];
 
     //gebruikt om infinite loop te checken bij samengestelde groepen
     private $hasComposedIds = [];
@@ -355,7 +357,9 @@ class ContactGroup extends Model
         // default: lege array of geen resultaat
         $result = $onlyIds ? [] : false;
 
-        if ($this->type_id === ContactGroupType::STATIC || $this->type_id === ContactGroupType::SIMULATED) {
+        $contactGroupType = $this->getType();
+
+        if ($contactGroupType === ContactGroupType::STATIC || $contactGroupType === ContactGroupType::SIMULATED) {
             if ($this->composed_of === 'contacts') {
                 if($onlyIds){
                     $result = $this->contacts()->get()->pluck('id')->toArray();
@@ -386,7 +390,7 @@ class ContactGroup extends Model
                     }
                 }
             }
-        } elseif ($this->type_id === ContactGroupType::DYNAMIC) {
+        } elseif ($contactGroupType === ContactGroupType::DYNAMIC) {
             if ($this->composed_of === 'contacts') {
                 if($onlyIds){
                     $result = $this->getDynamicContacts()->get()->pluck('id')->toArray();
@@ -417,7 +421,7 @@ class ContactGroup extends Model
                     }
                 }
             }
-        } elseif ($this->type_id === ContactGroupType::COMPOSED) {
+        } elseif ($contactGroupType === ContactGroupType::COMPOSED) {
             $contactCollections = $this->composed_contacts->diff($this->composed_except_contacts);
             if($onlyIds){
                 $result = $contactCollections->pluck('id')->toArray();
@@ -434,7 +438,7 @@ class ContactGroup extends Model
 
     //prevents deleting in grid
     public function getIsUsedInComposedGroupAttribute(){
-        $composedGroups = ContactGroup::where('type_id', ContactGroupType::COMPOSED->value)->get();
+        $composedGroups = ContactGroup::where('type_id', ContactGroupType::COMPOSED)->get();
 
         foreach ($composedGroups as $composedGroup){
             foreach ($composedGroup->contactGroups as $contactGroup){
@@ -451,7 +455,7 @@ class ContactGroup extends Model
     }
 
     public function getParentGroupsArrayAttribute(){
-        $composedGroups = ContactGroup::where('type_id', ContactGroupType::COMPOSED->value)->get();
+        $composedGroups = ContactGroup::where('type_id', ContactGroupType::COMPOSED)->get();
 
         $parentGroups = [];
 
@@ -467,7 +471,7 @@ class ContactGroup extends Model
     }
 
     public function getParentGroupsExceptedArrayAttribute(){
-        $composedGroups = ContactGroup::where('type_id', ContactGroupType::COMPOSED->value)->get();
+        $composedGroups = ContactGroup::where('type_id', ContactGroupType::COMPOSED)->get();
 
         $parentGroups = [];
 
@@ -485,8 +489,9 @@ class ContactGroup extends Model
     // syncronized with lapasta
     public function getIsUsedInLapostaAttribute(){
 
+        $contactGroupType = $this->getType();
         // Dynamic of Composed groups worden met simulated group gesyncroniseerd met laposta.
-        if($this->type_id === ContactGroupType::DYNAMIC || $this->type_id === ContactGroupType::COMPOSED ){
+        if($contactGroupType === ContactGroupType::DYNAMIC || $contactGroupType === ContactGroupType::COMPOSED ){
             if($this->simulatedGroup){
                 return ContactGroup::where('id', $this->simulatedGroup->id)->whereNotNull('laposta_list_id')->exists();
             }

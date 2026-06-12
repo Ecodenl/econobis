@@ -21,6 +21,7 @@ use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactType;
 use App\Eco\ContactGroup\ContactGroup;
+use App\Eco\ContactGroup\ContactGroupType;
 use App\Eco\ContactNote\ContactNote;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\Country\Country;
@@ -3276,7 +3277,7 @@ class ExternalWebformController extends Controller
                 return;
             }
 
-            if ($contactGroup->type_id != 'static') {
+            if ($contactGroup->type_id !== ContactGroupType::STATIC) {
                 $this->log('Een contact kan alleen aan een statische groep worden gekoppeld, geen groep gekoppeld.');
                 return;
             }
@@ -3314,7 +3315,7 @@ class ExternalWebformController extends Controller
                 $this->log('Er is/zijn 1 of meerdere contactgroep(en) meegegeven, groep(en) koppelen.');
 
                 foreach ($contactGroups as $contactGroup) {
-                    if ($contactGroup->type_id != 'static') {
+                    if ($contactGroup->type_id !== ContactGroupType::STATIC) {
                         $this->log('Een contact kan alleen aan een statische groep worden gekoppeld, groep ' . $contactGroup->name . ' niet gekoppeld aan contact ' . $contact->id . '.');
                     } else {
                         if ($contactGroup->contacts()->where('contact_id', $contact->id)->exists()) {
@@ -3362,7 +3363,7 @@ class ExternalWebformController extends Controller
                 $this->log('Er is/zijn 1 of meerdere contactgroep(en) contactpersoon meegegeven, groep(en) koppelen aan de persoon.');
 
                 foreach ($contactGroups as $contactGroup) {
-                    if ($contactGroup->type_id != 'static') {
+                    if ($contactGroup->type_id !== ContactGroupType::STATIC) {
                         $this->log('Een contact kan alleen aan een statische groep worden gekoppeld, groep ' . $contactGroup->name . ' niet gekoppeld aan contact ' . $contact->id . '.');
                     } else {
                         if ($contactGroup->contacts()->where('contact_id', $contact->id)->exists()) {

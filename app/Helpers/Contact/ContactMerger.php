@@ -333,10 +333,6 @@ class ContactMerger
             $addressEnergyConsumptionElectricityPeriod->save();
         }
 
-        //todo WM: hier nog mergen van free fields
-//        foreach ($fromAddress->freeFieldsFieldRecords as $freeFieldsFieldRecord) {
-//        }
-
         $fromAddress->delete();
     }
 
@@ -351,10 +347,7 @@ class ContactMerger
     private function mergeGenericHasManyRelation(string $relationName)
     {
         $foreignKey = $this->fromContact->{$relationName}()->getQualifiedForeignKeyName();
-//todo WM: opschonen !!
-        $foreignKey2 = $this->fromContact->{$relationName}()->getForeignKeyName();
-Log::info('foreignKey: ' . $foreignKey);
-Log::info('foreignKey2: ' . $foreignKey2);
+
         foreach ($this->fromContact->$relationName as $relation) {
             $relation->$foreignKey = $this->toContact->id;
             $relation->save();

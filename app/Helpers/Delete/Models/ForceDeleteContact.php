@@ -281,7 +281,11 @@ class ForceDeleteContact
             $address->addressEnergySuppliers()->withTrashed()->get()->each(function ($aes) {
                 $aes->forceDelete();
             });
-
+            // free fields field records bij adres ook weg
+            $address->freeFieldsFieldRecords()->withTrashed()->get()->each(function ($fffr) {
+                $fffr->freeFieldsFieldLogs()->delete();
+                $fffr->forceDelete();
+            });
             // intakes onder address eerst weg
 //            $address->intakes()->withTrashed()->get()->each(function ($intake) {
 //                $this->forceDeleteIntake($intake);

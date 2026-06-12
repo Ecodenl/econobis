@@ -49,6 +49,11 @@ class ProcessSendingGroupEmail implements ShouldQueue
                 'contact_group_id' => $this->email->contact_group_id,
                 'email_id' => $this->email->id,
                 'user_id' => $this->user->id,
+                'pid' => getmypid(),
+                'app_env' => app()->environment(),
+                'running_in_console' => app()->runningInConsole(),
+                'base_path' => base_path(),
+                'laravel_version' => app()->version(),
                 'firstCall' => $this->firstCall,
                 'mail_contact_group_with_single_mail' => $this->email->mail_contact_group_with_single_mail,
                 'contacts_pivot_count' => $this->email->contacts()->count(),
@@ -87,6 +92,21 @@ class ProcessSendingGroupEmail implements ShouldQueue
             $jobLog->user_id = $this->user->id;
             $jobLog->job_category_id = 'email';
             $jobLog->save();
+
+            if ($this->debugModus) {
+                $contactGroup = ContactGroup::find($this->email->contact_group_id);
+
+                Log::info('ProcessSendingGroupEmail contactGroup details', [
+                    'email_id' => $this->email->id,
+                    'contact_group_id' => $contactGroup?->id,
+                    'name' => $contactGroup?->name,
+                    'type_id' => $contactGroup?->type_id,
+                    'composed_of' => $contactGroup?->composed_of,
+                    'dynamic_filter_type' => $contactGroup?->dynamic_filter_type,
+                    'contacts_relation_count' => $contactGroup?->contacts()->count(),
+                    'participants_relation_count' => $contactGroup?->participants()->count(),
+                ]);
+            }
 
             $this->prepareContactEmailsForGroup();
 

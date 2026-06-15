@@ -32,9 +32,9 @@ class OpportunityFormEdit extends Component {
             status,
             datePlannedToSendWfEmailStatus,
             amount,
+            opportunityCode,
             belowWozLimit,
             exceptionDebtRelief,
-            opportunityCode,
         } = props.opportunity;
 
         this.state = {
@@ -62,9 +62,9 @@ class OpportunityFormEdit extends Component {
                 evaluationAgreedDate: evaluationAgreedDate ? evaluationAgreedDate : '',
                 desiredDate: desiredDate ? desiredDate : '',
                 amount: amount ? amount : '',
+                opportunityCode: opportunityCode ? opportunityCode : '',
                 belowWozLimit: belowWozLimit,
                 exceptionDebtRelief: exceptionDebtRelief,
-                opportunityCode: opportunityCode ? opportunityCode : '',
                 // evaluationIsRealised: props.opportunity ? props.opportunity.evaluationIsRealised : 1,
                 // evaluationIsStatisfied: props.opportunity ? props.opportunity.evaluationIsStatisfied : 1,
                 // evaluationWouldRecommendOrganisation: props.opportunity
@@ -172,9 +172,9 @@ class OpportunityFormEdit extends Component {
             measureIds,
             measureIdsSelected,
             amount,
+            opportunityCode,
             belowWozLimit,
             exceptionDebtRelief,
-            opportunityCode,
         } = this.state.opportunity;
         const { intake, measureCategory } = this.props.opportunity;
         const measuresMatchToCategory = MeasuresOfCategory(this.props.measures, measureCategory.id);

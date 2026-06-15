@@ -166,8 +166,10 @@ class ContactGroup extends Model
     {
         $requestQuery = '';
 
-        $filters = $this->filters;
-        $extraFilters = $this->extraFilters;
+//        $filters = $this->filters;
+//        $extraFilters = $this->extraFilters;
+        $filters = $this->filters()->get();
+        $extraFilters = $this->extraFilters()->get();
 
         $requestFilters = [];
         $requestExtraFilters = [];
@@ -405,7 +407,29 @@ class ContactGroup extends Model
                 }
             } else {
                 if ($this->composed_of === 'participants') {
+//                    if ($doLog) {
+//                        Log::info('getAllContacts dynamic participants start', [
+//                            'group_id' => $this->id,
+//                            'group_name' => $this->name,
+//                            'onlyIds' => $onlyIds,
+//                            'doLog' => $doLog,
+//                            'auth_check' => auth()->check(),
+//                            'auth_user_id' => auth()->id(),
+//                            'running_in_console' => app()->runningInConsole(),
+//                            'db_database' => config('database.connections.' . config('database.default') . '.database'),
+//                        ]);
+//                    }
+
                     $participants = $this->getDynamicContacts()->get();
+
+//                    if ($doLog) {
+//                        Log::info('getAllContacts dynamic participants result', [
+//                            'group_id' => $this->id,
+//                            'participants_count' => $participants->count(),
+//                            'contact_ids_count' => $participants->pluck('contact_id')->filter()->unique()->count(),
+//                            'first_contact_ids' => $participants->pluck('contact_id')->filter()->take(10)->values()->toArray(),
+//                        ]);
+//                    }
 
                     $participants->load(['contact']);
 
@@ -506,7 +530,7 @@ class ContactGroup extends Model
         }
 
         return false;
-   }
+    }
 
     // Contactgroup up-to-date with Laposta?
     public function getGroupUpToDateWithLapostaAttribute(){

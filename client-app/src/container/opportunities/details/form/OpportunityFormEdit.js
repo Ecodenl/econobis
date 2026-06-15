@@ -36,8 +36,7 @@ class OpportunityFormEdit extends Component {
             belowWozLimit,
             exceptionDebtRelief,
         } = props.opportunity;
-        // console.log('belowWozLimit ' + belowWozLimit);
-        // console.log('exceptionDebtRelief ' + exceptionDebtRelief);
+
         this.state = {
             status: props.status.filter(item => item.active == 1),
             yesNoOptions: [
@@ -177,7 +176,6 @@ class OpportunityFormEdit extends Component {
             belowWozLimit,
             exceptionDebtRelief,
         } = this.state.opportunity;
-        // console.log(this.state.opportunity);
         const { intake, measureCategory } = this.props.opportunity;
         const measuresMatchToCategory = MeasuresOfCategory(this.props.measures, measureCategory.id);
 

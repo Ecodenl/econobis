@@ -145,8 +145,7 @@ class AddressSpukLaiExcelHelper
          $rowData[1] = $address ? $address->number : '';
          $rowData[2] = $address ? $address->addition : '';
          $rowData[3] = $address ? $address->postal_code : '';
-//         $rowData[4] = $address ? $address->city : '';
-         $rowData[4] = ($address ? $address->city : '') . ' - ' . $opportunity->number;
+         $rowData[4] = $address ? $address->city : '';
          $rowData[5] = $opportunity ? ( $opportunity->below_woz_limit == 1 ? 'Onder' : ($opportunity->below_woz_limit == 0 ? 'Boven' : '') )  : '';
          $rowData[6] = $housingFile?->energyLabel ? $housingFile->energyLabel->name : 'Niet aanwezig';
 

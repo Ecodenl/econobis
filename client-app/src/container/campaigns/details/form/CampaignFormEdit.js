@@ -10,6 +10,7 @@ import ButtonText from '../../../../components/button/ButtonText';
 import PanelFooter from '../../../../components/panel/PanelFooter';
 import CampaignDetailsAPI from '../../../../api/campaign/CampaignDetailsAPI';
 import InputMultiSelect from '../../../../components/form/InputMultiSelect';
+import InputToggle from '../../../../components/form/InputToggle';
 
 moment.locale('nl');
 
@@ -89,6 +90,17 @@ function CampaignFormEdit({
 
         if (validator.isEmpty('' + formState.typeId)) {
             errorsObj.type = true;
+            hasErrors = true;
+        }
+
+        // Check of waarde leeg is
+        if (!formState.subsidyPossible) {
+            formState.wozLimit = null;
+        } else if (!isNaN(parseFloat(formState.wozLimit)) && parseFloat(formState.wozLimit) < 0) {
+            errorsObj.wozLimit = true;
+            hasErrors = true;
+        } else if (isNaN(parseFloat(formState.wozLimit))) {
+            errorsObj.wozLimit = true; // Ongeldige invoer
             hasErrors = true;
         }
 
@@ -201,6 +213,32 @@ function CampaignFormEdit({
                     error={errors.type}
                 />
             </div>
+
+            <div className="row">
+                <InputToggle
+                    label="Subsidie mogelijk"
+                    divSize={'col-sm-6'}
+                    name="subsidyPossible"
+                    value={formState.subsidyPossible}
+                    required={'required'}
+                    onChangeAction={handleInputChange}
+                />
+            </div>
+            {formState.subsidyPossible ? (
+                <div className="row">
+                    <InputText
+                        label={'WOZ grens'}
+                        size={'col-sm-6'}
+                        name={'wozLimit'}
+                        value={formState.wozLimit}
+                        allowZero={true}
+                        onChangeAction={handleInputChange}
+                        required={'required'}
+                        error={errors.wozLimit}
+                    />
+                </div>
+            ) : null}
+
             <PanelFooter>
                 <div className="pull-right btn-group" role="group">
                     <ButtonText buttonClassName={'btn-default'} buttonText={'Annuleren'} onClickAction={switchToView} />

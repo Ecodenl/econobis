@@ -16,9 +16,9 @@ const OpportunityFormView = props => {
         measureCategory,
         measures,
         amount,
+        opportunityCode,
         belowWozLimit,
         exceptionDebtRelief,
-        opportunityCode,
     } = props.opportunity;
 
     return (

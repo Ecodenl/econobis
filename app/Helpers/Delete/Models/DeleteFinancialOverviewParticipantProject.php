@@ -26,6 +26,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class DeleteFinancialOverviewParticipantProject implements DeleteInterface
 {
+    private bool $isCleanup = false;
+    private bool $force = false; // default softdelete
     private $errorMessage = [];
     private $financialOverviewParticipantProject;
 
@@ -34,9 +36,10 @@ class DeleteFinancialOverviewParticipantProject implements DeleteInterface
      * @param Model $financialOverviewParticipantProject the model to delete
      */
 
-    public function __construct(Model $financialOverviewParticipantProject)
+    public function __construct(Model $financialOverviewParticipantProject, bool $isCleanup = false)
     {
         $this->financialOverviewParticipantProject = $financialOverviewParticipantProject;
+        $this->isCleanup = $isCleanup;
     }
 
     /** Main method for deleting this model and all it's relations
@@ -46,13 +49,19 @@ class DeleteFinancialOverviewParticipantProject implements DeleteInterface
      */
     public function delete()
     {
-        $this->canDelete();
+        if (! $this->canDelete()) {
+            return $this->errorMessage;
+        }
+
         $this->deleteModels();
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->financialOverviewParticipantProject->delete();
 
+        if (count($this->errorMessage) === 0) {
+            $this->force ? $this->financialOverviewParticipantProject->forceDelete()
+                : $this->financialOverviewParticipantProject->delete();
+        }
         return $this->errorMessage;
     }
 
@@ -60,21 +69,40 @@ class DeleteFinancialOverviewParticipantProject implements DeleteInterface
      */
     public function canDelete()
     {
+        $isDraft = $this->financialOverviewParticipantProject->status_id === 'concept';
+
+        if ($isDraft) {
+            if (! $this->isCleanup) {
+                $this->force = true;
+            }
+
+            return true;
+        }
+
+        $foDescription = $this->financialOverviewParticipantProject->financialOverview?->description ?? '*onbekend*';
+        $projectId = $this->financialOverviewParticipantProject?->financialOverviewProject?->project_id ?? '?';
+        $projectCode = $this->financialOverviewParticipantProject?->financialOverviewProject?->project?->code ?? 'onbekend';
+        $participationId = $this->financialOverviewParticipantProject?->participant_project_id ?? '?';
+        $contactId = $this->financialOverviewParticipantProject?->contact_id ?? '?';
+        $contactName = $this->financialOverviewParticipantProject?->contact?->full_name_fnf ?? '*contact onbekend*';
+
         if($this->financialOverviewParticipantProject->status_id === 'sent'){
-            array_push($this->errorMessage, "Er zijn al waardestaten voor deelnemer verzonden.");
+            array_push($this->errorMessage, "Waardestaat " . $foDescription . " voor deelnemer " . $contactName . " (" . $participationId . ") verzonden bij project " . $projectCode . " (" . $projectId . ")." );
         }
         $hasFinancialOverviewDefinitive = ParticipantMutation::where('participation_id', $this->financialOverviewParticipantProject->participant_project_id)
             ->where('financial_overview_definitive', true)->exists();
         if($hasFinancialOverviewDefinitive){
-            array_push($this->errorMessage, "Er zijn al mutaties voor deelnemer verwerkt in een definitieve project waarde staat.");
+            array_push($this->errorMessage, "Waardestaat " . $foDescription . " is al definitief voor deelnemer " . $contactName . " (" . $participationId . ") met mutaties bij project " . $projectCode . " (" . $projectId . ").");
         }
         $hasFinancialOverviewContactSent = FinancialOverviewContact::where('financial_overview_id',  $this->financialOverviewParticipantProject->financialOverviewProject->financial_overview_id)
             ->where('contact_id',  $this->financialOverviewParticipantProject->contact_id)
             ->where('status_id', 'sent')->exists();
 
         if($hasFinancialOverviewContactSent){
-            array_push($this->errorMessage, "Er zijn al waardestaten voor contact verzonden.");
+            array_push($this->errorMessage, "Waardestaat " . $foDescription . " voor contact " . $contactName . " (" . $contactId . ") verzonden bij project " . $projectCode . " (" . $projectId . ")." );
         }
+
+        return count($this->errorMessage) === 0;
     }
 
     /** Deletes models recursive

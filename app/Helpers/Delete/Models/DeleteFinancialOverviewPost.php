@@ -24,6 +24,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class DeleteFinancialOverviewPost implements DeleteInterface
 {
+    private bool $isCleanup = false;
+    private bool $force = false; // default softdelete
     private $errorMessage = [];
     private $financialOverviewPost;
 
@@ -32,9 +34,10 @@ class DeleteFinancialOverviewPost implements DeleteInterface
      * @param Model $financialOverviewPost the model to delete
      */
 
-    public function __construct(Model $financialOverviewPost)
+    public function __construct(Model $financialOverviewPost, bool $isCleanup = false)
     {
         $this->financialOverviewPost = $financialOverviewPost;
+        $this->isCleanup = $isCleanup;
     }
 
     /** Main method for deleting this model and all it's relations
@@ -44,13 +47,18 @@ class DeleteFinancialOverviewPost implements DeleteInterface
      */
     public function delete()
     {
-        $this->canDelete();
+        if (! $this->canDelete()) {
+            return $this->errorMessage;
+        }
         $this->deleteModels();
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->financialOverviewPost->delete();
 
+        if (count($this->errorMessage) === 0) {
+            $this->force ? $this->financialOverviewPost->forceDelete()
+                : $this->financialOverviewPost->delete();
+        }
         return $this->errorMessage;
     }
 
@@ -58,7 +66,11 @@ class DeleteFinancialOverviewPost implements DeleteInterface
      */
     public function canDelete()
     {
+        $foDescription = $this->financialOverviewPost->financialOverview?->description ?? '*onbekend*';
+
         array_push($this->errorMessage, "Er is al een bestand waardestaat post aangemaakt. Een waardestaat kan niet worden verwijderd vanwege de bewaarplicht.");
+
+        return count($this->errorMessage) === 0;
     }
 
     /** Deletes models recursive

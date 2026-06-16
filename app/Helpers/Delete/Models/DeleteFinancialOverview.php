@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Log;
  */
 class DeleteFinancialOverview implements DeleteInterface
 {
+    private bool $isCleanup = false;
+    private bool $force = false; // default softdelete
     private $errorMessage = [];
     private $financialOverview;
 
@@ -40,6 +42,8 @@ class DeleteFinancialOverview implements DeleteInterface
     public function cleanup()
     {
         try {
+            $this->isCleanup = true;
+            $this->force = false;     // cleanup = altijd soft
             return $this->delete();
         } catch (\Exception $exception) {
             Log::error('Fout bij opschonen Waardestaten', [
@@ -63,7 +67,8 @@ class DeleteFinancialOverview implements DeleteInterface
         $this->customDeleteActions();
 
         if (count($this->errorMessage) === 0) {
-            $this->financialOverview->delete();
+            $this->force ? $this->financialOverview->forceDelete()
+                : $this->financialOverview->delete();
         }
 
         return $this->errorMessage;
@@ -78,6 +83,7 @@ class DeleteFinancialOverview implements DeleteInterface
         // - Extra (nieuw) voor fiscal-date: als er gekoppelde contacten in excluded groups zitten => blokkeren (zodra het een “bewaarde” waardestaat is).
 
         $isDefinitive = (bool) $this->financialOverview->definitive;
+        $foDescription = $this->financialOverview?->description ?? '*onbekend*';
 
         // Pre-load collections (zodat we consistent dezelfde data gebruiken)
         $projects = $this->financialOverview->financialOverviewProjects;
@@ -87,23 +93,28 @@ class DeleteFinancialOverview implements DeleteInterface
         // 1) Niet definitief: alleen blokkeren op dezelfde checks als vroeger
         if (! $isDefinitive) {
             if ($projects->where('definitive', true)->count() > 0) {
-                $this->errorMessage[] = "Er zijn al definitieve projecten gekoppeld aan deze waardestaat.";
-                return false;
+                $this->errorMessage[] = "Er zijn al definitieve projecten gekoppeld aan deze waardestaat " . $foDescription . ".";
             }
 
             if ($contacts->where('status_id', '!=', 'concept')->count() > 0) {
-                $this->errorMessage[] = "Er zijn al contacten in behandeling voor deze waardestaat.";
-                return false;
+                $this->errorMessage[] = "Er zijn al contacten in behandeling voor deze waardestaat " . $foDescription . ".";
             }
 
             if ($posts->count() > 0) {
-                $this->errorMessage[] = "Er zijn al bestanden waardestaten post gemaakt.";
-                return false;
+                $this->errorMessage[] = "Er zijn al bestanden waardestaten post gemaakt voor deze waardestaat " . $foDescription . ".";
             }
 
+            $isDraft = $this->financialOverview->status_id === 'concept';
 
-            // Concept zonder blokkades: mag weg (oude gedrag)
-            return true;
+            if ($isDraft && count($this->errorMessage) === 0 ) {
+                if (! $this->isCleanup) {
+                    $this->force = true;
+                }
+
+                return true;
+            }
+
+            return count($this->errorMessage) === 0;
         }
 
         // 2) Wel definitief: fiscal-excluded check (alleen relevant als fiscal retention aan staat)
@@ -144,17 +155,17 @@ class DeleteFinancialOverview implements DeleteInterface
     public function deleteModels()
     {
         foreach ($this->financialOverview->financialOverviewProjects as $financialOverviewProject){
-            $deleteFinancialOverviewProject = new DeleteFinancialOverviewProject($financialOverviewProject);
+            $deleteFinancialOverviewProject = new DeleteFinancialOverviewProject($financialOverviewProject, $this->isCleanup);
             $this->errorMessage = array_merge($this->errorMessage, ( $deleteFinancialOverviewProject->delete() ?? [] ) );
         }
 
         foreach ($this->financialOverview->financialOverviewContacts as $financialOverviewContact){
-            $deleteFinancialOverviewContact = new DeleteFinancialOverviewContact($financialOverviewContact);
+            $deleteFinancialOverviewContact = new DeleteFinancialOverviewContact($financialOverviewContact, $this->isCleanup);
             $this->errorMessage = array_merge($this->errorMessage, ( $deleteFinancialOverviewContact->delete() ?? [] ) );
         }
 
         foreach ($this->financialOverview->financialOverviewPosts as $financialOverviewPost){
-            $deleteFinancialOverviewPost = new DeleteFinancialOverviewPost($financialOverviewPost);
+            $deleteFinancialOverviewPost = new DeleteFinancialOverviewPost($financialOverviewPost, $this->isCleanup);
             $this->errorMessage = array_merge($this->errorMessage, ( $deleteFinancialOverviewPost->delete() ?? [] ) );
         }
 

@@ -29,9 +29,10 @@ class DeleteFinancialOverviewContact implements DeleteInterface
     private ?array $excludedContactIds = null;
     private string $cleanupCodeRef = 'financialOverviewContacts';
 
-    public function __construct(Model $financialOverviewContact)
+    public function __construct(Model $financialOverviewContact, bool $isCleanup = false)
     {
         $this->financialOverviewContact = $financialOverviewContact;
+        $this->isCleanup = $isCleanup;
 
         $this->cooperation = Cooperation::first();
 

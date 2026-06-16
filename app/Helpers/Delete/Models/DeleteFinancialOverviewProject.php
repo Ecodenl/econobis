@@ -24,6 +24,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class DeleteFinancialOverviewProject implements DeleteInterface
 {
+    private bool $isCleanup = false;
+    private bool $force = false; // default softdelete
     private $errorMessage = [];
     private $financialOverviewProject;
 
@@ -32,9 +34,10 @@ class DeleteFinancialOverviewProject implements DeleteInterface
      * @param Model $financialOverviewProject the model to delete
      */
 
-    public function __construct(Model $financialOverviewProject)
+    public function __construct(Model $financialOverviewProject, bool $isCleanup = false)
     {
         $this->financialOverviewProject = $financialOverviewProject;
+        $this->isCleanup = $isCleanup;
     }
 
     /** Main method for deleting this model and all it's relations
@@ -44,12 +47,21 @@ class DeleteFinancialOverviewProject implements DeleteInterface
      */
     public function delete()
     {
-        $this->canDelete();
+        if (! $this->canDelete()) {
+            return $this->errorMessage;
+        }
         $this->deleteModels();
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->financialOverviewProject->delete();
+
+        if (count($this->errorMessage) === 0) {
+            if ($this->force) {
+                $this->financialOverviewProject->forceDelete();
+            } else {
+                $this->financialOverviewProject->delete();
+            }
+        }
 
         return $this->errorMessage;
     }
@@ -58,9 +70,25 @@ class DeleteFinancialOverviewProject implements DeleteInterface
      */
     public function canDelete()
     {
-        if($this->financialOverviewProject->definitive == true){
-            array_push($this->errorMessage, "Waardestaat voor project " . $this->financialOverviewProject->project->name. " is al definitief.");
+        $isDraft = $this->financialOverviewProject->status_id === 'concept';
+
+        if ($isDraft) {
+            if (! $this->isCleanup) {
+                $this->force = true;
+            }
+
+            return true;
         }
+
+        $foDescription = $this->financialOverviewProject->financialOverview?->description ?? '*onbekend*';
+        $projectId = $this->financialOverviewProject?->project_id ?? '?';
+        $projectCode = $this->financialOverviewProject?->project?->code ?? 'onbekend';
+
+        if($this->financialOverviewProject->definitive == true){
+            array_push($this->errorMessage, "Waardestaat " . $foDescription . " voor project " . $projectCode . " (" . $projectId . ") is al definitief.");
+        }
+
+        return count($this->errorMessage) === 0;
     }
 
     /** Deletes models recursive
@@ -68,14 +96,9 @@ class DeleteFinancialOverviewProject implements DeleteInterface
     public function deleteModels()
     {
         foreach ($this->financialOverviewProject->financialOverviewParticipantProjects as $financialOverviewParticipantProject){
-            $deleteFinancialOverviewParticipantProject = new DeleteFinancialOverviewParticipantProject($financialOverviewParticipantProject);
-            // this can resolve in a lot of messages, we not going to share them all, just a general error.
-            $errorMessagesDeleteFOPP = $deleteFinancialOverviewParticipantProject->delete();
-            if($errorMessagesDeleteFOPP){
-                $this->errorMessage = array_merge($this->errorMessage, ['Fouten bij verwijderen waardestaat deelnames']);
-            }
+            $deleteFinancialOverviewParticipantProject = new DeleteFinancialOverviewParticipantProject($financialOverviewParticipantProject, $this->isCleanup);
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteFinancialOverviewParticipantProject->delete() ?? [] ) );
         }
-
     }
 
     /** The relations which should be dissociated

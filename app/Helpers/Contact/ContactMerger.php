@@ -5,6 +5,7 @@ namespace App\Helpers\Contact;
 use App\Eco\Address\Address;
 use App\Eco\Contact\Contact;
 use App\Helpers\AddressEnergySupplier\AddressEnergySupplierHelper;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -122,11 +123,18 @@ class ContactMerger
                 $messages = AddressEnergySupplierHelper::getDeleteBlockingMessages($addressEnergySupplier);
 
                 if (!empty($messages)) {
+                    $esName = $addressEnergySupplier->energySupplier?->name ?? '*onbekend*';
+                    $esMemberSince = $addressEnergySupplier->member_since ? (Carbon::parse($addressEnergySupplier->member_since)->format('d-m-Y') ) : '';
+                    $address = $fromAddress->street . ' ' . $fromAddress->number . ($fromAddress->addition ?: '');
+
                     throw new ContactMergeException(
-                        'Contacten kunnen niet worden samengevoegd omdat bij adres '
-                        . $fromAddress->street . ' ' . $fromAddress->number
-                        . ($fromAddress->addition ? $fromAddress->addition : '')
-                        . ' energieleveranciergegevens van het te verwijderen contact nog nodig zijn voor een nog niet verwerkte opbrengstverdeling.'
+                        'Gegevens van adres '
+                        . $address
+                        . ' en energieleverancier '
+                        . $esName
+                        . ' (vanaf '
+                        . $esMemberSince
+                        . ') van het te verwijderen contact zijn nog nodig voor een nog niet verwerkte opbrengstverdeling.'
                     );
                 }
             }

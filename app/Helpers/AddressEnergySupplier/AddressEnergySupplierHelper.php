@@ -85,7 +85,17 @@ class AddressEnergySupplierHelper
         $messages = [];
 
         if (self::wouldCauseMissingEnergySupplierInRevenueDistribution($addressEnergySupplier)) {
-            $messages[] = 'Deze energieleverancier kan niet verwijderd worden omdat deze nog nodig is voor een nog niet verwerkte opbrengstverdeling.';
+            $esName = $addressEnergySupplier->energySupplier?->name ?? '*onbekend*';
+            $esMemberSince = $addressEnergySupplier->member_since ? (Carbon::parse($addressEnergySupplier->member_since)->format('d-m-Y') ) : '';
+            $address = $addressEnergySupplier->address?->street . ' ' . $addressEnergySupplier->address?->number . ($addressEnergySupplier->address?->addition ?: '');
+
+            $messages[] = 'Energieleverancier '
+                . $esName
+                . ' (vanaf '
+                . $esMemberSince
+                . ') bij adres '
+                . $address
+                . ' kan niet verwijderd worden omdat deze nog nodig is voor een nog niet verwerkte opbrengstverdeling.';
         }
 
         return $messages;

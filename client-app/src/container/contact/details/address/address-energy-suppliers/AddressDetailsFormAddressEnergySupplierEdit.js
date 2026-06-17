@@ -87,6 +87,10 @@ const AddressDetailsFormAddressEnergySupplierEdit = ({
                             onChangeAction={handleInputChangeDate}
                             required="required"
                             error={errors.memberSince}
+                            size={'col-sm-5'}
+                            textToolTip={
+                                'Alleen de meest recente klant sinds mag gewijzigd worden. Eind datum van eventueel vorige periode bij zelfde Type wordt automatisch aangepast om gaten of overlappingen te voorkomen.'
+                            }
                         />
                         <InputDate
                             label="Eind datum"
@@ -97,6 +101,8 @@ const AddressDetailsFormAddressEnergySupplierEdit = ({
                             onChangeAction={handleInputChangeDate}
                             required={endDateRequired ? 'required' : ''}
                             error={errors.endDate}
+                            size={'col-sm-5'}
+                            textToolTip={'Alleen de meest recente eind datum mag gewijzigd worden.'}
                         />
                     </div>
 

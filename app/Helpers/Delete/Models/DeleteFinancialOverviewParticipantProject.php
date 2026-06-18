@@ -71,27 +71,20 @@ class DeleteFinancialOverviewParticipantProject implements DeleteInterface
             return true;
         }
 
-        $foDescription = $this->financialOverviewParticipantProject->financialOverview?->description ?? '*onbekend*';
-        $projectId = $this->financialOverviewParticipantProject?->financialOverviewProject?->project_id ?? '?';
-        $projectCode = $this->financialOverviewParticipantProject?->financialOverviewProject?->project?->code ?? 'onbekend';
-        $participationId = $this->financialOverviewParticipantProject?->participant_project_id ?? '?';
-        $contactId = $this->financialOverviewParticipantProject?->contact_id ?? '?';
-        $contactName = $this->financialOverviewParticipantProject?->contact?->full_name_fnf ?? '*contact onbekend*';
-
         if($this->financialOverviewParticipantProject->status_id === 'sent'){
-            array_push($this->errorMessage, "Waardestaat " . $foDescription . " voor deelnemer " . $contactName . " (" . $participationId . ") verzonden bij project " . $projectCode . " (" . $projectId . ")." );
+            array_push($this->errorMessage, "Er zijn al waardestaten voor deelnemer verzonden.");
         }
         $hasFinancialOverviewDefinitive = ParticipantMutation::where('participation_id', $this->financialOverviewParticipantProject->participant_project_id)
             ->where('financial_overview_definitive', true)->exists();
         if($hasFinancialOverviewDefinitive){
-            array_push($this->errorMessage, "Waardestaat " . $foDescription . " is al definitief voor deelnemer " . $contactName . " (" . $participationId . ") met mutaties bij project " . $projectCode . " (" . $projectId . ").");
+            array_push($this->errorMessage, "Er zijn al mutaties voor deelnemer verwerkt in een definitieve project waarde staat.");
         }
         $hasFinancialOverviewContactSent = FinancialOverviewContact::where('financial_overview_id',  $this->financialOverviewParticipantProject->financialOverviewProject->financial_overview_id)
             ->where('contact_id',  $this->financialOverviewParticipantProject->contact_id)
             ->where('status_id', 'sent')->exists();
 
         if($hasFinancialOverviewContactSent){
-            array_push($this->errorMessage, "Waardestaat " . $foDescription . " voor contact " . $contactName . " (" . $contactId . ") verzonden bij project " . $projectCode . " (" . $projectId . ")." );
+            array_push($this->errorMessage, "Er zijn al waardestaten voor contact verzonden.");
         }
 
         return count($this->errorMessage) === 0;

@@ -229,7 +229,7 @@ class Administration extends Model
         return $this->orders()
             ->where('orders.status_id', 'active')
             ->whereHas('invoices', function ($q) {
-                $q->whereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending', 'is-exporting', 'error-exporting' ]);
+                $q->whereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ]);
             })->count();
     }
 

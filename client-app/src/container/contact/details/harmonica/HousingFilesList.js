@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 moment.locale('nl');
 
 import HousingFilesAPI from '../../../../api/housing-file/HousingFilesAPI';
+
+// Functionele wrapper voor de class component
+const HousingFileListWrapper = props => {
+    const navigate = useNavigate();
+    return <HousingFileList {...props} navigate={navigate} />;
+};
 
 class HousingFileList extends Component {
     constructor(props) {
@@ -23,7 +29,7 @@ class HousingFileList extends Component {
     }
 
     openItem = id => {
-        hashHistory.push(`/woningdossier/${id}`);
+        this.props.navigate(`/woningdossier/${id}`);
     };
 
     render() {
@@ -64,4 +70,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(HousingFileList);
+export default connect(mapStateToProps, null)(HousingFileListWrapper);

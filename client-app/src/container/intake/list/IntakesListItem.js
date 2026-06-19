@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
-import { setCheckedIntake } from '../../../actions/intake/IntakesActions';
-import { connect } from 'react-redux';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
+
+// Functionele wrapper voor de class component
+const IntakesListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <IntakesListItem {...props} navigate={navigate} />;
+};
 
 class IntakesListItem extends Component {
     constructor(props) {
@@ -31,12 +35,10 @@ class IntakesListItem extends Component {
         });
     }
 
-    setCheckedIntake(id) {
-        this.props.setCheckedIntake(id);
-    }
-
     openItem(id) {
-        hashHistory.push(`/intake/${id}`);
+        if (!this.props.showCheckbox) {
+            this.props.navigate(`/intake/${id}`);
+        }
     }
 
     render() {
@@ -50,6 +52,10 @@ class IntakesListItem extends Component {
             status,
             campaign,
             measuresRequestedNames = [],
+            sourcesNames = [],
+            showCheckbox,
+            toggleIntakeCheck,
+            intakeIds,
         } = this.props;
 
         return (
@@ -59,9 +65,14 @@ class IntakesListItem extends Component {
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
-                {this.props.showCheckbox && (
+                {showCheckbox && (
                     <td>
-                        <input type="checkbox" checked={checked} onChange={() => this.setCheckedIntake(id)} />
+                        <input
+                            type="checkbox"
+                            onChange={toggleIntakeCheck}
+                            name={id}
+                            checked={intakeIds && intakeIds.length > 0 ? intakeIds.includes(id) : false}
+                        />
                     </td>
                 )}
                 <td>{moment(createdAt).format('DD-MM-Y')}</td>
@@ -69,6 +80,7 @@ class IntakesListItem extends Component {
                 <td>{fullAddress}</td>
                 <td>{areaName}</td>
                 <td>{measuresRequestedNames.join(', ')}</td>
+                <td>{sourcesNames.join(', ')}</td>
                 <td>{status}</td>
                 <td>{campaign.name}</td>
                 <td>
@@ -85,10 +97,4 @@ class IntakesListItem extends Component {
     }
 }
 
-const mapDispatchToProps = dispatch => ({
-    setCheckedIntake: id => {
-        dispatch(setCheckedIntake(id));
-    },
-});
-
-export default connect(null, mapDispatchToProps)(IntakesListItem);
+export default IntakesListItemWrapper;

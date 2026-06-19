@@ -5,10 +5,11 @@ export const fetchEmailTemplate = id => {
     };
 };
 
-export const deleteEmailTemplate = id => {
+export const deleteEmailTemplate = (id, callback) => {
     return {
         type: 'DELETE_EMAIL_TEMPLATE',
         id,
+        callback,
     };
 };
 

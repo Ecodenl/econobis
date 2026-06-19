@@ -1,12 +1,14 @@
 import React from 'react';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Icon from 'react-icons-kit';
 import { trash } from 'react-icons-kit/fa/trash';
 
 const MailboxDetailsUsersView = props => {
+    const navigate = useNavigate();
+
     const { id, fullName } = props.user;
 
     return (

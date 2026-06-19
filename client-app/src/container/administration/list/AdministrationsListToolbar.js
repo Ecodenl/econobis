@@ -1,12 +1,14 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
 const AdministrationsListToolbar = props => {
+    const navigate = useNavigate();
+
     const newAdministration = () => {
-        hashHistory.push(`/administratie/nieuw`);
+        navigate(`/administratie/nieuw`);
     };
 
     return (

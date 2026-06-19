@@ -7,7 +7,10 @@ import { deleteContactInGroup } from '../../../actions/contact-group/ContactsInG
 const ContactsDeleteItem = props => {
     const confirmAction = () => {
         props.deleteContactInGroup(props.groupId, props.id);
-        props.closeDeleteItemModal();
+        setTimeout(() => {
+            props.closeDeleteItemModal();
+            props.refreshContactsInGroupData();
+        }, 1000);
     };
 
     return (

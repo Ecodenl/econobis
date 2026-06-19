@@ -8,7 +8,9 @@
 
 namespace App\Eco\QuotationRequest;
 
+use App\Eco\Campaign\CampaignWorkflow;
 use App\Eco\Opportunity\OpportunityAction;
+use App\Helpers\Opportunity\OpportunityHelper;
 use App\Helpers\Workflow\QuotationRequestWorkflowHelper;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -35,6 +37,22 @@ class QuotationRequestObserver
 
     public function saving(QuotationRequest $quotationRequest)
     {
+        // bij opportunity action type redirection (doorverwijzing) status naar In behandeling als datum afspraak poging is gezet.
+        $datePlannedAttempt1 = $quotationRequest->date_planned_attempt1;
+        $datePlannedAttempt1Original = $quotationRequest->getOriginal('date_planned_attempt1');
+        if($datePlannedAttempt1 != $datePlannedAttempt1Original)
+        {
+            $rediretionAction = OpportunityAction::where('code_ref', 'redirection')->first();
+            if($quotationRequest->opportunity_action_id == $rediretionAction->id){
+                if($quotationRequest->date_planned_attempt1){
+                    $underReviewStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'under-review')->first();
+                    if($underReviewStatus){
+                        $quotationRequest->status_id = $underReviewStatus->id;
+                    }
+                }
+            }
+        }
+
         $datePlannedAttempt3 = $quotationRequest->date_planned_attempt3;
         $datePlannedAttempt3Original = $quotationRequest->getOriginal('date_planned_attempt3');
         if($datePlannedAttempt3 != $datePlannedAttempt3Original)
@@ -54,14 +72,6 @@ class QuotationRequestObserver
                 $madeStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'made')->first();
                 if($madeStatus){
                     $quotationRequest->status_id = $madeStatus->id;
-// todo WM gevolg kans status: nog even niet. Denk niet dat je dit wilt als je meerdere kansacties hebt met verschillende statussen
-//  en dat kunnen ook nog eens kansacties zijn met verschillende opportunity action types (bezoek / offerteverzoek / budgetaanvraag
-//  Wellicht kans status bijwerken als er een kansactie status wijzigt en als er dan nog 1 of meerder zijn met status 'made' of 'under-review' of 'under-review-occupant', dan kans status op pending zetten ???
-//                    $pendingOpportunityStatus = OpportunityStatus::where('code_ref', 'pending')->first();
-//                    if($quotationRequest->opportunity){
-//                        $quotationRequest->opportunity->status_id = $pendingOpportunityStatus->id;
-//                        $quotationRequest->opportunity->save();
-//                    }
                 }
             }
         }
@@ -102,66 +112,94 @@ class QuotationRequestObserver
 //  wellicht aparte code_ref approved_client maken om kansactie op juiste status te zetten ?
         $dateApprovedClient = $quotationRequest->date_approved_client;
         $dateApprovedClientOriginal = $quotationRequest->getOriginal('date_approved_client');
-        if($dateApprovedClient != $dateApprovedClientOriginal)
+        $notApprovedClient = $quotationRequest->not_approved_client;
+        $notApprovedClientOriginal = $quotationRequest->getOriginal('not_approved_client');
+        if($dateApprovedClient != $dateApprovedClientOriginal || $notApprovedClient != $notApprovedClientOriginal)
         {
             $offerteverzoekAction = OpportunityAction::where('code_ref', 'quotation-request')->first();
-            if($quotationRequest->opportunity_action_id == $offerteverzoekAction->id){
-                if($quotationRequest->date_approved_client){
-                    $approvedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'approved')->first();
-                    if($approvedStatus){
-                        $quotationRequest->status_id = $approvedStatus->id;
-                    }
+            if($notApprovedClient) {
+                $notApprovedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'not-approved')->first();
+                // todo WM : automatische status wijziging alleen voor offerteverzoek, nog niet voor budgetaanvraag.
+                if($quotationRequest->opportunity_action_id == $offerteverzoekAction->id){
+                    $quotationRequest->status_id = $notApprovedStatus->id;
                 }
-            }
-        }
-        $dateApprovedExternal = $quotationRequest->date_approved_external;
-        $dateApprovedExternalOriginal = $quotationRequest->getOriginal('date_approved_external');
-        if($dateApprovedExternal != $dateApprovedExternalOriginal)
-        {
-            if($quotationRequest->date_approved_external){
+                if($notApprovedStatus){
+                    $quotationRequest->date_approved_client = null;
+                }
+            } elseif($quotationRequest->date_approved_client){
                 $approvedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'approved')->first();
                 if($approvedStatus){
-                    $quotationRequest->status_id = $approvedStatus->id;
+                    // todo WM : automatische status wijziging alleen voor offerteverzoek, nog niet voor budgetaanvraag.
+                    if($quotationRequest->opportunity_action_id == $offerteverzoekAction->id) {
+                        $quotationRequest->status_id = $approvedStatus->id;
+                    }
+                    $quotationRequest->not_approved_client = false;
                 }
             } else {
-                $notApprovedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'not-approved')->first();
-                if($notApprovedStatus){
-                    $quotationRequest->status_id = $notApprovedStatus->id;
+                $underReviewOccupantStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'under-review-occupant')->first();
+                if($underReviewOccupantStatus) {
+                    // todo WM : automatische status wijziging alleen voor offerteverzoek, nog niet voor budgetaanvraag.
+                    if($quotationRequest->opportunity_action_id == $offerteverzoekAction->id) {
+                        $quotationRequest->status_id = $underReviewOccupantStatus->id;
+                    }
                 }
             }
         }
         $dateApprovedProjectManager = $quotationRequest->date_approved_project_manager;
         $dateApprovedProjectManagerOriginal = $quotationRequest->getOriginal('date_approved_project_manager');
-        if($dateApprovedProjectManager != $dateApprovedProjectManagerOriginal)
+        $notApprovedProjectManager = $quotationRequest->not_approved_project_manager;
+        $notApprovedProjectManagerOriginal = $quotationRequest->getOriginal('not_approved_project_manager');
+        if($dateApprovedProjectManager != $dateApprovedProjectManagerOriginal || $notApprovedProjectManager != $notApprovedProjectManagerOriginal)
         {
-            if($quotationRequest->date_approved_project_manager){
-                $approvedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'pm-approved')->first();
-                if($approvedStatus){
-                    $quotationRequest->status_id = $approvedStatus->id;
-                }
-            } else {
+            if($notApprovedProjectManager) {
                 $notApprovedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'pm-not-approved')->first();
                 if($notApprovedStatus){
                     $quotationRequest->status_id = $notApprovedStatus->id;
+                    $quotationRequest->date_approved_project_manager = null;
+                }
+            } elseif($quotationRequest->date_approved_project_manager){
+                $approvedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'pm-approved')->first();
+                if($approvedStatus){
+                    $quotationRequest->status_id = $approvedStatus->id;
+                    $quotationRequest->not_approved_project_manager = false;
                 }
             }
         }
+
+        $dateApprovedExternal = $quotationRequest->date_approved_external;
+        $dateApprovedExternalOriginal = $quotationRequest->getOriginal('date_approved_external');
+        $notApprovedExternal = $quotationRequest->not_approved_external;
+        $notApprovedExternalOriginal = $quotationRequest->getOriginal('not_approved_external');
+        if($dateApprovedExternal != $dateApprovedExternalOriginal || $notApprovedExternal != $notApprovedExternalOriginal)
+        {
+            if($notApprovedExternal) {
+                $notApprovedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'not-approved')->first();
+                if($notApprovedStatus){
+                    $quotationRequest->status_id = $notApprovedStatus->id;
+                    $quotationRequest->date_approved_external = null;
+                }
+            } elseif($quotationRequest->date_approved_external){
+                $approvedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'approved')->first();
+                if($approvedStatus){
+                    $quotationRequest->status_id = $approvedStatus->id;
+                    $quotationRequest->not_approved_external = false;
+                }
+            } else {
+                $underReviewExternalStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'under-review')->first();
+                if($underReviewExternalStatus) {
+                    $quotationRequest->status_id = $underReviewExternalStatus->id;
+                }
+            }
+        }
+
         $dateExecuted = $quotationRequest->date_executed;
         $dateExecutedOriginal = $quotationRequest->getOriginal('date_executed');
         if($dateExecuted != $dateExecutedOriginal)
         {
             if($quotationRequest->date_executed){
                 $executedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'executed')->first();
-                if($executedStatus){
+                if($executedStatus) {
                     $quotationRequest->status_id = $executedStatus->id;
-// todo WM gevolg kans status: nog even niet. Denk niet dat je dit wilt als je meerdere kansacties hebt met verschillende statussen
-//  en dat kunnen ook nog eens kansacties zijn met verschillende opportunity action types (bezoek / offerteverzoek / budgetaanvraag
-//  Wellicht kans status bijwerken als er een kansactie status wijzigt en als alle kansactie statsus op 'executed' staan dan kans status ook op executed zetten ?????
-//                    $executedOpportunityStatus = OpportunityStatus::where('code_ref', 'executed')->first();
-//                    if($quotationRequest->opportunity) {
-//                        $quotationRequest->opportunity->status_id = $executedOpportunityStatus->id;
-//                        $quotationRequest->opportunity->save();
-//                    }
                 }
             }
         }
@@ -178,6 +216,29 @@ class QuotationRequestObserver
         }
         $dateApprovedDetermination = $quotationRequest->date_approved_determination;
         $dateApprovedDeterminationOriginal = $quotationRequest->getOriginal('date_approved_determination');
+        $notApprovedDetermination = $quotationRequest->not_approved_determination;
+        $notApprovedDeterminationOriginal = $quotationRequest->getOriginal('not_approved_determination');
+        if($dateApprovedDetermination != $dateApprovedDeterminationOriginal || $notApprovedDetermination != $notApprovedDeterminationOriginal)
+        {
+            if($notApprovedDetermination) {
+                $notApprovedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'not-approved-det')->first();
+                if($notApprovedStatus){
+                    $quotationRequest->status_id = $notApprovedStatus->id;
+                    $quotationRequest->date_approved_determination = null;
+                }
+            } elseif($quotationRequest->date_approved_determination){
+                $approvedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'approved-det')->first();
+                if($approvedStatus){
+                    $quotationRequest->status_id = $approvedStatus->id;
+                    $quotationRequest->not_approved_determination = false;
+                }
+            } else {
+                $underReviewDetStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'under-review-det')->first();
+                if($underReviewDetStatus) {
+                    $quotationRequest->status_id = $underReviewDetStatus->id;
+                }
+            }
+        }
         if($dateApprovedDetermination != $dateApprovedDeterminationOriginal)
         {
             if($quotationRequest->date_approved_determination){
@@ -195,9 +256,13 @@ class QuotationRequestObserver
 
         if ($quotationRequest->isDirty('status_id'))
         {
-            $days = $quotationRequest->status->uses_wf ? $quotationRequest->status->number_of_days_to_send_email : 0;
-//            $mailDate = Carbon::now()->addDays($days)->addDay(1);
-            $mailDate = Carbon::now()->addDays($days);
+            $campaignWorkflow = CampaignWorkflow::where('workflow_for_type', 'quotationrequest')->where('campaign_id', $quotationRequest->opportunity->intake->campaign_id)->where('quotation_request_status_id', $quotationRequest->status_id)->first();
+            if($quotationRequest->status->uses_wf && $campaignWorkflow && $campaignWorkflow->is_active){
+                $days = $campaignWorkflow->number_of_days_to_send_email;
+            } else {
+                $days = 0;
+            }
+            $mailDate = Carbon::now()->addDays((int) $days);
             $quotationRequest->date_planned_to_send_wf_email_status = $mailDate;
         }
     }
@@ -220,10 +285,20 @@ class QuotationRequestObserver
             $quotationRequestActionsLog->new_status_id = $quotationRequest->status_id;
             $quotationRequestActionsLog->save();
 
-            if ($quotationRequest->status->uses_wf && $quotationRequest->status->number_of_days_to_send_email === 0){
-                $quotationRequestflowHelper = new QuotationRequestWorkflowHelper($quotationRequest);
-                $quotationRequestflowHelper->processWorkflowEmail();
+            // update opportunitystatus
+            $opportunityHelper = new OpportunityHelper($quotationRequest);
+            $opportunityHelper->updateOpportunityStatus();
+
+            // ProcesWorkflowEmail doen we alleen vanuit econobis. Indien deze status wijziging dus voorkomt uit portal, dan niet.
+            // In dat geval is er namelijk al een ander proces die email verstuurd bij bepaalde datum zetting die dan weer auutomatisch een status wijziging tot gevolg heeft.
+            if (!Auth::isPortalUser()) {
+                $campaignWorkflow = CampaignWorkflow::where('workflow_for_type', 'quotationrequest')->where('campaign_id', $quotationRequest->opportunity->intake->campaign_id)->where('quotation_request_status_id', $quotationRequest->status_id)->first();
+                if ($quotationRequest->status->uses_wf && $campaignWorkflow && $campaignWorkflow->is_active && $campaignWorkflow->number_of_days_to_send_email === 0){
+                    $quotationRequestflowHelper = new QuotationRequestWorkflowHelper($quotationRequest);
+                    $quotationRequestflowHelper->processWorkflowEmail($campaignWorkflow);
+                }
             }
+
         }
     }
 

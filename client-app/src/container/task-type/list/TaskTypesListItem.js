@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
+
+// Functionele wrapper voor de class component
+const TaskTypesListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <TaskTypesListItem {...props} navigate={navigate} />;
+};
 
 class TaskTypesListItem extends Component {
     constructor(props) {
@@ -30,7 +36,7 @@ class TaskTypesListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/taak-type/${id}`);
+        this.props.navigate(`/taak-type/${id}`);
     }
 
     render() {
@@ -78,4 +84,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(TaskTypesListItem);
+export default connect(mapStateToProps)(TaskTypesListItemWrapper);

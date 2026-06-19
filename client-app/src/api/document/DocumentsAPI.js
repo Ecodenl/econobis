@@ -1,12 +1,12 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_DOCUMENT = `${URL_API}/api/document`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchDocuments: ({ filters, sorts, pagination }) => {
+        const URL_DOCUMENT = `${getApiUrl()}/api/document`;
         const requestUrl = `${URL_DOCUMENT}/grid`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),
@@ -17,9 +17,10 @@ export default {
     },
 
     fetchDocumentsPeek: () => {
+        const URL_DOCUMENT = `${getApiUrl()}/api/document`;
         const requestUrl = `${URL_DOCUMENT}/peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data;
@@ -30,9 +31,10 @@ export default {
     },
 
     fetchDefaultEmailDocumentsPeek: () => {
+        const URL_DOCUMENT = `${getApiUrl()}/api/document`;
         const requestUrl = `${URL_DOCUMENT}/default-email-documents-peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data;

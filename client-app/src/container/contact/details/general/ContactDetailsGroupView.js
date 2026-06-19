@@ -1,7 +1,9 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 const ContactDetailsGroupView = props => {
+    const navigate = useNavigate();
+
     const { id, name, type } = props.group;
 
     return (
@@ -10,7 +12,7 @@ const ContactDetailsGroupView = props => {
             onMouseEnter={() => props.onLineEnter()}
             onMouseLeave={() => props.onLineLeave()}
         >
-            <div onClick={() => hashHistory.push(`/contact-groep/${id}`)}>
+            <div onClick={() => navigate(`/contact-groep/${id}`)}>
                 <div className="col-sm-8">{name}</div>
                 <div className="col-sm-4">{type.name}</div>
             </div>

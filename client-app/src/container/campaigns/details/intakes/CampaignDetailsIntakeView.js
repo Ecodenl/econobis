@@ -1,11 +1,13 @@
 import React from 'react';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 const CampaignDetailsIntakeView = ({ id, contact, address, fullAddress, createdAt }) => {
+    const navigate = useNavigate();
+
     return (
-        <div className={'row border'} onClick={() => hashHistory.push(`/intake/${id}`)}>
+        <div className={'row border'} onClick={() => navigate(`/intake/${id}`)}>
             <div className="col-sm-1">{id}</div>
             <div className="col-sm-1">{contact?.type?.name}</div>
             <div className="col-sm-2">{contact?.fullName}</div>

@@ -1,13 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
 const ProjectsListToolbar = props => {
+    const navigate = useNavigate();
+
     const newProject = () => {
-        hashHistory.push('project/nieuw');
+        navigate('/project/nieuw');
     };
 
     const { permissions = {} } = props;
@@ -17,7 +18,7 @@ const ProjectsListToolbar = props => {
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                    <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                     {permissions.manageProject && <ButtonIcon iconName={'plus'} onClickAction={newProject} />}
                     <ButtonIcon iconName={'refresh'} onClickAction={props.resetProjectFilters} />
                 </div>

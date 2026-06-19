@@ -8,9 +8,9 @@ class ContactAvailability extends Model
 {
     protected $guarded = [];
 
-    protected $dates = [
-        'from',
-        'to',
+    protected $casts = [
+        'from' => 'datetime',
+        'to' => 'datetime',
     ];
 
     public function contact()

@@ -1,4 +1,5 @@
 import React from 'react';
+import { getApiUrl } from '../../../../api/utils/ApiUrl';
 
 import ViewText from '../../../../components/form/ViewText';
 import Panel from '../../../../components/panel/Panel';
@@ -30,11 +31,11 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
     switchToEdit,
     imageHash,
 }) => {
-    const logoUrl = `${URL_API}/portal/images/${portalLogoFileName}?${imageHash}`;
-    const logoHeaderUrl = `${URL_API}/portal/images/${portalLogoFileNameHeader}?${imageHash}`;
-    const imageBgLoginUrl = `${URL_API}/portal/images/${portalImageBgFileNameLogin}?${imageHash}`;
-    const imageBgHeaderUrl = `${URL_API}/portal/images/${portalImageBgFileNameHeader}?${imageHash}`;
-    const faviconUrl = `${URL_API}/portal/${portalFaviconFileName}?${imageHash}`;
+    const logoUrl = `${getApiUrl()}/portal/images/${portalLogoFileName}?${imageHash}`;
+    const logoHeaderUrl = `${getApiUrl()}/portal/images/${portalLogoFileNameHeader}?${imageHash}`;
+    const imageBgLoginUrl = `${getApiUrl()}/portal/images/${portalImageBgFileNameLogin}?${imageHash}`;
+    const imageBgHeaderUrl = `${getApiUrl()}/portal/images/${portalImageBgFileNameHeader}?${imageHash}`;
+    const faviconUrl = `${getApiUrl()}/portal/${portalFaviconFileName}?${imageHash}`;
 
     return (
         <div onClick={switchToEdit}>

@@ -1,24 +1,24 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Modal from '../../../components/modal/Modal';
-import Icon from "react-icons-kit";
-import {pencil} from 'react-icons-kit/fa/pencil';
-import InputSelect from "../../../components/form/InputSelect";
-import {useSelector} from "react-redux";
-import InputSelectGroup from "../../../components/form/InputSelectGroup";
-import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
+import Icon from 'react-icons-kit';
+import { pencil } from 'react-icons-kit/fa/pencil';
+import InputSelect from '../../../components/form/InputSelect';
+import { useSelector } from 'react-redux';
+import InputSelectGroup from '../../../components/form/InputSelectGroup';
+import EmailGenericAPI from '../../../api/email/EmailGenericAPI';
 
-export default function EmailSplitViewBulkEditModal({emailIds, onSaved}) {
-    const statusses = useSelector((state) => state.systemData.emailStatuses);
-    const teams = useSelector((state) => state.systemData.teams);
-    const users = useSelector((state) => state.systemData.users);
+export default function EmailSplitViewBulkEditModal({ emailIds, onSaved }) {
+    const statusses = useSelector(state => state.systemData.emailStatuses);
+    const teams = useSelector(state => state.systemData.teams);
+    const users = useSelector(state => state.systemData.users);
 
     const [showModal, setShowModal] = useState(false);
     const [status, setStatus] = useState(-1);
     const [responsibleUserId, setResponsibleUserId] = useState(-1);
     const [responsibleTeamId, setResponsibleTeamId] = useState(-1);
 
-    const setResonsibleValue = (val) => {
-        if(val === 'general-1') {
+    const setResponsibleValue = val => {
+        if (val === 'general-1') {
             setResponsibleUserId(-1);
             setResponsibleTeamId(-1);
             return;
@@ -34,10 +34,10 @@ export default function EmailSplitViewBulkEditModal({emailIds, onSaved}) {
         if (val.indexOf('team') === 0) {
             setResponsibleTeamId(val.replace('team', ''));
         }
-    }
+    };
 
     const getResponsibleValue = () => {
-        if(responsibleUserId === -1 && responsibleTeamId === -1) {
+        if (responsibleUserId === -1 && responsibleTeamId === -1) {
             return 'general-1';
         }
 
@@ -49,20 +49,20 @@ export default function EmailSplitViewBulkEditModal({emailIds, onSaved}) {
         }
 
         return 'general0'; // Geen
-    }
+    };
 
     const save = () => {
         let values = {};
 
-        if(parseInt(status) !== -1) {
+        if (parseInt(status) !== -1) {
             values.status = status;
         }
 
-        if(responsibleUserId !== -1) {
+        if (responsibleUserId !== -1) {
             values.responsibleUserId = responsibleUserId;
         }
 
-        if(responsibleTeamId !== -1) {
+        if (responsibleTeamId !== -1) {
             values.responsibleTeamId = responsibleTeamId;
         }
 
@@ -70,7 +70,7 @@ export default function EmailSplitViewBulkEditModal({emailIds, onSaved}) {
             setShowModal(false);
             onSaved();
         });
-    }
+    };
 
     return (
         <>
@@ -82,7 +82,7 @@ export default function EmailSplitViewBulkEditModal({emailIds, onSaved}) {
                     setShowModal(true);
                 }}
             >
-                <Icon icon={pencil} size={13}/>
+                <Icon icon={pencil} size={13} />
             </button>
             {showModal && (
                 <Modal
@@ -92,17 +92,14 @@ export default function EmailSplitViewBulkEditModal({emailIds, onSaved}) {
                     title="Bulk bewerken"
                     modalClassName="modal-lg"
                 >
-                    <div className="row" style={{marginTop: '12px'}}>
+                    <div className="row" style={{ marginTop: '12px' }}>
                         <InputSelect
                             label={'Status'}
                             size={'col-sm-6'}
                             name={'status'}
-                            options={[
-                                {id: -1, name: '--- niet wijzigen ---'},
-                                ...statusses,
-                            ]}
+                            options={[{ id: -1, name: '--- niet wijzigen ---' }, ...statusses]}
                             value={status}
-                            onChangeAction={(e) => setStatus(e.target.value)}
+                            onChangeAction={e => setStatus(e.target.value)}
                             emptyOption={false}
                         />
                         <InputSelectGroup
@@ -114,8 +111,8 @@ export default function EmailSplitViewBulkEditModal({emailIds, onSaved}) {
                                     name: 'general',
                                     label: 'Algemeen',
                                     options: [
-                                        {id: '-1', name: '--- niet wijzigen ---'},
-                                        {id: '0', name: '--- geen ---'},
+                                        { id: '-1', name: '--- niet wijzigen ---' },
+                                        { id: '0', name: '--- geen ---' },
                                     ],
                                 },
                                 {
@@ -124,10 +121,10 @@ export default function EmailSplitViewBulkEditModal({emailIds, onSaved}) {
                                     options: users,
                                     optionName: 'fullName',
                                 },
-                                {name: 'team', label: 'Teams', options: teams},
+                                { name: 'team', label: 'Teams', options: teams },
                             ]}
                             value={getResponsibleValue()}
-                            onChangeAction={(e) => setResonsibleValue(e.target.value)}
+                            onChangeAction={e => setResponsibleValue(e.target.value)}
                             emptyOption={false}
                         />
                     </div>
@@ -136,4 +133,3 @@ export default function EmailSplitViewBulkEditModal({emailIds, onSaved}) {
         </>
     );
 }
-

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom';
 
 import {
     fetchContactGroupDetails,
@@ -15,9 +16,11 @@ import ContactGroupsDetailsHarmonica from './ContactGroupsDetailsHarmonica';
 import ContactGroupComposedGroups from './composed-groups/ContactGroupComposedGroups';
 
 function ContactGroupDetailsApp(props) {
+    const params = useParams();
+
     useEffect(() => {
-        callFetchContactGroupDetails(props.params.id);
-    }, [props.params.id]);
+        callFetchContactGroupDetails(params.id);
+    }, [params.id]);
 
     function callFetchContactGroupDetails(id) {
         props.clearContactGroupDetails();
@@ -29,12 +32,12 @@ function ContactGroupDetailsApp(props) {
             <div className="col-md-9">
                 <div className="col-md-12">
                     <ContactGroupDetailsToolbar
-                        callFetchContactGroupDetails={() => callFetchContactGroupDetails(props.params.id)}
+                        callFetchContactGroupDetails={() => callFetchContactGroupDetails(params.id)}
                     />
                 </div>
 
                 <div className="col-md-12">
-                    <ContactGroupDetailsForm mode={props.params.mode} />
+                    <ContactGroupDetailsForm mode={params.mode} />
                 </div>
 
                 {props.contactGroupDetails.type && props.contactGroupDetails.type.id === 'dynamic' && (
@@ -56,7 +59,7 @@ function ContactGroupDetailsApp(props) {
             </div>
             <Panel className="col-md-3 harmonica">
                 <PanelBody>
-                    <ContactGroupsDetailsHarmonica id={props.params.id} />
+                    <ContactGroupsDetailsHarmonica id={params.id} />
                 </PanelBody>
             </Panel>
         </div>

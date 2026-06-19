@@ -1,12 +1,14 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
 const TeamsListToolbar = props => {
+    const navigate = useNavigate();
+
     const newTeam = () => {
-        hashHistory.push(`/team/nieuw`);
+        navigate(`/team/nieuw`);
     };
 
     return (

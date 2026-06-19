@@ -27,10 +27,10 @@ class HousingFile extends Model
         'id'
     ];
 
-    protected $casts = [
-        'is_house_for_sale' => 'boolean',
-        'is_monument' => 'boolean',
-    ];
+//    protected $casts = [
+//        'is_house_for_sale' => 'boolean',
+//        'is_monument' => 'boolean',
+//    ];
 
     public function address()
     {
@@ -115,4 +115,8 @@ class HousingFile extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function newEloquentBuilder($query)
+    {
+        return new HousingFileBuilder($query);
+    }
 }

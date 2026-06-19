@@ -1,15 +1,19 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import AsyncCreatableSelect from 'react-select/async-creatable';
-import {FaInfoCircle} from "react-icons/fa";
-import ReactTooltip from "react-tooltip";
+import { FaInfoCircle } from 'react-icons/fa';
+import ReactTooltip from 'react-tooltip';
+import ButtonText from '../button/ButtonText';
 
 const AsyncSelectSet = props => {
     const [isLoading, setIsLoading] = useState(false);
 
     const {
         label,
-        size,
+        divSize,
+        labelSize,
+        valueSize,
+        buttonSize,
         id,
         name,
         value,
@@ -27,6 +31,8 @@ const AsyncSelectSet = props => {
         placeholder,
         clearable,
         textToolTip,
+        buttonText,
+        buttonAction,
     } = props;
 
     const onPromptTextCreator = label => {
@@ -40,20 +46,20 @@ const AsyncSelectSet = props => {
     };
 
     return (
-        <div className="form-group col-sm-12">
+        <div className={`form-group ${divSize}`}>
             <div className="row">
-                <div className="col-sm-3">
+                <div className={`${labelSize}`}>
                     <label htmlFor={id} className={`col-sm-12 ${required}`}>
                         {label}
                     </label>
                 </div>
-                <div className={`${size}`}>
+                <div className={`${valueSize}`}>
                     <AsyncCreatableSelect
                         id={id}
                         name={name}
                         onChange={option => onChangeAction(option)}
                         value={value}
-                        loadOptions={async (searchTerm) => {
+                        loadOptions={async searchTerm => {
                             if (searchTerm.length <= 1) {
                                 return;
                             }
@@ -108,13 +114,8 @@ const AsyncSelectSet = props => {
                             },
                         })}
                     />
-                </div>
-                {error && (
-                    <div className="col-sm-offset-3 col-sm-8">
-                        <span className="has-error-message"> {errorMessage}</span>
-                    </div>
-                )}
-                { textToolTip && (
+                </div>{' '}
+                {textToolTip && (
                     <div className="col-sm-1">
                         <FaInfoCircle
                             color={'blue'}
@@ -132,15 +133,35 @@ const AsyncSelectSet = props => {
                         &nbsp;
                     </div>
                 )}
+                {buttonText && (
+                    <div className={`${buttonSize}`}>
+                        <div className="pull-left btn-group" role="group">
+                            <ButtonText
+                                buttonText={buttonText}
+                                onClickAction={buttonAction}
+                                type={'submit'}
+                                value={'Submit'}
+                            />
+                        </div>
+                    </div>
+                )}
+                {error && (
+                    <div className="col-sm-offset-3 col-sm-8">
+                        <span className="has-error-message"> {errorMessage}</span>
+                    </div>
+                )}
             </div>
         </div>
     );
 };
 
 AsyncSelectSet.defaultProps = {
+    divSize: 'col-sm-12',
+    labelSize: 'col-sm-3',
+    valueSize: 'col-sm-8',
+    buttonSize: 'col-sm-1',
     allowCreate: false,
     className: '',
-    size: 'col-sm-8',
     optionId: 'id',
     optionName: 'name',
     disabled: false,
@@ -152,13 +173,17 @@ AsyncSelectSet.defaultProps = {
     placeholder: '',
     clearable: false,
     textToolTip: '',
+    buttonText: '',
 };
 
 AsyncSelectSet.propTypes = {
     allowCreate: PropTypes.bool,
     label: PropTypes.string.isRequired,
+    divSize: PropTypes.string,
+    labelSize: PropTypes.string,
+    valueSize: PropTypes.string,
+    buttonSize: PropTypes.string,
     className: PropTypes.string,
-    size: PropTypes.string,
     id: PropTypes.string,
     name: PropTypes.string.isRequired,
     loadOptions: PropTypes.func,
@@ -175,6 +200,8 @@ AsyncSelectSet.propTypes = {
     placeholder: PropTypes.string,
     clearable: PropTypes.bool,
     textToolTip: PropTypes.string,
+    buttonText: PropTypes.string,
+    buttonAction: PropTypes.func,
 };
 
 export default AsyncSelectSet;

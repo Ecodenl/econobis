@@ -29,6 +29,8 @@ class RevenueDistributionPartsKwhCSVHelper
             ]);
 
             $this->csvExporter->beforeEach(function ($distributionPartsKwh) {
+                $distributionPartsKwh->power_kwh_consumption = $distributionPartsKwh->distributionKwh->participation->power_kwh_consumption;
+
                 $distributionPartsKwh->created_at_date = $distributionPartsKwh->distributionKwh->created_at->format('d-m-Y');
                 $distributionPartsKwh->updated_at_date = $distributionPartsKwh->distributionKwh->updated_at->format('d-m-Y');
 
@@ -74,6 +76,7 @@ class RevenueDistributionPartsKwhCSVHelper
                 'distributionKwh.contact.number' => 'Nummer',
                 'distributionKwh.contact.full_name' => 'Naam',
                 'participations_quantity' => 'Participaties',
+                'power_kwh_consumption' => 'Jaarlijks verbruik',
                 'payout_formatted' => 'Uit te keren bedrag',
                 'payout_type' => 'Uitkeren op',
                 'date_payout' => 'Datum uitkering',

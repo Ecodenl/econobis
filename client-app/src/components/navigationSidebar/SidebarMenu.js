@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import SideNav, { Nav, NavIcon, NavText } from 'react-sidenav';
 import SvgIcon from 'react-icons-kit';
 import { connect } from 'react-redux';
@@ -8,6 +8,7 @@ import { ic_aspect_ratio } from 'react-icons-kit/md/ic_aspect_ratio';
 import { ic_dashboard } from 'react-icons-kit/md/ic_dashboard';
 import { ic_business } from 'react-icons-kit/md/ic_business';
 import { ic_contacts } from 'react-icons-kit/md/ic_contacts';
+import { ic_contacts_outline } from 'react-icons-kit/md/ic_contacts_outline';
 import { ic_email } from 'react-icons-kit/md/ic_email';
 import { ic_fiber_new } from 'react-icons-kit/md/ic_fiber_new';
 import { cog } from 'react-icons-kit/icomoon/cog';
@@ -20,7 +21,7 @@ import { road } from 'react-icons-kit/icomoon/road';
 import { forward } from 'react-icons-kit/icomoon/forward';
 import { stopwatch } from 'react-icons-kit/icomoon/stopwatch';
 
-const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
+const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongleRegistration }) => (
     <div className="sidebar-menu" style={{ background: '$brand-primary', color: '#FFF', width: '240px' }}>
         <SideNav highlightColor="#FFF" highlightBgColor="#27AE60" defaultSelected="dashboard">
             <Nav id="dashboard">
@@ -92,6 +93,64 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                 </Nav>
             )}
 
+            {permissions.menuContacts && (
+                <Nav id="data-controle">
+                    <NavIcon>
+                        <SvgIcon size={20} icon={ic_contacts_outline} />
+                    </NavIcon>
+                    <NavText>Data controle</NavText>
+                    <Nav id="data-controle-same-email-name">
+                        <NavText>
+                            <Link className="sidebar-link" to="contacten/data-controle/zelfde-email-naam">
+                                Zelfde E-mail en naam
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="data-controle-same-email-address">
+                        <NavText>
+                            <Link className="sidebar-link" to="contacten/data-controle/zelfde-email-adres">
+                                Zelfde E-mail en adres
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="data-controle-same-email">
+                        <NavText>
+                            <Link className="sidebar-link" to="contacten/data-controle/zelfde-email">
+                                Zelfde E-mail
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="data-controle-same-address">
+                        <NavText>
+                            <Link className="sidebar-link" to="contacten/data-controle/zelfde-adres">
+                                Zelfde adres
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="data-controle-same-kvk">
+                        <NavText>
+                            <Link className="sidebar-link" to="contacten/data-controle/zelfde-kvknummer">
+                                Zelfde KvK nummer
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="data-controle-same-btw">
+                        <NavText>
+                            <Link className="sidebar-link" to="contacten/data-controle/zelfde-btwnummer">
+                                Zelfde BTW nummer
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="data-controle-same-iban">
+                        <NavText>
+                            <Link className="sidebar-link" to="contacten/data-controle/zelfde-iban">
+                                Zelfde IBAN
+                            </Link>
+                        </NavText>
+                    </Nav>
+                </Nav>
+            )}
+
             {permissions.menuProjects && (
                 <Nav id="projecten">
                     <NavIcon>
@@ -108,14 +167,16 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         </NavText>
                     </Nav>
 
-                    <Nav id="deelnemers">
-                        <NavText>
-                            <Link className="sidebar-link" to="deelnemers">
-                                Deelnemers
-                            </Link>
-                        </NavText>
-                    </Nav>
-                    {permissions.manageFinancial && (
+                    {permissions.menuParticipations && (
+                        <Nav id="deelnemers">
+                            <NavText>
+                                <Link className="sidebar-link" to="deelnemers">
+                                    Deelnemers
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.menuFinancialOverviews && (
                         <Nav id="waardestaten">
                             <NavText>
                                 <Link className="sidebar-link" to="waardestaten">
@@ -187,11 +248,29 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                             </NavText>
                         </Nav>
                     )}
+                    {permissions.menuIntakeSources && (
+                        <Nav id="aanmeldingsbronnen">
+                            <NavText>
+                                <Link className="sidebar-link" to="aanmeldingsbronnen">
+                                    Aanmeldingsbronnen
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
                     {permissions.menuMeasures && (
                         <Nav id="measures">
                             <NavText>
                                 <Link className="sidebar-link" to="maatregelen">
                                     Maatregelen
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.menuDongles && useDongleRegistration == true && (
+                        <Nav id="dongles">
+                            <NavText>
+                                <Link className="sidebar-link" to="dongels">
+                                    Dongels
                                 </Link>
                             </NavText>
                         </Nav>
@@ -213,53 +292,13 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
             )}
 
             {permissions.menuEmail && (
-                <Nav id="email">
+                <Nav id="mailclient">
                     <NavIcon>
                         <SvgIcon size={20} icon={ic_email} />
                     </NavIcon>
                     <NavText>
-                        <Link className="sidebar-link-header" to="emails/inbox">
-                            E-mail
-                        </Link>
-                    </NavText>
-                    <Nav id="inbox">
-                        <NavText>
-                            <Link className="sidebar-link" to="emails/inbox">
-                                Ontvangen
-                            </Link>
-                        </NavText>
-                    </Nav>
-                    <Nav id="sent">
-                        <NavText>
-                            <Link className="sidebar-link" to="emails/sent">
-                                Verzonden
-                            </Link>
-                        </NavText>
-                    </Nav>
-                    <Nav id="concepts">
-                        <NavText>
-                            <Link className="sidebar-link" to="emails/concept">
-                                Concepten
-                            </Link>
-                        </NavText>
-                    </Nav>
-                    <Nav id="removed">
-                        <NavText>
-                            <Link className="sidebar-link" to="emails/removed">
-                                Verwijderd
-                            </Link>
-                        </NavText>
-                    </Nav>
-                </Nav>
-            )}
-            {permissions.menuEmail && (
-                <Nav id="mailclient">
-                    <NavIcon>
-                        <SvgIcon size={20} icon={ic_fiber_new} />
-                    </NavIcon>
-                    <NavText>
                         <Link className="sidebar-link-header" to="mailclient/inbox">
-                            Mailclient (beta)
+                            E-mail
                         </Link>
                     </NavText>
                     <Nav id="inbox">
@@ -286,6 +325,47 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                     <Nav id="removed">
                         <NavText>
                             <Link className="sidebar-link" to="mailclient/removed">
+                                Verwijderd
+                            </Link>
+                        </NavText>
+                    </Nav>
+                </Nav>
+            )}
+
+            {permissions.menuEmail && (
+                <Nav id="email">
+                    <NavIcon>
+                        <SvgIcon size={20} icon={ic_email} />
+                    </NavIcon>
+                    <NavText>
+                        <Link className="sidebar-link-header" to="emails/inbox">
+                            E-mail (oud)
+                        </Link>
+                    </NavText>
+                    <Nav id="inbox">
+                        <NavText>
+                            <Link className="sidebar-link" to="emails/inbox">
+                                Ontvangen
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="sent">
+                        <NavText>
+                            <Link className="sidebar-link" to="emails/sent">
+                                Verzonden
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="concepts">
+                        <NavText>
+                            <Link className="sidebar-link" to="emails/concept">
+                                Concepten
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="removed">
+                        <NavText>
+                            <Link className="sidebar-link" to="emails/removed">
                                 Verwijderd
                             </Link>
                         </NavText>
@@ -407,7 +487,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         return (
                             <Nav key={i} id={`administration/${administration.id}`}>
                                 <NavText>
-                                    <Link className="sidebar-link" to={`financieel/${administration.id}`}>
+                                    <Link className="sidebar-link" to={`/financieel/${administration.id}`}>
                                         {administration.name}
                                     </Link>
                                 </NavText>
@@ -593,19 +673,22 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         <Nav id="free-fields">
                             <NavText>
                                 <Link className="sidebar-link" to="vrije-velden">
-                                    Vrije velden
+                                    Vrije velden Algemeen
                                 </Link>
                             </NavText>
                         </Nav>
                     )}
-                    {/* todo WM check: wordt niet meer gebruikt toch ?*/}
-                    {/*<Nav id="postal-code-link">*/}
-                    {/*    <NavText>*/}
-                    {/*        <Link className="sidebar-link" to="postcoderoos">*/}
-                    {/*            Postcoderoos*/}
-                    {/*        </Link>*/}
-                    {/*    </NavText>*/}
-                    {/*</Nav>*/}
+                    {permissions.manageFreeFields &&
+                        permissions.menuPortalSettings &&
+                        permissions.managePortalSettings && (
+                            <Nav id="free-fields-portal-page">
+                                <NavText>
+                                    <Link className="sidebar-link" to="vrije-velden-portaal-pagina">
+                                        Vrije velden Portaal pagina
+                                    </Link>
+                                </NavText>
+                            </Nav>
+                        )}
                 </Nav>
             )}
 
@@ -649,6 +732,7 @@ const mapStateToProps = state => {
         permissions: state.meDetails.permissions,
         administrations: state.meDetails.administrations,
         mailboxesInvalid: state.systemData.mailboxesInvalid,
+        useDongleRegistration: state.systemData?.cooperation?.use_dongle_registration ?? false,
     };
 };
 

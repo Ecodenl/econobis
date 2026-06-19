@@ -3,6 +3,7 @@
 namespace App\Eco\Contact;
 
 use App\Eco\Address\Address;
+use App\Eco\AddressDongle\AddressDongle;
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\Administration\Administration;
 use App\Eco\Campaign\Campaign;
@@ -12,7 +13,9 @@ use App\Eco\ContactNote\ContactNote;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
+use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\FinancialOverview\FinancialOverviewContact;
+use App\Eco\FinancialOverview\FinancialOverviewParticipantProject;
 use App\Eco\FreeFields\FreeFieldsField;
 use App\Eco\FreeFields\FreeFieldsFieldRecord;
 use App\Eco\FreeFields\FreeFieldsTable;
@@ -22,12 +25,14 @@ use App\Eco\Intake\Intake;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\Opportunity\Opportunity;
+use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\Order\Order;
 use App\Eco\Order\OrderProduct;
 use App\Eco\Organisation\Organisation;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
+use App\Eco\PortalFreeFields\PortalFreeFieldsField;
 use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
 use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Portal\PortalUser;
@@ -38,7 +43,7 @@ use App\Eco\Task\Task;
 use App\Eco\Twinfield\TwinfieldCustomerNumber;
 use App\Eco\Twinfield\TwinfieldLog;
 use App\Eco\User\User;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 use App\Http\Resources\ContactGroup\GridContactGroup;
 use App\Http\Traits\Encryptable;
 use Carbon\Carbon;
@@ -63,11 +68,6 @@ class Contact extends Model
         'coach_max_appointments_per_week' => 'integer',
         'coach_max_appointments_per_month' => 'integer',
         'coach_min_minutes_between_appointments' => 'integer',
-    ];
-
-    protected $dates = [
-//        'member_since',
-//        'member_until',
     ];
 
     protected $encryptable = [
@@ -96,6 +96,25 @@ class Contact extends Model
         $contactFieldIds = FreeFieldsField::where('table_id', ($fieldTableContact->id ?? '$#@') )->get()->pluck('id')->toArray();
         return $this->hasMany(FreeFieldsFieldRecord::class, 'table_record_id')->whereIn('field_id', $contactFieldIds);
     }
+    public function portalFreeFieldsFieldRecords()
+    {
+        // Step 1: Retrieve the table for 'contacts' to filter fields in `portal_free_fields_fields`
+        $fieldTableContact = FreeFieldsTable::where('table', 'contacts')->first();
+
+        // Step 2: Get all field IDs from `free_fields_fields` related to `contacts`
+        $contactFieldIds = FreeFieldsField::where('table_id', $fieldTableContact->id ?? null)
+            ->pluck('id')
+            ->toArray();
+
+        // Step 3: Find all `portal_free_fields_fields` that relate to these `free_fields_fields`
+        $portalFreeFieldIds = PortalFreeFieldsField::whereIn('field_id', $contactFieldIds)
+            ->pluck('field_id')
+            ->toArray();
+
+        // Step 4: Filter `free_fields_field_records` based on these `portalFreeFieldIds` and `table_record_id`
+        return $this->hasMany(FreeFieldsFieldRecord::class, 'table_record_id')
+            ->whereIn('field_id', $portalFreeFieldIds);
+    }
 
     public function addressesActive()
     {
@@ -116,10 +135,18 @@ class Contact extends Model
     {
         return $this->hasOne(EmailAddress::class)->where('primary', true);
     }
+    public function latestEmailAddressInvoice()
+    {
+        return $this->hasOne(EmailAddress::class)->where('type_id', 'invoice')->latestOfMany();
+    }
 
     public function emails()
     {
         return $this->belongsToMany(Email::class)->orderBy('emails.id', 'desc');
+    }
+    public function contactEmails()
+    {
+        return $this->hasMany(ContactEmail::class, 'contact_id')->orderBy('contact_email.created_at', 'desc');
     }
 
     /**
@@ -352,10 +379,20 @@ class Contact extends Model
     {
         return $this->hasManyThrough(HousingFile::class, Address::class)->orderBy('housing_files.id', 'desc');
     }
+    public function latestHousingFile()
+    {
+        return $this->hasOneThrough(HousingFile::class, Address::class)
+            ->latest();
+    }
 
     public function addressEnergySuppliers()
     {
         return $this->hasManyThrough(AddressEnergySupplier::class, Address::class)->orderBy('address_energy_suppliers.id', 'desc');
+    }
+
+    public function addressDongles()
+    {
+        return $this->hasManyThrough(AddressDongle::class, Address::class)->orderBy('address_dongles.id', 'desc');
     }
 
     public function currentAddressEnergySuppliers()
@@ -391,10 +428,40 @@ class Contact extends Model
         return $this->hasMany(OccupationContact::class)
             ->join('contacts', 'primary_contact_id', '=', 'contacts.id')
             ->join('occupations', 'occupation_id', '=', 'occupations.id')
-            ->select('contacts.*', 'occupation_contact.*', 'occupations.occupation_for_portal', 'occupation_contact.id as ocid')
+            ->select('contacts.*', 'occupation_contact.*', 'occupation_contact.id as ocid')
+            ->orderBy('contacts.full_name');
+    }
+    public function occupationsActive()
+    {
+        return $this->occupations()
+            ->where(function ($query) {
+                $query->where('occupation_contact.end_date', '>=', Carbon::today()->format('Y-m-d'))
+                    ->orWhereNull('occupation_contact.end_date');
+            })
+            ->where(function ($query) {
+                $query->where('occupation_contact.start_date', '<=', Carbon::today()->format('Y-m-d'))
+                    ->orWhereNull('occupation_contact.start_date');
+            })
+            ->select('contacts.*', 'occupation_contact.*', 'occupation_contact.id as ocid')
             ->orderBy('contacts.full_name');
     }
 
+    public function organisationNamePrimaryOccupation()
+    {
+        return $this->occupations()
+            ->where(function ($query) {
+                $query->where('occupation_contact.end_date', '>=', Carbon::today()->format('Y-m-d'))
+                    ->orWhereNull('occupation_contact.end_date');
+            })
+            ->where(function ($query) {
+                $query->where('occupation_contact.start_date', '<=', Carbon::today()->format('Y-m-d'))
+                    ->orWhereNull('occupation_contact.start_date');
+            })
+            ->where('contacts.type_id', ContactType::ORGANISATION)
+            ->where('occupation_contact.primary', true)
+            ->select('contacts.*', 'occupation_contact.*', 'occupation_contact.id as ocid')
+            ->orderBy('occupation_contact.created_at')->first();
+    }
     public function isPrimaryOccupant()
     {
         return $this->hasMany(OccupationContact::class, 'primary_contact_id');
@@ -449,10 +516,26 @@ class Contact extends Model
     {
         return $this->hasMany(FinancialOverviewContact::class);
     }
+    public function financialOverviewParticipantProjects()
+    {
+        return $this->hasMany(FinancialOverviewParticipantProject::class);
+    }
 
     public function financialOverviewContactsSend()
     {
         return $this->hasMany(FinancialOverviewContact::class)->where('status_id', 'sent')->orderBy('date_sent', 'desc');
+    }
+
+    public function financialOverviewContactsConceptOrderedByYear()
+    {
+        return $this->hasMany(FinancialOverviewContact::class)
+            ->where('financial_overview_contacts.status_id', 'concept')
+            ->join('financial_overviews', 'financial_overview_contacts.financial_overview_id', '=', 'financial_overviews.id')
+            ->join('administrations', 'financial_overviews.administration_id', '=', 'administrations.id')
+            ->where('administrations.uses_interim_financial_overviews', 1)
+            ->orderBy('financial_overviews.year', 'asc')
+            ->orderBy('financial_overview_contacts.id', 'asc')
+            ->select('financial_overview_contacts.*');
     }
 
     public function twinfieldLogs()
@@ -529,7 +612,7 @@ class Contact extends Model
 
         $dynamicGroupsForContact = $dynamicGroups->filter(function ($dynamicGroup) {
             foreach ($dynamicGroup->all_contacts as $dynamic_contact) {
-                if ($dynamic_contact->id === $this->id) {
+                if ($dynamic_contact && $dynamic_contact->id === $this->id) {
                     return true;
                 }
             }
@@ -541,7 +624,7 @@ class Contact extends Model
 
         $composedGroupsForContact = $composedGroups->filter(function ($composedGroup) {
             foreach ($composedGroup->all_contacts as $composed_contact) {
-                if ($composed_contact->id === $this->id) {
+                if ($composed_contact && $composed_contact->id === $this->id) {
                     return true;
                 }
             }
@@ -562,7 +645,7 @@ class Contact extends Model
 
         $dynamicGroupsForContact = $dynamicGroups->filter(function ($dynamicGroup) {
             foreach ($dynamicGroup->all_contacts as $dynamic_contact) {
-                if ($dynamic_contact->id === $this->id) {
+                if ($dynamic_contact && $dynamic_contact->id === $this->id) {
                     return true;
                 }
             }
@@ -577,7 +660,7 @@ class Contact extends Model
 
         $composedGroupsForContact = $composedGroups->filter(function ($composedGroup) {
             foreach ($composedGroup->all_contacts as $composed_contact) {
-                if ($composed_contact->id === $this->id) {
+                if ($composed_contact && $composed_contact->id === $this->id) {
                     return true;
                 }
             }
@@ -608,7 +691,31 @@ class Contact extends Model
     {
         return $this->financialOverviewContactsSend()->exists();
     }
+    public function getLastYearFinancialOverviewSentAttribute()
+    {
+        $financialOverviewIds = $this->financialOverviewContactsSend()->get()->pluck('financial_overview_id')->toArray();
 
+        $financialOverview = FinancialOverview::whereIn('id', $financialOverviewIds)
+            ->get()
+            ->sortByDesc('year')
+            ->first();
+        return $financialOverview ? (int) $financialOverview->year : null;
+    }
+
+    public function getOldestFinancialOverviewContactConceptAttribute()
+    {
+        return $this->financialOverviewContactsConceptOrderedByYear()->first();
+    }
+
+    // Contact initials (only if person).
+    public function getInitialsAttribute()
+    {
+        if ($this->type_id == 'person') {
+            return $this->person->initials;
+        } else {
+            return '';
+        }
+    }
     // Contact firstname (only if person).
     public function getFirstNameAttribute()
     {
@@ -713,7 +820,7 @@ class Contact extends Model
             });
         })->orderBy('name')->get();
         if ($administrations->count() == 0) {
-            $defaultAdministrationId = PortalSettings::get('defaultAdministrationId');
+            $defaultAdministrationId = PortalSettings::first()?->default_administration_id;
             if (!empty($defaultAdministrationId)) {
                 $administrations = Administration::whereId($defaultAdministrationId)->get();
             }
@@ -901,11 +1008,13 @@ class Contact extends Model
         }
 
         $startDate = $date->copy()->startOfMonth();
+        $opportunityActionVisitId = OpportunityAction::where('code_ref', 'visit')->first()->id;
+        $quotationRequestStatusVisitCancelledId = QuotationRequestStatus::where('opportunity_action_id', $opportunityActionVisitId)->where('code_ref', QuotationRequestStatus::STATUS_VISIT_CANCELLED_CODE_REF)->first()->id;
 
         if(!isset($this->reachedAppointmentLimitsByMonth[$startDate->format('Y-m')])){
             $reachedLimit = $this->quotationRequests()
                 ->whereBetween('date_planned', [$startDate, $date->copy()->endOfMonth()])
-                ->where('status_id', '!=', QuotationRequestStatus::STATUS_VISIT_CANCELLED_ID)
+                ->where('status_id', '!=', $quotationRequestStatusVisitCancelledId)
                 ->count() >= $this->coach_max_appointments_per_month;
 
             $this->reachedAppointmentLimitsByMonth[$startDate->format('Y-m')] = $reachedLimit;
@@ -929,11 +1038,13 @@ class Contact extends Model
         }
 
         $startDate = $date->copy()->startOfWeek();
+        $opportunityActionVisitId = OpportunityAction::where('code_ref', 'visit')->first()->id;
+        $quotationRequestStatusVisitCancelledId = QuotationRequestStatus::where('opportunity_action_id', $opportunityActionVisitId)->where('code_ref', QuotationRequestStatus::STATUS_VISIT_CANCELLED_CODE_REF)->first()->id;
 
         if(!isset($this->reachedAppointmentLimitsByWeek[$startDate->format('Y-m-d')])){
             $reachedLimit = $this->quotationRequests()
                 ->whereBetween('date_planned', [$startDate, $date->copy()->endOfWeek()])
-                ->where('status_id', '!=', QuotationRequestStatus::STATUS_VISIT_CANCELLED_ID)
+                ->where('status_id', '!=', $quotationRequestStatusVisitCancelledId)
                 ->count() >= $this->coach_max_appointments_per_week;
 
             $this->reachedAppointmentLimitsByWeek[$startDate->format('Y-m-d')] = $reachedLimit;

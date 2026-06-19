@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import FinancialOverviewProjectMakeConcept from './FinancialOverviewProjectMakeConcept';
 import FinancialOverviewProjectMakeDefinitive from './FinancialOverviewProjectMakeDefinitive';
 import FinancialOverviewProjectAPI from '../../../../../api/financial/overview/FinancialOverviewProjectAPI';
@@ -17,6 +17,8 @@ function FinancialOverviewProjectItem({
     setShowNewFalse,
     refreshFinancialOverviewProjects,
 }) {
+    const navigate = useNavigate();
+
     const [showActionButtons, setShowActionButtuns] = useState(false);
     const [highlightLine, setHighlightLine] = useState('');
     const [showMakeConcept, setShowMakeConcept] = useState(false);
@@ -38,7 +40,7 @@ function FinancialOverviewProjectItem({
     }
 
     function clickItem(financialOverviewProjectId) {
-        hashHistory.push(`/waardestaat-project/${financialOverviewProjectId}`);
+        navigate(`/waardestaat-project/${financialOverviewProjectId}`);
     }
 
     function makeConceptProject() {
@@ -62,10 +64,10 @@ function FinancialOverviewProjectItem({
                 refreshFinancialOverviewProjects();
             })
             .catch(error => {
-                let errorObject = JSON.parse(JSON.stringify(error));
+                // let errorObject = JSON.parse(JSON.stringify(error));
                 let errorMessage = 'Er is iets misgegaan bij opslaan. Probeer het opnieuw.';
-                if (errorObject.response.status !== 500) {
-                    errorMessage = errorObject.response.data.message;
+                if (error.response.status !== 500) {
+                    errorMessage = error.response.data.message;
                 }
                 setShowErrorModal(true);
                 setModalErrorMessage(errorMessage);
@@ -81,10 +83,10 @@ function FinancialOverviewProjectItem({
                 refreshFinancialOverviewProjects();
             })
             .catch(error => {
-                let errorObject = JSON.parse(JSON.stringify(error));
+                // let errorObject = JSON.parse(JSON.stringify(error));
                 let errorMessage = 'Er is iets misgegaan bij opslaan. Probeer het opnieuw.';
-                if (errorObject.response.status !== 500) {
-                    errorMessage = errorObject.response.data.message;
+                if (error.response.status !== 500) {
+                    errorMessage = error.response.data.message;
                 }
                 setShowErrorModal(true);
                 setModalErrorMessage(errorMessage);
@@ -108,12 +110,19 @@ function FinancialOverviewProjectItem({
         setModalErrorMessage('');
     }
 
-    const inProgressRowClass = financialOverviewProject.statusId === 'in-progress' ? 'in-progress-row' : '';
-
+    const rowClass =
+        financialOverviewProject.statusId === 'in-progress'
+            ? 'in-progress-row'
+            : financialOverviewProject.statusId === 'concept' &&
+              financialOverviewProject.hasInterimFinancialOverviewContacts
+            ? 'in-progress-row-light'
+            : financialOverviewProject.statusId === 'definitive'
+            ? 'success-row-light'
+            : '';
     return (
         <React.Fragment>
             <tr
-                className={`${highlightLine} ${inProgressRowClass}`}
+                className={`${highlightLine} ${rowClass}`}
                 onDoubleClick={() => clickItem(financialOverviewProject.id)}
                 onMouseEnter={() => onLineEnter()}
                 onMouseLeave={() => onLineLeave()}
@@ -125,22 +134,31 @@ function FinancialOverviewProjectItem({
                 <td>
                     {financialOverview.definitive ? (
                         <a role="button">
-                            <Icon className="mybtn-primary" size={14} icon={check} />&nbsp;
+                            <Icon className="mybtn-primary" size={14} icon={check} />
+                            &nbsp;
                         </a>
                     ) : showActionButtons ? (
                         financialOverviewProject.definitive ? (
                             <a role="button" onClick={toggleMakeConcept}>
-                                <Icon className="mybtn-danger" size={14} icon={remove} />&nbsp;
+                                <Icon className="mybtn-danger" size={14} icon={remove} />
+                                &nbsp;
                             </a>
                         ) : (
                             <>
                                 <a role="button" onClick={toggleMakeDefinitive}>
                                     <Icon className="mybtn-success" size={14} icon={check} />
                                 </a>
-                                &nbsp;&nbsp;&nbsp;
-                                <a role="button" onClick={toggleDelete}>
-                                    <Icon className="mybtn-danger" size={14} icon={trash} />
-                                </a>
+                                {financialOverviewProject.statusId === 'concept' &&
+                                !financialOverviewProject.hasInterimFinancialOverviewContacts ? (
+                                    <>
+                                        &nbsp;&nbsp;&nbsp;
+                                        <a role="button" onClick={toggleDelete}>
+                                            <Icon className="mybtn-danger" size={14} icon={trash} />
+                                        </a>
+                                    </>
+                                ) : (
+                                    ''
+                                )}
                             </>
                         )
                     ) : (

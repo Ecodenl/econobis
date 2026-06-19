@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
+
+// Functionele wrapper voor de class component
+const OpportunityStatusListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <OpportunityStatusListItem {...props} navigate={navigate} />;
+};
 
 class OpportunityStatusListItem extends Component {
     constructor(props) {
@@ -30,11 +36,11 @@ class OpportunityStatusListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/kans-status/${id}`);
+        this.props.navigate(`/kans-status/${id}`);
     }
 
     render() {
-        const { id, name, usesWf, numberOfDaysToSendEmail, permissions } = this.props;
+        const { id, name, usesWf, permissions } = this.props;
 
         return (
             <tr
@@ -45,7 +51,6 @@ class OpportunityStatusListItem extends Component {
             >
                 <td>{name}</td>
                 <td>{usesWf ? 'Ja' : 'Nee'}</td>
-                <td>{usesWf ? (numberOfDaysToSendEmail === 0 ? 'Direct' : numberOfDaysToSendEmail) : ''}</td>
                 <td>
                     {this.state.showActionButtons && permissions.manageFinancial ? (
                         <a role="button" onClick={() => this.openItem(id)}>
@@ -66,4 +71,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(OpportunityStatusListItem);
+export default connect(mapStateToProps)(OpportunityStatusListItemWrapper);

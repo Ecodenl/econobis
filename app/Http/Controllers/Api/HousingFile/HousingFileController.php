@@ -21,8 +21,8 @@ use App\Eco\HousingFile\HousingFileSpecification;
 use App\Eco\HousingFile\HousingFileSpecificationStatus;
 use App\Eco\HousingFile\RoofType;
 use App\Eco\Intake\Intake;
-use App\Eco\Intake\IntakeSource;
 use App\Eco\Intake\IntakeStatus;
+use App\Eco\IntakeSource\IntakeSource;
 use App\Eco\Measure\Measure;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Opportunity\OpportunityAction;
@@ -51,6 +51,8 @@ class HousingFileController extends ApiController
 
     public function grid(RequestQuery $requestQuery)
     {
+        $this->authorize('view', HousingFile::class);
+
         $housingFiles = $requestQuery->get();
 
         $housingFiles->load(['address.contact', 'buildingType', 'energyLabel']);
@@ -67,6 +69,8 @@ class HousingFileController extends ApiController
      */
     public function getStore(Contact $contact)
     {
+        $this->authorize('manage', HousingFile::class);
+
         $info[] = $contact->getPrettyAddresses();
 
         return $info;
@@ -74,6 +78,8 @@ class HousingFileController extends ApiController
 
     public function show(HousingFile $housingFile)
     {
+        $this->authorize('view', HousingFile::class);
+
         $housingFile->load([
             'address.contact',
             'housingFileSpecifications',
@@ -115,6 +121,8 @@ class HousingFileController extends ApiController
 
     public function excelHousingFiles(RequestQuery $requestQuery)
     {
+        $this->authorize('view', HousingFile::class);
+
         set_time_limit(0);
         $housingFiles = $requestQuery->getQueryNoPagination()->get();
 
@@ -131,14 +139,14 @@ class HousingFileController extends ApiController
 
         $data = $requestInput->integer('addressId')->validate('required|exists:addresses,id')->alias('address_id')->next()
             ->integer('buildingTypeId')->validate('nullable|exists:building_types,id')->onEmpty(null)->whenMissing(null)->alias('building_type_id')->next()
-            ->integer('buildYear')->validate('nullable|integer|between:1500,3000')->onEmpty(null)->whenMissing(null)->alias('build_year')->next()
-            ->boolean('isHouseForSale')->validate('boolean')->alias('is_house_for_sale')->whenMissing(true)->next()
+            ->integer('buildYear')->validate('nullable|integer|between:1000,3000')->onEmpty(null)->whenMissing(null)->alias('build_year')->next()
+            ->string('isHouseForSale')->alias('is_house_for_sale')->whenMissing('1')->next()
             ->numeric('surface')->validate('nullable|numeric')->onEmpty(null)->whenMissing(null)->alias('surface')->next()
             ->integer('roofTypeId')->validate('nullable|exists:roof_types,id')->onEmpty(null)->whenMissing(null)->alias('roof_type_id')->next()
             ->integer('energyLabelId')->validate('nullable|exists:energy_labels,id')->onEmpty(null)->whenMissing(null)->alias('energy_label_id')->next()
             ->integer('floors')->validate('nullable|integer')->onEmpty(null)->whenMissing(null)->alias('floors')->next()
             ->integer('energyLabelStatusId')->validate('nullable|exists:energy_label_status,id')->onEmpty(null)->whenMissing(null)->alias('energy_label_status_id')->next()
-            ->boolean('isMonument')->validate('boolean')->alias('is_monument')->whenMissing(false)->next()
+            ->string('isMonument')->alias('is_monument')->whenMissing('0')->next()
             ->integer('revenueSolarPanels')->validate('integer')->onEmpty(0)->whenMissing(0)->alias('revenue_solar_panels')->next()
             ->string('remark')->validate('string')->onEmpty('')->whenMissing('')->alias('remark')->next()
             ->string('remarkCoach')->validate('string')->onEmpty('')->whenMissing('')->alias('remark_coach')->next()
@@ -160,30 +168,48 @@ class HousingFileController extends ApiController
             ->string('boilerSettingComfortHeat')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('boiler_setting_comfort_heat')->next()
             ->string('amountGas')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('amount_gas')->next()
             ->string('amountElectricity')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('amount_electricity')->next()
+            ->double('wozValue')->validate('nullable')->whenMissing(null)->alias('woz_value')->next()
             ->get();
 
 
         $housingFile = new HousingFile($data);
         $housingFile->save();
 
+        //if applicable we will set the below_woz_limit to true or false for all opportunities indirectly related to this housingfile where the below_woz_limit is still not set (null)
+        //only if the woz_value for this housingfile is lower or the same as the campaign woz_limit
+        if($housingFile->woz_value !== null) {
+            foreach ($housingFile->address->intakes as $intake) {
+                $opportunities = $intake->opportunities->filter(function ($opportunity) {
+                    return is_null($opportunity->below_woz_limit);
+                });
+
+                foreach ($opportunities as $opportunity) {
+                    if ($opportunity->intake->campaign->subsidy_possible) {
+                        $opportunity->below_woz_limit = ($housingFile->woz_value <= $opportunity->intake->campaign->woz_limit);
+                        $opportunity->save();
+                    }
+                }
+            }
+        }
+
         return $this->show($housingFile);
     }
 
 
-    public function update(RequestInput $requestInput, HousingFile $housingFile)
+    public function update(Request $request,RequestInput $requestInput, HousingFile $housingFile)
     {
         $this->authorize('manage', HousingFile::class);
 
         $data = $requestInput->integer('addressId')->validate('required|exists:addresses,id')->alias('address_id')->next()
             ->integer('buildingTypeId')->validate('nullable|exists:building_types,id')->onEmpty(null)->whenMissing(null)->alias('building_type_id')->next()
-            ->integer('buildYear')->validate('nullable|integer|between:1500,3000')->onEmpty(null)->whenMissing(null)->alias('build_year')->next()
-            ->boolean('isHouseForSale')->validate('boolean')->alias('is_house_for_sale')->whenMissing(true)->next()
+            ->integer('buildYear')->validate('nullable|integer|between:1000,3000')->onEmpty(null)->whenMissing(null)->alias('build_year')->next()
+            ->string('isHouseForSale')->alias('is_house_for_sale')->whenMissing('1')->next()
             ->numeric('surface')->validate('nullable|numeric')->onEmpty(null)->whenMissing(null)->alias('surface')->next()
             ->integer('roofTypeId')->validate('nullable|exists:roof_types,id')->onEmpty(null)->whenMissing(null)->alias('roof_type_id')->next()
             ->integer('energyLabelId')->validate('nullable|exists:energy_labels,id')->onEmpty(null)->whenMissing(null)->alias('energy_label_id')->next()
             ->integer('floors')->validate('nullable|integer')->onEmpty(null)->whenMissing(null)->alias('floors')->next()
             ->integer('energyLabelStatusId')->validate('nullable|exists:energy_label_status,id')->onEmpty(null)->whenMissing(null)->alias('energy_label_status_id')->next()
-            ->boolean('isMonument')->validate('boolean')->alias('is_monument')->whenMissing(false)->next()
+            ->string('isMonument')->alias('is_monument')->whenMissing('0')->next()
             ->integer('revenueSolarPanels')->validate('integer')->onEmpty(0)->whenMissing(0)->alias('revenue_solar_panels')->next()
             ->string('remark')->validate('string')->onEmpty('')->whenMissing('')->alias('remark')->next()
             ->string('remarkCoach')->validate('string')->onEmpty('')->whenMissing('')->alias('remark_coach')->next()
@@ -197,6 +223,7 @@ class HousingFileController extends ApiController
             ->string('cookType')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('cook_type')->next()
             ->string('heatSource')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('heat_source')->next()
             ->string('waterComfort')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('water_comfort')->next()
+            ->double('wozValue')->validate('nullable')->whenMissing(null)->alias('woz_value')->next()
 //            ->string('pitchedRoofHeating')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('pitched_roof_heating')->next()
 //            ->string('flatRoofHeating')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('flat_roof_heating')->next()
 //            ->string('hr3pGlassFrameCurrentGlass')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('hr3p_glass_frame_current_glass')->next()
@@ -209,6 +236,29 @@ class HousingFileController extends ApiController
 
         $housingFile->fill($data);
         $housingFile->save();
+
+        //if applicable we will set the below_woz_limit to true or false for all opportunities indirectly related to this housingfile where the below_woz_limit is still not set (null)
+        //only if the woz_value for this housingfile is lower or the same as the campaign woz_limit
+        if($request->get('updateAllOpportunityBelowWozLimit')) {
+            foreach ($housingFile->address->intakes as $intake) {
+                if($request->get('updateAllOpportunityBelowWozLimit') === 'yes') {
+                    $opportunities = $intake->opportunities;
+                } elseif($request->get('updateAllOpportunityBelowWozLimit') === 'no') {
+                    $opportunities = $intake->opportunities->filter(function ($opportunity) {
+                        return is_null($opportunity->below_woz_limit);
+                    });
+                }
+
+                if($opportunities) {
+                    foreach ($opportunities as $opportunity) {
+                        if ($opportunity->intake->campaign->subsidy_possible) {
+                            $opportunity->below_woz_limit = ($housingFile->woz_value <= $opportunity->intake->campaign->woz_limit);
+                            $opportunity->save();
+                        }
+                    }
+                }
+            }
+        }
 
         return $this->show($housingFile);
     }
@@ -250,6 +300,7 @@ class HousingFileController extends ApiController
             ->numeric('savingsGas')->validate('nullable|numeric')->whenMissing(null)->onEmpty(null)->alias('savings_gas')->next()
             ->numeric('savingsElectricity')->validate('nullable|numeric')->whenMissing(null)->onEmpty(null)->alias('savings_electricity')->next()
             ->numeric('co2Savings')->validate('nullable|numeric')->whenMissing(null)->onEmpty(null)->alias('co2_savings')->next()
+            ->integer('campaignId')->validate('nullable|exists:campaigns,id')->whenMissing(null)->onEmpty(null)->alias('campaign_id')->next()
             ->get();
 
         $housingFileSpecification = new HousingFileSpecification($data);
@@ -281,6 +332,7 @@ class HousingFileController extends ApiController
             ->numeric('savingsGas')->validate('nullable|numeric')->whenMissing(null)->onEmpty(null)->alias('savings_gas')->next()
             ->numeric('savingsElectricity')->validate('nullable|numeric')->whenMissing(null)->onEmpty(null)->alias('savings_electricity')->next()
             ->numeric('co2Savings')->validate('nullable|numeric')->whenMissing(null)->onEmpty(null)->alias('co2_savings')->next()
+            ->integer('campaignId')->validate('nullable|exists:campaigns,id')->whenMissing(null)->onEmpty(null)->alias('campaign_id')->next()
             ->get();
 
         $housingFileSpecification->fill($data);
@@ -356,7 +408,7 @@ class HousingFileController extends ApiController
 
         $intakeStatusIdClosedWithOpportunity = IntakeStatus::where('code_Ref', 'closed_with_opportunity')->first()->id;
         $housingFileIntakeSource = IntakeSource::where('code_ref', 'housing_file')->first()->id;
-        $opportunityStatusIdInactive = OpportunityStatus::where('code_ref', 'inactive')->first()->id;
+        $opportunityStatusIdActive = OpportunityStatus::where('code_ref', 'active')->first()->id;
         $specificationStatusIdOpportunityCreated = HousingFileSpecificationStatus::where('code_ref', 'opportunity_created')->first()->id;
 
         $specificationIds = $request->input('ids');
@@ -380,7 +432,7 @@ class HousingFileController extends ApiController
 
                 $opportunity = Opportunity::create([
                     'measure_category_id' => $measure->measureCategory->id,
-                    'status_id' => $opportunityStatusIdInactive,
+                    'status_id' => $opportunityStatusIdActive,
                     'housing_file_specification_id' => $housingFileSpecification->id,
                     'intake_id' => $intake->id,
                     'quotation_text' => $housingFileSpecification->external_hoom_name ? $housingFileSpecification->external_hoom_name : '',
@@ -458,6 +510,8 @@ class HousingFileController extends ApiController
 
     public function peek()
     {
+//        $this->authorize('view', HousingFile::class);
+
         $teamContactIds = Auth::user()->getTeamContactIds();
         if ($teamContactIds){
             $housingFiles = HousingFile::whereHas('address', function($query) use($teamContactIds){

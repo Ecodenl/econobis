@@ -8,7 +8,7 @@ const DataTableBody = props => {
     return (
         <>
             {!props.freeFieldFormatType ? (
-                <span>Kies eerst een vrij veld contact</span>
+                <span>Kies eerst een vrij veld</span>
             ) : props.freeFieldFormatType === 'boolean' ? (
                 <DataTableCustomFilterSelectBoolean
                     handleInputChange={props.handleInputChange}

@@ -2,13 +2,19 @@ import React, { Component } from 'react';
 
 import Modal from '../../../../components/modal/Modal';
 import InvoiceDetailsAPI from '../../../../api/invoice/InvoiceDetailsAPI';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import fileDownload from 'js-file-download';
 import InputDate from '../../../../components/form/InputDate';
 import validator from 'validator';
 import moment from 'moment/moment';
 import { setError } from '../../../../actions/general/ErrorActions';
 import { connect } from 'react-redux';
+
+// Functionele wrapper voor de class component
+const InvoiceSendConfirmWrapper = props => {
+    const navigate = useNavigate();
+    return <InvoiceSendConfirm {...props} navigate={navigate} />;
+};
 
 class InvoiceSendConfirm extends Component {
     constructor(props) {
@@ -61,7 +67,7 @@ class InvoiceSendConfirm extends Component {
                     }
                 });
 
-                hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
+                this.props.navigate(`/financieel/${this.props.administrationId}/notas/verzonden`);
             }
         } else {
             InvoiceDetailsAPI.sendAll(this.props.invoiceIds, null).then(payload => {
@@ -70,7 +76,7 @@ class InvoiceSendConfirm extends Component {
                 }
             });
 
-            hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
+            this.props.navigate(`/financieel/${this.props.administrationId}/notas/verzonden`);
         }
     };
 
@@ -88,7 +94,7 @@ class InvoiceSendConfirm extends Component {
             <Modal
                 closeModal={this.props.closeModal}
                 confirmAction={this.confirmAction}
-                title="Nota verzenden"
+                title="Nota's verzenden"
                 buttonConfirmText={'Verzenden'}
                 loading={this.state.loading}
             >
@@ -122,7 +128,7 @@ class InvoiceSendConfirm extends Component {
                 )}
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
-                        <span>Wilt u alle nota's definitief maken en verzenden?</span>
+                        <span>Wilt u geselecteerde nota's definitief maken en verzenden?</span>
                     </div>
                 </div>
             </Modal>
@@ -142,4 +148,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(InvoiceSendConfirm);
+export default connect(mapStateToProps, mapDispatchToProps)(InvoiceSendConfirmWrapper);

@@ -30,12 +30,19 @@ function CooperationDetailsLaposta({ closeModal, formData }) {
 
                         setErrors(messageErrors);
                     }
-                } else {
+                } else if (error.response) {
+                    // server antwoordde met status code (4xx/5xx)
                     setMessage(
-                        'Er is iets misgegaan bij het synchroniseren met Laposta (' +
-                            (error.response && error.response.status) +
-                            ').'
+                        'Er is iets misgegaan bij het synchroniseren met Laposta (' + error.response.status + ').'
                     );
+                } else if (error.request) {
+                    // request is verstuurd, maar geen response (timeout/gateway/netwerk)
+                    setMessage(
+                        'De synchronisatie duurt langer dan verwacht. De verwerking loopt waarschijnlijk nog op de server. Je kunt dit venster sluiten.'
+                    );
+                } else {
+                    // iets mis bij het opzetten van de request
+                    setMessage('Er is iets misgegaan: ' + error.message);
                 }
             });
     }, []);

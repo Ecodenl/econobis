@@ -18,6 +18,7 @@ class ContactPeek extends JsonResource
         return [
             'id' => $this->id,
             'fullName' => $this->full_name . ' (' . $this->number . ')',
+            'typeId' => $this->type_id,
         ];
     }
 }

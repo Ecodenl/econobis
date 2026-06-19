@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory, Link } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
 const TasksListToolbar = props => {
+    const navigate = useNavigate();
+
     const newTask = () => {
-        hashHistory.push('taak/nieuw');
+        navigate('/taak/nieuw');
     };
 
     const { permissions = {} } = props;
@@ -18,6 +20,13 @@ const TasksListToolbar = props => {
                 <div className="btn-group" role="group">
                     <ButtonIcon iconName={'refresh'} onClickAction={props.resetTaskFilters} />
                     {permissions.manageTask && <ButtonIcon iconName={'plus'} onClickAction={newTask} />}
+                    {permissions.manageTask && (
+                        <ButtonIcon
+                            iconName={'check'}
+                            onClickAction={props.setMultiSelectEnabled}
+                            title="Taak selectie maken"
+                        />
+                    )}
                 </div>
             </div>
             <div className="col-md-4">

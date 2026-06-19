@@ -48,6 +48,9 @@ class EmailGenericController extends Controller
             if($email->folder === 'removed'){
                 $email->removedBy()->associate(Auth::user());
                 $email->date_removed = new Carbon();
+                $email->to = $email->getToRecipients()->getEmailAdresses()->toArray();
+                $email->cc = $email->getCcRecipients()->getEmailAdresses()->toArray();
+                $email->bcc = $email->getBccRecipients()->getEmailAdresses()->toArray();
             }else{
                 $email->removedBy()->dissociate();
                 $email->date_removed = null;

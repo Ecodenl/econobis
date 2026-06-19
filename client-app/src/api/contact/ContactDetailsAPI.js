@@ -1,12 +1,12 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_CONTACTDETAILS = `${URL_API}/api/contact`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     getContactDetails: id => {
+        const URL_CONTACTDETAILS = `${getApiUrl()}/api/contact`;
         const requestUrl = `${URL_CONTACTDETAILS}/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -17,9 +17,10 @@ export default {
     },
 
     getContactDetailsWithAddresses: id => {
+        const URL_CONTACTDETAILS = `${getApiUrl()}/api/contact`;
         const requestUrl = `${URL_CONTACTDETAILS}/${id}/addresses`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -30,9 +31,10 @@ export default {
     },
 
     updateContactOwner: (contactId, userId) => {
+        const URL_CONTACTDETAILS = `${getApiUrl()}/api/contact`;
         const requestUrl = `${URL_CONTACTDETAILS}/${contactId}/owner/${userId}/associate`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -43,13 +45,14 @@ export default {
     makeHoomDossier: id => {
         const requestUrl = `contact/${id}/make-hoomdossier`;
 
-        return axiosInstance.get(requestUrl);
+        return getAxiosInstance().get(requestUrl);
     },
 
     getCoachAttributes: id => {
+        const URL_CONTACTDETAILS = `${getApiUrl()}/api/contact`;
         const requestUrl = `${URL_CONTACTDETAILS}/${id}/coach-attributes`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data;
@@ -57,10 +60,9 @@ export default {
     },
 
     updateCoachAttributes: contact => {
+        const URL_CONTACTDETAILS = `${getApiUrl()}/api/contact`;
         const requestUrl = `${URL_CONTACTDETAILS}/${contact.id}/coach-attributes`;
 
-        return axiosInstance
-            .post(requestUrl, contact);
+        return getAxiosInstance().post(requestUrl, contact);
     },
-
 };

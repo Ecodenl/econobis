@@ -22,11 +22,6 @@ class OpportunityStatusJoryResource extends JoryResource
         $this->field('id')->filterable()->sortable();
         $this->field('name')->filterable()->sortable();
         $this->field('uses_wf')->filterable()->sortable();
-        $this->field('email_template_id_wf')->filterable()->sortable();
-        $this->field('number_of_days_to_send_email')->filterable()->sortable();
-
-        // Relations
-        $this->relation('emailTemplateWorkflow');
     }
 
     protected function configureForPortal(): void

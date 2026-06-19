@@ -20,7 +20,7 @@ class FullEmailTemplate extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'subject' => $this->subject,
+            'subject' => $this->subject ?: '',
             'htmlBody' => $this->html_body,
             'defaultAttachmentDocument' => FullDocument::make($this->whenLoaded('defaultAttachmentDocument')),
             'createdById' => $this->created_by_id,

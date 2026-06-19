@@ -46,6 +46,24 @@ export const setPhoneNumberFilter = phoneNumber => ({
     phoneNumber,
 });
 
+// SET_IBAN_FILTER
+// export const setIbanFilter = iban => ({
+//     type: 'SET_IBAN_FILTER',
+//     iban,
+// });
+
+// SET_VAT_NUMBER_FILTER
+export const setVatNumberFilter = vatNumber => ({
+    type: 'SET_VAT_NUMBER_FILTER',
+    vatNumber,
+});
+
+// SET_CHAMBER_OF_COMMERCE_NUMBER
+export const setChamberOfCommerceNumberFilter = chamberOfCommerceNumber => ({
+    type: 'SET_CHAMBER_OF_COMMERCE_NUMBER',
+    chamberOfCommerceNumber,
+});
+
 // SET_STATUS_FILTER
 export const setStatusFilter = statusId => ({
     type: 'SET_STATUS_FILTER',

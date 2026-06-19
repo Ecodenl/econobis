@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
@@ -16,6 +16,8 @@ function FreeFieldsListItem({
     sortOrder,
     hasFreeFieldsFieldRecords,
 }) {
+    const navigate = useNavigate();
+
     const [showActionButtons, setShowActionButtons] = useState(false);
     const [highlightLine, setHighlightLine] = useState('');
 
@@ -30,7 +32,7 @@ function FreeFieldsListItem({
     }
 
     function openItem(id) {
-        hashHistory.push(`/vrije-velden/${id}`);
+        navigate(`/vrije-velden/${id}`);
     }
 
     return (

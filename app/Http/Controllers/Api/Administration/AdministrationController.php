@@ -100,45 +100,24 @@ class AdministrationController extends ApiController
             ->integer('emailTemplateExhortationId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_exhortation_id')->next()
             ->integer('emailTemplateFinancialOverviewId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_financial_overview_id')->next()
             ->integer('mailboxId')->validate('nullable|exists:mailboxes,id')->onEmpty(null)->whenMissing(null)->alias('mailbox_id')->next()
-            ->string('twinfieldConnectionType')->whenMissing(null)->onEmpty(null)->alias('twinfield_connection_type')->next()
-            ->string('twinfieldRefreshToken')->whenMissing(null)->onEmpty(null)->alias('twinfield_refresh_token')->next()
-            ->string('twinfieldUsername')->whenMissing(null)->onEmpty(null)->alias('twinfield_username')->next()
-            ->string('twinfieldPassword')->whenMissing(null)->onEmpty(null)->alias('twinfield_password')->next()
-            ->string('twinfieldClientId')->whenMissing(null)->onEmpty(null)->alias('twinfield_client_id')->next()
-            ->string('twinfieldClientSecret')->whenMissing(null)->onEmpty(null)->alias('twinfield_client_secret')->next()
-            ->string('twinfieldOrganizationCode')->whenMissing(null)->onEmpty(null)->alias('twinfield_organization_code')->next()
-            ->string('twinfieldOfficeCode')->whenMissing(null)->onEmpty(null)->alias('twinfield_office_code')->next()
-            ->string('dateSyncTwinfieldContacts')->whenMissing(null)->onEmpty(null)->alias('date_sync_twinfield_contacts')->next()
-            ->string('dateSyncTwinfieldPayments')->whenMissing(null)->onEmpty(null)->alias('date_sync_twinfield_payments')->next()
-            ->string('dateSyncTwinfieldInvoices')->whenMissing(null)->onEmpty(null)->alias('date_sync_twinfield_invoices')->next()
+            ->boolean('usesTwinfield')->whenMissing(false)->onEmpty(false)->alias('uses_twinfield')->next()
+            ->boolean('twinfieldIsValid')->whenMissing(false)->onEmpty(false)->alias('twinfield_is_valid')->next()
+            ->string('twinfieldConnectionType')->whenMissing('openid')->onEmpty('openid')->alias('twinfield_connection_type')->next()
             ->string('prefixInvoiceNumber')->whenMissing(null)->onEmpty(null)->alias('prefix_invoice_number')->next()
             ->string('emailBccNotas')->whenMissing(null)->onEmpty(null)->alias('email_bcc_notas')->next()
             ->integer('portalSettingsLayoutId')->validate('nullable|exists:portal_settings_layouts,id')->onEmpty(null)->whenMissing(null)->alias('portal_settings_layout_id')->next()
             ->string('logoName')->whenMissing(null)->onEmpty(null)->alias('logo_name')->next()
+            ->boolean('usesInterimFinancialOverviews')->whenMissing(false)->onEmpty(false)->alias('uses_interim_financial_overviews')->next()
             ->get();
 
         //bool als string? waarschijnlijk door formdata
-        $usesTwinfield = $request->input('usesTwinfield');
-
-        if($usesTwinfield == 'false' || $usesTwinfield == '0'){
-            $usesTwinfield = false;
-        }
-        if($usesTwinfield == 'true' || $usesTwinfield == '1'){
-            $usesTwinfield = true;
-        }
-
-        $data['uses_twinfield'] = $usesTwinfield;
-
-        //bool als string? waarschijnlijk door formdata
         $usesVat = $request->input('usesVat');
-
         if($usesVat == 'false' || $usesVat == '0'){
             $usesVat = false;
         }
         if($usesVat == 'true' || $usesVat == '1'){
             $usesVat = true;
         }
-
         $data['uses_vat'] = $usesVat;
 
         $data['uses_mollie'] = false;
@@ -148,20 +127,17 @@ class AdministrationController extends ApiController
             $data['mollie_api_key'] = $request->input('mollieApiKey');
         }
 
-        $administration = new Administration($data);
-
-        if($administration->uses_twinfield) {
-            $twinfieldHelper = new TwinfieldHelper($administration);
-            try {
-                $administration->twinfield_is_valid = $twinfieldHelper->testConnection();
-            }
-            catch(\Exception $e){
-                Log::error($e->getMessage());
-                $administration->twinfield_is_valid = 0;
-            }
-        }else{
-            $administration->twinfield_is_valid = 0;
+        //bool als string? waarschijnlijk door formdata
+        $usesInterimFinancialOverviews = $request->input('usesInterimFinancialOverviews');
+        if($usesInterimFinancialOverviews == 'false' || $usesInterimFinancialOverviews == '0'){
+            $usesInterimFinancialOverviews = false;
         }
+        if($usesInterimFinancialOverviews == 'true' || $usesInterimFinancialOverviews == '1'){
+            $usesInterimFinancialOverviews = true;
+        }
+        $data['uses_interim_financial_overviews'] = $usesInterimFinancialOverviews;
+
+        $administration = new Administration($data);
 
         $administration->save();
 
@@ -207,7 +183,7 @@ class AdministrationController extends ApiController
             ->integer('emailTemplateExhortationId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_exhortation_id')->next()
             ->integer('emailTemplateFinancialOverviewId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_financial_overview_id')->next()
             ->integer('mailboxId')->validate('nullable|exists:mailboxes,id')->onEmpty(null)->whenMissing(null)->alias('mailbox_id')->next()
-            ->string('twinfieldConnectionType')->whenMissing(null)->onEmpty(null)->alias('twinfield_connection_type')->next()
+            ->string('twinfieldConnectionType')->whenMissing('openid')->onEmpty('openid')->alias('twinfield_connection_type')->next()
             ->string('twinfieldUsername')->whenMissing(null)->onEmpty(null)->alias('twinfield_username')->next()
             ->string('twinfieldPassword')->whenMissing($administration->twinfield_password)->onEmpty($administration->twinfield_password)->alias('twinfield_password')->next()
             ->string('twinfieldClientId')->whenMissing(null)->onEmpty(null)->alias('twinfield_client_id')->next()
@@ -225,32 +201,38 @@ class AdministrationController extends ApiController
 
         //bool als string? waarschijnlijk door formdata
         $usesTwinfield = $request->input('usesTwinfield');
-
         if($usesTwinfield == 'false' || $usesTwinfield == '0'){
             $usesTwinfield = false;
         }
         if($usesTwinfield == 'true' || $usesTwinfield == '1'){
             $usesTwinfield = true;
         }
-
         $data['uses_twinfield'] = $usesTwinfield;
 
         //bool als string? waarschijnlijk door formdata
         $usesVat = $request->input('usesVat');
-
         if($usesVat == 'false' || $usesVat == '0'){
             $usesVat = false;
         }
         if($usesVat == 'true' || $usesVat == '1'){
             $usesVat = true;
         }
-
         $data['uses_vat'] = $usesVat;
 
         if(\Auth::user()->email === 'support@econobis.nl' || \Auth::user()->email === 'software@xaris.nl'){
             $data['uses_mollie'] = (bool) $request->input('usesMollie') && $request->input('usesMollie') !== 'false';
             $data['mollie_api_key'] = $request->input('mollieApiKey');
         }
+
+        //bool als string? waarschijnlijk door formdata
+        $usesInterimFinancialOverviews = $request->input('usesInterimFinancialOverviews');
+        if($usesInterimFinancialOverviews == 'false' || $usesInterimFinancialOverviews == '0'){
+            $usesInterimFinancialOverviews = false;
+        }
+        if($usesInterimFinancialOverviews == 'true' || $usesInterimFinancialOverviews == '1'){
+            $usesInterimFinancialOverviews = true;
+        }
+        $data['uses_interim_financial_overviews'] = $usesInterimFinancialOverviews;
 
         $administration->fill($data);
 
@@ -308,7 +290,8 @@ class AdministrationController extends ApiController
 
     public function checkStorageDir($administration_id){
         //Check if storage map exists
-        $storageDir = Storage::disk('administrations')->path(DIRECTORY_SEPARATOR . 'administration_' . $administration_id . DIRECTORY_SEPARATOR . 'logos');
+        $storageDir = Storage::disk('administration-logos')
+            ->path(DIRECTORY_SEPARATOR . 'administration_' . $administration_id . DIRECTORY_SEPARATOR . 'logos');
 
         if (!is_dir($storageDir)) {
             mkdir($storageDir, 0777, true);
@@ -323,7 +306,7 @@ class AdministrationController extends ApiController
         }
 
         $filename = $attachment->store('administration_' . $administration->id
-            . DIRECTORY_SEPARATOR . 'logos', 'administrations');
+            . DIRECTORY_SEPARATOR . 'logos', 'administration-logos');
 
         $administration->logo_filename = $filename;
 
@@ -357,8 +340,7 @@ class AdministrationController extends ApiController
     }
 
     public function downloadSepa(Sepa $sepa){
-        $filePath = Storage::disk('administrations')
-            ->path($sepa->filename);
+        $filePath = Storage::disk('administrations')->path($sepa->filename);
         header('X-Filename:' . $sepa->name);
         header('Access-Control-Expose-Headers: X-Filename');
         return response()->download($filePath, $sepa->name, ['Content-Type: application/xml']);
@@ -381,10 +363,10 @@ class AdministrationController extends ApiController
 
     public function syncSentInvoicesFromTwinfield(RequestInput $requestInput, Administration $administration){
 
-        $fromDateSent = $requestInput
-            ->string('fromDateSent')->onEmpty(null)->next()
+        $inputData = $requestInput
+            ->string('fromDateSent')->onEmpty(null)->whenMissing(null)->next()
             ->get();
-        $twinfieldInvoicePaymentHelper = new TwinfieldInvoicePaymentHelper($administration, $fromDateSent);
+        $twinfieldInvoicePaymentHelper = new TwinfieldInvoicePaymentHelper($administration, $inputData['fromDateSent'], null);
         return $twinfieldInvoicePaymentHelper->processTwinfieldInvoicePayment();
     }
 
@@ -392,7 +374,9 @@ class AdministrationController extends ApiController
     {
         $logoFilenameSrc = '';
         if ($administration->logo_filename) {
-            $path = storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $administration->logo_filename);
+//            todo WM: opschonen
+//            $path = storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $administration->logo_filename);
+            $path = Storage::disk('administration-logos')->path($administration->logo_filename);
             $logo = file_get_contents($path);
             $logoFilenameSrc = 'data:' . mime_content_type($path)
                 . ';charset=binary;base64,' . base64_encode($logo);
@@ -429,6 +413,9 @@ class AdministrationController extends ApiController
             'totalInvoicesIsSending' => $administration->total_invoices_is_sending,
             'totalInvoicesErrorMaking' => $administration->total_invoices_error_making,
             'totalInvoicesIsResending' => $administration->total_invoices_is_resending,
+
+            'totalInvoicesIsExporting' => $administration->total_invoices_is_exporting,
+            'totalInvoicesErrorExporting' => $administration->total_invoices_error_exporting,
 
             'totalPaymentInvoices' => $administration->total_payment_invoices,
             'totalPaymentInvoicesConcepts' => $administration->total_payment_invoices_concepts,

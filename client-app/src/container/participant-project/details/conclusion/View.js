@@ -27,7 +27,7 @@ const ParticipantDetailsConclusionView = ({ participantProjectDetails }) => {
                         createdWith == 'portal' || createdWith == 'webform'
                             ? ''
                             : createdBy
-                            ? 'gebruiker/' + createdBy.id
+                            ? '/gebruiker/' + createdBy.id
                             : ''
                     }
                 />
@@ -46,7 +46,7 @@ const ParticipantDetailsConclusionView = ({ participantProjectDetails }) => {
                         updatedWith == 'portal' || updatedWith == 'webform'
                             ? ''
                             : updatedBy
-                            ? 'gebruiker/' + updatedBy.id
+                            ? '/gebruiker/' + updatedBy.id
                             : ''
                     }
                 />

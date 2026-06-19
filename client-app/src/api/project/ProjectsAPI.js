@@ -1,4 +1,4 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
 
 const URL_PROJECT = `project`;
 
@@ -6,7 +6,7 @@ export default {
     fetchProjects: ({ filters, sorts, pagination, filterType }) => {
         const requestUrl = `${URL_PROJECT}/grid`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),
@@ -20,7 +20,7 @@ export default {
     peekProjects: () => {
         const requestUrl = `${URL_PROJECT}/peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -33,7 +33,7 @@ export default {
     peekDistributionsById: distributionIds => {
         const requestUrl = `distribution/peek-by-ids`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, { ids: distributionIds })
             .then(function(response) {
                 return response.data;
@@ -46,7 +46,7 @@ export default {
     peekDistributionsKwhById: distributionIds => {
         const requestUrl = `distribution-kwh/peek-by-ids`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, { ids: distributionIds })
             .then(function(response) {
                 return response.data;
@@ -59,7 +59,7 @@ export default {
     peekDistributionsKwhPartsById: distributionIds => {
         const requestUrl = `distribution-part-kwh/peek-by-ids`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, { ids: distributionIds })
             .then(function(response) {
                 return response.data;
@@ -72,7 +72,7 @@ export default {
     peekParticipantsById: participantIds => {
         const requestUrl = `project/participant/peek-by-ids`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, { ids: participantIds })
             .then(function(response) {
                 return response.data;
@@ -85,7 +85,7 @@ export default {
     getActive: () => {
         const requestUrl = `${URL_PROJECT}/active`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data)
             .catch(error => {
@@ -96,7 +96,7 @@ export default {
     getChartData: id => {
         const requestUrl = `${URL_PROJECT}/chart-status/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data)
             .catch(error => {
@@ -107,7 +107,7 @@ export default {
     getChartContactStatusData: id => {
         const requestUrl = `${URL_PROJECT}/chart-contact-status/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data)
             .catch(error => {
@@ -118,7 +118,7 @@ export default {
     getChartParticipationsData: id => {
         const requestUrl = `${URL_PROJECT}/chart-participations-status/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data)
             .catch(error => {

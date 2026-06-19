@@ -57,18 +57,19 @@ class EndPointWoonplanController extends EndPointHoomDossierController
 
     protected function validatePost($dataContent)
     {
-        if(!isset($dataContent->user_action_plan_advices)) {
-            $this->error('Geen "user_action_plan_advices" meegegeven', 404);
-        }
+//        if(!isset($dataContent->user_action_plan_advices)) {
+//            $this->error('Geen "user_action_plan_advices" meegegeven', 404);
+//        }
     }
 
     protected function doPost($dataContent)
     {
 //        $this->log('Binnenkomende payload (zie laravel log)');
 //        Log::info(json_encode($dataContent));
-//        foreach($dataContent->user_action_plan_advices as $userActionPlanAdvice) {
-//            $this->doPostElement($userActionPlanAdvice);
-//        }
+        if(!isset($dataContent->user_action_plan_advices)) {
+            $this->log('Geen "user_action_plan_advices" meegegeven');
+            return;
+        }
         foreach($dataContent->user_action_plan_advices as $key => $userActionPlanAdvice)
         {
             if(!empty($key)){

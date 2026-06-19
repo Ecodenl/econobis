@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use JosKolenberg\LaravelJory\Facades\Jory;
 
 class FinancialOverviewProjectController extends Controller
@@ -43,6 +44,8 @@ class FinancialOverviewProjectController extends Controller
 
     public function store(RequestInput $input, Request $request)
     {
+        set_time_limit(300);
+
         $this->authorize('manage', FinancialOverview::class);
 
         $financialOverview = FinancialOverview::find($request->get('financialOverviewId'));

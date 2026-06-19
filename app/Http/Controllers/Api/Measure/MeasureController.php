@@ -25,6 +25,8 @@ class MeasureController extends ApiController
 
     public function grid(RequestQuery $requestQuery)
     {
+        $this->authorize('view', Measure::class);
+
         $measures = $requestQuery->get();
         $measures->load(['measureCategory']);
         $sortedMeasures = $measures->sortBy(function($item) {
@@ -36,6 +38,8 @@ class MeasureController extends ApiController
 
     public function show(Measure $measure)
     {
+        $this->authorize('view', Measure::class);
+
         $measure->load([
             'faqs',
             'deliveredByOrganisations.contact.primaryAddress',
@@ -59,11 +63,11 @@ class MeasureController extends ApiController
 
     public function update(RequestInput $requestInput, Measure $measure)
     {
-
         $this->authorize('manage', Measure::class);
 
         $data = $requestInput
             ->string('description')->onEmpty(null)->next()
+            ->string('nameCustom')->onEmpty(null)->alias('name_custom')->next()
             ->boolean('visible')->validate('boolean')->onEmpty(false)->whenMissing(false)->next()
             ->get();
 
@@ -92,7 +96,6 @@ class MeasureController extends ApiController
 
     public function updateFaq(RequestInput $requestInput, MeasureFaq $measureFaq)
     {
-
         $this->authorize('manage', Measure::class);
 
         $data = $requestInput
@@ -106,24 +109,29 @@ class MeasureController extends ApiController
 
     public function destroyFaq(MeasureFaq $measureFaq)
     {
+        $this->authorize('manage', Measure::class);
+
         $measureFaq->delete();
     }
 
     public function attachSupplier(Measure $measure, Organisation $organisation)
     {
         $this->authorize('manage', Measure::class);
+
         $measure->deliveredByOrganisations()->attach($organisation);
     }
 
     public function detachSupplier(Measure $measure, Organisation $organisation)
     {
         $this->authorize('manage', Measure::class);
+
         $measure->deliveredByOrganisations()->detach($organisation);
     }
 
     public function associateOpportunity(Measure $measure, Opportunity $opportunity)
     {
         $this->authorize('manage', Measure::class);
+
         $opportunity->measure()->associate($measure);
         $opportunity->save();
 
@@ -132,6 +140,8 @@ class MeasureController extends ApiController
 
     public function peek()
     {
+//        $this->authorize('view', Measure::class);
+
         return MeasurePeek::collection(Measure::orderBy('id')->get());
     }
 }

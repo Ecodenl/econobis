@@ -112,7 +112,14 @@ class AddressHelper
         $validAddressNumberAdditions = [];
         $checkAddressNumberAdditions = false;
 
-        if ($project->check_postalcode_link && !empty($project->postalcode_link)) {
+        // indien check postalcode_link of PCR project (dan hebben we altijd postcode check)
+        if ($project->check_postalcode_link || $project->projectType->code_ref === 'postalcode_link_capital') {
+
+            // zou niet moeten voorkomen, maar voor de zekerheid: indien postalcode_link bij project niet ingevuld, maar wel check postalcode dan meteen fout.
+            if (empty($project->postalcode_link)) {
+                $messages[] = 'Je kunt niet meedoen in dit project omdat je postcode/huisnummer ' . $address->postal_code . ' nr. ' .  $address->number . ($address->addition ? '-' : '') . ' niet valt binnen postcode gebied bij project ' . $project->name . ".";
+                return $messages;
+            }
 
             $oneFullPostalCode = preg_match($this->regexPostalCode, $project->postalcode_link, $matches);
             if ($oneFullPostalCode && (!empty($project->address_number_series))) {

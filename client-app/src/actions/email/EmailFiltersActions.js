@@ -38,10 +38,11 @@ export const setFilterResponsibleName = responsibleName => ({
     responsibleName,
 });
 
-export const setFilterMe = me => ({
-    type: 'SET_FILTER_EMAIL_ME',
-    me,
-});
+// todo WM: Eigen e-mail gaat niet meer vanuit oude mail, eigen e-mail gaat nu naar nieuwe splitview
+// export const setFilterMe = me => ({
+//     type: 'SET_FILTER_EMAIL_ME',
+//     me,
+// });
 
 export const clearFilterEmail = () => ({
     type: 'CLEAR_FILTER_EMAIL',

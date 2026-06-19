@@ -5,6 +5,13 @@ import { isEmpty } from 'lodash';
 import { fetchContactDetails } from '../../../actions/contact/ContactDetailsActions';
 import HousingFileNewForm from './HousingFileNewForm';
 import HousingFileNewToolbar from './HousingFileNewToolbar';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const HousingFileNewAppWrapper = props => {
+    const params = useParams();
+    return <HousingFileNewApp {...props} params={params} />;
+};
 
 class HousingFileNewApp extends Component {
     constructor(props) {
@@ -50,4 +57,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(HousingFileNewApp);
+export default connect(mapStateToProps, mapDispatchToProps)(HousingFileNewAppWrapper);

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import InvoiceListSetPaid from './InvoiceListSetPaid';
 import InvoiceListSendNotification from './InvoiceListSendNotification';
@@ -15,6 +15,12 @@ import { euro } from 'react-icons-kit/fa/euro';
 import { bullhorn } from 'react-icons-kit/fa/bullhorn';
 import { remove } from 'react-icons-kit/fa/remove';
 import { trash } from 'react-icons-kit/fa/trash';
+
+// Functionele wrapper voor de class component
+const InvoicesListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <InvoicesListItem {...props} navigate={navigate} />;
+};
 
 class InvoicesListItem extends Component {
     constructor(props) {
@@ -38,11 +44,17 @@ class InvoicesListItem extends Component {
             });
         } else if (this.props.dateReminder2) {
             this.setState({
-                reminderText: 'Wilt u de derde herinnering sturen?',
+                reminderText:
+                    this.props.numberOfInvoiceReminders > 2
+                        ? 'Wilt u de derde herinnering sturen?'
+                        : 'Wilt u de aanmaning sturen?',
             });
         } else if (this.props.dateReminder1) {
             this.setState({
-                reminderText: 'Wilt u de tweede herinnering sturen?',
+                reminderText:
+                    this.props.numberOfInvoiceReminders > 1
+                        ? 'Wilt u de tweede herinnering sturen?'
+                        : 'Wilt u de aanmaning sturen?',
             });
         } else {
             this.setState({
@@ -66,11 +78,11 @@ class InvoicesListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/nota/${id}`);
+        this.props.navigate(`/nota/${id}`);
     }
 
     viewItem(id) {
-        hashHistory.push(`/nota/inzien/${id}`);
+        this.props.navigate(`/nota/inzien/${id}`);
     }
 
     showSend = () => {
@@ -143,7 +155,9 @@ class InvoicesListItem extends Component {
             this.props.statusId === 'is-sending' ||
             this.props.statusId === 'error-making' ||
             this.props.statusId === 'error-sending' ||
-            this.props.statusId === 'is-resending'
+            this.props.statusId === 'is-resending' ||
+            this.props.statusId === 'is-exporting' ||
+            this.props.statusId === 'error-exporting'
                 ? 'in-progress-row'
                 : '';
         const errorStatus =
@@ -257,7 +271,11 @@ class InvoicesListItem extends Component {
                     (this.props.statusId === 'sent' || this.props.statusId === 'exported') &&
                     !this.props.dateExhortation &&
                     !this.props.isPaidByMollie ? (
-                        <a role="button" onClick={() => this.showSendNotification()} title="Verstuur herinnering">
+                        <a
+                            role="button"
+                            onClick={() => this.showSendNotification()}
+                            title="Verstuur herinnering/aanmaning"
+                        >
                             <Icon className="mybtn-success" size={14} icon={bullhorn} />
                             &nbsp;
                         </a>
@@ -271,6 +289,8 @@ class InvoicesListItem extends Component {
                     this.props.statusId !== 'error-making' &&
                     this.props.statusId !== 'error-sending' &&
                     this.props.statusId !== 'is-resending' &&
+                    this.props.statusId !== 'is-exporting' &&
+                    this.props.statusId !== 'error-exporting' &&
                     this.props.statusId !== 'paid' &&
                     this.props.statusId !== 'irrecoverable' ? (
                         <a role="button" onClick={() => this.showSetIrrecoverable()} title="Zet op oninbaar">
@@ -333,4 +353,4 @@ class InvoicesListItem extends Component {
     }
 }
 
-export default InvoicesListItem;
+export default InvoicesListItemWrapper;

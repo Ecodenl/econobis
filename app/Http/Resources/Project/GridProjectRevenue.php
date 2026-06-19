@@ -21,10 +21,9 @@ class GridProjectRevenue extends JsonResource
         return
             [
                 'id' => $this->id,
-                'typeId' => $this->type_id,
-                'type' => GenericResource::make($this->whenLoaded('type')),
                 'projectId' => $this->project_id,
                 'confirmed' => $this->confirmed,
+                'status' => $this->status,
                 'dateBegin' => $this->date_begin,
                 'dateEnd' => $this->date_end,
                 'dateReference' => $this->date_reference,
@@ -36,6 +35,7 @@ class GridProjectRevenue extends JsonResource
                 'categoryId' => $this->category_id,
                 'category' => GenericResource::make($this->whenLoaded('category')),
                 'payoutKwh' => $this->payout_kwh,
+                'amountRevenue' => $this->amount_revenue,
             ];
     }
 }

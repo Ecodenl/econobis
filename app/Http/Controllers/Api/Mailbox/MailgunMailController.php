@@ -16,30 +16,71 @@ class MailgunMailController
 
     public function store(MailgunStoreMailRequest $request)
     {
+        set_time_limit(60);
+
         $mailbox = $request->getMailbox();
 
         if(!$mailbox) {
             return;
         }
+        Log::info("Email mailgun store (mailbox: " . $mailbox->id . ").");
 
         $from = $request->getFrom();
+        // geen fromAddress, dan melding
         if(!$from){
-            Log::info("Email zonder from (mailbox: " . $mailbox->id . ", message_id: " . ($request->input('Message-Id') ?? 'geen') . ").");
+            Log::error("Email zonder from (mailbox: " . $mailbox->id . ", message_id: " . ($request->input('Message-Id') ?? 'geen') . ").");
+            $from = '';
+//            return;
+        }
+
+        // indien email al bestaat, dan melding en overslaan
+        if (Email::whereMailboxId($mailbox->id)
+            ->whereMessageId($request->input('Message-Id'))
+            ->exists()) {
+            Log::error("Email bestaat al (mailbox: " . $mailbox->id . ", message_id: " . ($request->input('Message-Id') ?? 'geen') . ", from: " . $from . ").");
             return;
         }
+
+        $textHtml = $request->getHtmlBody() ?? '';
+        // when encoding isn't UTF-8 encode texthtml to utf8.
+        $currentEncodingTextHtml= mb_detect_encoding( $textHtml, 'UTF-8', true);
+        if(false === $currentEncodingTextHtml){
+            $textHtml = mb_convert_encoding($textHtml, 'UTF-8', mb_list_encodings());
+        }
+
+        if (strlen($textHtml) > 250000) {
+            $textHtml = substr($textHtml, 0, 250000);
+            $textHtml .= '<p>Deze mail is langer dan 250.000 karakters en hierdoor ingekort.</p>';
+        }
+
+        if(!$request->input('Subject')){
+            Log::error("Email zonder subject (mailbox: " . $mailbox->id . ", message_id: " . ($request->input('Message-Id') ?? 'geen') . ").");
+        }
+
+        $subject = $request->input('Subject') ?? '';
+        $currentEncodingTextSubject= mb_detect_encoding( $subject, 'UTF-8', true);
+        if(false === $currentEncodingTextSubject){
+            $subject = mb_convert_encoding($subject, 'UTF-8', mb_list_encodings());
+        }
+
+        if(strlen($subject) > 250){
+            $subject = substr($subject, 0, 249);
+        }
+
         $email = new Email([
             'mailbox_id' => $mailbox->id,
             'from' => $from,
-            'to' => $request->getTo(),
-            'cc' => $request->getCc(),
+            'to' => $request->getTo() ?? [],
+            'cc' => $request->getCc() ?? [],
             'bcc' => [],
-            'subject' => $request->input('subject') ?? '',
-            'html_body' => $request->getHtmlBody(),
+            'subject' => $subject,
+            'subject_for_filter' => trim(mb_substr($subject ?? '', 0, 150)),
+            'html_body' => $textHtml,
             'date_sent' => Carbon::now(),
             'folder' => 'inbox',
             'imap_id' => null,
             'msoauth_message_id' => null,
-            'message_id' => $request->input('Message-Id'),
+            'message_id' => $request->input('Message-Id') ?? '',
             'status' => 'unread'
         ]);
         $email->save();

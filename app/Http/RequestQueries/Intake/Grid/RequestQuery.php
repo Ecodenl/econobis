@@ -30,4 +30,11 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
             ->whereTeamContactIds(Auth::user())
             ->select('intakes.*');
     }
+
+    public function getQuery()
+    {
+        $query = parent::getQuery();
+
+        return $query->orderByDesc('intakes.created_at');
+    }
 }

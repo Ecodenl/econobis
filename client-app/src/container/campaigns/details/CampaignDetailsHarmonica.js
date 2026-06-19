@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import TaskHarmonica from './harmonica/TaskHarmonica';
 import NoteHarmonica from './harmonica/NoteHarmonica';
 import DocumentHarmonica from './harmonica/DocumentHarmonica';
 
 function CampaignDetailsHarmonica({ campaign }) {
+    const navigate = useNavigate();
+
     const [showList, setShowList] = useState({
         tasks: false,
         notes: false,
@@ -19,15 +21,15 @@ function CampaignDetailsHarmonica({ campaign }) {
     }
 
     function newTask() {
-        hashHistory.push(`/taak/nieuw/campagne/${campaign.id}`);
+        navigate(`/taak/nieuw/campagne/${campaign.id}`);
     }
 
     function newNote() {
-        hashHistory.push(`/taak/nieuw/afgehandeld/campagne/${campaign.id}`);
+        navigate(`/taak/nieuw/afgehandeld/campagne/${campaign.id}`);
     }
 
     function newDocument(type) {
-        hashHistory.push(`/document/nieuw/${type}/campagne/${campaign.id}`);
+        navigate(`/document/nieuw/${type}/campagne/${campaign.id}`);
     }
 
     return (

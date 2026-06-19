@@ -43,6 +43,10 @@ class UserPolicy
     {
         return $user->hasPermissionTo('manage_user', 'api');
     }
+    public function unblockUser(User $user, User $model)
+    {
+        return $user->hasPermissionTo('manage_user', 'api');
+    }
 
     public function updateDefaultMailbox(User $user, User $model)
     {

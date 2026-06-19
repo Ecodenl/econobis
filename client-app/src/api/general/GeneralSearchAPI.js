@@ -1,10 +1,11 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     search: function(data) {
-        const requestUrl = `${URL_API}/api/general-search`;
+        const requestUrl = `${getApiUrl()}/api/general-search`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, { searchText: data })
             .then(function(response) {
                 return response.data;

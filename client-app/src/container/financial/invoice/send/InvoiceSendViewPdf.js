@@ -12,7 +12,7 @@ class InvoiceSendViewPdf extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (this.props.invoiceId !== nextProps.invoiceId) {
             if (nextProps.invoiceId) {
                 this.downloadFile(nextProps.invoiceId);

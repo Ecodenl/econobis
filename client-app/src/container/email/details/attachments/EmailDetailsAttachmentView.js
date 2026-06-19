@@ -3,12 +3,18 @@ import fileDownload from 'js-file-download';
 import EmailDetailsAPI from '../../../../api/email/EmailAPI';
 import Modal from '../../../../components/modal/Modal';
 import PdfViewer from '../../../../components/pdf/PdfViewer';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Icon from 'react-icons-kit';
 import { fileO } from 'react-icons-kit/fa/fileO';
 import { share } from 'react-icons-kit/fa/share';
 import { eye } from 'react-icons-kit/fa/eye';
+
+// Functionele wrapper voor de class component
+const EmailDetailsAttachmentViewWrapper = props => {
+    const navigate = useNavigate();
+    return <EmailDetailsAttachmentView {...props} navigate={navigate} />;
+};
 
 class EmailDetailsAttachmentView extends Component {
     constructor(props) {
@@ -53,8 +59,8 @@ class EmailDetailsAttachmentView extends Component {
         });
     };
 
-    saveToAlfresco = id => {
-        hashHistory.push(`document/nieuw/upload/email-bijlage/${id}`);
+    saveToBigstorage = id => {
+        this.props.navigate(`/document/nieuw/upload/email-bijlage/${id}`);
     };
 
     render() {
@@ -84,7 +90,7 @@ class EmailDetailsAttachmentView extends Component {
                         ''
                     )}
                     {this.props.showActionButtons ? (
-                        <a role="button" onClick={() => this.saveToAlfresco(id)}>
+                        <a role="button" onClick={() => this.saveToBigstorage(id)}>
                             <Icon className="mybtn-success" size={14} icon={share} />
                         </a>
                     ) : (
@@ -126,4 +132,4 @@ class EmailDetailsAttachmentView extends Component {
     }
 }
 
-export default EmailDetailsAttachmentView;
+export default EmailDetailsAttachmentViewWrapper;

@@ -14,7 +14,6 @@ import PanelFooter from '../../../../../../components/panel/PanelFooter';
 import ProjectRevenueAPI from '../../../../../../api/project/ProjectRevenueAPI';
 
 import { fetchRevenue, getDistribution } from '../../../../../../actions/project/ProjectDetailsActions';
-import Modal from '../../../../../../components/modal/Modal';
 import styled from '@emotion/styled';
 import ViewText from '../../../../../../components/form/ViewText';
 
@@ -30,6 +29,7 @@ class RevenueFormEdit extends Component {
             id,
             distributionTypeId,
             confirmed,
+            status,
             dateBegin,
             dateEnd,
             dateReference,
@@ -53,11 +53,11 @@ class RevenueFormEdit extends Component {
         } = props.revenue;
 
         this.state = {
-            showModal: false,
             revenue: {
                 id,
                 distributionTypeId: distributionTypeId,
                 confirmed: !!confirmed,
+                status: status ? status : '',
                 dateBegin: dateBegin ? moment(dateBegin).format('Y-MM-DD') : '',
                 dateEnd: dateEnd ? moment(dateEnd).format('Y-MM-DD') : '',
                 dateReference: dateReference ? moment(dateReference).format('Y-MM-DD') : '',
@@ -114,27 +114,6 @@ class RevenueFormEdit extends Component {
         dateEnd = moment(dateEnd);
 
         return dateEnd.year() > dateBegin.year();
-    };
-
-    toggleShowModal = () => {
-        this.setState({
-            showModal: !this.state.showModal,
-        });
-    };
-
-    cancelSetDate = () => {
-        this.setState({
-            ...this.state,
-            revenue: {
-                ...this.state.revenue,
-                dateConfirmed: '',
-                confirmed: false,
-            },
-        });
-
-        this.setState({
-            showModal: !this.state.showModal,
-        });
     };
 
     handleInputChange = event => {
@@ -195,29 +174,6 @@ class RevenueFormEdit extends Component {
                 [name]: value,
             },
         });
-    };
-
-    handleInputChangeDateConfirmed = (value, name) => {
-        if (value) {
-            this.setState({
-                ...this.state,
-                revenue: {
-                    ...this.state.revenue,
-                    [name]: value,
-                    confirmed: true,
-                },
-            });
-            this.toggleShowModal();
-        } else {
-            this.setState({
-                ...this.state,
-                revenue: {
-                    ...this.state.revenue,
-                    [name]: value,
-                    confirmed: false,
-                },
-            });
-        }
     };
 
     handleSubmit = event => {
@@ -302,7 +258,8 @@ class RevenueFormEdit extends Component {
         }
         if (
             !hasErrors &&
-            this.props.revenue.category.codeRef === 'revenueEuro' &&
+            (this.props.revenue.category.codeRef === 'revenueEuro' ||
+                this.props.revenue.category.codeRef === 'revenueParticipant') &&
             moment(revenue.dateBegin).format('Y-MM-DD') <
                 moment(revenue.dateEnd)
                     .add(-1, 'year')
@@ -465,6 +422,7 @@ class RevenueFormEdit extends Component {
         const {
             distributionTypeId,
             confirmed,
+            status,
             dateBegin,
             dateEnd,
             dateReference,
@@ -494,6 +452,25 @@ class RevenueFormEdit extends Component {
             projectTypeCodeRef = project.projectType.codeRef;
         }
 
+        let statusText = '';
+        switch (status) {
+            case 'concept':
+                statusText = 'Concept';
+                break;
+            case 'concept-to-update':
+                statusText = 'Concept (bijwerken noodzakelijk)';
+                break;
+            case 'confirmed':
+                statusText = 'Definitief';
+                break;
+            case 'in-progress':
+                statusText = 'Bezig...';
+                break;
+            case 'processed':
+                statusText = 'Verwerkt';
+                break;
+        }
+
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
@@ -506,33 +483,50 @@ class RevenueFormEdit extends Component {
                     <ViewText label={'Definitief'} value={confirmed ? 'Ja' : 'Nee'} className={'form-group col-sm-6'} />
                 </div>
 
-                {category.codeRef === 'revenueEuro' ? (
+                {category.codeRef === 'revenueEuro' || category.codeRef === 'revenueParticipant' ? (
                     <div className="row">
                         {projectTypeCodeRef !== 'loan' ? (
-                            <InputSelect
-                                label={'Type opbrengst verdeling'}
-                                name={'distributionTypeId'}
-                                options={this.props.projectRevenueDistributionTypes}
-                                value={distributionTypeId}
-                                onChangeAction={this.handleInputChange}
+                            <>
+                                <InputSelect
+                                    label={'Type opbrengst verdeling'}
+                                    name={'distributionTypeId'}
+                                    options={this.props.projectRevenueDistributionTypes}
+                                    emptyOption={false}
+                                    value={distributionTypeId}
+                                    onChangeAction={this.handleInputChange}
+                                />
+                                {distributionTypeId === 'inPossessionOf' ? (
+                                    <InputDate
+                                        label={'Peildatum'}
+                                        name={'dateReference'}
+                                        value={dateReference}
+                                        onChangeAction={this.handleInputChangeDate}
+                                        required={'required'}
+                                        error={this.state.errors.dateReference}
+                                    />
+                                ) : null}
+                            </>
+                        ) : (
+                            <ViewText
+                                label={'Type Lening'}
+                                value={project.projectLoanType ? project.projectLoanType.name : ''}
+                                className={'form-group col-sm-6'}
                             />
-                        ) : null}
-                        {distributionTypeId === 'inPossessionOf' ? (
-                            <InputDate
-                                label={'Peildatum'}
-                                name={'dateReference'}
-                                value={dateReference}
-                                onChangeAction={this.handleInputChangeDate}
-                                required={'required'}
-                                error={this.state.errors.dateReference}
-                            />
-                        ) : null}
+                        )}
                     </div>
                 ) : null}
 
                 {category.codeRef === 'redemptionEuro' ? (
                     <div className="row">
-                        {distributionTypeId === 'inPossessionOf' ? (
+                        {projectTypeCodeRef === 'loan' ? (
+                            <ViewText
+                                label={'Type Lening'}
+                                value={project.projectLoanType ? project.projectLoanType.name : ''}
+                                className={'form-group col-sm-6'}
+                            />
+                        ) : null}
+                        {distributionTypeId === 'inPossessionOf' &&
+                        (projectTypeCodeRef !== 'loan' || project.projectLoanType.codeRef === 'annuitair') ? (
                             <InputDate
                                 label={'Peildatum'}
                                 name={'dateReference'}
@@ -611,12 +605,16 @@ class RevenueFormEdit extends Component {
                 </div>
 
                 <div className="row">
-                    <InputDate
+                    <ViewText className={'form-group col-sm-6'} label={'Status'} value={statusText} />
+                    <ViewText
+                        className={'form-group col-sm-6'}
                         label={'Datum definitief'}
-                        name={'dateConfirmed'}
-                        value={dateConfirmed}
-                        onChangeAction={this.handleInputChangeDateConfirmed}
+                        value={dateConfirmed ? moment(dateConfirmed).format('L') : ''}
                     />
+                </div>
+                <div className="row">
+                    <ViewText className={'form-group col-sm-6'} />
+
                     {category.codeRef === 'revenueEuro' &&
                     (projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital') ? (
                         <InputSelect
@@ -829,7 +827,7 @@ class RevenueFormEdit extends Component {
                     </React.Fragment>
                 ) : null}
 
-                {category.codeRef === 'revenueEuro' ? (
+                {category.codeRef === 'revenueEuro' || category.codeRef === 'revenueParticipant' ? (
                     <React.Fragment>
                         <div className="row">
                             <div className={'panel-part panel-heading'}>
@@ -848,15 +846,17 @@ class RevenueFormEdit extends Component {
                                         error={this.state.errors.payPercentage}
                                         errorMessage={this.state.errorMessage.payPercentage}
                                     />
-                                    <InputText
-                                        type={'number'}
-                                        label={'of uitkeringsbedrag per deelname'}
-                                        name={'payAmount'}
-                                        value={payAmount}
-                                        onChangeAction={this.handleInputChange}
-                                        error={this.state.errors.payAmount}
-                                        errorMessage={this.state.errorMessage.payAmount}
-                                    />
+                                    {projectTypeCodeRef === 'obligation' ? (
+                                        <InputText
+                                            type={'number'}
+                                            label={'of uitkeringsbedrag per deelname'}
+                                            name={'payAmount'}
+                                            value={payAmount}
+                                            onChangeAction={this.handleInputChange}
+                                            error={this.state.errors.payAmount}
+                                            errorMessage={this.state.errorMessage.payAmount}
+                                        />
+                                    ) : null}
                                 </div>
                                 <div className="row">
                                     <InputText
@@ -955,21 +955,6 @@ class RevenueFormEdit extends Component {
                         />
                     </div>
                 </PanelFooter>
-
-                {this.state.showModal && (
-                    <Modal
-                        buttonConfirmText="Bevestigen"
-                        closeModal={this.cancelSetDate}
-                        confirmAction={this.toggleShowModal}
-                        title="Bevestigen"
-                    >
-                        <p>
-                            {this.props.revenue.category.codeRef === 'redemptionEuro'
-                                ? 'Als je deze datum invult, zal de aflossing definitief worden gemaakt. Je kunt deze hierna niet meer aanpassen.'
-                                : 'Als je deze datum invult, zal de opbrengst definitief worden gemaakt. Je kunt deze hierna niet meer aanpassen.'}
-                        </p>
-                    </Modal>
-                )}
             </form>
         );
     }

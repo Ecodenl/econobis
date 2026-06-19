@@ -1,53 +1,40 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
 import PdfViewer from '../../../../components/pdf/PdfViewer';
 import InvoiceDetailsAPI from '../../../../api/invoice/InvoiceDetailsAPI';
 
-class InvoiceViewForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            file: null,
-        };
-    }
+function InvoiceViewForm(props) {
+    const [file, setFile] = useState(null);
+    const [isLoadingFile, setLoadingFile] = useState(false);
+    const invoiceDetails = useSelector(state => state.invoiceDetails);
 
-    componentDidMount() {
-        this.downloadFile();
-    }
+    useEffect(() => {
+        downloadFile();
+    }, [invoiceDetails.id]);
 
-    downloadFile(i = 0) {
-        InvoiceDetailsAPI.download(this.props.invoiceDetails.id)
+    function downloadFile() {
+        setLoadingFile(true);
+        InvoiceDetailsAPI.download(invoiceDetails.id)
             .then(payload => {
-                this.setState({
-                    file: payload.data,
-                });
+                setFile(payload.data);
+                setLoadingFile(false);
             })
-            .catch(() => {
-                if (i < 2) {
-                    setTimeout(() => {
-                        this.downloadFile(i);
-                    }, 500);
-                }
-                i++;
+            .catch(error => {
+                console.log(error);
+                setLoadingFile(false);
             });
     }
 
-    render() {
-        return isEmpty(this.props.invoiceDetails) || !this.state.file ? (
-            <div>Geen gegevens gevonden.</div>
-        ) : (
-            <div>
-                <PdfViewer file={this.state.file} scale={this.props.scale} />
-            </div>
-        );
-    }
+    return isEmpty(invoiceDetails) ? (
+        <div>Geen gegevens gevonden.</div>
+    ) : isLoadingFile ? (
+        <div>Document aan het ophalen...</div>
+    ) : (
+        <div>
+            <PdfViewer file={file} scale={props.scale} />
+        </div>
+    );
 }
 
-const mapStateToProps = state => {
-    return {
-        invoiceDetails: state.invoiceDetails,
-    };
-};
-
-export default connect(mapStateToProps, null)(InvoiceViewForm);
+export default InvoiceViewForm;

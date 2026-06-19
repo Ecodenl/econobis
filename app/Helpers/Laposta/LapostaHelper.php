@@ -6,6 +6,7 @@ namespace App\Helpers\Laposta;
 
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Cooperation\Cooperation;
+use App\Eco\EmailAddress\EmailAddress;
 use App\Http\Controllers\Api\ContactGroup\ContactGroupController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
@@ -45,34 +46,101 @@ class LapostaHelper
 
         $messages = $this->syncLaposta();
         if(count($messages)) {
-            Log::error('Er is iets misgegaan bij het synchroniseren van Laposta' );
+            Log::info('Er is iets misgegaan bij het synchroniseren van Laposta' );
         }
     }
-    protected function syncStateAllMembersLaposta() {
-
+    protected function syncStateAllMembersLaposta()
+    {
         Log::info("Doe syncStateAllMembersLaposta");
-        // Sync state all members from laposta
-        foreach($this->getAllLists() as $list){
-            $listId = $list['list']['list_id'];
+
+        // Sync state all members from Laposta
+        foreach ($this->getAllLists() as $list) {
+            $listId = $list['list']['list_id'] ?? null;
+            if (!$listId) {
+                continue;
+            }
+
             Log::info("sync list: " . $listId);
 
             $contactGroup = ContactGroup::where('laposta_list_id', $listId)->first();
-            if($contactGroup){
-                Log::info("Contractgroep voor sync: " . $contactGroup->name);
-                $allMembersOfList = $this->getAllMembersOfListFromLaposta($listId);
-                foreach($allMembersOfList as $member){
-                    $lapostaMemberId = $member['member']['member_id'];
-                    $lapostaMemberState = $member['member']['state'];
-                    if($contactGroup->contacts()->where('laposta_member_id', $lapostaMemberId)->exists()){
-                        $contactGroupsPivot= $contactGroup->contacts()->where('laposta_member_id', $lapostaMemberId)->first()->pivot;
-                        if($contactGroupsPivot != null) {
-                            $contactGroup->contacts()->updateExistingPivot($contactGroupsPivot->contact_id, ['laposta_member_state' => $lapostaMemberState, 'laposta_last_error_message' => null]);
-                        }
+            if (!$contactGroup) {
+                continue;
+            }
+
+            Log::info("Contractgroep voor sync: " . $contactGroup->name);
+
+            $allMembersOfList = $this->getAllMembersOfListFromLaposta($listId);
+
+            foreach ($allMembersOfList as $member) {
+                $lapostaMemberId = $member['member']['member_id'] ?? null;
+                $lapostaMemberState = $member['member']['state'] ?? null;
+                $lapostaMemberEmail = $member['member']['email'] ?? null;
+
+                if (!$lapostaMemberId) {
+                    continue;
+                }
+
+                // 1) Eerst: match op Laposta member_id op de pivot (1 query, geen exists+first race)
+                $contact = $contactGroup->contacts()
+                    ->wherePivot('laposta_member_id', $lapostaMemberId)
+                    ->first();
+
+                if ($contact) {
+                    $contactGroup->contacts()->updateExistingPivot($contact->id, [
+                        'laposta_member_state' => $lapostaMemberState,
+                        'laposta_last_error_message' => null,
+                    ]);
+                    continue;
+                }
+
+                // 2) Fallback: match op primary email binnen de group, maar alleen waar pivot laposta_member_id nog NULL is
+                if ($lapostaMemberEmail) {
+                    $contact = $contactGroup->contacts()
+                        ->wherePivotNull('laposta_member_id')
+                        ->whereHas('emailAddresses', function ($q) use ($lapostaMemberEmail) {
+                            $q->where('email', $lapostaMemberEmail)
+                                ->where('primary', true);
+                        })
+                        ->orderBy('contacts.id') // optioneel: deterministisch bij meerdere matches
+                        ->first();
+
+                    if ($contact) {
+                        $contactGroup->contacts()->updateExistingPivot($contact->id, [
+                            'laposta_member_id' => $lapostaMemberId,
+                            'laposta_member_state' => $lapostaMemberState,
+                            'laposta_last_error_message' => null,
+                        ]);
+                        continue;
                     }
+
+                    // 3) Diagnostiek: email bestaat wel in de group, maar er is geen NULL-pivot plek om 'm te vullen
+                    $hasEmailInGroup = $contactGroup->contacts()
+                        ->whereHas('emailAddresses', function ($q) use ($lapostaMemberEmail) {
+                            $q->where('email', $lapostaMemberEmail)
+                                ->where('primary', true);
+                        })
+                        ->exists();
+
+                    if ($hasEmailInGroup) {
+                        Log::warning(
+                            "Email match in groep, maar geen contact met laposta_member_id NULL (waarschijnlijk al gevuld). " .
+                            "email={$lapostaMemberEmail} laposta_member_id={$lapostaMemberId} state={$lapostaMemberState} group_id={$contactGroup->id}"
+                        );
+                    } else {
+                        Log::info(
+                            "Member niet in (meer) in Econobis via email fallback. " .
+                            "email={$lapostaMemberEmail} laposta_member_id={$lapostaMemberId} state={$lapostaMemberState} group_id={$contactGroup->id}"
+                        );
+                    }
+                } else {
+                    // Geen email beschikbaar om te matchen
+                    Log::info(
+                        "Laposta member zonder email (geen fallback mogelijk). " .
+                        "laposta_member_id={$lapostaMemberId} state={$lapostaMemberState} group_id={$contactGroup->id}"
+                    );
                 }
             }
         }
-
     }
 
     private function getAllLists() {
@@ -115,10 +183,10 @@ class LapostaHelper
             return $response['data'];
         } catch (\Exception $e) {
             if ($e->getMessage()) {
-                Log::error('Er is iets misgegaan bij het ophalen van alle Laposta lijsten. Melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage() );
+                Log::info('Er is iets misgegaan bij het ophalen van alle Laposta lijsten. Melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage() );
                 abort($e->getHttpStatus(), $e->getMessage());
             } else {
-                Log::error('Er is iets misgegaan met bij het ophalen van alle Laposta lijsten. Melding: ' . $e->getHttpStatus() );
+                Log::info('Er is iets misgegaan met bij het ophalen van alle Laposta lijsten. Melding: ' . $e->getHttpStatus() );
                 abort($e->getHttpStatus(), 'Er is iets misgegaan bij het synchroniseren van Laposta');
             }
         }
@@ -133,10 +201,10 @@ class LapostaHelper
             return $response['data'];
         } catch (\Exception $e) {
             if ($e->getMessage()) {
-                Log::error('Er is iets misgegaan bij het ophalen van alle Laposta relaties voor laposta list id ' . $listId .  ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage() );
+                Log::info('Er is iets misgegaan bij het ophalen van alle Laposta relaties voor laposta list id ' . $listId .  ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage() );
                 abort($e->getHttpStatus(), $e->getMessage());
             } else {
-                Log::error('Er is iets misgegaan met bij het ophalen van alle Laposta relaties voor laposta list id ' . $listId .  ', melding: ' . $e->getHttpStatus() );
+                Log::info('Er is iets misgegaan met bij het ophalen van alle Laposta relaties voor laposta list id ' . $listId .  ', melding: ' . $e->getHttpStatus() );
                 abort($e->getHttpStatus(), 'Er is iets misgegaan bij het synchroniseren van Laposta');
             }
         }

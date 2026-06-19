@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 moment.locale('nl');
 
 import IntakesAPI from '../../../../api/intake/IntakesAPI';
+
+// Functionele wrapper voor de class component
+const IntakesListWrapper = props => {
+    const navigate = useNavigate();
+    return <IntakesList {...props} navigate={navigate} />;
+};
 
 class IntakesList extends Component {
     constructor(props) {
@@ -23,7 +29,7 @@ class IntakesList extends Component {
     }
 
     openItem = id => {
-        hashHistory.push(`/intake/${id}`);
+        this.props.navigate(`/intake/${id}`);
     };
 
     render() {
@@ -66,4 +72,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(IntakesList);
+export default connect(mapStateToProps, null)(IntakesListWrapper);

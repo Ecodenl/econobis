@@ -11,6 +11,7 @@ namespace App\Http\RequestQueries\HousingFile\Grid;
 
 use App\Eco\HousingFile\HousingFile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
 {
@@ -26,6 +27,14 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
     protected function baseQuery()
     {
         return HousingFile::query()
+            ->whereTeamContactIds(Auth::user())
             ->select('housing_files.*');
+    }
+
+    public function getQuery()
+    {
+        $query = parent::getQuery();
+
+        return $query->orderByDesc('housing_files.created_at');
     }
 }

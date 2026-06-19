@@ -31,7 +31,7 @@ const InputTextCurrency = ({
                 } `}
                 id={id}
                 {...field}
-                value={field.value.toString().replace('.', ',')}
+                value={field.value ? field.value.toString().replace('.', ',') : ''}
                 readOnly={readOnly}
                 placeholder={placeholder}
                 disabled={disabled}

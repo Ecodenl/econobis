@@ -12,7 +12,7 @@ class OrderCreateViewEmail extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (this.props.orderId !== nextProps.orderId) {
             if (nextProps.orderId) {
                 this.downloadEmail(nextProps.orderId);

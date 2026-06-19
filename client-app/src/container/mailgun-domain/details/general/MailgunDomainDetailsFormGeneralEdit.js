@@ -56,10 +56,10 @@ class MailgunDomainDetailsFormGeneralEdit extends Component {
             hasErrors = true;
         }
 
-        if (validator.isEmpty(mailgunDomain.secret)) {
-            errors.secret = true;
-            hasErrors = true;
-        }
+        // if (validator.isEmpty(mailgunDomain.secret)) {
+        //     errors.secret = true;
+        //     hasErrors = true;
+        // }
 
         this.setState({ ...this.state, errors: errors });
 
@@ -68,7 +68,13 @@ class MailgunDomainDetailsFormGeneralEdit extends Component {
     }
 
     render() {
-        const { domain, secret, isVerified } = this.state.mailgunDomain;
+        // const { domain, secret, isVerified } = this.state.mailgunDomain;
+        const { domain, isVerified, isSystemMailgunDomain } = this.state.mailgunDomain;
+
+        const manageSystemMailgunDomain =
+            this.props.meDetails.email == 'support@econobis.nl' || this.props.meDetails.email == 'software@xaris.nl'
+                ? true
+                : false;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -82,14 +88,29 @@ class MailgunDomainDetailsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
                                 error={this.state.errors.domain}
+                                disabled={!manageSystemMailgunDomain && isSystemMailgunDomain}
                             />
-                            <InputText
-                                label="Mailgun API Key"
-                                name={'secret'}
-                                value={secret}
+                            {/*<InputText*/}
+                            {/*    label="Mailgun API Key"*/}
+                            {/*    name={'secret'}*/}
+                            {/*    value={secret}*/}
+                            {/*    onChangeAction={this.handleInputChange}*/}
+                            {/*    required={'required'}*/}
+                            {/*    error={this.state.errors.secret}*/}
+                            {/*    disabled={!manageSystemMailgunDomain && isSystemMailgunDomain}*/}
+                            {/*/>*/}
+                        </div>
+                        <div className="row">
+                            <InputToggle
+                                label={'Markeer als systeem mailgun domain'}
+                                name={'isSystemMailgunDomain'}
+                                value={isSystemMailgunDomain}
                                 onChangeAction={this.handleInputChange}
-                                required={'required'}
-                                error={this.state.errors.secret}
+                                size={'col-sm-5'}
+                                textToolTip={`Een systeem mailgun domain is alleen voor support gebruiker en is vooral bedoeld voor een initiele mailbox
+                                 bij het opzetten van een nieuwe cooperatie. Mailgun logs (events), bounches en complaints zullen niet opgehaald worden 
+                                 voor systeem mailgun domains.`}
+                                disabled={!manageSystemMailgunDomain}
                             />
                         </div>
                         <div className="row">
@@ -122,6 +143,7 @@ class MailgunDomainDetailsFormGeneralEdit extends Component {
 const mapStateToProps = state => {
     return {
         mailgunDomainDetails: state.mailgunDomainDetails,
+        meDetails: state.meDetails,
     };
 };
 

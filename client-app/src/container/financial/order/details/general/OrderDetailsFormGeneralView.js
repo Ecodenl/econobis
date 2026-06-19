@@ -45,12 +45,12 @@ const OrderDetailsFormGeneralView = props => {
                         <ViewText
                             label={'Order op naam van'}
                             value={contact ? contact.fullName : ''}
-                            link={contact ? 'contact/' + contact.id : ''}
+                            link={contact ? '/contact/' + contact.id : ''}
                         />
                         <ViewText
                             label={'Administratie'}
                             value={administration.name}
-                            link={administration ? 'administratie/' + administration.id : ''}
+                            link={administration ? '/administratie/' + administration.id : ''}
                         />
                     </div>
                     <div className="row">

@@ -65,6 +65,10 @@ class TeamDetailsUsersNew extends Component {
     }
 
     render() {
+        const selectedIds = (this.props.selectedUsers || []).map(d => String(d.id));
+
+        const usersToSelectFiltered = (this.props.usersToSelect || []).filter(d => !selectedIds.includes(String(d.id)));
+
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel className={'panel-grey'}>
@@ -75,7 +79,7 @@ class TeamDetailsUsersNew extends Component {
                                 label={'Gebruiker'}
                                 size={'col-sm-6'}
                                 name={'userId'}
-                                options={this.props.users}
+                                options={usersToSelectFiltered}
                                 optionName={'fullName'}
                                 value={this.state.userId}
                                 onChangeAction={this.handleInputChange}
@@ -108,7 +112,8 @@ const mapStateToProps = state => {
     return {
         teamId: state.teamDetails.id,
         teamName: state.teamDetails.name,
-        users: state.systemData.users,
+        usersToSelect: state.systemData.users,
+        selectedUsers: state.teamDetails.users,
     };
 };
 

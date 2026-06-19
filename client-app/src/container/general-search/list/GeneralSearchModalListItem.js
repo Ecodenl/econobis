@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const GeneralSearchModalListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <GeneralSearchModalListItem {...props} navigate={navigate} />;
+};
 
 class GeneralSearchModalListItem extends Component {
     constructor(props) {
@@ -25,7 +31,7 @@ class GeneralSearchModalListItem extends Component {
     }
 
     redirect() {
-        hashHistory.push(this.props.redirect);
+        this.props.navigate(this.props.redirect);
         this.props.closeModal();
     }
 
@@ -49,4 +55,4 @@ class GeneralSearchModalListItem extends Component {
     }
 }
 
-export default GeneralSearchModalListItem;
+export default GeneralSearchModalListItemWrapper;

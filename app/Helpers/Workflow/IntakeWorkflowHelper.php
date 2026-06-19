@@ -11,10 +11,10 @@ use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\Organisation\Organisation;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
-use Illuminate\Support\Facades\Mail;
 
 class IntakeWorkflowHelper
 {
@@ -25,7 +25,7 @@ class IntakeWorkflowHelper
         $this->opportunity = null;
         $this->quotationRequest = null;
         $this->measureCategory = $measureCategory;
-        $this->cooperativeName = PortalSettings::get('cooperativeName');
+        $this->cooperativeName = PortalSettings::first()?->cooperative_name;;
 
     }
 
@@ -71,28 +71,28 @@ class IntakeWorkflowHelper
 
     private function processWorkflowCreateQuotationRequest()
     {
-        $quotationRequestStatus = QuotationRequestStatus::orderBy('order')->first();
-        if (!$quotationRequestStatus) {
-            return false;
-        }
         if (!$this->measureCategory->organisation_id_wf_create_quotation_request || $this->measureCategory->organisation_id_wf_create_quotation_request == 0 ) {
             return false;
         }
         $offerteverzoekAction = OpportunityAction::where('code_ref', 'quotation-request')->first();
+        $quotationRequestStatus = QuotationRequestStatus::where('opportunity_action_id', $offerteverzoekAction->id)->where('code_ref', 'default')->first();
+        if (!$quotationRequestStatus) {
+            return false;
+        }
 
         $contactOrganistation = Organisation::find($this->measureCategory->organisation_id_wf_create_quotation_request);
         if(!$contactOrganistation){
             return false;
         }
         $quotationRequest = new QuotationRequest();
-        $quotationRequest->contact_id = $contactOrganistation->id;
+        $quotationRequest->contact_id = $contactOrganistation->contact_id;
         $quotationRequest->opportunity_id = $this->opportunity->id;
         $quotationRequest->opportunity_action_id = $offerteverzoekAction->id;
         $quotationRequest->date_recorded = null;
         $quotationRequest->date_released = null;
         $quotationRequest->status_id = $quotationRequestStatus->id;
         $quotationRequest->date_planned_to_send_wf_email_status = null;
-        $quotationRequest->quotation_text = $opportunity = '';
+        $quotationRequest->quotation_text = '';
         $quotationRequest->quotation_amount = 0;
         $quotationRequest->save();
 
@@ -118,7 +118,7 @@ class IntakeWorkflowHelper
             return false;
         }
 
-        $mail = Mail::to($organisationContactperson->primaryEmailAddress->email);
+        $mail = MailHelper::to($organisationContactperson->primaryEmailAddress->email);
         $this->mailWorkflow($emailTemplate, $mail, $organisationContactperson);
         return true;
     }
@@ -138,12 +138,20 @@ class IntakeWorkflowHelper
         if($this->intake) {
             $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'intake', $this->intake);
             $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'intake', $this->intake);
+            if ($this->intake->campaign) {
+                $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'campagne',
+                    $this->intake->campaign);
+                $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'campagne',
+                    $this->intake->campaign);
+            }
+
         }
         if($this->opportunity) {
             $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'kans', $this->opportunity);
         }
         if($this->quotationRequest) {
             $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'offerteverzoek', $this->quotationRequest);
+            $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'kansactie', $this->quotationRequest);
         }
 
         $htmlBody = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBody,'portal' );

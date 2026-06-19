@@ -78,6 +78,7 @@ class InputDate extends Component {
             errorMessage,
             disabledBefore,
             disabledAfter,
+            placeholder,
         } = this.props;
 
         const formattedDate = value ? moment(value).format('L') : '';
@@ -118,7 +119,7 @@ class InputDate extends Component {
                         }}
                         required={required}
                         readOnly={readOnly}
-                        placeholder={''}
+                        placeholder={placeholder}
                     />
                 </div>
                 {textToolTip && (
@@ -161,6 +162,7 @@ InputDate.defaultProps = {
     errorMessage: '',
     disabledBefore: null,
     disabledAfter: null,
+    placeholder: '',
 };
 
 InputDate.propTypes = {
@@ -179,6 +181,7 @@ InputDate.propTypes = {
     errorMessage: PropTypes.string,
     disabledBefore: PropTypes.string,
     disabledAfter: PropTypes.string,
+    placeholder: PropTypes.string,
 };
 
 export default InputDate;

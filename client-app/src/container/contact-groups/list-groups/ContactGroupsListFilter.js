@@ -5,6 +5,7 @@ import moment from 'moment';
 import 'react-day-picker/lib/style.css';
 
 import {
+    setFilterContactGroupCreatedById,
     setFilterContactGroupName,
     setFilterContactGroupStatus,
     setFilterContactGroupTypeId,
@@ -13,6 +14,14 @@ import {
 const ContactGroupsListFilter = props => {
     const onNameChange = e => {
         props.setFilterContactGroupName(e.target.value);
+    };
+
+    const onCreatedByIdChange = e => {
+        props.setFilterContactGroupCreatedById(e.target.value);
+
+        setTimeout(() => {
+            props.onSubmitFilter();
+        }, 100);
     };
 
     const onStatusChange = e => {
@@ -67,7 +76,22 @@ const ContactGroupsListFilter = props => {
                     })}
                 </select>
             </th>
-            <th />
+            <th>
+                <select
+                    className="form-control input-sm"
+                    value={props.filters.createdById.data}
+                    onChange={onCreatedByIdChange}
+                >
+                    <option />
+                    {props.createdById.map(createdById => {
+                        return (
+                            <option key={createdById.id} value={createdById.id}>
+                                {createdById.fullName}
+                            </option>
+                        );
+                    })}
+                </select>
+            </th>
             <th />
         </tr>
     );
@@ -76,6 +100,7 @@ const ContactGroupsListFilter = props => {
 const mapStateToProps = state => ({
     filters: state.contactGroups.filters,
     contactGroupTypes: state.systemData.contactGroupTypes,
+    createdById: state.systemData.users,
 });
 
 const mapDispatchToProps = dispatch => {
@@ -84,6 +109,7 @@ const mapDispatchToProps = dispatch => {
             setFilterContactGroupName,
             setFilterContactGroupStatus,
             setFilterContactGroupTypeId,
+            setFilterContactGroupCreatedById,
         },
         dispatch
     );

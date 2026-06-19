@@ -3,7 +3,6 @@
 namespace App\Eco\ParticipantProject;
 
 use App\Eco\Address\Address;
-use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\Document\DocumentCreatedFrom;
@@ -12,15 +11,18 @@ use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\Project\Project;
+use App\Eco\Project\ProjectRevenue;
 use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Project\ProjectType;
 use App\Eco\RevenuesKwh\RevenueDistributionKwh;
+use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Log;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class ParticipantProject extends Model
@@ -38,12 +40,15 @@ class ParticipantProject extends Model
         'id'
     ];
 
-    protected $dates = [
-    ];
-
     protected $encryptable = [
         'iban_payout'
     ];
+
+    public function newEloquentBuilder($query)
+    {
+        return new ParticipantProjectBuilder($query);
+    }
+
 
     //relations
     public function contact()
@@ -84,6 +89,15 @@ class ParticipantProject extends Model
     public function revenueDistributionKwh()
     {
         return $this->hasMany(RevenueDistributionKwh::class, 'participation_id');
+    }
+
+    public function projectRevenues(){
+        return $this->hasManyThrough(ProjectRevenue::class, ProjectRevenueDistribution::class, 'participation_id', 'id','id', 'revenue_id');
+    }
+
+    public function revenuesKwh()
+    {
+        return $this->hasManyThrough(RevenuesKwh::class, RevenueDistributionKwh::class, 'participation_id', 'id', 'id', 'revenue_id');
     }
 
     public function financialOverviewParticipantProjects()
@@ -141,6 +155,11 @@ class ParticipantProject extends Model
     public function obligationNumbers()
     {
         return $this->hasMany(ObligationNumber::class, 'participation_id');
+    }
+
+    public function getObligationNumbersAsStringAttribute()
+    {
+        return implode(', ', $this->obligationNumbers->pluck('number')->toArray());;
     }
 
     public function documents()
@@ -227,47 +246,74 @@ class ParticipantProject extends Model
 
     public function getDateTerminatedAllowedFromAttribute()
     {
-        $dateTerminatedAllowedFrom = Carbon::parse('2000-01-01')->format('Y-m-d');
-        $dateInterestBearing = $this->project->date_interest_bearing
-            ? Carbon::parse($this->project->date_interest_bearing)->format('Y-m-d')
-            : null;
-        $dateInterestBearingRedemption = $this->project->date_interest_bearing_redemption
-            ? Carbon::parse($this->project->date_interest_bearing_redemption)->format('Y-m-d')
-            : null;
-        $dateInterestBearingKwh = $this->project->date_interest_bearing_kwh
-            ? Carbon::parse($this->project->date_interest_bearing_kwh)->format('Y-m-d')
-            : null;
         $dateEntryLastMutation = $this->date_entry_last_mutation
             ? Carbon::parse($this->date_entry_last_mutation)->format('Y-m-d')
             : null;
-        if ($dateInterestBearing != null && $dateInterestBearing > $dateTerminatedAllowedFrom) {
-            $dateTerminatedAllowedFrom = $dateInterestBearing;
+        if($this->participations_definitive == 0 && $this->amount_definitive == 0 && $dateEntryLastMutation){
+            return Carbon::parse($dateEntryLastMutation)->subDay()->format('Y-m-d');
         }
-        if ($dateInterestBearingRedemption != null && $dateInterestBearingRedemption > $dateTerminatedAllowedFrom) {
-            $dateTerminatedAllowedFrom = $dateInterestBearingRedemption;
-        }
+
+        $revenueIdsWithProcessedDistributions = $this->projectRevenueDistributions()->whereIn('status', ['processed'])->get()->pluck('revenue_id')->toArray();
+        $lastRevenueWithProcessedDistribution = ProjectRevenue::whereIn('id', $revenueIdsWithProcessedDistributions)->orderByDesc('date_end')->first();
+        $dateTerminatedAllowedFrom = $lastRevenueWithProcessedDistribution ? Carbon::parse($lastRevenueWithProcessedDistribution->date_end)->addDay()->format('Y-m-d') : Carbon::parse('2000-01-01')->format('Y-m-d');
+
+        $dateInterestBearingKwh = $this->project->date_interest_bearing_kwh
+            ? Carbon::parse($this->project->date_interest_bearing_kwh)->format('Y-m-d')
+            : null;
+
         if ($dateInterestBearingKwh != null && $dateInterestBearingKwh > $dateTerminatedAllowedFrom) {
             $dateTerminatedAllowedFrom = $dateInterestBearingKwh;
         }
+
+        if ( $this->project->projectType->code_ref == 'postalcode_link_capital' ) {
+            $dateEndLastConfirmedPartsKwh = $this->getDateEndLastConfirmedPartsKwh($dateTerminatedAllowedFrom);
+            if($dateEndLastConfirmedPartsKwh != null) {
+                $checkDateEndLastConfirmedPartsKwh = $dateEndLastConfirmedPartsKwh->addDay()->format('Y-m-d');
+                    if ($checkDateEndLastConfirmedPartsKwh > $dateTerminatedAllowedFrom) {
+                        $dateTerminatedAllowedFrom = $checkDateEndLastConfirmedPartsKwh;
+                    }
+            }
+        }
+
         if ($dateEntryLastMutation != null && $dateEntryLastMutation > $dateTerminatedAllowedFrom) {
             $dateTerminatedAllowedFrom = $dateEntryLastMutation;
         }
+
         return Carbon::parse($dateTerminatedAllowedFrom)->subDay()->format('Y-m-d');
     }
 
-
-    // Return if projectparicipant already has a link in a non-concept revenue distribution
-//    public function getParticipantInDefinitiveRevenueAttribute()
-//    {
-//        $projectRevenueDistributions = $this->projectRevenueDistributions()->whereNotIn('status', ['concept']);
-//        $revenueDistributionKwh = $this->revenueDistributionKwh()->whereNotIn('status', ['concept']);
-//        return $projectRevenueDistributions->count() > 0 || $revenueDistributionKwh->count() > 0;
-//    }
-
-    public function getParticipantBelongsToMembershipGroupAttribute()
+    public function getDateTerminatedAllowedToAttribute()
     {
-        return in_array( $this->project->question_about_membership_group_id, $this->contact->getAllGroups() );
+        $dateEntryLastMutation = $this->date_entry_last_mutation
+            ? Carbon::parse($this->date_entry_last_mutation)->format('Y-m-d')
+            : null;
+        if($this->participations_definitive == 0 && $this->amount_definitive == 0 && $dateEntryLastMutation){
+            return Carbon::parse($dateEntryLastMutation)->subDay()->format('Y-m-d');
+        }
+
+        return Carbon::parse('9999-12-31')->format('Y-m-d');
     }
+
+    public function getDateEndLastConfirmedPartsKwhAttribute()
+    {
+        return $this->getDateEndLastConfirmedPartsKwh() ? Carbon::parse($this->getDateEndLastConfirmedPartsKwh())->format('Y-m-d') : null;
+    }
+
+    public function getTerminatedAllowedAttribute()
+    {
+        $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
+        // zolang projectparicipant nog in een definitieve maar niet verwerkte verdeling zit, dan mag hij niet beeindigd worden.
+        if($this->projectRevenueDistributions()->whereIn('status', ['confirmed'])->exists()){
+            return false;
+        };
+
+        return $this->date_terminated == null && ($this->date_terminated_allowed_to >= $this->date_terminated_allowed_from) && $this->mutations()->where('status_id', $mutationStatusFinal)->exists();
+    }
+
+//    public function getParticipantBelongsToMembershipGroupAttribute()
+//    {
+//        return in_array( $this->project->question_about_membership_group_id, $this->contact->getAllGroups() );
+//    }
 
     // Return if projectparicipant is in a sce or pcr project
     public function getParticipantInSceOrPcrProjectAttribute()
@@ -289,19 +335,6 @@ class ParticipantProject extends Model
 
         $pcrTypeId = ProjectType::where('code_ref', 'postalcode_link_capital')->first()->id;
         return ($this->project->is_sce_project == false && $this->project->project_type_id != $pcrTypeId);
-    }
-
-    public function getHasNotConfirmedRevenuesKwh(){
-
-        if($this->project->projectType->code_ref == 'postalcode_link_capital') {
-            foreach ($this->project->revenuesKwh as $revenuesKwh) {
-                if ($revenuesKwh->category->code_ref == 'revenueKwh' && !$revenuesKwh->confirmed) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 
     public function getParticipationsReturnsTotalAttribute()
@@ -336,28 +369,40 @@ class ParticipantProject extends Model
 
         return floatval( number_format( $total, 2, '.', ''));
     }
-
-    public function getAddressEnergySupplierInAPeriod($dateBegin, $dateEnd)
+    public function getHasLoanFirstDepositAttribute()
     {
-        $addressEnergySupplier = AddressEnergySupplier::where('address_id', '=', $this->address_id)
-            ->whereIn('energy_supply_type_id', [2, 3] )
-            ->where(function ($addressEnergySupplier) use ($dateBegin) {
-                $addressEnergySupplier
-                    ->where(function ($addressEnergySupplier) use ($dateBegin) {
-                        $addressEnergySupplier->whereNotNull('member_since')
-                            ->where('member_since', '<=', $dateBegin);
-                    })
-                    ->orWhereNull('member_since');
-            })
-            ->where(function ($addressEnergySupplier) use ($dateBegin) {
-                $addressEnergySupplier
-                    ->where(function ($addressEnergySupplier) use ($dateBegin) {
-                        $addressEnergySupplier->whereNotNull('end_date')
-                            ->where('end_date', '>=', $dateBegin);
-                    })
-                    ->orWhereNull('end_date');
-            })->first();
-        return $addressEnergySupplier;
+        // Fetch the loan project type and check for null to prevent errors
+        $loanProjectType = ProjectType::where('code_ref', 'loan')->first();
+        if (!$loanProjectType) {
+            return null;
+        }
+
+        // Fetch the loan mutation type and check for null to prevent errors
+        $loanMutationFirstDeposit = ParticipantMutationType::where('code_ref', 'first_deposit')
+            ->where('project_type_id', $loanProjectType->id)
+            ->first();
+
+        if (!$loanMutationFirstDeposit) {
+            return null;
+        }
+
+        // Fetch the mutation once and return its status if it exists
+        $mutation = $this->mutations()->where('type_id', $loanMutationFirstDeposit->id)->first();
+
+        return $mutation ? $mutation->status->code_ref : null;
     }
 
+    private function getDateEndLastConfirmedPartsKwh()
+    {
+        $dateEndLastConfirmedPartsKwh = null;
+        foreach ($this->revenueDistributionKwh as $revenueDistributionKwh) {
+            if ($revenueDistributionKwh->date_end_last_confirmed_parts_kwh != null) {
+                $checkDateEndLastConfirmedPartsKwh = Carbon::parse($revenueDistributionKwh->date_end_last_confirmed_parts_kwh);
+                if ($checkDateEndLastConfirmedPartsKwh > $dateEndLastConfirmedPartsKwh) {
+                    $dateEndLastConfirmedPartsKwh = $checkDateEndLastConfirmedPartsKwh;
+                }
+            }
+        }
+        return $dateEndLastConfirmedPartsKwh;
+    }
 }

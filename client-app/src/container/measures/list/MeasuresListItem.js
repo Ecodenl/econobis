@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
+
+// Functionele wrapper voor de class component
+const MeasuresListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <MeasuresListItem {...props} navigate={navigate} />;
+};
 
 class MeasuresListItem extends Component {
     constructor(props) {
@@ -30,11 +36,11 @@ class MeasuresListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`maatregel/${id}`);
+        this.props.navigate(`/maatregel/${id}`);
     }
 
     render() {
-        const { id, number, measureCategory, name, visible } = this.props;
+        const { id, number, measureCategory, nameDefault, nameCustom, visible } = this.props;
         return (
             <tr
                 className={this.state.highlightRow}
@@ -44,7 +50,8 @@ class MeasuresListItem extends Component {
             >
                 <td>{number}</td>
                 <td>{measureCategory && measureCategory.name}</td>
-                <td>{name}</td>
+                <td>{nameDefault}</td>
+                <td>{nameCustom}</td>
                 <td>{visible ? 'Ja' : 'Nee'}</td>
                 <td>
                     {this.state.showActionButtons ? (
@@ -66,4 +73,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(MeasuresListItem);
+export default connect(mapStateToProps)(MeasuresListItemWrapper);

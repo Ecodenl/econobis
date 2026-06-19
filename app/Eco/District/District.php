@@ -5,8 +5,7 @@ namespace App\Eco\District;
 use App\Eco\Contact\Contact;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\QuotationRequest\QuotationRequest;
-use App\Eco\QuotationRequest\QuotationRequestStatus;
-use Carbon\Carbon;
+use App\Eco\Team\Team;
 use Illuminate\Database\Eloquent\Model;
 
 class District extends Model
@@ -41,4 +40,15 @@ class District extends Model
     {
         return $this->belongsTo(EmailTemplate::class, 'email_to_coach_template_id');
     }
+
+    public function teams()
+    {
+        return $this->belongsToMany(Team::class, 'team_district');
+    }
+
+    public function newEloquentBuilder($query): DistrictBuilder
+    {
+        return new DistrictBuilder($query);
+    }
+
 }

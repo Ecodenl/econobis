@@ -1,12 +1,12 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_PHONE_NUMBER = `${URL_API}/api/phone-number`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     newPhoneNumber: phoneNumber => {
+        const URL_PHONE_NUMBER = `${getApiUrl()}/api/phone-number`;
         const requestUrl = `${URL_PHONE_NUMBER}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, phoneNumber)
             .then(function(response) {
                 return response.data.data;
@@ -17,9 +17,10 @@ export default {
     },
 
     updatePhoneNumber: phoneNumber => {
+        const URL_PHONE_NUMBER = `${getApiUrl()}/api/phone-number`;
         const requestUrl = `${URL_PHONE_NUMBER}/${phoneNumber.id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, phoneNumber)
             .then(function(response) {
                 return response.data.data;
@@ -30,9 +31,10 @@ export default {
     },
 
     deletePhoneNumber: id => {
+        const URL_PHONE_NUMBER = `${getApiUrl()}/api/phone-number`;
         const requestUrl = `${URL_PHONE_NUMBER}/${id}/delete`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(function(response) {
                 return response.data.data;

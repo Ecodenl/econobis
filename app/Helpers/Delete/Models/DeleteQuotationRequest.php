@@ -59,15 +59,16 @@ class DeleteQuotationRequest implements DeleteInterface
         // Rewrite if to in_array check
 //        if(!in_array($this->quotationRequest->status_id, [2, 3, 4, 7, 8])) {
 //            if ($this->quotationRequest->status_id === 9) {
-//                array_push($this->errorMessage, "Een bezoek met status \"Afspraak gedaan\" kan niet verwijderd worden.");
+//                array_push($this->errorMessage, "Een bezoek met status \"Afspraak uitgevoerd\" kan niet verwijderd worden.");
 //            } else {
 //                array_push($this->errorMessage, "Er is nog een open offerteverzoek.");
 //            }
 //        }
         //
-        if($this->quotationRequest->status->is_pending_status){
-            array_push($this->errorMessage, "Er is nog een " . ($this->quotationRequest->opportunityAction ? $this->quotationRequest->opportunityAction->name : "onbekend") . " met een onderhanden status " . ($this->quotationRequest->status ? $this->quotationRequest->status->name : "onbekend" ) );
-        }
+        // 25-04-2024: Verwijderen 1 voor 1 mag ook ongeacht de status van de kansactie
+//        if($this->quotationRequest->status->is_pending_status){
+//            array_push($this->errorMessage, "Er is nog een " . ($this->quotationRequest->opportunityAction ? $this->quotationRequest->opportunityAction->name : "onbekend") . " met een onderhanden status " . ($this->quotationRequest->status ? $this->quotationRequest->status->name : "onbekend" ) );
+//        }
     }
 
     /** Deletes models recursive

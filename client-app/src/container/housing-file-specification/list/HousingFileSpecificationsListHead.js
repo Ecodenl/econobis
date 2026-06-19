@@ -25,31 +25,40 @@ const HousingFileSpecificationsListHead = props => {
             <DataTableHeadTitleAndSort
                 sortColumn={'fullName'}
                 title={'Contact'}
-                width={props.showCheckboxList ? '12%' : '15%'}
+                width={props.showCheckboxList ? '12%' : '10%'}
                 setSorts={setSorts}
             />
-            <DataTableHeadTitleAndSort sortColumn={'address'} title={'Adres'} width={'15%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'address'} title={'Adres'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'postalCode'} title={'Postcode'} width={'5%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'city'} title={'Woonplaats'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort
                 sortColumn={'measureCategoryName'}
                 title={'Categorie'}
-                width={'15%'}
+                width={'10%'}
                 setSorts={setSorts}
             />
             <DataTableHeadTitleAndSort
                 sortColumn={'measureName'}
                 title={'Specificatie'}
-                width={'15%'}
+                width={'14%'}
                 setSorts={setSorts}
             />
             <DataTableHeadTitleAndSort sortColumn={'status'} title={'Status'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort
                 sortColumn={'measureDate'}
                 title={'Datum realisatie'}
-                width={'10%'}
+                width={'8%'}
                 setSorts={setSorts}
             />
+            <DataTableHeadTitleAndSort sortColumn={'typeBrand'} title={'Type/merk'} width={'10%'} setSorts={setSorts} />
+
+            <DataTableHeadTitleAndSort
+                sortColumn={'createdAt'}
+                title={'Datum aangemaakt'}
+                width={'8%'}
+                setSorts={setSorts}
+            />
+
             <th width="5%" />
         </tr>
     );

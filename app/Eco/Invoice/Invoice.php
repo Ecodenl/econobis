@@ -225,7 +225,7 @@ class Invoice extends Model
 
             $daysAllowed = $this->administration->default_payment_term ? $this->administration->default_payment_term : 30;
 
-            return Carbon::parse($this->date_sent)->addDays($daysAllowed);
+            return Carbon::parse($this->date_sent)->addDays((int) $daysAllowed);
         }
 
         return null;
@@ -318,16 +318,16 @@ class Invoice extends Model
             $daysLastReminder = 0;
         } else {
             if ($this->date_exhortation) {
-                $daysLastReminder = Carbon::today()->diffInDays($this->date_exhortation);
+                $daysLastReminder = Carbon::today()->diffInDays($this->date_exhortation, true);
             } else {
                 if ($this->date_reminder_3) {
-                    $daysLastReminder = Carbon::today()->diffInDays($this->date_reminder_3);
+                    $daysLastReminder = Carbon::today()->diffInDays($this->date_reminder_3, true);
                 } else {
                     if ($this->date_reminder_2) {
-                        $daysLastReminder = Carbon::today()->diffInDays($this->date_reminder_2);
+                        $daysLastReminder = Carbon::today()->diffInDays($this->date_reminder_2, true);
                     } else {
                         if ($this->date_reminder_1) {
-                            $daysLastReminder = Carbon::today()->diffInDays($this->date_reminder_1);
+                            $daysLastReminder = Carbon::today()->diffInDays($this->date_reminder_1, true);
                         }
                     }
                 }
@@ -351,7 +351,7 @@ class Invoice extends Model
             $daysAllowed = $this->administration->default_payment_term ? $this->administration->default_payment_term
                 : 30;
 
-            $dateMax = Carbon::parse($this->date_sent)->addDays($daysAllowed);
+            $dateMax = Carbon::parse($this->date_sent)->addDays((int) $daysAllowed);
 
             $daysToExpire = Carbon::now()->diffInDays($dateMax, false);
         }
@@ -360,7 +360,7 @@ class Invoice extends Model
     }
 
     //Adds the collection frequency to a carbon date
-    public function addDurationToDate($date){
+    public function addDurationToDate(Carbon $date){
         switch ($this->collection_frequency_id) {
             case 'once':
                 return $date;
@@ -372,7 +372,7 @@ class Invoice extends Model
                 return $date->addQuarter();
                 break;
             case 'half-year':
-                return $date->addMonth(6);
+                return $date->addMonths(6);
                 break;
             case 'yearly':
                 return $date->addYear();

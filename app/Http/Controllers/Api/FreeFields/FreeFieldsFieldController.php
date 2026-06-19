@@ -12,7 +12,7 @@ use App\Eco\FreeFields\FreeFieldsTable;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\FreeFields\Grid\RequestQuery;
-use App\Http\Resources\FreeFields\FilterFreeFieldsFieldContact;
+use App\Http\Resources\FreeFields\FilterFreeFieldsField;
 use App\Http\Resources\FreeFields\FullFreeFieldsField;
 use App\Http\Resources\FreeFields\GridFreeFieldsField;
 use App\Helpers\Delete\Models\DeleteFreeFieldsField;
@@ -41,10 +41,10 @@ class FreeFieldsFieldController extends ApiController
             ]);
     }
 
-    public function getForFilterContact(Request $request)
+    public function getForFilter($tableType, Request $request)
     {
-        $contactTableId = FreeFieldsTable::where('table', 'contacts')->first()->id;
-        return FilterFreeFieldsFieldContact::collection(FreeFieldsField::where('table_id', $contactTableId)->orderBy('sort_order')->get());
+        $tableId = FreeFieldsTable::where('table', $tableType)->first()->id;
+        return FilterFreeFieldsField::collection(FreeFieldsField::where('table_id', $tableId)->orderBy('sort_order')->get());
     }
 
     public function show(FreeFieldsField $freeFieldsField)
@@ -66,6 +66,7 @@ class FreeFieldsFieldController extends ApiController
         $data = $requestInput->integer('tableId')->alias('table_id')->whenMissing(null)->onEmpty(null)->next()
             ->integer('fieldFormatId')->alias('field_format_id')->whenMissing(null)->onEmpty(null)->next()
             ->string('fieldName')->alias('field_name')->whenMissing(null)->onEmpty(null)->next()
+            ->string('fieldNameWebform')->alias('field_name_webform')->whenMissing(null)->onEmpty(null)->next()
             ->boolean('mandatory')->next()
             ->boolean('visiblePortal')->alias('visible_portal')->next()
             ->boolean('changePortal')->alias('change_portal')->next()
@@ -88,6 +89,7 @@ class FreeFieldsFieldController extends ApiController
         $data = $requestInput->integer('tableId')->alias('table_id')->whenMissing(null)->onEmpty(null)->next()
             ->integer('fieldFormatId')->alias('field_format_id')->whenMissing(null)->onEmpty(null)->next()
             ->string('fieldName')->alias('field_name')->whenMissing(null)->onEmpty(null)->next()
+            ->string('fieldNameWebform')->alias('field_name_webform')->whenMissing(null)->onEmpty(null)->next()
             ->boolean('mandatory')->next()
             ->boolean('visiblePortal')->alias('visible_portal')->next()
             ->boolean('changePortal')->alias('change_portal')->next()

@@ -10,6 +10,7 @@ namespace App\Eco\Contact;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class ContactObserver
 {
@@ -27,6 +28,7 @@ class ContactObserver
             $contact->created_with = 'econobis';
         }
         $contact->updated_with = $contact->created_with;
+        $contact->public_id = Str::random(22);
     }
 
     public function created(Contact $contact)
@@ -79,7 +81,12 @@ class ContactObserver
                 break;
         }
 
-        if($contact->isDirty('did_agree_avg') && $contact->did_agree_avg ) {
+// Dit werkt niet goed. Omdat type original integer is en current type boolean geeft hij IsDirty altijd true.
+//        if($contact->isDirty('did_agree_avg') && $contact->did_agree_avg ) {
+//            $contact->date_did_agree_avg = Carbon::now();
+//        }
+        $didAgreeAvgOriginal = $contact->getOriginal('did_agree_avg');
+        if($contact->did_agree_avg != $didAgreeAvgOriginal && $contact->did_agree_avg ) {
             $contact->date_did_agree_avg = Carbon::now();
         }
 

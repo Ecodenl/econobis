@@ -18,14 +18,14 @@ use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
 use App\Eco\RevenuesKwh\RevenuePartsKwh;
 use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Eco\RevenuesKwh\RevenueValuesKwh;
-use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\RevenueDistributionPartsKwhCSVHelper;
 use App\Helpers\Delete\Models\DeleteRevenuePartsKwh;
 use App\Helpers\Excel\EnergySupplierExcelHelper;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Project\RevenueDistributionKwhHelper;
 use App\Helpers\Project\RevenuesKwhHelper;
 use App\Helpers\RequestInput\RequestInput;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
@@ -44,8 +44,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -78,8 +78,21 @@ class RevenuePartsKwhController extends ApiController
         $limit = 100;
         $offset = $request->input('page') ? $request->input('page') * $limit : 0;
 
-        $total = $revenuePartsKwh->distributionPartsKwhVisible()->count();
-        $distributionPartsKwh = $revenuePartsKwh->distributionPartsKwhVisible()->limit($limit)->offset($offset)->orderBy('status')->get();
+        $base = $revenuePartsKwh->distributionPartsKwhVisible();
+
+        $total = (clone $base)->count();
+
+        $distributionPartsKwh = (clone $base)
+            ->join('revenue_distribution_kwh', 'revenue_distribution_kwh.id', '=', 'revenue_distribution_parts_kwh.distribution_id')
+            ->join('contacts', 'contacts.id', '=', 'revenue_distribution_kwh.contact_id')
+            ->orderBy('contacts.full_name', 'asc')
+            ->orderBy('revenue_distribution_parts_kwh.id', 'asc')
+            ->select('revenue_distribution_parts_kwh.*')
+            ->with(['distributionKwh.contact'])
+            ->limit($limit)
+            ->offset($offset)
+            ->get();
+
         $distributionPartsKwhTotal = $revenuePartsKwh->distributionPartsKwhVisible()->whereNull('date_participant_report')->get();
         $distributionPartsKwhIdsTotal = [];
         foreach ($distributionPartsKwhTotal as $distributionPartKwhTotal){
@@ -179,7 +192,7 @@ class RevenuePartsKwhController extends ApiController
         Request $request,
         RevenuePartsKwh $revenuePartsKwh
     ){
-        $documentName = $request->input('documentName');
+        $documentName = $this->translateToValidCharacterSet( $request->input('documentName') );
         ReportEnergySupplierExcel::dispatch($documentName, $revenuePartsKwh, Auth::id());
 
     }
@@ -258,8 +271,10 @@ class RevenuePartsKwhController extends ApiController
 
                 $document->save();
 
-                $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents' . DIRECTORY_SEPARATOR
-                    . $document->filename));
+                $uniqueName = Str::uuid() . $fileFormat;
+                $filePath = "{$document->document_group}/" .
+                    Carbon::parse($document->created_at)->year;
+                $filePathAndName = "$filePath/{$uniqueName}";
 
                 switch ($energySupplier->file_format_id){
                     case 1:
@@ -269,25 +284,20 @@ class RevenuePartsKwhController extends ApiController
                         $writer = new Xlsx($excel);
                         break;
                 }
-                $writer->save($filePath);
 
-                if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local')
-                {
-                    $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+                $storageDir = Storage::disk('documents')
+                    ->path($filePath);
 
-                    $alfrescoResponse = $alfrescoHelper->createFile($filePath,
-                        $document->filename, $document->getDocumentGroup()->name);
-                    $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-                }else{
-                    $alfrescoResponse = null;
+                //Check if storage map exists
+                if (!is_dir($storageDir)) {
+                    mkdir($storageDir, 0777, true);
                 }
 
+                $writer->save(Storage::disk('documents')->path($filePathAndName));
+
+                $document->file_path_and_name = $filePathAndName;
+                $document->alfresco_node_id = null;
                 $document->save();
-
-                //delete file on server, still saved on alfresco.
-                if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-                    Storage::disk('documents')->delete($document->filename);
-                }
             }
 
         }
@@ -391,10 +401,20 @@ class RevenuePartsKwhController extends ApiController
     {
         $this->authorize('manage', RevenuesKwh::class);
 
-        $ids = $request->input('ids') ? $request->input('ids') : [];
+        $ids = $request->input('ids', []);
 
-        $distributionPartsKwh = RevenueDistributionPartsKwh::whereIn('id', $ids)->with(['partsKwh'])->get();
+        if (empty($ids)) {
+            return FullRevenueDistributionPartsKwh::collection(collect());
+        }
 
+        $distributionPartsKwh = RevenueDistributionPartsKwh::query()->whereIn('revenue_distribution_parts_kwh.id', $ids)
+            ->join('revenue_distribution_kwh', 'revenue_distribution_kwh.id', '=', 'revenue_distribution_parts_kwh.distribution_id')
+            ->join('contacts', 'contacts.id', '=', 'revenue_distribution_kwh.contact_id')
+            ->orderBy('contacts.full_name', 'asc')
+            ->orderBy('revenue_distribution_parts_kwh.id', 'asc')
+            ->select('revenue_distribution_parts_kwh.*')
+            ->with(['partsKwh', 'distributionKwh.contact'])
+            ->get();
         return FullRevenueDistributionPartsKwh::collection($distributionPartsKwh);
     }
 
@@ -488,8 +508,8 @@ class RevenuePartsKwhController extends ApiController
     public function previewEmail(Request $request, RevenueDistributionPartsKwh $distributionPartsKwh)
     {
         $subject = $request->input('subject');
-        $portalName = PortalSettings::get('portalName');
-        $cooperativeName = PortalSettings::get('cooperativeName');
+        $portalName = PortalSettings::first()?->portal_name;
+        $cooperativeName = PortalSettings::first()?->cooperative_name;
         $subject = str_replace('{cooperatie_portal_naam}', $portalName, $subject);
         $subject = str_replace('{cooperatie_naam}', $cooperativeName, $subject);
 
@@ -524,7 +544,7 @@ class RevenuePartsKwhController extends ApiController
                     $fromEmail = \Config::get('mail.from.address');
                 }
 
-                $email = Mail::fromMailbox($mailbox)
+                $email = MailHelper::fromMailbox($mailbox)
                     ->to($primaryEmailAddress->email);
                 if (!$subject) {
                     $subject = 'Participant rapportage Econobis';
@@ -646,8 +666,8 @@ class RevenuePartsKwhController extends ApiController
 
     public function createParticipantRevenuePartsReport($subject, $distributionPartsKwhId, $distributionKwhId, ?DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate, $showOnPortal)
     {
-        $portalName = PortalSettings::get('portalName');
-        $cooperativeName = PortalSettings::get('cooperativeName');
+        $portalName = PortalSettings::first()?->portal_name;
+        $cooperativeName = PortalSettings::first()?->cooperative_name;
         $subject = str_replace('{cooperatie_portal_naam}', $portalName, $subject);
         $subject = str_replace('{cooperatie_naam}', $cooperativeName, $subject);
 
@@ -725,7 +745,7 @@ class RevenuePartsKwhController extends ApiController
 
                 $revenueHtml
                     = TemplateVariableHelper::stripRemainingVariableTags($revenueHtml);
-                $pdf = PDF::loadView('documents.generic', [
+                $pdfContent = PDF::loadView('documents.generic', [
                     'html' => $revenueHtml,
                 ])->output();
 
@@ -744,38 +764,27 @@ class RevenuePartsKwhController extends ApiController
                     $document->template_id = $documentTemplate->id;
                     $document->show_on_portal = $showOnPortal;
 
-                    $filename = str_replace(' ', '', $this->translateToValidCharacterSet($project->code)) . '_'
+                    $fileName = str_replace(' ', '', $this->translateToValidCharacterSet($project->code)) . '_'
                         . str_replace(' ', '', $this->translateToValidCharacterSet($contact->full_name));
-
-
                     //max length name 25
-                    $filename = substr($filename, 0, 25);
-
-                    $document->filename = $filename
+                    $fileName = substr($fileName, 0, 25);
+                    $fileName = $fileName
                         . substr($document->getDocumentGroup()->name, 0, 1)
                         . (Document::where('document_group', 'revenue')->count()
                             + 1) . '_' . $time->format('Ymd') . '.pdf';
 
+                    $document->filename = $fileName;
+
                     $document->save();
 
-                    $filePath = (storage_path('app' . DIRECTORY_SEPARATOR
-                        . 'documents/' . $document->filename));
-                    file_put_contents($filePath, $pdf);
+                    $uniqueName = Str::uuid() . '.pdf';
+                    $filePathAndName = "{$document->document_group}/" .
+                        Carbon::parse($document->created_at)->year .
+                        "/{$uniqueName}";
+                    Storage::disk('documents')->put($filePathAndName, $pdfContent);
 
-                    if (\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-                        $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'),
-                            \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-
-                        $alfrescoResponse = $alfrescoHelper->createFile($filePath,
-                            $document->filename, $document->getDocumentGroup()->name);
-                        if ($alfrescoResponse == null) {
-                            throw new \Exception('Fout bij maken rapport document in Alfresco.');
-                        }
-                        $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-                    } else {
-                        $document->alfresco_node_id = null;
-                    }
-
+                    $document->file_path_and_name = $filePathAndName;
+                    $document->alfresco_node_id = null;
                     $document->save();
                 } catch (\Exception $e) {
                     Log::error('Fout bij maken rapport document voor ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')');
@@ -796,7 +805,7 @@ class RevenuePartsKwhController extends ApiController
                         $fromName = \Config::get('mail.from.name');
                     }
 
-                    $email = Mail::fromMailbox($mailbox)
+                    $email = MailHelper::fromMailbox($mailbox)
                         ->to($primaryEmailAddress->email);
 
                     if (!$subject) {
@@ -861,10 +870,6 @@ class RevenuePartsKwhController extends ApiController
                 array_push($messages, 'Fout bij verzenden email naar **onbekend emailadres** (' . $contact->full_name . ')' );
             }
 
-            //delete file on server, still saved on alfresco.
-            if($document && \Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-                Storage::disk('documents')->delete($document->filename);
-            }
         }
         if(count($messages) > 0)
         {
@@ -956,7 +961,8 @@ class RevenuePartsKwhController extends ApiController
                         $distributionPartsKwh->save();
                         // Indien part visible en nog niet gerapporteerd (zou ook nog niet gedaan moeten zijn bij definitief maken, want deelnemer rapportage kan je niet maken van concepten)
                         // en) not_reported_delivered_kwh is 0, dan gaan we t/m deze deelperiode uitsluiten van deelnemer rapportage. We willen niet delivered_kwh 0 rapporteren nl.
-                        if( $distributionPartsKwh->is_visible == true && $distributionPartsKwh->date_participant_report == null && $distributionPartsKwh->not_reported_delivered_kwh == 0 ){
+                        $isVisibleNotEndOfYear = $distributionPartsKwh->is_end_participation || $distributionPartsKwh->is_energy_supplier_switch || $distributionPartsKwh->is_end_total_period;
+                        if( $isVisibleNotEndOfYear == true && $distributionPartsKwh->date_participant_report == null && $distributionPartsKwh->not_reported_delivered_kwh == 0 ){
                             $upToPartsKwhExcludeForReportIds = RevenuePartsKwh::where('revenue_id', $distributionPartsKwh->revenue_id)->where('date_begin', '<=', $distributionPartsKwh->partsKwh->date_begin)->orderBy('date_begin')->pluck('id')->toArray();
                             $upToDistributionPartsKwh = RevenueDistributionPartsKwh::where('revenue_id', $distributionPartsKwh->revenue_id)->where('distribution_id', $distributionPartsKwh->distribution_id)->whereIn('parts_id', $upToPartsKwhExcludeForReportIds)->whereIn('status', ['confirmed', 'processed'])->whereNull('date_participant_report')->get();
                             $beginDateParticipantReport = $distributionPartsKwh->not_reported_date_begin;;
@@ -1062,9 +1068,10 @@ class RevenuePartsKwhController extends ApiController
 
     protected function translateToValidCharacterSet($field){
 
-//        $field = strtr(utf8_decode($field), utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
-        $field = strtr(mb_convert_encoding($field, 'UTF-8', mb_list_encodings()), mb_convert_encoding('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ', 'UTF-8', mb_list_encodings()), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
-//        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
+        $fieldUtf8Decoded = mb_convert_encoding($field, 'ISO-8859-1', 'UTF-8');
+        $replaceFrom = mb_convert_encoding('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ', 'ISO-8859-1', 'UTF-8');
+        $replaceTo = mb_convert_encoding('AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy', 'ISO-8859-1', 'UTF-8');
+        $field = strtr( $fieldUtf8Decoded, $replaceFrom, $replaceTo );
         $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
 
         return $field;

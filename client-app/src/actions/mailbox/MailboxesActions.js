@@ -1,6 +1,7 @@
-export const fetchMailboxes = () => {
+export const fetchMailboxes = (onlyActive) => {
     return {
         type: 'FETCH_MAILBOXES',
+        onlyActive,
     };
 };
 

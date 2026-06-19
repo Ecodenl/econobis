@@ -25,9 +25,9 @@ class RevenuesKwh extends Model
         'id'
     ];
 
-    protected $dates = [
-        'created_at',
-        'updated_at',
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     //relations
@@ -142,6 +142,31 @@ class RevenuesKwh extends Model
         return $lastConfirmedPartsKwh ? $lastConfirmedPartsKwh->date_end : null;
     }
 
+    public function getDefaultDocumentName($reportType){
+        $administrationName = $this->translateToValidCharacterSet($this->project->administration->name);
+        $projectName = $this->translateToValidCharacterSet($this->project->name);
+
+        $yearBegin = Carbon::parse($this->date_begin)->format('Y');
+        $yearEnd = Carbon::parse($this->date_end)->format('Y');
+
+        // Vervangen _ in reporttype met spatie
+        $reportType = str_replace('_', ' ', $reportType);
+
+        if($yearEnd === $yearBegin) {
+            $year = $yearBegin;
+            $maxProjectNameLength = 179 - strlen($reportType);
+            $administrationNameAndProjectNameSubstring = substr($administrationName . " - " . $projectName, 0, $maxProjectNameLength);
+        } else {
+            $year = $yearBegin . '-' . $yearEnd;
+            $maxProjectNameLength = 174 - strlen($reportType);
+            $administrationNameAndProjectNameSubstring = substr($administrationName . " - " . $projectName, 0, $maxProjectNameLength);
+        }
+
+        $defaultDocumentName = $reportType . " - " . $administrationNameAndProjectNameSubstring . " " . $year;
+
+        return $defaultDocumentName;
+    }
+
     public function getHasNewPartsKwh(){
         return $this->newPartsKwh()->count() > 0;
     }
@@ -150,4 +175,14 @@ class RevenuesKwh extends Model
         return $this->confirmedPartsKwh()->count() > 0;
     }
 
+    protected function translateToValidCharacterSet($field){
+
+        $fieldUtf8Decoded = mb_convert_encoding($field, 'ISO-8859-1', 'UTF-8');
+        $replaceFrom = mb_convert_encoding('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ', 'ISO-8859-1', 'UTF-8');
+        $replaceTo = mb_convert_encoding('AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy', 'ISO-8859-1', 'UTF-8');
+        $field = strtr( $fieldUtf8Decoded, $replaceFrom, $replaceTo );
+        $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
+
+        return $field;
+    }
 }

@@ -38,6 +38,17 @@ class GeneralSearchController
                 'relation_name' => 'Contact ',
                 'relation_redirect' => '/contact/'
             ],
+            'Organisaties' => [
+                'model' => 'App\Eco\Organisation\Organisation',
+                'search_method' => 'String',
+                'search_fields' => [
+                    'KvK' => 'chamber_of_commerce_number',
+                    'Btw nummer' => 'vat_number'
+                ],
+                'relation_id' => 'contact_id',
+                'relation_name' => 'Contact ',
+                'relation_redirect' => '/contact/'
+            ],
             'Adressen' => [
                 'model' => 'App\Eco\Address\Address',
                 'search_method' => 'Words',

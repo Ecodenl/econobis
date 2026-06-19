@@ -3,19 +3,19 @@
 return [
 
     //Version number displayed in the header, change this with every update
-    'version_major' => '4',
-    'version_minor' => '6',
-    'version_fix' => '2.2',
+    'version_major' => '5',
+    'version_minor' => '4',
+    'version_fix' => '1.1',
 
     //Alfresco envs
-    'ALFRESCO_ADMIN_USERNAME' => env('ALFRESCO_ADMIN_USERNAME'),
-    'ALFRESCO_ADMIN_PASSWORD' => env('ALFRESCO_ADMIN_PASSWORD'),
-    'ALFRESCO_COOP_USERNAME' => env('ALFRESCO_COOP_USERNAME'),
-    'ALFRESCO_COOP_PASSWORD' => env('ALFRESCO_COOP_PASSWORD'),
-    'ALFRESCO_SITE_MAP' => env('ALFRESCO_SITE_MAP'),
-    'ALFRESCO_URL' => env('ALFRESCO_URL'),
-    'ALFRESCO_SSL_VERIFYPEER' => env('ALFRESCO_SSL_VERIFYPEER'),
-    'ALFRESCO_SSL_VERIFYHOST' => env('ALFRESCO_SSL_VERIFYHOST'),
+//    'ALFRESCO_ADMIN_USERNAME' => env('ALFRESCO_ADMIN_USERNAME'),
+//    'ALFRESCO_ADMIN_PASSWORD' => env('ALFRESCO_ADMIN_PASSWORD'),
+//    'ALFRESCO_COOP_USERNAME' => env('ALFRESCO_COOP_USERNAME'),
+//    'ALFRESCO_COOP_PASSWORD' => env('ALFRESCO_COOP_PASSWORD'),
+//    'ALFRESCO_SITE_MAP' => env('ALFRESCO_SITE_MAP'),
+//    'ALFRESCO_URL' => env('ALFRESCO_URL'),
+//    'ALFRESCO_SSL_VERIFYPEER' => env('ALFRESCO_SSL_VERIFYPEER'),
+//    'ALFRESCO_SSL_VERIFYHOST' => env('ALFRESCO_SSL_VERIFYHOST'),
 
     //Format for contact number
     'APP_CONTACT_NUMBER_FORMAT' => env('APP_CONTACT_NUMBER_FORMAT', 'C{year}-{id}'),
@@ -101,7 +101,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Europe/Amsterdam',
 
     /*
     |--------------------------------------------------------------------------
@@ -208,7 +208,6 @@ return [
         Illuminate\Foundation\Providers\FoundationServiceProvider::class,
         Illuminate\Hashing\HashServiceProvider::class,
 //        Illuminate\Mail\MailServiceProvider::class,
-        App\Providers\CustomMailServiceProvider::class,
         Illuminate\Notifications\NotificationServiceProvider::class,
         Illuminate\Pagination\PaginationServiceProvider::class,
         Illuminate\Pipeline\PipelineServiceProvider::class,
@@ -224,6 +223,7 @@ return [
          * Package Service Providers...
          */
         Laravel\Tinker\TinkerServiceProvider::class,
+        Laravel\Fortify\FortifyServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -231,7 +231,9 @@ return [
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
+        App\Providers\CustomMailServiceProvider::class,
         App\Providers\EventServiceProvider::class,
+        App\Providers\FortifyServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         \App\Providers\ObserverServiceProvider::class,
 
@@ -301,6 +303,5 @@ return [
         'last_name' => env('ADMIN_USER_LAST_NAME'),
         'email' => env('ADMIN_USER_EMAIL'),
         'password' => env('ADMIN_USER_PASSWORD'),
-        'alfresco_password' => env('ADMIN_USER_PASSWORD_ALFRESCO'),
     ],
 ];

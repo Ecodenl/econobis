@@ -1,15 +1,21 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import * as PropTypes from 'prop-types';
 
+// Functionele wrapper voor de class component
+const PortalSettingsLayoutListToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <PortalSettingsLayoutListToolbar {...props} navigate={navigate} />;
+};
+
 class PortalSettingsLayoutListToolbar extends Component {
     render() {
         let { portalSettingsLayoutsCount, refreshPortalSettingsLayoutsData, permissions } = this.props;
         const newPortalSettingsLayout = () => {
-            hashHistory.push(`/portal-instellingen-layout/nieuw`);
+            this.props.navigate(`/portal-instellingen-layout/nieuw`);
         };
 
         return (
@@ -45,4 +51,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(PortalSettingsLayoutListToolbar);
+export default connect(mapStateToProps, null)(PortalSettingsLayoutListToolbarWrapper);

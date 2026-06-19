@@ -138,7 +138,7 @@ class ObligationNumberFormListItem extends Component {
                     toggleDelete={this.toggleDelete}
                     obligationNumber={this.state.obligationNumber}
                 />
-                {this.state.showEdit && this.props.permissions.manageFinancial && (
+                {this.state.showEdit && this.props.permissions.manageParticipation && (
                     <ObligationNumberFormEdit
                         obligationNumber={this.state.obligationNumber}
                         handleInputChange={this.handleInputChange}
@@ -147,7 +147,7 @@ class ObligationNumberFormListItem extends Component {
                         errors={this.state.errors}
                     />
                 )}
-                {this.state.showDelete && this.props.permissions.manageFinancial && (
+                {this.state.showDelete && this.props.permissions.manageParticipation && (
                     <ObligationNumberFormDelete
                         closeDeleteItemModal={this.toggleDelete}
                         {...this.props.obligationNumber}

@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import ProductDeleteItem from './ProductDeleteItem';
+
+// Functionele wrapper voor de class component
+const ProductToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <ProductToolbar {...props} navigate={navigate} />;
+};
 
 class ProductToolbar extends Component {
     constructor(props) {
@@ -14,8 +20,13 @@ class ProductToolbar extends Component {
         };
     }
 
-    toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
+    showDeleteModal = () => {
+        this.setState({ showDelete: true });
+    };
+
+    hideDeleteModal = () => {
+        this.setState({ showDelete: false });
+        this.props.navigate('/producten');
     };
 
     render() {
@@ -23,8 +34,8 @@ class ProductToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
-                        <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => this.props.navigate(-1)} />
+                        <ButtonIcon iconName={'trash'} onClickAction={this.showDeleteModal} />
                     </div>
                 </div>
                 <div className="col-md-4">
@@ -33,7 +44,7 @@ class ProductToolbar extends Component {
                 <div className="col-md-4" />
                 {this.state.showDelete && (
                     <ProductDeleteItem
-                        closeDeleteItemModal={this.toggleDelete}
+                        closeDeleteItemModal={this.hideDeleteModal}
                         name={this.props.name}
                         id={this.props.id}
                     />
@@ -50,4 +61,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(ProductToolbar);
+export default connect(mapStateToProps, null)(ProductToolbarWrapper);

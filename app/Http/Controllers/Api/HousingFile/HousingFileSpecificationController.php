@@ -15,21 +15,19 @@ use App\Eco\HousingFile\HousingFile;
 use App\Eco\HousingFile\HousingFileSpecification;
 use App\Eco\HousingFile\HousingFileSpecificationStatus;
 use App\Eco\Intake\Intake;
-use App\Eco\Intake\IntakeSource;
 use App\Eco\Intake\IntakeStatus;
+use App\Eco\IntakeSource\IntakeSource;
 use App\Eco\Measure\Measure;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
-use App\Helpers\Excel\HousingFileExcel2Helper;
-use App\Helpers\Excel\HousingFileExcel2SpecificationsHelper;
+use App\Helpers\Excel\HousingFileExcelSpecificationsHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\HousingFileSpecification\Grid\RequestQuery;
 use App\Http\Resources\HousingFile\GridHousingFileSpecification;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class HousingFileSpecificationController extends ApiController
 {
@@ -57,7 +55,7 @@ class HousingFileSpecificationController extends ApiController
 
         $intakeStatusIdClosedWithOpportunity = IntakeStatus::where('code_Ref', 'closed_with_opportunity')->first()->id;
         $housingFileIntakeSource = IntakeSource::where('code_ref', 'housing_file')->first()->id;
-        $opportunityStatusIdInactive = OpportunityStatus::where('code_ref', 'inactive')->first()->id;
+        $opportunityStatusIdActive = OpportunityStatus::where('code_ref', 'active')->first()->id;
         $specificationStatusIdOpportunityCreated = HousingFileSpecificationStatus::where('code_ref', 'opportunity_created')->first()->id;
 
         $specificationIds = $request->input('ids');
@@ -69,20 +67,30 @@ class HousingFileSpecificationController extends ApiController
                 $housingFile = $housingFileSpecification->housingFile;
                 $measure = Measure::find($housingFileSpecification->measure_id);
 
-                $intake = Intake::create([
-                    'contact_id' => $housingFile->address->contact->id,
-                    'address_id' => $housingFile->address->id,
-                    'intake_status_id' => $intakeStatusIdClosedWithOpportunity,
-                    'campaign_id' => $campaign->id,
-                    'note' => 'Intake gemaakt vanuit woningdossier specificatie',
-                ]);
+                //first we check for existing Intakes that meet the criteria, if so we will use the last created intake
+                $intake = Intake::where('campaign_id', $campaign->id)
+                        ->where('contact_id', $housingFile->address->contact->id)
+                        ->where('address_id', $housingFile->address->id)
+                        ->orderBy('created_at', 'DESC')->first();
+
+                //if the above query has no results we will create a new Intake
+                if (!$intake) {
+                    $intake = Intake::create([
+                        'contact_id' => $housingFile->address->contact->id,
+                        'address_id' => $housingFile->address->id,
+                        'intake_status_id' => $intakeStatusIdClosedWithOpportunity,
+                        'campaign_id' => $campaign->id,
+                        'note' => 'Intake gemaakt vanuit woningdossier specificatie',
+                    ]);
+                }
+
                 $intake->sources()->sync($housingFileIntakeSource);
 
                 $intake->measuresRequested()->sync($measure->measureCategory->id);
 
                 $opportunity = Opportunity::create([
                     'measure_category_id' => $measure->measureCategory->id,
-                    'status_id' => $opportunityStatusIdInactive,
+                    'status_id' => $opportunityStatusIdActive,
                     'housing_file_specification_id' => $housingFileSpecification->id,
                     'intake_id' => $intake->id,
                     'quotation_text' => $housingFileSpecification->external_hoom_name ? $housingFileSpecification->external_hoom_name : '',
@@ -132,7 +140,7 @@ class HousingFileSpecificationController extends ApiController
 
         $housingFileSpecifications->load(['housingFile.address', 'housingFile.address.contact', 'status', 'floor', 'side']);
 
-        $housingFileExcelSpecificationsHelper = new HousingFileExcel2SpecificationsHelper($housingFileSpecifications);
+        $housingFileExcelSpecificationsHelper = new HousingFileExcelSpecificationsHelper($housingFileSpecifications);
 
         return $housingFileExcelSpecificationsHelper->downloadExcel();
     }

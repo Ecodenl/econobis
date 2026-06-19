@@ -3,7 +3,7 @@ import { Button } from 'react-bootstrap';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { FiArrowLeft, FiArrowRight } from 'react-icons/all';
 
-import { Document, Page, pdfjs } from 'react-pdf/dist/esm/entry.webpack';
+import { Document, Page, pdfjs } from 'react-pdf';
 pdfjs.GlobalWorkerOptions.workerSrc = '/js/pdf.worker.min.js';
 
 function PdfViewer(props) {

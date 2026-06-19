@@ -34,8 +34,8 @@ class FinancialOverviewContactPreviewForm extends Component {
     }
 
     render() {
-        return isEmpty(this.props.financialOverviewContactDetails) || !this.state.file ? (
-            <div>Geen gegevens gevonden.</div>
+        return !this.state.file ? (
+            <div>PDF preview aan het laden...</div>
         ) : (
             <div>
                 <PdfViewer file={this.state.file} scale={this.props.scale} />

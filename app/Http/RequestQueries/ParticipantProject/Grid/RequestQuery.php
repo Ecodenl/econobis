@@ -10,6 +10,7 @@ namespace App\Http\RequestQueries\ParticipantProject\Grid;
 
 use App\Eco\ParticipantProject\ParticipantProject;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 
 class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
@@ -29,6 +30,7 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
     {
         $query = ParticipantProject::query()
             ->select('participation_project.*')
+            ->whereAdministrationIds(Auth::user())
             ->distinct(true);
 
         // The operation of below is not working. For now the code outcommented, so that the count is working after setting extra filter

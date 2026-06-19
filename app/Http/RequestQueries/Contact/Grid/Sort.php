@@ -26,6 +26,9 @@ class Sort extends RequestSort
         'phoneNumber',
         'statusName',
         'createdAt',
+        'iban',
+        'vatNumber',
+        'chamberOfCommerceNumber'
     ];
 
     protected $mapping = [
@@ -33,13 +36,15 @@ class Sort extends RequestSort
         'number' => 'contacts.number',
         'typeName' => 'contacts.type_id',
         'fullName' => 'contacts.full_name',
-        'streetAndNumber' => 'addresses.street',
         'postalCode' => 'addresses.postal_code',
         'city' => 'addresses.city',
         'emailAddress' => 'email_addresses.email',
         'phoneNumber' => 'phone_numbers.number',
         'statusName' => 'contacts.status_id',
         'createdAt' => 'contacts.created_at',
+        'iban' => 'contacts.iban',
+        'vatNumber' => 'organisations.vat_number',
+        'chamberOfCommerceNumber' => 'organisations.chamber_of_commerce_number',
     ];
 
     protected $joins = [
@@ -48,5 +53,14 @@ class Sort extends RequestSort
         'streetAndNumber' => 'address',
         'postalCode' => 'address',
         'city' => 'address',
+        'vatNumber' => 'organisation',
+        'chamberOfCommerceNumber' => 'organisation',
     ];
+
+    protected function applyStreetAndNumberSort($query, $data)
+    {
+        $query->orderBy('addresses.street', $data)->orderBy('addresses.number', $data)->orderBy('addresses.addition', $data);
+
+        return false;
+    }
 }

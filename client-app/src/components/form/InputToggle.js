@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Toggle from 'react-toggle';
 import { FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
+import moment from 'moment/moment';
 
 const InputToggle = props => {
     const {
@@ -19,6 +20,7 @@ const InputToggle = props => {
         className,
         disabled,
         itemId,
+        additionalTextValue,
     } = props;
 
     return (
@@ -33,10 +35,16 @@ const InputToggle = props => {
                     id={id}
                     name={name}
                     onChange={onChangeAction}
-                    defaultChecked={value}
+                    // defaultChecked={value}
+                    checked={value}
                     disabled={disabled}
                     data-item-id={itemId ?? ''}
                 />
+                {additionalTextValue ? (
+                    <span>
+                        <em>{additionalTextValue}</em>
+                    </span>
+                ) : null}
             </div>
             {textToolTip && (
                 <div className="col-sm-1">
@@ -63,6 +71,7 @@ InputToggle.defaultProps = {
     disabled: false,
     value: false,
     textToolTip: '',
+    additionalTextValue: '',
 };
 
 InputToggle.propTypes = {
@@ -74,6 +83,7 @@ InputToggle.propTypes = {
     id: PropTypes.string,
     name: PropTypes.string.isRequired,
     textToolTip: PropTypes.string,
+    additionalTextValue: PropTypes.string,
     value: PropTypes.bool,
     onChangeAction: PropTypes.func,
     required: PropTypes.string,

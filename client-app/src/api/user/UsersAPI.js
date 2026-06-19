@@ -1,12 +1,12 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_USER = `${URL_API}/api/user`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchUsers: () => {
+        const URL_USER = `${getApiUrl()}/api/user`;
         const requestUrl = `${URL_USER}/grid`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -17,9 +17,10 @@ export default {
     },
 
     fetchUsersWithPermission: permissionId => {
+        const URL_USER = `${getApiUrl()}/api/user`;
         const requestUrl = `${URL_USER}/with-permission/${permissionId}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;

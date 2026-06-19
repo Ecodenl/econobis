@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 const CampaignDetailsOpportunityView = ({
     id,
@@ -11,8 +11,10 @@ const CampaignDetailsOpportunityView = ({
     status,
     quotationRequests,
 }) => {
+    const navigate = useNavigate();
+
     return (
-        <div className={'row border'} onClick={() => hashHistory.push(`/kans/${id}`)}>
+        <div className={'row border'} onClick={() => navigate(`/kans/${id}`)}>
             <div className="col-sm-2">{number}</div>
             <div className="col-sm-1">{createdAt ? moment(createdAt).format('L') : ''}</div>
             <div className="col-sm-3">{intake?.contact?.fullName || ''}</div>

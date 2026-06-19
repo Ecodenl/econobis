@@ -25,6 +25,7 @@ class MailgunDomainController extends Controller
 
         $data = $input->string('domain')->whenMissing('')->onEmpty('')->next()
             ->string('secret')->whenMissing('')->onEmpty('')->next()
+            ->boolean('isSystemMailgunDomain')->alias('is_system_mailgun_domain')->whenMissing(false)->onEmpty(false)->next()
             ->get();
 
         $mailgunDomain = new MailgunDomain($data);
@@ -40,6 +41,7 @@ class MailgunDomainController extends Controller
 
         $data = $input->string('domain')->whenMissing($mailgunDomain->domain)->onEmpty('')->next()
             ->string('secret')->whenMissing($mailgunDomain->secret)->onEmpty('')->next()
+            ->boolean('isSystemMailgunDomain')->alias('is_system_mailgun_domain')->whenMissing(false)->onEmpty(false)->next()
             ->get();
 
         $mailgunDomain->fill($data);

@@ -1,9 +1,9 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_ADDRESS_ENERGY_SUPPLIER = `${URL_API}/api/address-energy-supplier`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     validateAddressEnergySupplierForm: addressEnergySupplier => {
+        const URL_ADDRESS_ENERGY_SUPPLIER = `${getApiUrl()}/api/address-energy-supplier`;
         let requestUrl = '';
         if (addressEnergySupplier.id) {
             requestUrl = `${URL_ADDRESS_ENERGY_SUPPLIER}-validate/${addressEnergySupplier.id}`;
@@ -11,24 +11,27 @@ export default {
             requestUrl = `${URL_ADDRESS_ENERGY_SUPPLIER}-validate`;
         }
 
-        return axiosInstance.post(requestUrl, addressEnergySupplier);
+        return getAxiosInstance().post(requestUrl, addressEnergySupplier);
     },
 
     newAddressEnergySupplier: addressEnergySupplier => {
+        const URL_ADDRESS_ENERGY_SUPPLIER = `${getApiUrl()}/api/address-energy-supplier`;
         const requestUrl = `${URL_ADDRESS_ENERGY_SUPPLIER}`;
 
-        return axiosInstance.post(requestUrl, addressEnergySupplier);
+        return getAxiosInstance().post(requestUrl, addressEnergySupplier);
     },
 
     updateAddressEnergySupplier: addressEnergySupplier => {
+        const URL_ADDRESS_ENERGY_SUPPLIER = `${getApiUrl()}/api/address-energy-supplier`;
         const requestUrl = `${URL_ADDRESS_ENERGY_SUPPLIER}/${addressEnergySupplier.id}`;
 
-        return axiosInstance.post(requestUrl, addressEnergySupplier);
+        return getAxiosInstance().post(requestUrl, addressEnergySupplier);
     },
 
     deleteAddressEnergySupplier: id => {
+        const URL_ADDRESS_ENERGY_SUPPLIER = `${getApiUrl()}/api/address-energy-supplier`;
         const requestUrl = `${URL_ADDRESS_ENERGY_SUPPLIER}/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 };

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 
 import Icon from 'react-icons-kit';
-import { eye } from 'react-icons-kit/fa/eye';
+import { eye, copy } from 'react-icons-kit/fa';
 
 function FinancialOverviewContactItem({
     id,
@@ -12,24 +12,31 @@ function FinancialOverviewContactItem({
     status,
     dateSent,
     emailedTo,
+    allowInterimFinancialOverview,
     showSelectFinancialOverviewContactsToSend,
     toggleFinancialOverviewContactCheck,
     financialOverviewContactIds,
+    createInterim,
 }) {
+    const navigate = useNavigate();
+
     const dateSentFormated = dateSent ? moment(dateSent).format('DD-MM-Y') : '';
     const [highlightLine, setHighlightLine] = useState('');
 
-    const inProgressRowClass =
+    const rowClass =
         statusId === 'in-progress' ||
         statusId === 'is-sending' ||
         statusId === 'error-making' ||
         statusId === 'error-sending' ||
         statusId === 'is-resending'
             ? 'in-progress-row'
+            : statusId === 'sent'
+            ? 'success-row-light'
             : '';
+
     return (
         <tr
-            className={`${highlightLine} ${inProgressRowClass}`}
+            className={`${highlightLine} ${rowClass}`}
             onMouseEnter={() => onLineEnter()}
             onMouseLeave={() => onLineLeave()}
         >
@@ -53,8 +60,20 @@ function FinancialOverviewContactItem({
             <td>{emailedTo}</td>
             <td>
                 <a role="button" onClick={() => getFinancialOverviewPDF(id, statusId)}>
-                    <Icon className="mybtn-success" size={14} icon={eye} />
+                    <Icon
+                        size={14}
+                        icon={eye}
+                        title={statusId === 'sent' || statusId === 'error-sending' ? 'Inzien' : 'Preview'}
+                    />
                 </a>
+                {allowInterimFinancialOverview ? (
+                    <>
+                        &nbsp;&nbsp;&nbsp;
+                        <a role="button" onClick={() => createInterim(id)}>
+                            <Icon size={14} icon={copy} title={'Tussentijdse waardestaat'} />
+                        </a>
+                    </>
+                ) : null}
             </td>
         </tr>
     );
@@ -69,9 +88,9 @@ function FinancialOverviewContactItem({
 
     function getFinancialOverviewPDF(financialOverviewContactId, statusId) {
         if (statusId === 'sent' || statusId === 'error-sending') {
-            hashHistory.push(`/waardestaat-contact/inzien/${financialOverviewContactId}`);
+            navigate(`/waardestaat-contact/inzien/${financialOverviewContactId}`);
         } else {
-            hashHistory.push(`/waardestaat-contact/preview/${financialOverviewContactId}`);
+            navigate(`/waardestaat-contact/preview/${financialOverviewContactId}`);
         }
     }
 }

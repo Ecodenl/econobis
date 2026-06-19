@@ -17,7 +17,6 @@ use App\Http\Resources\GenericResource;
 use App\Http\Resources\HousingFile\FullHousingFile;
 use App\Http\Resources\Invoice\InvoicePeek;
 use App\Http\Resources\Opportunity\FullOpportunity;
-use App\Http\Resources\Intake\FullIntake;
 use App\Http\Resources\Order\OrderPeek;
 use App\Http\Resources\ParticipantProject\FullParticipantProject;
 use App\Http\Resources\Project\FullProject;

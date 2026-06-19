@@ -5,17 +5,17 @@ namespace App\Http\Controllers\Portal\QuotationRequest;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\Document\Document;
 use App\Eco\Document\DocumentCreatedFrom;
+use App\Eco\Email\Email;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Portal\PortalUser;
 use App\Eco\QuotationRequest\QuotationRequest;
-use App\Helpers\Alfresco\AlfrescoHelper;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class QuotationRequestController
@@ -79,7 +79,7 @@ class QuotationRequestController
 
         $this->authorizeQuotationRequest($portalUser, $quotationRequest);
 
-        $responsibleUserId = PortalSettings::get('responsibleUserId');
+        $responsibleUserId = PortalSettings::first()?->responsible_user_id;
         if (!$responsibleUserId) {
             abort(501, 'Er is helaas een fout opgetreden (onbekende klanten portaal verantwoordelijke).');
         }
@@ -93,8 +93,11 @@ class QuotationRequestController
             'dateRecorded' => ['nullable', 'date'],
             'dateReleased' => ['nullable', 'date'],
             'dateApprovedClient' => ['nullable', 'date'],
+            'nulApprovedClient' => ['boolean'],
             'dateApprovedProjectManager' => ['nullable', 'date'],
+            'nulApprovedProjectManager' => ['boolean'],
             'dateApprovedExternal' => ['nullable', 'date'],
+            'nulApprovedExternal' => ['boolean'],
             'opportunityStatusId' => ['integer'],
             'coachOrOrganisationNote' => ['nullable', 'string'],
             'projectmanagerNote' => ['nullable', 'string'],
@@ -105,7 +108,9 @@ class QuotationRequestController
             'dateExecuted' => ['nullable', 'date'],
             'dateUnderReviewDetermination' => ['nullable', 'date'],
             'dateApprovedDetermination' => ['nullable', 'date'],
+            'notApprovedDetermination' => ['boolean'],
             'quotationAmount' => ['nullable', 'string'],
+            'costAdjustment' => ['nullable', 'string'],
             'awardAmount' => ['nullable', 'string'],
             'amountDetermination' => ['nullable', 'string'],
         ]);
@@ -120,8 +125,11 @@ class QuotationRequestController
         $quotationRequest->date_recorded = $request->input('dateRecorded') ?: null;
         $quotationRequest->date_released = $request->input('dateReleased') ?: null;
         $quotationRequest->date_approved_client = $request->input('dateApprovedClient') ?: null;
+        $quotationRequest->not_approved_client = $request->input('notApprovedClient') ?: false;
         $quotationRequest->date_approved_external = $request->input('dateApprovedExternal') ?: null;
+        $quotationRequest->not_approved_external = $request->input('notApprovedExternal') ?: false;
         $quotationRequest->date_approved_project_manager = $request->input('dateApprovedProjectManager') ?: null;
+        $quotationRequest->not_approved_project_manager = $request->input('notApprovedProjectManager') ?: false;
         $quotationRequest->updated_by_id = $responsibleUserId;
         $quotationRequest->coach_or_organisation_note = $request->input('coachOrOrganisationNote');
         $quotationRequest->projectmanager_note = $request->input('projectmanagerNote');
@@ -132,7 +140,9 @@ class QuotationRequestController
         $quotationRequest->date_executed = $request->input('dateExecuted') ?: null;
         $quotationRequest->date_under_review_determination = $request->input('dateUnderReviewDetermination') ?: null;
         $quotationRequest->date_approved_determination = $request->input('dateApprovedDetermination') ?: null;
+        $quotationRequest->not_approved_determination = $request->input('notApprovedDetermination') ?: false;
         $quotationRequest->quotation_amount = $request->input('quotationAmount') ?: 0;
+        $quotationRequest->cost_adjustment = $request->input('costAdjustment') ?: 0;
         $quotationRequest->award_amount = $request->input('awardAmount') ?: 0;
         $quotationRequest->amount_determination = $request->input('amountDetermination') ?: 0;
 
@@ -159,7 +169,7 @@ class QuotationRequestController
 
         $this->authorizeQuotationRequest($portalUser, $quotationRequest);
 
-        $responsibleUserId = PortalSettings::get('responsibleUserId');
+        $responsibleUserId = PortalSettings::first()?->responsible_user_id;
         if (!$responsibleUserId) {
             abort(501, 'Er is helaas een fout opgetreden (onbekende klanten portaal verantwoordelijke).');
         }
@@ -193,33 +203,15 @@ class QuotationRequestController
             abort(403, 'Geen toegang tot dit document.');
         }
 
-        // indien document niet in alfresco maar document was gemaakt in a storage map (file_path_and_name ingevuld), dan halen we deze op uit die storage map.
-        if ($document->alfresco_node_id == null && $document->file_path_and_name != null) {
+        // indien document was gemaakt in a storage map (file_path_and_name ingevuld), dan halen we deze op uit die storage map.
+        if ($document->file_path_and_name != null) {
             $filePath = Storage::disk('documents')->path($document->file_path_and_name);
             header('X-Filename:' . $document->filename);
             header('Access-Control-Expose-Headers: X-Filename');
             return response()->download($filePath, $document->filename);
         }
 
-        if (\Config::get('app.ALFRESCO_COOP_USERNAME') == 'local') {
-            if ($document->alfresco_node_id == null) {
-                $filePath = Storage::disk('documents')
-                    ->path($document->filename);
-                header('X-Filename:' . $document->filename);
-                header('Access-Control-Expose-Headers: X-Filename');
-                return response()->download($filePath, $document->filename);
-            } else {
-                return null;
-            }
-        }
-
-        // hier verwachten we alleen nog documenten opgslagen in Alfresco. Indien geen alfresco_node_id bekend, dan valt er ook niets op te halen.
-        if ($document->alfresco_node_id == null) {
-            return null;
-        }
-
-        $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-        return $alfrescoHelper->downloadFile($document->alfresco_node_id);
+        return null;
     }
 
     public function deleteDocument(QuotationRequest $quotationRequest, Document $document)
@@ -232,16 +224,9 @@ class QuotationRequestController
             abort(403, 'Niet bevoegd om dit document te verwijderen.');
         }
 
-        // indien document niet in alfresco maar document was gemaakt in a storage map (file_path_and_name ingevuld), dan ook verwijderen in die storage map.
-        if ($document->alfresco_node_id == null && $document->file_path_and_name != null) {
+        // indien document was gemaakt in a storage map (file_path_and_name ingevuld), dan ook verwijderen in die storage map.
+        if ($document->file_path_and_name != null) {
             Storage::disk('documents')->delete($document->file_path_and_name);
-        } else {
-            //delete file in Alfresco(to trashbin)
-//            $user = Auth::user();
-            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local' && $document->alfresco_node_id) {
-                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-                $alfrescoHelper->deleteFile($document->alfresco_node_id);
-            }
         }
 
         $document->delete();
@@ -281,7 +266,8 @@ class QuotationRequestController
             $document->file_path_and_name = $file_tmp;
             $document->save();
 
-            Storage::disk('documents')->path($file_tmp);
+//            todo WM: deze regel kan weg, doet niets.
+//            Storage::disk('documents')->path($file_tmp);
         }
     }
 
@@ -299,6 +285,7 @@ class QuotationRequestController
                 'intake' => [
                     'contact' => [
                         'id' => $quotationRequest->opportunity->intake->contact->id,
+                        'number' => $quotationRequest->opportunity->intake->contact->number,
                         'fullName' => $quotationRequest->opportunity->intake->contact->full_name,
                         'primaryphoneNumber' => optional($quotationRequest->opportunity->intake->contact->primaryphoneNumber)->number,
                         'primaryEmailAddress' => optional($quotationRequest->opportunity->intake->contact->primaryEmailAddress)->email,
@@ -325,12 +312,16 @@ class QuotationRequestController
             'dateRecorded' => $quotationRequest->date_recorded ? $quotationRequest->date_recorded : '',
             'dateReleased' => $quotationRequest->date_released ? $quotationRequest->date_released : '',
             'dateApprovedExternal' => $quotationRequest->date_approved_external ? $quotationRequest->date_approved_external : '',
+            'notApprovedExternal' => $quotationRequest->not_approved_external ? $quotationRequest->not_approved_external : false,
             'dateApprovedProjectManager' => $quotationRequest->date_approved_project_manager ? $quotationRequest->date_approved_project_manager : '',
+            'notApprovedProjectManager' => $quotationRequest->not_approved_project_manager ? $quotationRequest->not_approved_project_manager : false,
             'dateApprovedClient' => $quotationRequest->date_approved_client ? $quotationRequest->date_approved_client : '',
+            'notApprovedClient' => $quotationRequest->not_approved_client ? $quotationRequest->not_approved_client : false,
             'dateUnderReview' => $quotationRequest->date_under_review ? $quotationRequest->date_under_review : '',
             'dateExecuted' => $quotationRequest->date_executed ? $quotationRequest->date_executed : '',
             'dateUnderReviewDetermination' => $quotationRequest->date_under_review_determination ? $quotationRequest->date_under_review_determination : '',
             'dateApprovedDetermination' => $quotationRequest->date_approved_determination ? $quotationRequest->date_approved_determination : '',
+            'notApprovedDetermination' => $quotationRequest->not_approved_determination ? $quotationRequest->not_approved_determination : false,
             'quotationText' => $quotationRequest->quotation_text,
             'coachOrOrganisationNote' => $quotationRequest->coach_or_organisation_note,
             'projectmanagerNote' => $quotationRequest->projectmanager_note,
@@ -341,6 +332,7 @@ class QuotationRequestController
                 'name' => $quotationRequest->status->name,
                 'codeRef' => $quotationRequest->status->code_ref,
             ],
+            'measureNames' => $quotationRequest->measureNames,
             'quotationAmount' => $quotationRequest->quotation_amount,
             'costAdjustment' => $quotationRequest->cost_adjustment,
             'awardAmount' => $quotationRequest->award_amount,
@@ -384,27 +376,32 @@ class QuotationRequestController
             return;
         }
 
-        $emailTemplate = $cooperation->inspectionPlannedEmailTemplate;
-        if (!$emailTemplate) {
-            return;
-        }
-
         $contact = $quotationRequest->opportunity->intake->contact;
         if (!$contact->primaryEmailAddress) {
             return;
         }
 
-        if ($cooperation->inspection_planned_mailbox_id) {
-            $mailbox = Mailbox::find($cooperation->inspection_planned_mailbox_id);
+        $campaign = $quotationRequest->opportunity->intake->campaign;
+        if ($campaign && $campaign->inspectionPlannedEmailTemplate) {
+            $emailTemplate = $campaign->inspectionPlannedEmailTemplate;
+        } else {
+            return;
+        }
+
+        if ($campaign->inspection_planned_mailbox_id) {
+            $mailbox = Mailbox::find($campaign->inspection_planned_mailbox_id);
+            if (!$mailbox) {
+                $mailbox = Mailbox::getDefault();
+            }
         } else {
             $mailbox = Mailbox::getDefault();
         }
 
-        $mail = Mail::fromMailbox($mailbox)
-            ->to($contact->primaryEmailAddress);
+        $mail = MailHelper::fromMailbox($mailbox)
+            ->to($contact->primaryEmailAddress->email);
 
         $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Afspraak schouwen';
-        $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail);
+        $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail, $mailbox);
     }
 
     private function sendInspectionRecordedMail(QuotationRequest $quotationRequest)
@@ -414,27 +411,32 @@ class QuotationRequestController
             return;
         }
 
-        $emailTemplate = $cooperation->inspectionRecordedEmailTemplate;
-        if (!$emailTemplate) {
-            return;
-        }
-
         $contact = $quotationRequest->opportunity->intake->contact;
         if (!$contact->primaryEmailAddress) {
             return;
         }
 
-        if ($cooperation->inspection_planned_mailbox_id) {
-            $mailbox = Mailbox::find($cooperation->inspection_planned_mailbox_id);
+        $campaign = $quotationRequest->opportunity->intake->campaign;
+        if ($campaign && $campaign->inspectionRecordedEmailTemplate) {
+            $emailTemplate = $campaign->inspectionRecordedEmailTemplate;
+        } else {
+            return;
+        }
+
+        if ($campaign->inspection_planned_mailbox_id) {
+            $mailbox = Mailbox::find($campaign->inspection_planned_mailbox_id);
+            if (!$mailbox) {
+                $mailbox = Mailbox::getDefault();
+            }
         } else {
             $mailbox = Mailbox::getDefault();
         }
 
-        $mail = Mail::fromMailbox($mailbox)
-            ->to($contact->primaryEmailAddress);
+        $mail = MailHelper::fromMailbox($mailbox)
+            ->to($contact->primaryEmailAddress->email);
 
         $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Opname schouwen';
-        $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail);
+        $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail, $mailbox);
     }
 
     private function sendInspectionReleasedMail(QuotationRequest $quotationRequest)
@@ -444,27 +446,32 @@ class QuotationRequestController
             return;
         }
 
-        $emailTemplate = $cooperation->inspectionReleasedEmailTemplate;
-        if (!$emailTemplate) {
-            return;
-        }
-
         $contact = $quotationRequest->opportunity->intake->contact;
         if (!$contact->primaryEmailAddress) {
             return;
         }
 
-        if ($cooperation->inspection_planned_mailbox_id) {
-            $mailbox = Mailbox::find($cooperation->inspection_planned_mailbox_id);
+        $campaign = $quotationRequest->opportunity->intake->campaign;
+        if ($campaign && $campaign->inspectionReleasedEmailTemplate) {
+            $emailTemplate = $campaign->inspectionReleasedEmailTemplate;
+        } else {
+            return;
+        }
+
+        if ($campaign->inspection_planned_mailbox_id) {
+            $mailbox = Mailbox::find($campaign->inspection_planned_mailbox_id);
+            if (!$mailbox) {
+                $mailbox = Mailbox::getDefault();
+            }
         } else {
             $mailbox = Mailbox::getDefault();
         }
 
-        $mail = Mail::fromMailbox($mailbox)
-            ->to($contact->primaryEmailAddress);
+        $mail = MailHelper::fromMailbox($mailbox)
+            ->to($contact->primaryEmailAddress->email);
         $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Opname schouwen';
 
-        $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail);
+        $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail, $mailbox);
     }
 
     /**
@@ -475,7 +482,7 @@ class QuotationRequestController
      * @param QuotationRequest $quotationRequest
      * @param \Illuminate\Mail\PendingMail $mail
      */
-    private function sendInspectionMailToContact($emailTemplate, $cooperation, string $subject, $contact, QuotationRequest $quotationRequest, \Illuminate\Mail\PendingMail $mail): void
+    private function sendInspectionMailToContact($emailTemplate, $cooperation, string $subject, $contact, QuotationRequest $quotationRequest, \Illuminate\Mail\PendingMail $mail, Mailbox $mailbox): void
     {
         $htmlBody = $emailTemplate->html_body;
 
@@ -487,6 +494,19 @@ class QuotationRequestController
         $htmlBody = str_replace('{contactpersoon}', $contact->full_name, $htmlBody);
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'contact', $contact);
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'offerteverzoek', $quotationRequest);
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'kansactie', $quotationRequest);
+        if ($quotationRequest->opportunity) {
+            $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'kans', $quotationRequest->opportunity);
+            if ($quotationRequest->opportunity->intake) {
+                $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'intake',
+                    $quotationRequest->opportunity->intake);
+                if ($quotationRequest->opportunity->intake->campaign) {
+                    $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'campagne',
+                        $quotationRequest->opportunity->intake->campaign);
+                }
+            }
+        }
+
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'kans', $quotationRequest->opportunity);
 
         $htmlBody = TemplateVariableHelper::stripRemainingVariableTags($htmlBody);
@@ -495,9 +515,33 @@ class QuotationRequestController
             . $subject . '</title></head>'
             . $htmlBody . '</html>';
 
-
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;
+
+        //save the mail to send
+        if($contact && $contact->primaryEmailAddress) {
+            $email = new Email();
+            $email->mailbox_id = $mailbox->id;
+            $email->from = $mailbox->email;
+            $email->to = [$contact->primaryEmailAddress->email];
+            $email->cc = [];
+            $email->bcc = [];
+            $email->subject = $subject;
+            $email->folder = 'sent';
+            if($quotationRequest) {
+                $email->quotation_request_id = $quotationRequest->id;
+                if($quotationRequest->opportunity) {
+                    $email->opportunity_id = $quotationRequest->opportunity->id;
+                }
+            }
+            $email->date_sent = new Carbon();
+            $email->html_body = $htmlBody;
+            $email->sent_by_user_id = $quotationRequest->updated_by_id;
+            $email->save();
+
+            $email->contacts()->attach([$contact->id]);
+        }
+        //save the mail to send
 
         $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody, $emailTemplate->default_attachment_document_id));
     }

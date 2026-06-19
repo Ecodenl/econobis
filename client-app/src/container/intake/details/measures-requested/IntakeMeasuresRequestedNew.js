@@ -8,7 +8,13 @@ import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from '../../../../components/form/InputSelect';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const IntakeMeasuresRequestedNewWrapper = props => {
+    const navigate = useNavigate();
+    return <IntakeMeasuresRequestedNew {...props} navigate={navigate} />;
+};
 
 class IntakeMeasuresRequestedNew extends Component {
     constructor(props) {
@@ -139,4 +145,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(IntakeMeasuresRequestedNew);
+export default connect(mapStateToProps, mapDispatchToProps)(IntakeMeasuresRequestedNewWrapper);

@@ -13,7 +13,6 @@ import { plus } from 'react-icons-kit/fa/plus';
 class MutationForm extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             showNew: false,
             successNewMessage: '',
@@ -28,11 +27,22 @@ class MutationForm extends Component {
     };
 
     render() {
+        let allowAddMutation = false;
+        if (this.props.permissions.manageParticipation && !this.props.isTerminated) {
+            if (this.props.projectTypeCodeRef !== 'loan') {
+                allowAddMutation = true;
+            } else if (this.props.loanTypeCodeRef === 'lineair') {
+                allowAddMutation = this.props.hasLoanFirstDeposit === null;
+            } else {
+                allowAddMutation =
+                    this.props.hasLoanFirstDeposit === null || this.props.hasLoanFirstDeposit === 'final';
+            }
+        }
         return (
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Mutaties</span>
-                    {this.props.permissions.manageFinancial && !this.props.isTerminated && (
+                    {allowAddMutation && (
                         <a role="button" className="pull-right" onClick={this.toggleShowNew}>
                             <Icon size={14} icon={plus} />
                         </a>
@@ -54,6 +64,9 @@ class MutationForm extends Component {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
+        projectTypeCodeRef: state.participantProjectDetails?.project?.typeCodeRef,
+        hasLoanFirstDeposit: state.participantProjectDetails?.hasLoanFirstDeposit,
+        loanTypeCodeRef: state.participantProjectDetails?.project?.loanTypeCodeRef,
     };
 };
 

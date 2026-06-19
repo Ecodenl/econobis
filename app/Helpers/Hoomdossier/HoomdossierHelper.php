@@ -5,18 +5,20 @@ namespace App\Helpers\Hoomdossier;
 
 
 use App\Eco\Contact\Contact;
+use App\Eco\Contact\ContactType;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\EmailTemplate\EmailTemplate;
+use App\Eco\Mailbox\Mailbox;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Helpers\Laposta\LapostaMemberHelper;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Hoomdossier\Templates\HoomdossierMail;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
 class HoomdossierHelper
@@ -33,6 +35,23 @@ class HoomdossierHelper
     public function make() {
         // Check if all necessary fields are filled
         $this->validateRequiredFields();
+
+        //check if there is a user with a hoom_account_id and the same email address
+        $thisContactEmail = $this->contact->primaryEmailAddress;
+
+        $contactsCheck = Contact::where('id', '!=', $thisContactEmail->contact_id)
+            ->where('type_id', ContactType::PERSON)
+            ->whereNotNull('hoom_account_id')
+            ->whereHas('primaryEmailAddress', function ($query) use($thisContactEmail) {
+                $query->where('email', $thisContactEmail->email);
+            });
+        if($contactsCheck->count() > 0) {
+            $errorMessage = [];
+            foreach ($contactsCheck->get() as $contactCheck){
+                $errorMessage[] = 'Er bestaat al een contact ' . $contactCheck->full_name . ' (' . $contactCheck->number . ') met zelfde primair e-mailadres ' . $contactCheck->primaryEmailAddress->email . ' en een Hoomdossier';
+            }
+            throw ValidationException::withMessages(array("econobis" => $errorMessage));
+        }
 
         // Send to hoomdossier url
         $hoomResponse = $this->sendToHoomdossier();
@@ -243,10 +262,20 @@ class HoomdossierHelper
             }
         }
     }
-
     private function sendMail()
     {
-        $mail = Mail::to($this->contact->primaryEmailAddress);
+        $emailTo = $this->contact->primaryEmailAddress;
+
+        if ($this->cooperation->hoom_mailbox_id) {
+            $mailbox = Mailbox::find($this->cooperation->hoom_mailbox_id);
+            if (!$mailbox) {
+                $mailbox = Mailbox::getDefault();
+            }
+        } else {
+            $mailbox = Mailbox::getDefault();
+        }
+
+        $mail = MailHelper::fromMailbox($mailbox)->to($this->contact->primaryEmailAddress?->email);
 
         $emailTemplate = EmailTemplate::find($this->cooperation->hoom_email_template_id);
 
@@ -255,18 +284,17 @@ class HoomdossierHelper
 
         $subject = str_replace('{cooperatie_naam}', $this->cooperation->name, $subject);
         $subject = str_replace('{contactpersoon}', $this->contact->full_name, $subject);
-        $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'contact', $this->contact);
+        $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'contact', $this->contact);
 
         $htmlBody = str_replace('{cooperatie_naam}', $this->cooperation->name, $htmlBody);
         $htmlBody = str_replace('{contactpersoon}', $this->contact->full_name, $htmlBody);
-        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'contact', $this->contact);
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'contact', $this->contact);
 
         $htmlBody = TemplateVariableHelper::stripRemainingVariableTags($htmlBody);
 
         $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
             . $subject . '</title></head>'
             . $htmlBody . '</html>';
-
 
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;

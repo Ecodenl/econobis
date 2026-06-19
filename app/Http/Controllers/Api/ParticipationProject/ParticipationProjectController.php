@@ -26,26 +26,31 @@ use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\ParticipantProject\ParticipantProjectStatus;
 use App\Eco\Project\Project;
+use App\Eco\Project\ProjectRevenue;
+use App\Eco\Project\ProjectRevenueCategory;
 use App\Eco\Project\ProjectValueCourse;
 use App\Helpers\Address\AddressHelper;
-use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\Delete\Models\DeleteParticipation;
+use App\Helpers\Delete\Models\DeleteRevenue;
 use App\Helpers\Excel\ParticipantExcelHelper;
 use App\Helpers\Excel\ParticipantExcelHelperHelper;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Project\RevenuesKwhHelper;
 use App\Helpers\RequestInput\RequestInput;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewParticipantProjectController;
 use App\Http\Controllers\Api\ParticipantMutation\ParticipantMutationController;
+use App\Http\Controllers\Api\Project\ProjectRevenueController;
 use App\Http\RequestQueries\ParticipantProject\Grid\RequestQuery;
 use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\ContactGroup\FullContactGroup;
-use App\Http\Resources\ParticipantProject\FullParticipantProject;
+use App\Http\Resources\ParticipantProject\FullParticipantProjectShow;
 use App\Http\Resources\ParticipantProject\GridParticipantProject;
 use App\Http\Resources\ParticipantProject\ParticipantProjectPeek;
+use App\Http\Resources\ParticipantProject\ResourceForTerminatingParticipantProject;
 use App\Http\Resources\ParticipantProject\Templates\ParticipantReportMail;
 use App\Jobs\ParticipationProject\CreateParticipantReport;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -55,8 +60,8 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ParticipationProjectController extends ApiController
 {
@@ -64,6 +69,7 @@ class ParticipationProjectController extends ApiController
     {
         $this->authorize('view', ParticipantProject::class);
 
+        // Check op geauthoriseerde administratie gaat via ParticipantProjectBuilder !
         $participantProject = $requestQuery->get();
         $participantProject->load([
             'address.currentAddressEnergySupplierElectricity.energySupplier',
@@ -207,9 +213,14 @@ class ParticipationProjectController extends ApiController
         return $participantExcelHelper->downloadExcelParticipants();
     }
 
+    public function belongsToMembershipGroup(ParticipantProject $participantProject)
+    {
+        return collect(['participantBelongsToMembershipGroup' => $this->getParticipantBelongsToMembershipGroup($participantProject)]);
+    }
+
     public function show(ParticipantProject $participantProject)
     {
-        set_time_limit(60);
+        set_time_limit(120);
 
         $this->authorize('view', ParticipantProject::class);
 
@@ -222,10 +233,12 @@ class ParticipationProjectController extends ApiController
             'contact',
             'contact.primaryAddress',
             'address.currentAddressEnergySupplierElectricity',
-            'project.projectType',
             'project.administration',
-            'project.projectValueCourses',
+            'projectRevenues.category',
+            'projectRevenues.createdBy',
+            'revenuesKwh.createdBy',
             'participantProjectPayoutType',
+            'revenuesKwh',
             'giftedByContact',
             'legalRepContact',
             'mutations.type',
@@ -242,8 +255,94 @@ class ParticipationProjectController extends ApiController
             'updatedBy',
         ]);
 
-        return FullParticipantProject::make($participantProject);
+        $participantProject->participantProjectRevenues = $this->getParticipantProjectRevenues($participantProject);
+        $participantProject->participantProjectRevenuesKwh = $this->getParticipantProjectRevenuesKwh($participantProject);
+        $participantProject->undoTerminatedAllowed = $this->getUndoTerminatedAllowed($participantProject);
+        $participantProject->participantBelongsToMembershipGroup = $this->getParticipantBelongsToMembershipGroup($participantProject);
+
+        return FullParticipantProjectShow::make($participantProject);
     }
+    public function getAdditionalInfoForTerminatingOrChangeEntryDate(ParticipantProject $participantProject)
+    {
+        set_time_limit(120);
+
+        $this->authorize('view', ParticipantProject::class);
+
+        $lastRevenueConceptDistribution = $this->getLastRevenueConceptDistribution($participantProject);
+        $lastRevenueBeginDate = $lastRevenueConceptDistribution ? $lastRevenueConceptDistribution->date_begin : null;
+        $lastRevenueEndDate = $lastRevenueConceptDistribution ? $lastRevenueConceptDistribution->date_end : null;
+
+        $participantProject->dateBeginRevenueTerminated = $this->getDateBeginRevenueTerminated($participantProject, $lastRevenueBeginDate);
+        $participantProject->dateEndRevenueTerminated = $this->getDateEndRevenueTerminated($participantProject->dateBeginRevenueTerminated, $lastRevenueEndDate);
+
+        $hasLastRevenueConceptDistribution = (bool)$lastRevenueConceptDistribution;
+
+        $participantProject->hasLastRevenueConceptDistribution = $hasLastRevenueConceptDistribution;
+        $participantProject->lastRevenueDistributionTypeId = $hasLastRevenueConceptDistribution ? $lastRevenueConceptDistribution->distribution_type_id : null;
+        $participantProject->lastRevenueDateReference = $hasLastRevenueConceptDistribution ? $lastRevenueConceptDistribution->date_reference : null;
+        $participantProject->lastRevenuePayPercentage = $hasLastRevenueConceptDistribution ? $lastRevenueConceptDistribution->pay_percentage : null;
+        $participantProject->lastRevenuePayAmount = $hasLastRevenueConceptDistribution ? $lastRevenueConceptDistribution->pay_amount : null;
+        $participantProject->lastRevenueKeyAmountFirstPercentage = $hasLastRevenueConceptDistribution ? $lastRevenueConceptDistribution->key_amount_first_percentage : null;
+        $participantProject->lastRevenuePayPercentageValidFromKeyAmount = $hasLastRevenueConceptDistribution ? $lastRevenueConceptDistribution->pay_Percentage_valid_from_key_amount : null;
+
+        return ResourceForTerminatingParticipantProject::make($participantProject);
+    }
+
+    private function getDateBeginRevenueTerminated(ParticipantProject $participantProject, $lastRevenueBeginDate)
+    {
+        // Indien participant in concept verdeling dan laatste begindatum daarvan.
+        //  anders date_interest_bearing
+        $dateBegin = null;
+
+        if( $lastRevenueBeginDate != null){
+            $dateBegin = Carbon::parse($lastRevenueBeginDate)->format('Y-m-d');
+        } else {
+            if($participantProject->project->date_interest_bearing){
+                $dateBegin = Carbon::parse($participantProject->project->date_interest_bearing)->format('Y-m-d');
+            } else {
+                // Alleen revenueEuro
+                $projectRevenueCategoryRevenueEuro = ProjectRevenueCategory::where('code_ref', 'revenueEuro' )->first()->id;
+                $confirmedProjectRevenuesEuro = $participantProject->project->projectRevenues()->where('category_id', $projectRevenueCategoryRevenueEuro)->where('confirmed', 1)->orderBy('date_end', 'desc');
+                if($confirmedProjectRevenuesEuro->exists()){
+                    $dateBegin = Carbon::parse($confirmedProjectRevenuesEuro->first()->date_end)->addDay()->format('Y-m-d');
+                }
+            }
+
+        }
+        return $dateBegin;
+    }
+    private function getDateEndRevenueTerminated($dateBegin, $lastRevenueEndDate)
+    {
+        // Indien participant in concept verdeling dan laatste einddatum daarvan.
+        //  anders Einde jaar van beginatum.
+        if( $lastRevenueEndDate != null){
+            $dateEnd = Carbon::parse($lastRevenueEndDate)->format('Y-m-d');
+        } else {
+            $dateEnd = $dateBegin
+                ? Carbon::parse($dateBegin)->endOfYear()->format('Y-m-d')
+                : null;
+        }
+        return $dateEnd;
+    }
+
+    private function getLastRevenueConceptDistribution(ParticipantProject $participantProject)
+    {
+        $revenueIdsForThisParticipant = $participantProject->projectRevenueDistributions()->get()->pluck('revenue_id')->toArray();
+        $distributionIdsForThisParticipant = $participantProject->projectRevenueDistributions()->get()->pluck('id')->toArray();
+
+        // Alleen revenueEuro
+        $projectRevenueCategoryRevenueEuro = ProjectRevenueCategory::where('code_ref', 'revenueEuro' )->first()->id;
+
+        $lastRevenueConceptDistribution = ProjectRevenue::whereIn('id', $revenueIdsForThisParticipant)->where('category_id', $projectRevenueCategoryRevenueEuro)->orderByDesc('date_end')->first();
+
+        $hasLastRevenueNotConceptDistribution = false;
+        if($lastRevenueConceptDistribution){
+            $hasLastRevenueNotConceptDistribution = $participantProject->projectRevenueDistributions()->where('revenue_id', $lastRevenueConceptDistribution->id)->whereIn('id', $distributionIdsForThisParticipant)->whereNotIn('status', ['concept'])->exists();
+        }
+
+        return $hasLastRevenueNotConceptDistribution ? null : $lastRevenueConceptDistribution;
+    }
+
 
     public function store(RequestInput $requestInput)
     {
@@ -278,7 +377,7 @@ class ParticipationProjectController extends ApiController
         $participantProject->save();
 
         // Loan / Obligation: Default type id is account.
-        if($project->projectType->code_ref == 'loan' ||$project->projectType->code_ref == 'obligation'){
+        if($project->projectType->code_ref == 'loan' || $project->projectType->code_ref == 'obligation'){
             $participantProject->type_id = ParticipantProjectPayoutType::where('code_ref', 'account')->value('id');
             $participantProject->save();
         }
@@ -287,12 +386,7 @@ class ParticipationProjectController extends ApiController
         $this->storeFirstMutation($requestInput, $participantProject, $project);
 
         // Indien participation project in concept waardestaat / waardestaten, dan die herberekenen.
-        if($participantProject->project->financialOverviewProjects
-            && $participantProject->project->financialOverviewProjects->where('definitive', false)->count() > 0)
-        {
-            $financialOverviewParticipantProjectController = new FinancialOverviewParticipantProjectController();
-            $financialOverviewParticipantProjectController->recalculateParticipantProjectForFinancialOverviews($participantProject);
-        }
+        $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
 
         $message = [];
 
@@ -361,12 +455,7 @@ class ParticipationProjectController extends ApiController
         $participantProject->project->calculator()->run()->save();
 
         // Indien participation project in concept waardestaat / waardestaten, dan die herberekenen.
-        if($participantProject->project->financialOverviewProjects
-            && $participantProject->project->financialOverviewProjects->where('definitive', false)->count() > 0)
-        {
-            $financialOverviewParticipantProjectController = new FinancialOverviewParticipantProjectController();
-            $financialOverviewParticipantProjectController->recalculateParticipantProjectForFinancialOverviews($participantProject);
-        }
+        $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
 
         return $this->show($participantProject);
     }
@@ -442,7 +531,9 @@ class ParticipationProjectController extends ApiController
 
             $deleteParticipation = new DeleteParticipation($participantProject);
             $result = $deleteParticipation->delete();
-
+// todo WM: check of hier niet ook recalculate financialoverviewcontact moeten doen?
+//            // Indien participation project in concept waardestaat / waardestaten, dan die herberekenen.
+//            $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
             if(count($result) > 0){
                 DB::rollBack();
                 abort(412, implode(";", array_unique($result)));
@@ -460,52 +551,105 @@ class ParticipationProjectController extends ApiController
     {
         $this->authorize('manage', ParticipantProject::class);
 
-        $data = $requestInput
-            ->date('dateTerminated')->validate('date')->alias('date_terminated')->next()
-            ->double('payoutPercentageTerminated')->validate('nullable')->onEmpty(null)->alias('payout_percentage_terminated')->next()
-            ->get();
+        DB::transaction(function () use ($participantProject, $requestInput) {
+            $data = $requestInput
+                ->date('dateTerminated')->validate('date')->alias('date_terminated')->next()
+                ->get();
 
-        // Set terminated date
-        $participantProject->date_terminated = $data['date_terminated'];
-        $payoutPercentageTerminated = $data['payout_percentage_terminated'];
+            // Set terminated date
+            $participantProject->date_terminated = Carbon::parse($data['date_terminated'])->format('Y-m-d');
+            $projectType = $participantProject->project->projectType;
 
-        $projectType = $participantProject->project->projectType;
-        DB::transaction(function () use ($participantProject, $payoutPercentageTerminated, $projectType) {
             $participantProject->save();
 
-            // If Payout percentage is filled then make a result mutation (not when capital or postalcode_link_capital)
-            if ($payoutPercentageTerminated && $projectType->code_ref !== 'capital' && $projectType->code_ref !== 'postalcode_link_capital') {
-                // Calculate result from last revenue distribution till date terminate
-                $this->createMutationResult($participantProject, $payoutPercentageTerminated, $projectType);
+            // Make mutation withdrawal of total participations/loan
+            $this->createMutationWithDrawal($participantProject, $projectType);
+// todo WM: check of deze nu hier goed staat, stond eerst voor createMutaionWithDrawal
+            // Indien participation project in concept waardestaat / waardestaten, dan die herberekenen.
+            $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
+
+            if($projectType->code_ref === 'postalcode_link_capital') {
+                $revenuesKwhHelper = new RevenuesKwhHelper();
+                $revenuesKwhPart = $revenuesKwhHelper->checkAndSplitRevenuePartsKwh($participantProject, Carbon::parse($participantProject->date_terminated)->addDay(), null);
+
+                if($revenuesKwhPart){
+                    $revenuePartsKwhRedirect = null;
+                    if($revenuesKwhPart['success'] && $revenuesKwhPart['newRevenue'] ){
+                        $revenuePartsKwhRedirect = '/project/opbrengst-kwh/nieuw/' . $revenuesKwhPart['projectId']  . '/1';
+                    }
+                    if($revenuesKwhPart['success'] && !$revenuesKwhPart['newRevenue'] ){
+                        $revenuePartsKwhRedirect = '/project/opbrengst-kwh/' . $revenuesKwhPart['revenuesId']  . '/deelperiode/' . $revenuesKwhPart['revenuePartsId'];
+                    }
+                    $responseParticipations = ['hasParticipations' => true, 'revenuePartsKwhRedirect' => $revenuePartsKwhRedirect,  'projectsArray' => $revenuesKwhPart];
+                }else{
+                    $responseParticipations = ['hasParticipations' => false, null, 'projectsArray' => []];
+                }
+
+                return $responseParticipations;
+            }
+
+        });
+
+        return null;
+    }
+    public function terminateLoanOrObligation(ParticipantProject $participantProject, RequestInput $requestInput)
+    {
+        $this->authorize('manage', ParticipantProject::class);
+
+        DB::transaction(function () use ($participantProject, $requestInput) {
+
+            $data = $requestInput
+                ->date('dateTerminated')->validate('date')->alias('date_terminated')->next()
+                ->get();
+
+            // Set terminated date
+            $participantProject->date_terminated = Carbon::parse( $data['date_terminated'] )->format('Y-m-d');
+            $participantProject->save();
+
+            $projectType = $participantProject->project->projectType;
+            if ($projectType->code_ref == 'loan') {
+                $amountOrParticipationsDefinitive = $participantProject->amount_definitive;
+            } else {
+                $amountOrParticipationsDefinitive = $participantProject->participations_definitive;
+            }
+//            if($participantProject->contact->id === 161){
+//                Log::info('test terminateLoanOrObligation');
+//                Log::info('amountOrParticipationsDefinitive: ' . $amountOrParticipationsDefinitive);
+//            }
+            $lastRevenueConceptDistribution = $this->getLastRevenueConceptDistribution($participantProject);
+
+            if($amountOrParticipationsDefinitive != 0 ||
+                !$lastRevenueConceptDistribution ||
+                ($lastRevenueConceptDistribution->date_begin && $lastRevenueConceptDistribution->date_end
+                    && $participantProject->date_terminated >= Carbon::parse($lastRevenueConceptDistribution->date_begin)->format('Y-m-d')
+                    && $participantProject->date_terminated <= Carbon::parse($lastRevenueConceptDistribution->date_end)->format('Y-m-d')) ) {
+                // Make new projectRevenue
+                $projectRevenueController = new ProjectRevenueController();
+                $projectRevenueController->storeForParticipant($requestInput, $participantProject);
             }
             // Make mutation withdrawal of total participations/loan
             $this->createMutationWithDrawal($participantProject, $projectType);
 
-            if($payoutPercentageTerminated) {
-                // Remove distributions on active revenue(s)
-                $participantProject->projectRevenueDistributions()->where('status', 'concept')->forceDelete();
-            }
+            // Remove distributions on active concept Euro and Redemption revenue(s)
+            $projectRevenueCategoryRevenueEuro = ProjectRevenueCategory::where('code_ref', 'revenueEuro' )->first()->id;
+            $projectRevenueCategoryRedemptionEuro = ProjectRevenueCategory::where('code_ref', 'redemptionEuro' )->first()->id;
+            $dateTerminated = $participantProject->date_terminated;
+
+            $participantProject->projectRevenueDistributions()
+                ->whereIn('status', ['concept'])
+                ->whereHas('revenue', function ($query) use($projectRevenueCategoryRevenueEuro, $projectRevenueCategoryRedemptionEuro, $dateTerminated) {
+                    $query->whereIn('category_id', [$projectRevenueCategoryRevenueEuro, $projectRevenueCategoryRedemptionEuro])
+                        ->where('date_begin', '<=', $dateTerminated)
+                        ->where('date_end', '>=', $dateTerminated)
+                    ;
+                })
+                ->forceDelete();
+
+            // todo WM: check of deze nu hier goed staat, stond eerst voor createMutaionWithDrawal
+            // Indien participation project in concept waardestaat / waardestaten, dan die herberekenen.
+            $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
+
         });
-
-        if($projectType->code_ref === 'postalcode_link_capital') {
-            $revenuesKwhHelper = new RevenuesKwhHelper();
-            $revenuesKwhPart = $revenuesKwhHelper->checkAndSplitRevenuePartsKwh($participantProject, Carbon::parse($participantProject->date_terminated)->addDay(), null);
-
-            if($revenuesKwhPart){
-                $revenuePartsKwhRedirect = null;
-                if($revenuesKwhPart['success'] && $revenuesKwhPart['newRevenue'] ){
-                    $revenuePartsKwhRedirect = 'project/opbrengst-kwh/nieuw/' . $revenuesKwhPart['projectId']  . '/1';
-                }
-                if($revenuesKwhPart['success'] && !$revenuesKwhPart['newRevenue'] ){
-                    $revenuePartsKwhRedirect = '/project/opbrengst-kwh/' . $revenuesKwhPart['revenuesId']  . '/deelperiode/' . $revenuesKwhPart['revenuePartsId'];
-                }
-                $responseParticipations = ['hasParticipations' => true, 'revenuePartsKwhRedirect' => $revenuePartsKwhRedirect,  'projectsArray' => $revenuesKwhPart];
-            }else{
-                $responseParticipations = ['hasParticipations' => false, null, 'projectsArray' => []];
-            }
-
-            return $responseParticipations;
-        }
 
     }
 
@@ -513,15 +657,99 @@ class ParticipationProjectController extends ApiController
     {
         $this->authorize('manage', ParticipantProject::class);
 
-        $data = $requestInput
-            ->date('dateTerminated')->validate('nullable|date')->alias('date_terminated')->whenMissing(null)->next()
-            ->get();
+        DB::transaction(function () use ($participantProject, $requestInput) {
+            $originalDateTerminated = Carbon::parse($participantProject->date_terminated)->format('Y-m-d');
 
-        // Set terminated date
-        $participantProject->date_terminated = $data['date_terminated'];
+            $data = $requestInput
+                ->date('dateTerminated')->validate('nullable|date')->alias('date_terminated')->whenMissing(null)->next()
+                ->get();
 
-        DB::transaction(function () use ($participantProject) {
+            // Set terminated date (WM: dit lijkt mij een beetje omslachtig, als het goed is word hier nl. date_terminated altijd op null gezet!
+            $participantProject->date_terminated = $data['date_terminated'];
+
             $participantProject->save();
+
+            $projectTypeCodeRef = $participantProject->project->projectType->code_ref;
+            // Indien projectType loan of oblligation, dan kan er bij beeindiging een deelname verdeling zijn gemaakt,
+            // Bij capital of postalcode_link_capital wordt er bij beeindiging nog geen deelname verdeling zijn gemaakt,
+            if($projectTypeCodeRef == 'loan' || $projectTypeCodeRef == 'obligation'){
+
+                // Indien participant in concept deelnemer verdeling waar oorspronkelijk beeindigsdatum in periode lag,
+                //  dan die verwijderen.
+                $projectRevenueParticipant =  $participantProject->projectRevenues()
+                    ->where('date_begin', '<=', $originalDateTerminated)
+                    ->where('date_end', '>=', $originalDateTerminated)
+                    ->where('project_revenues.participation_id', $participantProject->id )
+                    ->whereIn('project_revenue_distribution.status', ['concept', 'confirmed'] )
+                    ->orderByDesc('date_end')
+                    ->first();
+
+                if($projectRevenueParticipant){
+                    $deleteRevenue = new DeleteRevenue($projectRevenueParticipant);
+                    $deleteRevenue->delete();
+                }
+
+            }
+
+            // Laatste opname mutatieregel weer ongedaan maken. (niet meer verwijderen indien reeds opgenomen in definitieve waardestaat !)
+            $projectType = $participantProject->project->projectType;
+            $withDrawalTypes = ParticipantMutationType::whereIn('code_ref', ['withDrawal'])->where('project_type_id', $projectType->id)->get()->pluck('id')->toArray();
+            $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
+            $mutationDefinitiveLast =  ParticipantMutation::where('participation_id', $participantProject->id)
+                ->whereIn('type_id', $withDrawalTypes)
+                ->where('status_id', $mutationStatusFinal)
+                ->where('financial_overview_definitive', false)
+                ->orderByDesc('date_entry')
+                ->first();
+
+            if($mutationDefinitiveLast) {
+                $statusLogs = $mutationDefinitiveLast->statusLog;
+                foreach ($statusLogs as $statusLog)
+                {
+                    $statusLog->delete();
+                }
+                $mutationDefinitiveLast->delete();
+
+                // Recalculate dependent data in participantProject
+                $participantProject->calculator()->run()->save();
+
+                // Recalculate dependent data in project
+                $participantProject->project->calculator()->run()->save();
+            }
+            // Laatste opname mutatieregel weer ongedaan maken. (niet meer verwijderen indien reeds opgenomen in definitieve waardestaat !)
+            $projectType = $participantProject->project->projectType;
+            $withDrawalTypes = ParticipantMutationType::whereIn('code_ref', ['withDrawal'])->where('project_type_id', $projectType->id)->get()->pluck('id')->toArray();
+            $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
+            $mutationDefinitiveLast =  ParticipantMutation::where('participation_id', $participantProject->id)
+                ->whereIn('type_id', $withDrawalTypes)
+                ->where('status_id', $mutationStatusFinal)
+                ->where('financial_overview_definitive', false)
+                ->orderByDesc('date_entry')
+                ->first();
+
+            if($mutationDefinitiveLast) {
+                $statusLogs = $mutationDefinitiveLast->statusLog;
+                foreach ($statusLogs as $statusLog)
+                {
+                    $statusLog->delete();
+                }
+                $mutationDefinitiveLast->delete();
+
+                // Recalculate dependent data in participantProject
+                $participantProject->calculator()->run()->save();
+
+                // Recalculate dependent data in project
+                $participantProject->project->calculator()->run()->save();
+            }
+
+            // indien postalcode_link_capital dan evt nog bijwerken indicatorFieldEndParticipation
+            if($projectTypeCodeRef == 'postalcode_link_capital'){
+                $revenuesKwhHelper = new RevenuesKwhHelper();
+                $revenuesKwhHelper->updateIndicatorFieldEndParticipation($participantProject, $originalDateTerminated);
+            }
+
+            // Indien participation project in concept waardestaat / waardestaten, dan die herberekenen.
+            $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
         });
     }
 
@@ -592,8 +820,8 @@ class ParticipationProjectController extends ApiController
 
         $participantIds = $request->input('participantIds');
         $subject = $request->input('subject');
-        $portalName = PortalSettings::get('portalName');
-        $cooperativeName = PortalSettings::get('cooperativeName');
+        $portalName = PortalSettings::first()?->portal_name;
+        $cooperativeName = PortalSettings::first()?->cooperative_name;
         $subject = str_replace('{cooperatie_portal_naam}', $portalName, $subject);
         $subject = str_replace('{cooperatie_naam}', $cooperativeName, $subject);
 
@@ -610,7 +838,7 @@ class ParticipationProjectController extends ApiController
 
             //send email
             if ($primaryEmailAddress) {
-                $email = Mail::to($primaryEmailAddress->email);
+                $email = MailHelper::to($primaryEmailAddress->email);
                 if (!$subject) {
                     $subject = 'Participant rapportage Econobis';
                 }
@@ -729,8 +957,8 @@ class ParticipationProjectController extends ApiController
     {
         $this->authorize('manage', ParticipantProject::class);
 
-        $portalName = PortalSettings::get('portalName');
-        $cooperativeName = PortalSettings::get('cooperativeName');
+        $portalName = PortalSettings::first()?->portal_name;
+        $cooperativeName = PortalSettings::first()?->cooperative_name;
         $subject = str_replace('{cooperatie_portal_naam}', $portalName, $subject);
         $subject = str_replace('{cooperatie_naam}', $cooperativeName, $subject);
 
@@ -776,8 +1004,7 @@ class ParticipationProjectController extends ApiController
 
             $revenueHtml = TemplateVariableHelper::stripRemainingVariableTags($revenueHtml);
 
-            //if preview there is 1 participantId so we return
-            $pdf = PDF::loadView('documents.generic', [
+            $pdfContent = PDF::loadView('documents.generic', [
                 'html' => $revenueHtml,
             ])->output();
 
@@ -797,28 +1024,24 @@ class ParticipationProjectController extends ApiController
                 $document->template_id = $documentTemplate->id;
                 $document->show_on_portal = $showOnPortal;
 
-                $filename = str_replace(' ', '', $this->translateToValidCharacterSet($project->code)) . '_' . str_replace(' ', '', $this->translateToValidCharacterSet($contact->full_name));
-
-                //max length name 25
-                $filename = substr($filename, 0, 25);
-
-                $document->filename = $filename  . substr($document->getDocumentGroup()->name, 0, 1) . (Document::where('document_group', 'revenue')->count() + 1) . '_' .  $time->format('Ymd') . '.pdf';
-
-                $document->save();
-
-                $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents' . DIRECTORY_SEPARATOR . $document->filename));
-
-                file_put_contents($filePath, $pdf);
-
-                if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-                    $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-                    $alfrescoResponse = $alfrescoHelper->createFile($filePath, $document->filename, $document->getDocumentGroup()->name);
-                    $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-                }else{
-                    $document->alfresco_node_id = null;
-                }
+                $fileName = str_replace(' ', '', $this->translateToValidCharacterSet($project->code)) . '_' . str_replace(' ', '', $this->translateToValidCharacterSet($contact->full_name));
+                //max length name 25 tot nu toe
+                $fileName = substr($fileName, 0, 25);
+                $fileName = $fileName . substr($document->getDocumentGroup()->name, 0, 1) . (Document::where('document_group', 'revenue')->count() + 1) . '_' .  $time->format('Ymd') . '.pdf';
+                $document->filename = $fileName;
 
                 $document->save();
+
+                $uniqueName = Str::uuid() . '.pdf';
+                $filePathAndName = "{$document->document_group}/" .
+                    \Carbon\Carbon::parse($document->created_at)->year .
+                    "/{$uniqueName}";
+                Storage::disk('documents')->put($filePathAndName, $pdfContent);
+
+                $document->file_path_and_name = $filePathAndName;
+                $document->alfresco_node_id = null;
+                $document->save();
+
             } catch (\Exception $e) {
                 Log::error('Fout bij maken rapport document voor ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')' );
                 Log::error($e->getMessage());
@@ -839,7 +1062,7 @@ class ParticipationProjectController extends ApiController
                     $fromName = \Config::get('mail.from.name');
                 }
 
-                $email = Mail::fromMailbox($mailbox)
+                $email = MailHelper::fromMailbox($mailbox)
                     ->to($primaryEmailAddress->email);
                 if(!$subject){
                     $subject = 'Participant rapportage Econobis';
@@ -876,12 +1099,6 @@ class ParticipationProjectController extends ApiController
                 $messages[] = 'Fout bij verzenden email naar ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')';
             }
 
-            //delete file on server, still saved on alfresco.
-            if($document){
-                if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-                    Storage::disk('documents')->delete($document->filename);
-                }
-            }
         }
         if(count($messages) > 0)
         {
@@ -912,8 +1129,26 @@ class ParticipationProjectController extends ApiController
 
     public function peekParticipantByIds(Request $request)
     {
-        $participations = ParticipantProject::whereIn('id',
-            $request->input('ids'))->with('contact')->get();
+        $ids = $request->input('ids', []);
+
+        if (empty($ids)) {
+            return ParticipantProjectPeek::collection(collect());
+        }
+
+        $participations = ParticipantProject::query()
+            ->where(function ($q) use ($ids) {
+                foreach (array_chunk($ids, 900) as $chunk) {
+                    $q->orWhereIn('id', $chunk);
+                }
+            })
+            ->with(['contact'])
+            ->orderBy(
+                Contact::select('full_name')
+                    ->whereColumn('contacts.id', 'participation_project.contact_id'),
+                'asc'
+            )
+            ->orderBy('participation_project.id', 'asc')
+            ->get();
 
         return ParticipantProjectPeek::collection($participations);
     }
@@ -1169,7 +1404,7 @@ class ParticipationProjectController extends ApiController
 
             // we controleren in jaar van beeindigsdatum + 1 dag
             // (dit laatste omdat beeindiging op 31-12 nog wel mag, ook als hij in beeindigingsjaar dus in def. ws zat.
-            $dateEntryYear = \Carbon\Carbon::parse($participantProject['date_terminated'])->addDay(1)->year;
+            $dateEntryYear = \Carbon\Carbon::parse($participantProject['date_terminated'])->addDay()->year;
             $result = $this->checkMutationAllowed($participantMutation, $dateEntryYear);
 
             $participantMutation->save();
@@ -1185,12 +1420,12 @@ class ParticipationProjectController extends ApiController
 
     /**
      * @param ParticipantProject $participantProject
-     * @param $payoutPercentageTerminated
+     * @param $payPercentage
      * @param $projectType
      */
-    protected function createMutationResult(ParticipantProject $participantProject, $payoutPercentageTerminated, $projectType): void
+    protected function createMutationResult(ParticipantProject $participantProject, $payPercentage, $projectType): void
     {
-        $result = $this->calculatePayoutHowLongInPossession($participantProject, $payoutPercentageTerminated);
+        $result = $this->calculatePayoutHowLongInPossession($participantProject, $payPercentage);
 
         $mutationStatusFinalId = ParticipantMutationStatus::where('code_ref', 'final')->value('id');
         $mutationTypeResultDepositId = ParticipantMutationType::where('code_ref', 'result_deposit')->where('project_type_id', $projectType->id)->value('id');
@@ -1214,7 +1449,7 @@ class ParticipationProjectController extends ApiController
 
         // we controleren in jaar van beeindigsdatum + 1 dag
         // (dit laatste omdat beeindiging op 31-12 nog wel mag, ook als hij in beeindigingsjaar dus in def. ws zat.
-        $dateEntryYear = \Carbon\Carbon::parse($participantProject->date_terminated)->addDay(1)->year;
+        $dateEntryYear = \Carbon\Carbon::parse($participantProject->date_terminated)->addDay()->year;
         $result = $this->checkMutationAllowed($participantMutation, $dateEntryYear);
 
         $participantMutation->save();
@@ -1241,7 +1476,7 @@ class ParticipationProjectController extends ApiController
         return $mailboxToSendFrom;
     }
 
-    protected function calculatePayoutHowLongInPossession(ParticipantProject $participantProject, $payoutPercentageTerminated)
+    protected function calculatePayoutHowLongInPossession(ParticipantProject $participantProject, $payPercentage)
     {
         $currentBookWorth = $participantProject->project->currentBookWorth();
         $projectTypeCodeRef = $participantProject->project->projectType->code_ref;
@@ -1280,7 +1515,7 @@ class ParticipationProjectController extends ApiController
                 if($dateEntry < $dateBegin) $dateEntry = $dateBegin;
 
                 $dateEndForPeriod = clone $dateEnd;
-                $daysOfPeriod = $dateEndForPeriod->addDay()->diffInDays($dateEntry);
+                $daysOfPeriod = $dateEndForPeriod->addDay()->diffInDays($dateEntry, true);
 
                 if($projectTypeCodeRef === 'obligation' || $projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital') {
                     $mutationValue = $currentBookWorth * $mutation->quantity;
@@ -1291,7 +1526,7 @@ class ParticipationProjectController extends ApiController
                 }
 
                 if($dateEntry > $dateEnd) $mutationValue = 0;
-                $payout += ($mutationValue * $payoutPercentageTerminated) / 100 / $daysOfYear * $daysOfPeriod;
+                $payout += ($mutationValue * $payPercentage) / 100 / $daysOfYear * $daysOfPeriod;
             }
         }
         return number_format($payout, 2, '.', '');
@@ -1324,9 +1559,10 @@ class ParticipationProjectController extends ApiController
 
     protected function translateToValidCharacterSet($field){
 
-//        $field = strtr(utf8_decode($field), utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
-        $field = strtr(mb_convert_encoding($field, 'UTF-8', mb_list_encodings()), mb_convert_encoding('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ', 'UTF-8', mb_list_encodings()), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
-//        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
+        $fieldUtf8Decoded = mb_convert_encoding($field, 'ISO-8859-1', 'UTF-8');
+        $replaceFrom = mb_convert_encoding('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ', 'ISO-8859-1', 'UTF-8');
+        $replaceTo = mb_convert_encoding('AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy', 'ISO-8859-1', 'UTF-8');
+        $field = strtr( $fieldUtf8Decoded, $replaceFrom, $replaceTo );
         $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
 
         return $field;
@@ -1384,6 +1620,105 @@ class ParticipationProjectController extends ApiController
             }
         }
         return $hasPeriod29February ? 366 : 365;
+    }
+
+    /**
+     * @param ParticipantProject $participantProject
+     * @return void
+     */
+    function recalculateParticipantProjectForFinancialOverviews(ParticipantProject $participantProject): void
+    {
+        // Indien participation project in concept waardestaat / waardestaten, dan die herberekenen.
+        if ($participantProject->project->financialOverviewProjects
+            && $participantProject->project->financialOverviewProjects->where('definitive', false)->count() > 0) {
+            $financialOverviewParticipantProjectController = new FinancialOverviewParticipantProjectController();
+            $financialOverviewParticipantProjectController->recalculateParticipantProjectForFinancialOverviews($participantProject);
+        }
+    }
+
+    public function getParticipantProjectRevenues(ParticipantProject $participantProject){
+        $participantProjectRevenuesCollection = new Collection();
+
+        forEach($participantProject->projectRevenues as $projectRevenue){
+            $projectRevenueDistribution = $projectRevenue->distribution->where('participation_id', $participantProject->id)->first();
+            $projectRevenue->project_revenue_distribution_status = $projectRevenueDistribution ? $projectRevenueDistribution->status : null;
+            $participantProjectRevenuesCollection->push($projectRevenue);
+        }
+        return $participantProjectRevenuesCollection;
+    }
+    public function getParticipantProjectRevenuesKwh(ParticipantProject $participantProject){
+        $participantProjectRevenuesKwhCollection = new Collection();
+
+        forEach($participantProject->revenuesKwh as $revenueKwh){
+            $revenueKwhDistribution = $revenueKwh->distributionKwh->where('participation_id', $participantProject->id)->first();
+            $revenueKwh->revenue_kwh_distribution_status = $revenueKwhDistribution ? $revenueKwhDistribution->status : null;
+            $participantProjectRevenuesKwhCollection->push($revenueKwh);
+        }
+
+        return $participantProjectRevenuesKwhCollection;
+    }
+
+    public function getUndoTerminatedAllowed(ParticipantProject $participantProject)
+    {
+        $dateTerminated = Carbon::parse($participantProject->date_terminated)->format('Y-m-d');
+
+        if ( $dateTerminated != null) {
+            // Deelname beeindigd niet meer terug te draaien indien waardestaat al verstuurd voor jaar waarin beeindigd is of daarna (voor het geval ze om wat voor reden in beeindigingsjaar geen waardestaat gemaakt hebeen).
+            $yearTerminated = Carbon::parse($participantProject->date_terminated)->year;
+            if( $participantProject->financialOverviewParticipantProjects()->where('status_id', 'sent')
+                ->whereHas('financialOverviewProject', function ($query) use ($yearTerminated) {
+                    $query->whereHas('financialOverview', function ($query) use ($yearTerminated) {
+                        $query->where('year', '>=', $yearTerminated);
+                    });
+                })
+                ->exists() ) {
+                return false;
+            }
+
+            // Deelname beeindigd alleen terugdraaien indien beeindigingsdatum deelname nog niet in een verdeling zit die niet concept is.
+            $projectRevenueDistributionsNotConcept = $participantProject->projectRevenueDistributions()
+                ->whereNotIn('status', ['concept'])
+                ->whereHas('revenue', function ($query) use($dateTerminated) {
+                    $query->where('date_begin', '<=', $dateTerminated)
+                        ->where('date_end', '>=', $dateTerminated);
+                })
+                ->exists();
+            if($projectRevenueDistributionsNotConcept){
+                return false;
+            }
+
+            // Deelname beeindigd bij PCR dan ook alleen terugdraaien indien beeindigingsdatum deelname nog niet in een deel kwh verdeling zit die niet concept of new is is
+            if ( $participantProject->project->projectType->code_ref == 'postalcode_link_capital' ) {
+                $revenueDistributionKwh = $participantProject->revenueDistributionKwh()
+                    ->whereHas('revenuesKwh', function ($query) use ($dateTerminated) {
+                        $query->where('date_begin', '<=', $dateTerminated)
+                            ->where('date_end', '>=', $dateTerminated);
+                    })
+                    ->whereHas('distributionPartsKwh', function ($query) use ($dateTerminated) {
+                        $query->whereHas('partsKwh', function ($query) use ($dateTerminated) {
+                            $query->whereNotIn('status', ['concept', 'concept-to-update']);
+                        });
+                    })
+                    ->exists();
+                if($revenueDistributionKwh){
+                    return false;
+                }
+            }
+        }
+
+        return $dateTerminated != null;
+    }
+
+    public function getParticipantBelongsToMembershipGroup(ParticipantProject $participantProject) :bool
+    {
+        if(!$participantProject->project->question_about_membership_group_id || $participantProject->project->show_question_about_membership == false || $participantProject->project->use_transaction_costs_with_membership == true){
+            return false;
+        }
+
+//        return in_array( $participantProject->contact_id, $questionAboutMembershipGroupContactsIds );
+        $questionAboutMembershipGroupContactsIds = ContactGroup::find($participantProject->project->question_about_membership_group_id)->getAllContacts(true);
+        $contactInGroup =  in_array( $participantProject->contact_id, $questionAboutMembershipGroupContactsIds );
+        return $contactInGroup;
     }
 
 }

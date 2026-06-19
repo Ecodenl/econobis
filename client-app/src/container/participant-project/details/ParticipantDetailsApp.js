@@ -11,6 +11,13 @@ import {
     fetchParticipantProjectDetails,
     clearParticipantProject,
 } from '../../../actions/participants-project/ParticipantProjectDetailsActions';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const ParticipantDetailsAppWrapper = props => {
+    const params = useParams();
+    return <ParticipantDetailsApp {...props} params={params} />;
+};
 
 class ParticipantDetailsApp extends Component {
     constructor(props) {
@@ -56,4 +63,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(ParticipantDetailsApp);
+export default connect(null, mapDispatchToProps)(ParticipantDetailsAppWrapper);

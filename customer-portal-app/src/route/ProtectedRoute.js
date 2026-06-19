@@ -5,6 +5,7 @@ import Header from '../components/layout/Header';
 import PortalUserAPI from '../api/portal-user/PortalUserAPI';
 import { PortalUserConsumer } from '../context/PortalUserContext';
 import { ThemeSettingsContext } from '../context/ThemeSettingsContext';
+import route from 'react-router-dom/es/Route';
 
 const ProtectedRoute = ({ component: Component, setInitialUserData, isAuth, ...rest }) => {
     const location = useLocation();
@@ -20,15 +21,18 @@ const ProtectedRoute = ({ component: Component, setInitialUserData, isAuth, ...r
                         setInitialThemeSettings(payload.data.data.portalSettingsLayoutAssigned);
                     })
                     .catch(error => {
-                        if (error.response.status === 401) {
-                            if(error.response.data.code === 'two_factor_token_invalid') {
+                        if (error.response && error.response.status === 401) {
+                            if (error.response.data.code === 'two_factor_token_invalid') {
                                 history.push('/two-factor/confirm');
-                            }else{
+                            } else {
                                 history.push('/login');
                             }
                             return;
                         }
-                        alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuwd.');
+                        alert(
+                            'Er is iets misgegaan met laden. Herlaad de pagina opnieuw of probeer opnieuw in te loggen.'
+                        );
+                        return;
                     });
             })();
         }
@@ -37,6 +41,7 @@ const ProtectedRoute = ({ component: Component, setInitialUserData, isAuth, ...r
     useEffect(() => {
         if (isAuth) {
             if (
+                !location.pathname.includes('/vrije-velden/') &&
                 !location.pathname.includes('/project/') &&
                 !location.pathname.includes('/project-deelname/') &&
                 !location.pathname.includes('/inschrijven/') &&
@@ -51,8 +56,21 @@ const ProtectedRoute = ({ component: Component, setInitialUserData, isAuth, ...r
         <AuthConsumer>
             {({ isAuth }) => (
                 <div className="body-2" id="body-2">
-                    <Header />
-                    <Route render={props => (isAuth ? <Component {...props} /> : <Redirect to="/login" />)} {...rest} />
+                    {/*<Header />*/}
+                    {/*<Route render={props => (isAuth ? <Component {...props} /> : <Redirect to="/login" />)} {...rest} />*/}
+                    <Route
+                        {...rest}
+                        render={props =>
+                            isAuth ? (
+                                <>
+                                    <Header {...props} />
+                                    <Component {...props} />
+                                </>
+                            ) : (
+                                <Redirect to="/login" />
+                            )
+                        }
+                    />
                 </div>
             )}
         </AuthConsumer>

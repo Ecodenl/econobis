@@ -51,9 +51,15 @@ class controleScripts extends Command
         Artisan::call('revenue:checkWrongRevenueDistributionPartsKwhIndicatorFields');
         Artisan::call('revenue:checkMissingRevenueDistributionParts');
         Artisan::call('addressEnergySupplier:checkOverlappingEnergySuppliers');
+        Artisan::call('addressEnergySupplier:checkInvalidEnergySupplierPeriods');
         Artisan::call('participants:checkFirstStartingDate');
         Artisan::call('participants:checkTerminationDate');
 //        Artisan::call('project:checkWrongProjectDataForLastProjectRevenue');
+        Artisan::call('project:checkWrongProjectPCRSettings');
+        Artisan::call('email:checkSoftDeletedEmailAddressesInEmails');
+        Artisan::call('participation:checkWrongDateFirstDepositMutationsLoan');
+
+        Artisan::call('check:controleScriptsSoftDeletedContacts');
 
         $commandRun->end_at = Carbon::now();
         $commandRun->finished = true;

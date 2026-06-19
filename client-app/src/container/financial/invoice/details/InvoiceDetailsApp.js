@@ -7,6 +7,13 @@ import InvoiceDetailsForm from './InvoiceDetailsForm';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import InvoiceDetailsHarmonica from './InvoiceDetailsHarmonica';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const InvoiceDetailsAppWrapper = props => {
+    const params = useParams();
+    return <InvoiceDetailsApp {...props} params={params} />;
+};
 
 class InvoiceDetailsApp extends Component {
     constructor(props) {
@@ -55,4 +62,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(InvoiceDetailsApp);
+export default connect(mapStateToProps, mapDispatchToProps)(InvoiceDetailsAppWrapper);

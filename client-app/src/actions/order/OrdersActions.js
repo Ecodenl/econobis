@@ -1,11 +1,11 @@
-export const fetchOrders = (filters, sorts, pagination, administrationId, showOrdersWithoutOrderlines = true) => {
+export const fetchOrders = (filters, sorts, pagination, administrationId, showOnlyOrdersWithOrderProducts = false) => {
     return {
         type: 'FETCH_ORDERS',
         filters,
         sorts,
         pagination,
         administrationId,
-        showOrdersWithoutOrderlines,
+        showOnlyOrdersWithOrderProducts,
     };
 };
 

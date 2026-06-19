@@ -1,17 +1,18 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_WEBFORM = `${URL_API}/api/webform`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchWebforms: () => {
+        const URL_WEBFORM = `${getApiUrl()}/api/webform`;
         const requestUrl = `${URL_WEBFORM}/grid`;
 
-        return axiosInstance.get(requestUrl);
+        return getAxiosInstance().get(requestUrl);
     },
 
     deleteWebform: id => {
+        const URL_WEBFORM = `${getApiUrl()}/api/webform`;
         const requestUrl = `${URL_WEBFORM}/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 };

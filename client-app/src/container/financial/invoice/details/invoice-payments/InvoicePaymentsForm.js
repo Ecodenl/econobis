@@ -9,6 +9,9 @@ import { connect } from 'react-redux';
 
 import Icon from 'react-icons-kit';
 import { plus } from 'react-icons-kit/fa/plus';
+import { refresh } from 'react-icons-kit/fa/refresh';
+import ButtonText from '../../../../../components/button/ButtonText';
+import InvoiceDetailsFormSyncOneInvoiceFromTwinfield from '../general/InvoiceDetailsFormSyncOneInvoiceFromTwinfield';
 
 class InvoicePaymentsForm extends Component {
     constructor(props) {
@@ -16,6 +19,8 @@ class InvoicePaymentsForm extends Component {
 
         this.state = {
             showNew: false,
+            syncingFromInvoices: false,
+            showModalOneInvoiceSyncToTwinfield: false,
         };
     }
 
@@ -25,11 +30,40 @@ class InvoicePaymentsForm extends Component {
         });
     };
 
+    showModalOneInvoiceSyncToTwinfield = () => {
+        this.setState({
+            ...this.state,
+            showModalOneInvoiceSyncToTwinfield: true,
+        });
+    };
+
+    closeModalOneInvoiceSyncToTwinfield = () => {
+        this.setState({
+            ...this.state,
+            showModalOneInvoiceSyncToTwinfield: false,
+        });
+    };
     render() {
         return (
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Betalingen</span>
+                    {this.props.invoiceInTwinfield &&
+                        this.props.invoicePaidInTwinfield &&
+                        this.props.permissions.manageFinancial && (
+                            <ButtonText
+                                buttonClassName={'pull-right'}
+                                loading={this.state.syncingFromInvoices}
+                                loadText={'Betalingen aan het ophalen'}
+                                buttonText={
+                                    <span title="Betalingen van Twinfield ophalen">
+                                        <Icon size={14} icon={refresh} />
+                                        &nbsp;Betalingen
+                                    </span>
+                                }
+                                onClickAction={this.showModalOneInvoiceSyncToTwinfield}
+                            />
+                        )}
                     {!this.props.invoiceInTwinfield &&
                         !this.props.invoicePaidInTwinfield &&
                         this.props.permissions.manageFinancial && (
@@ -46,6 +80,13 @@ class InvoicePaymentsForm extends Component {
                         {this.state.showNew && <InvoicePaymentsFormNew toggleShowNew={this.toggleShowNew} />}
                     </div>
                 </PanelBody>
+                {this.state.showModalOneInvoiceSyncToTwinfield && (
+                    <InvoiceDetailsFormSyncOneInvoiceFromTwinfield
+                        closeModal={this.closeModalOneInvoiceSyncToTwinfield}
+                        administrationId={this.props.administrationId}
+                        invoiceId={this.props.invoiceId}
+                    />
+                )}
             </Panel>
         );
     }
@@ -54,6 +95,8 @@ class InvoicePaymentsForm extends Component {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
+        invoiceId: state.invoiceDetails.id,
+        administrationId: state.invoiceDetails.administrationId,
         invoiceInTwinfield: state.invoiceDetails.invoiceInTwinfield,
         invoicePaidInTwinfield: state.invoiceDetails.invoicePaidInTwinfield,
     };

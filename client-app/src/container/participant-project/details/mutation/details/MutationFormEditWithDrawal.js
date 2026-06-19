@@ -10,10 +10,12 @@ import ParticipantDetailsMutationStatusLog from './status-log';
 import ParticipantDetailsMutationConclusion from './conclusion';
 import ButtonText from '../../../../../components/button/ButtonText';
 import * as PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import moment from 'moment';
+import ParticipantProjectDetailsAPI from '../../../../../api/participant-project/ParticipantProjectDetailsAPI';
 
 function MutationFormEditWithDrawal({
+    participationId,
     readOnly,
     participantMutationFromProps,
     participantMutationFromState,
@@ -29,12 +31,33 @@ function MutationFormEditWithDrawal({
     participantProjectDateRegister,
     projectDateInterestBearingKwh,
 }) {
-    let disableBeforeEntryDate = '';
-    if (projectTypeCodeRef === 'postalcode_link_capital') {
-        if (projectDateInterestBearingKwh) {
-            disableBeforeEntryDate = moment(projectDateInterestBearingKwh).format('YYYY-MM-DD');
-        }
+    useEffect(() => {
+        getAdditionalInfoForTerminatingOrChangeEntryDate(participationId);
+    }, [participationId]);
+
+    function getAdditionalInfoForTerminatingOrChangeEntryDate(participantProjectId) {
+        ParticipantProjectDetailsAPI.getAdditionalInfoForTerminatingOrChangeEntryDate(participantProjectId).then(
+            payload => {
+                setDisableBeforeEntryDate(
+                    payload.dateTerminatedAllowedFrom
+                        ? moment(payload.dateTerminatedAllowedFrom)
+                              .add(1, 'day')
+                              .format('YYYY-MM-DD')
+                        : ''
+                );
+            }
+        );
     }
+
+    const [disableBeforeEntryDate, setDisableBeforeEntryDate] = useState('');
+
+    // let disableBeforeEntryDate = '';
+    // if (projectTypeCodeRef === 'postalcode_link_capital') {
+    //     if (projectDateInterestBearingKwh) {
+    //         disableBeforeEntryDate = moment(projectDateInterestBearingKwh).format('YYYY-MM-DD');
+    //     }
+    // }
+
     return (
         <PanelBody>
             <div className="row">

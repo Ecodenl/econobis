@@ -228,7 +228,7 @@ function EmailFormEdit(props) {
                         <ViewText
                             label={'Verwijderd door'}
                             value={removedBy ? removedBy.fullName : 'Onbekend'}
-                            link={removedBy ? 'gebruiker/' + removedBy.id : ''}
+                            link={removedBy ? '/gebruiker/' + removedBy.id : ''}
                         />
                         <ViewText
                             label={'Datum verwijderd'}

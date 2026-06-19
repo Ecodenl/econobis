@@ -6,8 +6,9 @@ import { fetchUserDetails } from '../../../actions/user/UserDetailsActions';
 import UserDetailsFormGeneral from './general/UserDetailsFormGeneral';
 import UserDetailsFormLog from './log/UserDetailsFormLog';
 import UserDetailsFormRoles from './roles/UserDetailsFormRoles';
+import UserDetailsFormTeams from './teams/UserDetailsFormTeams';
 import UserDetailsFormTwoFactor from './two-factor/UserDetailsFormTwoFactor';
-import UserDetailsFormMailbox from "./mailbox/UserDetailsFormMailbox";
+import UserDetailsFormMailbox from './mailbox/UserDetailsFormMailbox';
 
 class UserDetailsForm extends Component {
     constructor(props) {
@@ -38,6 +39,7 @@ class UserDetailsForm extends Component {
                 {permissions.manageCooperationSettings ? <UserDetailsFormTwoFactor /> : null}
                 <UserDetailsFormMailbox />
                 <UserDetailsFormRoles />
+                <UserDetailsFormTeams />
                 <UserDetailsFormLog />
             </div>
         );

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { browserHistory, hashHistory } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
 import validator from 'validator';
 
 import EmailNewForm from './EmailNewForm';
@@ -14,6 +14,13 @@ import { connect } from 'react-redux';
 import DocumentDetailsAPI from '../../../api/document/DocumentDetailsAPI';
 import Modal from '../../../components/modal/Modal';
 
+// Functionele wrapper voor de class component
+const EmailNewAppWrapper = props => {
+    const navigate = useNavigate();
+    const params = useParams();
+    return <EmailNewApp {...props} navigate={navigate} params={params} />;
+};
+
 class EmailNewApp extends Component {
     constructor(props) {
         super(props);
@@ -27,7 +34,7 @@ class EmailNewApp extends Component {
             mailboxAddresses: [],
             emailTemplates: [],
             email: {
-                from: '',
+                from: props.defaultUserMailbox ? props.defaultUserMailbox.id : '',
                 to: '',
                 cc: '',
                 bcc: '',
@@ -300,7 +307,7 @@ class EmailNewApp extends Component {
         if (this.state.email.htmlBody !== '' || this.state.email.subject !== '') {
             this.toggleShowModal();
         } else {
-            browserHistory.goBack();
+            this.props.navigate(-1);
         }
     };
 
@@ -338,21 +345,6 @@ class EmailNewApp extends Component {
 
         this.setState({ ...this.state, errors: errors });
 
-        function handleNewConcept2(data, mailboxId, emailId) {
-            EmailAPI.newConcept2(data, mailboxId, emailId)
-                .then(() => {
-                    hashHistory.push(`/emails/concept`);
-                })
-                .catch(function(error) {});
-        }
-        function handleNewEmail(data, mailboxId, emailId) {
-            EmailAPI.newEmail(data, mailboxId, emailId)
-                .then(() => {
-                    browserHistory.goBack();
-                })
-                .catch(function(error) {});
-        }
-
         // If no errors send form
         if (!hasErrors) {
             if (email.to.length > 0) {
@@ -385,7 +377,7 @@ class EmailNewApp extends Component {
             if (concept) {
                 EmailAPI.newConcept(email, email.from)
                     .then(emailId => {
-                        handleNewConcept2(data, email.from, emailId.data);
+                        this.handleNewConcept2(data, email.from, emailId.data);
                     })
                     .catch(function(error) {
                         console.log(error);
@@ -396,7 +388,7 @@ class EmailNewApp extends Component {
 
                 EmailAPI.newConcept(email, email.from)
                     .then(emailId => {
-                        handleNewEmail(data, email.from, emailId.data);
+                        this.handleNewEmail(data, email.from, emailId.data);
                     })
                     .catch(function(error) {
                         console.log(error);
@@ -405,6 +397,22 @@ class EmailNewApp extends Component {
             }
         }
     }
+
+    handleNewConcept2 = (data, mailboxId, emailId) => {
+        EmailAPI.newConcept2(data, mailboxId, emailId)
+            .then(() => {
+                this.props.navigate(`/emails/concept`);
+            })
+            .catch(error => {});
+    };
+
+    handleNewEmail = (data, mailboxId, emailId) => {
+        EmailAPI.newEmail(data, mailboxId, emailId)
+            .then(() => {
+                this.props.navigate(-1);
+            })
+            .catch(error => {});
+    };
 
     render() {
         return (
@@ -452,7 +460,7 @@ class EmailNewApp extends Component {
                     <Modal
                         buttonConfirmText="Verlaten"
                         closeModal={this.toggleShowModal}
-                        confirmAction={browserHistory.goBack}
+                        confirmAction={this.props.navigate(-1)}
                         title="Bevestigen"
                     >
                         <p>Weet u zeker dat u deze pagina wilt verlaten zonder deze e-mail op te slaan als concept?</p>
@@ -465,8 +473,9 @@ class EmailNewApp extends Component {
 
 const mapStateToProps = state => {
     return {
+        defaultUserMailbox: state.meDetails.defaultMailboxWithFallback,
         toIds: state.bulkMailTo.toIds,
     };
 };
 
-export default connect(mapStateToProps)(EmailNewApp);
+export default connect(mapStateToProps)(EmailNewAppWrapper);

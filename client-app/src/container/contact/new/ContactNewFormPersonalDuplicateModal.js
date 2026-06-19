@@ -12,11 +12,12 @@ class ContactNewFormPersonalDuplicateModal extends Component {
             <Modal
                 modalClassName={'modal-lg'}
                 buttonConfirmText="Aanmaken"
+                buttonCancelText={this.props.cancelButtonText}
                 closeModal={this.props.closeModal}
                 confirmAction={this.props.confirmAction}
                 title="Duplicaat gevonden"
             >
-                <span>{this.props.duplicateText}</span>
+                <div dangerouslySetInnerHTML={{ __html: this.props.duplicateText }} />
             </Modal>
         );
     }

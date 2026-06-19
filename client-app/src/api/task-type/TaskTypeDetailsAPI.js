@@ -1,4 +1,4 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
 
 const URL_TASK_TYPE = `task-type`;
 
@@ -25,7 +25,7 @@ export default {
     fetchTaskTypeDetails: id => {
         const requestUrl = `jory/task-type/${id}`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 jory: defaultFields,
             },
@@ -34,7 +34,7 @@ export default {
 
     updateTaskType: taskType => {
         const requestUrl = `${URL_TASK_TYPE}/${taskType.id}`;
-        return axiosInstance.post(requestUrl, taskType, {
+        return getAxiosInstance().post(requestUrl, taskType, {
             params: {
                 jory: defaultFields,
             },

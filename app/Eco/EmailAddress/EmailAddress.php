@@ -4,8 +4,8 @@ namespace App\Eco\EmailAddress;
 
 use App\Eco\AbstractType\HasTypeTrait;
 use App\Eco\Contact\Contact;
+use App\Eco\Contact\ContactEmail;
 use App\Eco\Email\Email;
-use App\Eco\EmailAddress\EmailAddressType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -30,6 +30,10 @@ class EmailAddress extends Model
     public function email()
     {
         return $this->belongsTo(Email::class);
+    }
+    public function contactEmails()
+    {
+        return $this->hasMany(ContactEmail::class, 'email_address_id');
     }
 
     public function getType()

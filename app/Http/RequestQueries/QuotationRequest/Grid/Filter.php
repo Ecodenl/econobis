@@ -25,6 +25,7 @@ class Filter extends RequestFilter
         'createdAtEnd',
         'datePlanned',
         'dateRecorded',
+        'opportunityActionId',
         'statusId',
         'dateReleased',
     ];
@@ -37,6 +38,7 @@ class Filter extends RequestFilter
         'createdAt' => 'quotation_requests.created_at',
         'datePlanned' => 'quotation_requests.date_planned',
         'dateRecorded' => 'quotation_requests.date_recorded',
+        'opportunityActionId' => 'quotation_requests.opportunity_action_id',
         'statusId' => 'quotation_requests.status_id',
         'dateReleased' => 'quotation_requests.date_released',
     ];
@@ -52,6 +54,7 @@ class Filter extends RequestFilter
 
     protected $defaultTypes = [
         '*' => 'ct',
+        'opportunityActionId' => 'eq',
         'statusId' => 'eq',
     ];
 

@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import InputText from '../../../../../components/form/InputText';
 import InputDate from '../../../../../components/form/InputDate';
 import moment from 'moment';
+import ParticipantProjectDetailsAPI from '../../../../../api/participant-project/ParticipantProjectDetailsAPI';
 
 const MutationNewWithDrawal = ({
     statusCodeRef,
+    participationId,
     quantityInterest,
     amountInterest,
     dateInterest,
@@ -16,7 +18,6 @@ const MutationNewWithDrawal = ({
     dateGranted,
     quantityFinal,
     amountFinal,
-    dateContractRetour,
     datePayment,
     paymentReference,
     dateEntry,
@@ -25,15 +26,8 @@ const MutationNewWithDrawal = ({
     handleInputChange,
     handleInputChangeDate,
     projectTypeCodeRef,
-    projectDateInterestBearingKwh,
+    disableBeforeEntryDate,
 }) => {
-    let disableBeforeEntryDate = '';
-    if (projectTypeCodeRef === 'postalcode_link_capital') {
-        if (projectDateInterestBearingKwh) {
-            disableBeforeEntryDate = moment(projectDateInterestBearingKwh).format('YYYY-MM-DD');
-        }
-    }
-
     return (
         <React.Fragment>
             {statusCodeRef === 'interest' ? (
@@ -51,6 +45,7 @@ const MutationNewWithDrawal = ({
                         />
                     ) : (
                         <InputText
+                            type={'number'}
                             label={'Aantal interesse'}
                             name={'quantityInterest'}
                             id={'quantityInterest'}
@@ -87,6 +82,7 @@ const MutationNewWithDrawal = ({
                         />
                     ) : (
                         <InputText
+                            type={'number'}
                             label={'Aantal inschrijving'}
                             name={'quantityOption'}
                             id={'quantityOption'}
@@ -126,6 +122,7 @@ const MutationNewWithDrawal = ({
                         />
                     ) : (
                         <InputText
+                            type={'number'}
                             label={'Aantal toegekend'}
                             name={'quantityGranted'}
                             id={'quantityGranted'}
@@ -195,6 +192,7 @@ const MutationNewWithDrawal = ({
                             disabledBefore={disableBeforeEntryDate}
                             required={'required'}
                             error={errors.dateEntry}
+                            errorMessage={errorMessage.dateEntry}
                         />
                         <InputDate
                             label={'Betaaldatum'}

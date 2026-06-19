@@ -2,10 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import ButtonIcon from '../../../../components/button/ButtonIcon';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import ButtonText from '../../../../components/button/ButtonText';
 
 const ParticipantsListToolbar = props => {
+    const navigate = useNavigate();
+
     const { meta = {} } = props.participantsProject;
 
     return (
@@ -16,7 +18,7 @@ const ParticipantsListToolbar = props => {
                     {props.permissions.manageParticipation && (
                         <ButtonIcon
                             iconName={'plus'}
-                            onClickAction={() => hashHistory.push(`/project/deelnemer/nieuw/${props.project.id}`)}
+                            onClickAction={() => navigate(`/project/deelnemer/nieuw/${props.project.id}`)}
                             disabled={props.project.projectStatus.codeRef !== 'active'}
                             title={
                                 props.project.projectStatus.codeRef !== 'active'

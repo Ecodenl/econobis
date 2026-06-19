@@ -1,12 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
 
 const MeasureDetailsFaqView = props => {
+    const navigate = useNavigate();
+
     const { id, question, answer } = props.faq;
 
     return (

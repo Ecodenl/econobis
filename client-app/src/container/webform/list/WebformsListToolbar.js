@@ -1,12 +1,14 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
 const WebformsListToolbar = props => {
+    const navigate = useNavigate();
+
     const newWebform = () => {
-        hashHistory.push(`/webformulier/nieuw`);
+        navigate(`/webformulier/nieuw`);
     };
 
     return (
@@ -14,9 +16,7 @@ const WebformsListToolbar = props => {
             <div className="col-md-4">
                 <div className="btn-group" role="group">
                     <ButtonIcon iconName={'refresh'} onClickAction={props.refreshWebformsData} />
-                    {props.permissions.manageWebform && (
-                        <ButtonIcon iconName={'plus'} onClickAction={newWebform} />
-                    )}
+                    {props.permissions.manageWebform && <ButtonIcon iconName={'plus'} onClickAction={newWebform} />}
                 </div>
             </div>
             <div className="col-md-4">

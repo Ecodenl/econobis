@@ -325,6 +325,15 @@ class RevenuesKwhFormEdit extends Component {
                             Als je deze datum invult, zal de opbrengst kwh definitief worden gemaakt. Je kunt deze
                             hierna niet meer aanpassen
                         </p>
+                        {project.dateEntry !== null ? (
+                            <p>
+                                <span style={{ color: 'red' }}>
+                                    Standaard ingangsdatum mutaties ({moment(project.dateEntry).format('DD-MM-YYYY')})
+                                    bij dit project zal komen te vervallen.
+                                </span>
+                                <br />
+                            </p>
+                        ) : null}
                     </Modal>
                 )}
             </form>

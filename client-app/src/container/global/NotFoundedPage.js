@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import Panel from '../../components/panel/Panel';
 import PanelBody from '../../components/panel/PanelBody';

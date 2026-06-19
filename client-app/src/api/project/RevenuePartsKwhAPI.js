@@ -1,4 +1,5 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 const URL_REVENUE_PARTS_KWH = `project/revenue-parts-kwh`;
 const URL_REVENUE_PARTS_KWH_FOR_REPORT = `project/revenue-parts-kwh-for-report`;
@@ -7,7 +8,7 @@ export default {
     fetchRevenuePartsKwh: id => {
         const requestUrl = `${URL_REVENUE_PARTS_KWH}/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -18,7 +19,7 @@ export default {
     fetchRevenuePartsKwhForReport: id => {
         const requestUrl = `${URL_REVENUE_PARTS_KWH_FOR_REPORT}/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -29,7 +30,7 @@ export default {
     updateRevenuePartsKwh: (id, data) => {
         const requestUrl = `${URL_REVENUE_PARTS_KWH}/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, data)
             .then(response => response.data.data)
             .catch(error => {
@@ -40,13 +41,13 @@ export default {
     storeRevenuePartsKwh: data => {
         const requestUrl = `${URL_REVENUE_PARTS_KWH}`;
 
-        return axiosInstance.post(requestUrl, data);
+        return getAxiosInstance().post(requestUrl, data);
     },
 
     deleteRevenuePartsKwh: id => {
         const requestUrl = `${URL_REVENUE_PARTS_KWH}/${id}/delete`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -55,9 +56,9 @@ export default {
     },
 
     createRevenuePartsKwhReport: (templateId, emailTemplateId, subject, distributionPartsKwhIds, showOnPortal) => {
-        const requestUrl = `${URL_API}/api/distribution-part-kwh/create-revenue-parts-kwh-report`;
+        const requestUrl = `${getApiUrl()}/api/distribution-part-kwh/create-revenue-parts-kwh-report`;
 
-        return axiosInstance.post(requestUrl, {
+        return getAxiosInstance().post(requestUrl, {
             documentTemplateId: templateId,
             emailTemplateId: emailTemplateId,
             distributionPartsKwhIds: distributionPartsKwhIds,
@@ -67,9 +68,9 @@ export default {
     },
 
     processRevenuePartsKwh: (partsId, datePayout, distributionPartsKwhIds) => {
-        const requestUrl = `${URL_API}/api/distribution-part-kwh/process-revenue-parts-kwh`;
+        const requestUrl = `${getApiUrl()}/api/distribution-part-kwh/process-revenue-parts-kwh`;
 
-        return axiosInstance.post(requestUrl, {
+        return getAxiosInstance().post(requestUrl, {
             partsId: partsId,
             distributionPartsKwhIds: distributionPartsKwhIds,
             datePayout: datePayout,
@@ -78,7 +79,7 @@ export default {
 
     createEnergySupplierExcel: (revenuePartId, documentName) => {
         const requestUrl = `${URL_REVENUE_PARTS_KWH}/create-energy-supplier-excel/${revenuePartId}`;
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, { documentName: documentName })
             .then(response => response.data.data)
             .catch(error => {
@@ -89,7 +90,7 @@ export default {
     previewPDF: (id, subject, documentTemplateId) => {
         const requestUrl = `distribution-part-kwh/${id}/preview-pdf`;
 
-        return axiosInstance.post(
+        return getAxiosInstance().post(
             requestUrl,
             { subject: subject, documentTemplateId: documentTemplateId },
             { responseType: 'blob' }
@@ -99,7 +100,7 @@ export default {
     previewEmail: (id, subject, emailTemplateId) => {
         const requestUrl = `distribution-part-kwh/${id}/preview-email`;
 
-        return axiosInstance.post(requestUrl, {
+        return getAxiosInstance().post(requestUrl, {
             subject: subject,
             emailTemplateId: emailTemplateId,
         });
@@ -108,12 +109,12 @@ export default {
     fetchRevenueDistributionPartsKwh: (id, page) => {
         const requestUrl = `${URL_REVENUE_PARTS_KWH}/${id}/distribution-parts-kwh`;
 
-        return axiosInstance.post(requestUrl, { page: page });
+        return getAxiosInstance().post(requestUrl, { page: page });
     },
 
     getCSV: id => {
         const requestUrl = `${URL_REVENUE_PARTS_KWH}/${id}/csv`;
 
-        return axiosInstance.get(requestUrl);
+        return getAxiosInstance().get(requestUrl);
     },
 };

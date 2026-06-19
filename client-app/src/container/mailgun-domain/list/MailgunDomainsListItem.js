@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
+
+// Functionele wrapper voor de class component
+const MailgunDomainsListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <MailgunDomainsListItem {...props} navigate={navigate} />;
+};
 
 class MailgunDomainsListItem extends Component {
     constructor(props) {
@@ -30,11 +36,11 @@ class MailgunDomainsListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/mailgun-domein/${id}`);
+        this.props.navigate(`/mailgun-domein/${id}`);
     }
 
     render() {
-        const { id, domain, isVerified } = this.props;
+        const { id, domain, isVerified, isSystemMailgunDomain } = this.props;
 
         return (
             <tr
@@ -45,6 +51,7 @@ class MailgunDomainsListItem extends Component {
             >
                 <td>{domain}</td>
                 <td>{isVerified ? 'Ja' : 'Nee'}</td>
+                <td>{isSystemMailgunDomain ? 'Ja' : 'Nee'}</td>
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>
@@ -65,4 +72,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(MailgunDomainsListItem);
+export default connect(mapStateToProps, null)(MailgunDomainsListItemWrapper);

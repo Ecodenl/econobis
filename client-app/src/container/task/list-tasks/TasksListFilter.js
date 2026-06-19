@@ -52,6 +52,11 @@ const TasksListFilter = props => {
 
     return (
         <tr className="thead-filter">
+            {props.showSelectTasks && (
+                <th>
+                    <input type="checkbox" onChange={props.toggleCheckedAll} />
+                </th>
+            )}
             <DataTableFilterDate
                 value={props.filters.createdAt.data && props.filters.createdAt.data}
                 onChangeAction={onCreatedAtChange}

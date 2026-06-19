@@ -28,6 +28,8 @@ class MeasureCategoryJoryResource extends JoryResource
         $this->field('organisation_id_wf_create_quotation_request')->filterable()->sortable();
         $this->field('uses_wf_email_quotation_request')->filterable()->sortable();
         $this->field('email_template_id_wf_create_quotation_request')->filterable()->sortable();
+        $this->field('calendar_background_color')->filterable()->sortable();
+        $this->field('calendar_text_color')->filterable()->sortable();
         $this->field('created_at')->filterable()->sortable();
         $this->field('updated_at')->filterable()->sortable();
 

@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import * as PropTypes from 'prop-types';
 import PortalSettingsLayoutDeleteItem from './PortalSettingsLayoutDeleteItem';
+
+// Functionele wrapper voor de class component
+const PortalSettingsLayoutDetailsToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <PortalSettingsLayoutDetailsToolbar {...props} navigate={navigate} />;
+};
 
 class PortalSettingsLayoutDetailsToolbar extends Component {
     constructor(props) {
@@ -18,12 +24,12 @@ class PortalSettingsLayoutDetailsToolbar extends Component {
     };
 
     render() {
-        let { description, id, isDefault, permissions } = this.props;
+        let { description, id, isDefault, permissions, navigate } = this.props;
         return (
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                         {!isDefault && permissions.managePortalSettings && (
                             <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                         )}
@@ -48,4 +54,4 @@ class PortalSettingsLayoutDetailsToolbar extends Component {
 
 PortalSettingsLayoutDetailsToolbar.propTypes = { description: PropTypes.any };
 
-export default PortalSettingsLayoutDetailsToolbar;
+export default PortalSettingsLayoutDetailsToolbarWrapper;

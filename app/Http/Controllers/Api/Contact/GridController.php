@@ -181,6 +181,9 @@ class GridController extends Controller
             case 'energySupplierType':
                 return EnergySupplierType::class;
                 break;
+            case 'addressDongleTypeReadOut':
+                return 'App\Eco\AddressDongle\AddressDongleTypeReadOut';
+                break;
         }
     }
 }

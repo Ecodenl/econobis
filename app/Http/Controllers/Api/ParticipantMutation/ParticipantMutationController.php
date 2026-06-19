@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\ParticipantMutation;
 
+use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\FinancialOverview\FinancialOverviewParticipantProject;
 use App\Eco\FinancialOverview\FinancialOverviewProject;
 use App\Eco\ParticipantMutation\ParticipantMutation;
@@ -15,10 +16,11 @@ use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewParticipantProje
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ParticipantMutationController extends ApiController
 {
-    public function store(RequestInput $requestInput)
+    public function store(RequestInput $requestInput, Request $request)
     {
         $this->authorize('manage', ParticipantMutation::class);
 
@@ -75,7 +77,15 @@ class ParticipantMutationController extends ApiController
 
         $participantMutation->fill($data);
 
-        $participantMutation->transaction_costs_amount = $this->calculationTransactionCosts($participantMutation);
+        $differentTransactionCostsAmount = $request->get('differentTransactionCostsAmount');
+        if($differentTransactionCostsAmount == ''){
+            $differentTransactionCostsAmount = null;
+        }
+        if($differentTransactionCostsAmount === null ){
+            $participantMutation->transaction_costs_amount = $this->calculationTransactionCosts($participantMutation);
+        } else {
+            $participantMutation->transaction_costs_amount = $differentTransactionCostsAmount;
+        }
 
         $result = $this->checkMutationAllowed($participantMutation);
 
@@ -134,13 +144,17 @@ class ParticipantMutationController extends ApiController
 
         $participantMutation->fill($data);
 
-        if($request->get('differentTransactionCostsAmount')){
-            $participantMutation->transaction_costs_amount = $request->get('differentTransactionCostsAmount');
-        } else {
+        $differentTransactionCostsAmount = $request->get('differentTransactionCostsAmount');
+        if($differentTransactionCostsAmount == ''){
+            $differentTransactionCostsAmount = null;
+        }
+        if($differentTransactionCostsAmount === null ){
             if (($participantMutation->participation->project->projectType->code_ref === 'loan' && $participantMutation->getOriginal('amount') != $participantMutation->amount)
                 || ($participantMutation->participation->project->projectType->code_ref !== 'loan' && $participantMutation->getOriginal('quantity') != $participantMutation->quantity)) {
                 $participantMutation->transaction_costs_amount = $this->calculationTransactionCosts($participantMutation);
             }
+        } else {
+            $participantMutation->transaction_costs_amount = $differentTransactionCostsAmount;
         }
 
         $result = $this->checkMutationAllowed($participantMutation);
@@ -215,8 +229,23 @@ class ParticipantMutationController extends ApiController
                 $financialOverviewParticipantProjects = FinancialOverviewParticipantProject::where('participant_project_id', $participantProject->id)->get();
                 foreach ($financialOverviewParticipantProjects as $financialOverviewParticipantProject){
                     if($financialOverviewParticipantProject->financialOverviewProject->financialOverview->definitive == false){
-                        $deleteFinancialOverviewParticipantProject = new DeleteFinancialOverviewParticipantProject($financialOverviewParticipantProject);
-                        $deleteFinancialOverviewParticipantProject->delete();
+                        try {
+                            DB::beginTransaction();
+
+                            $deleteFinancialOverviewParticipantProject = new DeleteFinancialOverviewParticipantProject($financialOverviewParticipantProject);
+                            $result = $deleteFinancialOverviewParticipantProject->delete();
+
+                            if(count($result) > 0){
+                                DB::rollBack();
+                                abort(412, implode(";", array_unique($result)));
+                            }
+
+                            DB::commit();
+                        } catch (\PDOException $e) {
+                            DB::rollBack();
+                            Log::error($e->getMessage());
+                            abort(501, 'Er is helaas een fout opgetreden.');
+                        }
                     }
                 }
 
@@ -272,11 +301,28 @@ class ParticipantMutationController extends ApiController
             {
                 // Verwijder eerst bestaande FinancialOverviewParticipantProject records behorende bij participantProject en nog niet definitieve waardestaten.
                 // Indien nodig worden ze via recalculateParticipantProjectForFinancialOverviews daarna eventueel weer nieuw aangemaakt.
-                $financialOverviewParticipantProjects = FinancialOverviewParticipantProject::where('participant_project_id', $participantMutation->participation->id)->get();
+                $financialOverviewParticipantProjects = FinancialOverviewParticipantProject::where('participant_project_id', $participantMutation->participation->id)
+                    ->where('status_id', '!=', 'sent')
+                    ->get();
                 foreach ($financialOverviewParticipantProjects as $financialOverviewParticipantProject){
                     if($financialOverviewParticipantProject->financialOverviewProject->financialOverview->definitive == false){
-                        $deleteFinancialOverviewParticipantProject = new DeleteFinancialOverviewParticipantProject($financialOverviewParticipantProject);
-                        $deleteFinancialOverviewParticipantProject->delete();
+                        try {
+                            DB::beginTransaction();
+
+                            $deleteFinancialOverviewParticipantProject = new DeleteFinancialOverviewParticipantProject($financialOverviewParticipantProject);
+                            $result = $deleteFinancialOverviewParticipantProject->delete();
+
+                            if(count($result) > 0){
+                                DB::rollBack();
+                                abort(412, implode(";", array_unique($result)));
+                            }
+
+                            DB::commit();
+                        } catch (\PDOException $e) {
+                            DB::rollBack();
+                            Log::error($e->getMessage());
+                            abort(501, 'Er is helaas een fout opgetreden.');
+                        }
                     }
                 }
 
@@ -336,7 +382,13 @@ class ParticipantMutationController extends ApiController
         // Indien Transactie kosten ook bij lidmaatschap (use_transaction_costs_with_membership) = false
         if (!$project->use_transaction_costs_with_membership) {
 
-            $belongsToMembershipGroup = in_array( $project->question_about_membership_group_id, $participation->contact->getAllGroups() );
+            //$belongsToMembershipGroup = in_array( $project->question_about_membership_group_id, $participation->contact->getAllGroups() );
+            if(!$project->question_about_membership_group_id) {
+                $belongsToMembershipGroup = false;
+            } else {
+                $questionAboutMembershipGroupContactsIds = ContactGroup::find($project->question_about_membership_group_id)->getAllContacts(true);
+                $belongsToMembershipGroup = in_array($participation->contact_id, $questionAboutMembershipGroupContactsIds);
+            }
 
             // Indien Vragen over lid worden aan of uit (show_question_about_membership) = true en deelnemer zit al in leden groep, dan Transactioncosts = 0
             if ($project->show_question_about_membership && $belongsToMembershipGroup) {

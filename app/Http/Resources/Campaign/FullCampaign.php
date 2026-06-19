@@ -35,6 +35,12 @@ class FullCampaign extends JsonResource
             'type' => GenericResource::make($this->whenLoaded('type')),
             'measureCategories' => GenericResource::collection($this->whenLoaded('measureCategories')),
             'opportunityActions' => GenericResource::collection($this->whenLoaded('opportunityActions')),
+            'inspectionPlannedEmailTemplate' => GenericResource::make($this->whenLoaded('inspectionPlannedEmailTemplate')),
+            'inspectionRecordedEmailTemplate' => GenericResource::make($this->whenLoaded('inspectionRecordedEmailTemplate')),
+            'inspectionReleasedEmailTemplate' => GenericResource::make($this->whenLoaded('inspectionReleasedEmailTemplate')),
+            'inspectionPlannedMailbox' => GenericResource::make($this->whenLoaded('inspectionPlannedMailbox')),
+            'defaultWorkflowMailbox' => GenericResource::make($this->whenLoaded('defaultWorkflowMailbox')),
+            'campaignWorkflows' => FullCampaignWorkflow::collection($this->whenLoaded('campaignWorkflows')),
             'responses' => FullCampaignResponse::collection($this->whenLoaded('responses')),
             'organisations' => FullOrganisation::collection($this->whenLoaded('organisations')),
             'coaches' => FullInspectionPerson::collection($this->whenLoaded('coaches')),
@@ -51,6 +57,8 @@ class FullCampaign extends JsonResource
             'documentCount' => $this->documents()->count(),
             'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
             'numberOfIntakes' => $this->numberOfIntakes,
+            'subsidyPossible' => $this->subsidy_possible,
+            'wozLimit' => $this->woz_limit,
         ];
     }
 }

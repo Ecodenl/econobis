@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
@@ -7,74 +7,208 @@ import QuotationRequestsListHead from './QuotationRequestsListHead';
 import QuotationRequestsListFilter from './QuotationRequestsListFilter';
 import QuotationRequestsListItem from './QuotationRequestsListItem';
 import DataTablePagination from '../../../components/dataTable/DataTablePagination';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
+import ButtonIcon from '../../../components/button/ButtonIcon';
+import QuotationRequestsBulkDelete from '../../quotation-request/list/QuotationRequestsBulkDelete';
+import QuotationRequestsBulkUpdate from '../../quotation-request/list/QuotationRequestsBulkUpdate';
 
-class QuotationRequestsList extends Component {
-    constructor(props) {
-        super(props);
-    }
+function QuotationRequestsList({
+    quotationRequests,
+    multiSelectEnabled,
+    setOpportunityActionTypeAll,
+    quotationRequestsPagination,
+    onSubmitFilter,
+    refreshQuotationRequestsData,
+    handlePageClick,
+    opportunityActionType,
+    opportunityActionId,
+    opportunityActionName,
+}) {
+    const [checkedAll, setCheckedAll] = useState(false);
+    const [quotationRequestIds, setQuotationRequestIds] = useState([]);
+    const [showBulkDelete, setShowBulkDelete] = useState(false);
+    const [showBulkUpdate, setShowBulkUpdate] = useState(false);
+    const permissions = useSelector(state => state.meDetails.permissions);
+    const isLoading = useSelector(state => state.loadingData.isLoading);
+    const hasError = useSelector(state => state.loadingData.hasError);
+
+    useEffect(() => {
+        if (!multiSelectEnabled) {
+            setCheckedAll(false);
+            setQuotationRequestIds([]);
+        }
+    }, [multiSelectEnabled]);
 
     // On key Enter filter form will submit
-    handleKeyUp = e => {
+    function handleKeyUp(e) {
         if (e.keyCode === 13) {
-            this.props.onSubmitFilter();
+            onSubmitFilter();
         }
-    };
+    }
 
-    render() {
-        const { data = [], meta = {} } = this.props.quotationRequests;
+    function toggleCheckedAll() {
+        const isChecked = event.target.checked;
+        let quotationRequestIds = [];
 
-        let loadingText = '';
-        let loading = true;
+        if (isChecked) {
+            quotationRequestIds = meta.quotationRequestIdsTotal;
+        }
+        setQuotationRequestIds(quotationRequestIds);
+        setCheckedAll(isChecked);
+    }
 
-        if (this.props.hasError) {
-            loadingText = 'Fout bij het ophalen van kansacties.';
-        } else if (this.props.isLoading) {
-            loadingText = 'Gegevens aan het laden.';
-        } else if (data.length === 0) {
-            loadingText = 'Geen kansacties gevonden!';
+    function toggleQuotationRequestCheck(event) {
+        const isChecked = event.target.checked;
+        const quotationRequestId = Number(event.target.name);
+
+        if (isChecked) {
+            setQuotationRequestIds([...quotationRequestIds, quotationRequestId]);
+            checkAllTasksAreChecked();
         } else {
-            loading = false;
+            setQuotationRequestIds([...quotationRequestIds.filter(item => item !== quotationRequestId)]);
+            setCheckedAll(false);
         }
+    }
 
-        return (
-            <form onKeyUp={this.handleKeyUp}>
+    function checkAllTasksAreChecked() {
+        setCheckedAll(quotationRequestIds.length === meta.quotationRequestIdsTotal.length);
+    }
+
+    function showBulkDeleteModal(id, name) {
+        setShowBulkDelete(true);
+    }
+    function closeBulkDeleteModal(id, name) {
+        setShowBulkDelete(false);
+    }
+    function confirmActionsBulkDelete(id, name) {
+        setShowBulkDelete(false);
+        setOpportunityActionTypeAll();
+        refreshQuotationRequestsData();
+    }
+    function showBulkUpdateModal(id, name) {
+        setShowBulkUpdate(true);
+    }
+    function closeBulkUpdateModal(id, name) {
+        setShowBulkUpdate(false);
+    }
+    function confirmActionsBulkUpdate(id, name) {
+        setShowBulkUpdate(false);
+        setOpportunityActionTypeAll();
+        refreshQuotationRequestsData();
+    }
+
+    const { data = [], meta = {} } = quotationRequests;
+
+    let loadingText = '';
+    let loading = true;
+
+    if (hasError) {
+        loadingText = 'Fout bij het ophalen van kansacties.';
+    } else if (isLoading) {
+        loadingText = 'Gegevens aan het laden.';
+    } else if (data.length === 0) {
+        loadingText = 'Geen kansacties gevonden!';
+    } else {
+        loading = false;
+    }
+
+    let numberSelectedNumberTotal = 0;
+
+    if (quotationRequestIds) {
+        if (meta && meta.quotationRequestIdsTotal) {
+            numberSelectedNumberTotal = quotationRequestIds.length + '/' + meta.quotationRequestIdsTotal.length;
+        } else {
+            numberSelectedNumberTotal = quotationRequestIds.length;
+        }
+    }
+
+    return (
+        <div>
+            <form onKeyUp={handleKeyUp}>
+                {multiSelectEnabled && permissions.manageQuotationRequest && (
+                    <>
+                        <div className="col-md-12">
+                            <div className="alert alert-success">
+                                Geselecteerde kansacties {opportunityActionName} : {numberSelectedNumberTotal}
+                            </div>
+                        </div>
+
+                        <div className="col-md-12 margin-10-bottom">
+                            <div className="btn-group" role="group">
+                                {opportunityActionType !== 'visit' ? (
+                                    <ButtonIcon
+                                        iconName={'pencil'}
+                                        onClickAction={showBulkUpdateModal}
+                                        title="Bijwerken geselecteerde kansacties"
+                                    />
+                                ) : null}
+                                <ButtonIcon
+                                    iconName={'trash'}
+                                    onClickAction={showBulkDeleteModal}
+                                    title="Verwijderen geselecteerde kansacties"
+                                />
+                            </div>
+                        </div>
+                    </>
+                )}
+
                 <DataTable>
                     <DataTableHead>
                         <QuotationRequestsListHead
-                            refreshQuotationRequestsData={() => this.props.refreshQuotationRequestsData()}
+                            refreshQuotationRequestsData={refreshQuotationRequestsData}
+                            multiSelectEnabled={multiSelectEnabled}
                         />
-                        <QuotationRequestsListFilter onSubmitFilter={this.props.onSubmitFilter} />
+                        <QuotationRequestsListFilter
+                            onSubmitFilter={onSubmitFilter}
+                            multiSelectEnabled={multiSelectEnabled}
+                            toggleCheckedAll={toggleCheckedAll}
+                        />
                     </DataTableHead>
                     <DataTableBody>
                         {loading ? (
                             <tr>
-                                <td colSpan={11}>{loadingText}</td>
+                                <td colSpan={multiSelectEnabled ? 13 : 12}>{loadingText}</td>
                             </tr>
                         ) : (
                             data.map(quotationRequest => {
-                                return <QuotationRequestsListItem key={quotationRequest.id} {...quotationRequest} />;
+                                return (
+                                    <QuotationRequestsListItem
+                                        key={quotationRequest.id}
+                                        {...quotationRequest}
+                                        showSelectQuotationRequests={multiSelectEnabled}
+                                        toggleQuotationRequestCheck={toggleQuotationRequestCheck}
+                                        quotationRequestIds={quotationRequestIds}
+                                    />
+                                );
                             })
                         )}
                     </DataTableBody>
                 </DataTable>
                 <div className="col-md-4 col-md-offset-4">
                     <DataTablePagination
-                        onPageChangeAction={this.props.handlePageClick}
+                        onPageChangeAction={handlePageClick}
                         totalRecords={meta.total}
-                        initialPage={this.props.quotationRequestsPagination.page}
+                        initialPage={quotationRequestsPagination.page}
                     />
                 </div>
             </form>
-        );
-    }
+            {showBulkDelete && (
+                <QuotationRequestsBulkDelete
+                    confirmActionsBulkDelete={confirmActionsBulkDelete}
+                    closeBulkDeleteModal={closeBulkDeleteModal}
+                    quotationRequestIds={quotationRequestIds}
+                />
+            )}
+            {showBulkUpdate && (
+                <QuotationRequestsBulkUpdate
+                    confirmActionsBulkUpdate={confirmActionsBulkUpdate}
+                    closeBulkUpdateModal={closeBulkUpdateModal}
+                    quotationRequestIds={quotationRequestIds}
+                    opportunityActionId={opportunityActionId}
+                />
+            )}
+        </div>
+    );
 }
 
-const mapStateToProps = state => {
-    return {
-        isLoading: state.loadingData.isLoading,
-        hasError: state.loadingData.hasError,
-    };
-};
-
-export default connect(mapStateToProps)(QuotationRequestsList);
+export default QuotationRequestsList;

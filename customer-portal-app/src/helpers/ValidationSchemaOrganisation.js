@@ -162,10 +162,12 @@ export default {
                 .trim()
                 .test('postal-code-nl-check', 'Formaat Nederlandse postcode is 1234 AB', function(value) {
                     if (
-                        this.parent.countryId &&
-                        this.parent.countryId !== 'NL' &&
-                        this.parent.countryId !== null &&
-                        this.parent.countryId != ''
+                        (this.parent.countryId &&
+                            this.parent.countryId !== 'NL' &&
+                            this.parent.countryId !== null &&
+                            this.parent.countryId != '') ||
+                        !value ||
+                        value.trim() == ''
                     ) {
                         return true;
                     } else {

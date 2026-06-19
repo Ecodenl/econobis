@@ -22,7 +22,7 @@ import { setPaymentTypeIdFilterOrders, setStatusIdFilterOrders } from '../../../
 import OrdersAPI from '../../../../api/order/OrdersAPI';
 import fileDownload from 'js-file-download';
 import moment from 'moment/moment';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import ButtonText from '../../../../components/button/ButtonText';
 
 const initialState = {
@@ -35,6 +35,12 @@ const initialState = {
         id: '',
         subject: '',
     },
+};
+
+// Functionele wrapper voor de class component
+const OrdersListWrapper = props => {
+    const navigate = useNavigate();
+    return <OrdersList {...props} navigate={navigate} />;
 };
 
 class OrdersList extends Component {
@@ -104,7 +110,7 @@ class OrdersList extends Component {
         }
     };
 
-    fetchOrdersData = (showOrdersWithoutOrderlines = true) => {
+    fetchOrdersData = (showOnlyOrdersWithOrderProducts = false) => {
         this.props.clearOrders();
 
         setTimeout(() => {
@@ -114,7 +120,7 @@ class OrdersList extends Component {
             const pagination = { limit: 50, offset: this.props.ordersPagination.offset };
             const administrationId = this.props.administrationId;
 
-            this.props.fetchOrders(filters, sorts, pagination, administrationId, showOrdersWithoutOrderlines);
+            this.props.fetchOrders(filters, sorts, pagination, administrationId, showOnlyOrdersWithOrderProducts);
         }, 100);
 
         this.props.fetchTotalsInfoAdministration(this.props.administrationId);
@@ -126,10 +132,36 @@ class OrdersList extends Component {
             const filters = filterHelper(this.props.ordersFilters);
             const sorts = this.props.ordersSorts;
             const administrationId = this.props.administrationId;
+            const administrationCode = this.props.administrationCode;
 
             OrdersAPI.getCSV({ filters, sorts, administrationId })
                 .then(payload => {
-                    fileDownload(payload.data, 'Orders-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv');
+                    fileDownload(
+                        payload.data,
+                        'Orders-' + administrationCode + '-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv'
+                    );
+                    this.props.unblockUI();
+                })
+                .catch(error => {
+                    this.props.unblockUI();
+                });
+        }, 100);
+    };
+
+    getCSVWithProducts = () => {
+        this.props.blockUI();
+        setTimeout(() => {
+            const filters = filterHelper(this.props.ordersFilters);
+            const sorts = this.props.ordersSorts;
+            const administrationId = this.props.administrationId;
+            const administrationCode = this.props.administrationCode;
+
+            OrdersAPI.getCSVWithProducts({ filters, sorts, administrationId })
+                .then(payload => {
+                    fileDownload(
+                        payload.data,
+                        'Orders-' + administrationCode + '-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv'
+                    );
                     this.props.unblockUI();
                 })
                 .catch(error => {
@@ -143,14 +175,11 @@ class OrdersList extends Component {
             previewOrderText: "Preview concept nota's",
         });
 
-        if (this.state.showSelectOrdersToCreate) {
-            this.fetchOrdersData(true);
-        } else {
-            this.fetchOrdersData(false);
-        }
+        this.fetchOrdersData(true);
+
         if (this.state.orderIds.length > 0) {
             this.props.previewCreate(this.state.orderIds);
-            hashHistory.push(`/financieel/${this.props.administrationId}/orders/aanmaken`);
+            this.props.navigate(`/financieel/${this.props.administrationId}/orders/aanmaken`);
         } else {
             this.toggleShowCheckboxList();
         }
@@ -366,7 +395,12 @@ class OrdersList extends Component {
                     <div className="col-md-4">
                         <div className="btn-group" role="group">
                             <ButtonIcon iconName={'refresh'} onClickAction={this.resetOrderFilters} />
-                            <ButtonIcon iconName={'download'} onClickAction={this.getCSV} />
+                            <ButtonIcon iconName={'download'} onClickAction={this.getCSV} title="Exporteer orders" />
+                            <ButtonIcon
+                                iconName={'download'}
+                                onClickAction={this.getCSVWithProducts}
+                                title="Exporteer orders met orderregels"
+                            />
                             {this.props.ordersFilters.statusId.data == 'create' && meta.total > 0 && (
                                 <ButtonText
                                     buttonText={this.state.previewOrderText}
@@ -517,4 +551,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrdersList);
+export default connect(mapStateToProps, mapDispatchToProps)(OrdersListWrapper);

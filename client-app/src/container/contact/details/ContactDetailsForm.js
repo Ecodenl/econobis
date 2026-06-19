@@ -29,7 +29,7 @@ class ContactDetailsForm extends Component {
         this.props.fetchContactDetails(this.props.id);
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (this.props.id !== nextProps.id) {
             this.props.fetchContactDetails(nextProps.id);
         }

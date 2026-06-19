@@ -45,6 +45,7 @@ class FullRevenuesKwh extends JsonResource
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
                 'hasNewPartsKwh' => $this->getHasNewPartsKwh(),
                 'hasConfirmedPartsKwh' => $this->getHasConfirmedPartsKwh(),
+                'defaultDocumentName' => $this->getDefaultDocumentName($this->reportType),
             ];
     }
 }

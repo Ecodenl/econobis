@@ -16,7 +16,7 @@ const CampaignDetailsFormConclusionView = ({ campaign: { createdBy, createdAt, o
                 <ViewText
                     label={'Verantwoordelijke'}
                     value={ownedBy?.fullName || 'Onbekend'}
-                    link={ownedBy ? 'gebruiker/' + ownedBy.id : ''}
+                    link={ownedBy ? '/gebruiker/' + ownedBy.id : ''}
                 />
             </div>
             <div className="row" onClick={switchToEdit}>

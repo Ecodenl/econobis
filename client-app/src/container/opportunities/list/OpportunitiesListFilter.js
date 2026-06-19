@@ -16,6 +16,8 @@ import {
     setFilterOpportunityMeasureName,
     setFilterOpportunityName,
     setFilterOpportunityNumber,
+    setFilterOpportunityAddress,
+    setFilterOpportunityPostalCode,
     setFilterOpportunityStatusId,
 } from '../../../actions/opportunity/OpportunitiesFiltersActions';
 import DataTableFilterDateStartEndTwoRows from '../../../components/dataTable/DataTableFilterDateStartEndTwoRows';
@@ -23,6 +25,14 @@ import DataTableFilterDateStartEndTwoRows from '../../../components/dataTable/Da
 const OpportunitiesListFilter = props => {
     const onNumberChange = e => {
         props.setFilterOpportunityNumber(e.target.value);
+    };
+
+    const onAddressChange = e => {
+        props.setFilterOpportunityAddress(e.target.value);
+    };
+
+    const onPostalCodeChange = e => {
+        props.setFilterOpportunityPostalCode(e.target.value);
     };
 
     const onCreatedAtStartChange = selectedDay => {
@@ -91,20 +101,21 @@ const OpportunitiesListFilter = props => {
 
     return (
         <tr className="thead-filter">
-            {props.showCheckboxList ? (
+            {props.showCheckbox && (
                 <th width="3%">
-                    <input type="checkbox" value={props.checkedAllCheckboxes} onChange={props.selectAllCheckboxes} />
-                </th>
-            ) : (
-                <th>
-                    <input
-                        type="text"
-                        className="form-control input-sm"
-                        value={props.filters.number.data}
-                        onChange={onNumberChange}
-                    />
+                    <input type="checkbox" onChange={props.toggleCheckedAll} />
                 </th>
             )}
+
+            <th>
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.number.data}
+                    onChange={onNumberChange}
+                />
+            </th>
+
             <DataTableFilterDateStartEndTwoRows
                 startDate={props.filters.createdAtStart.data && props.filters.createdAtStart.data}
                 endDate={props.filters.createdAtEnd.data && props.filters.createdAtEnd.data}
@@ -123,6 +134,22 @@ const OpportunitiesListFilter = props => {
                     className="form-control input-sm"
                     value={props.filters.name.data}
                     onChange={onNameChange}
+                />
+            </th>
+            <th>
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.address.data}
+                    onChange={onAddressChange}
+                />
+            </th>
+            <th>
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.postalCode.data}
+                    onChange={onPostalCodeChange}
                 />
             </th>
             <th>
@@ -206,6 +233,8 @@ const mapDispatchToProps = dispatch => {
             setFilterOpportunityMeasureName,
             setFilterOpportunityName,
             setFilterOpportunityNumber,
+            setFilterOpportunityAddress,
+            setFilterOpportunityPostalCode,
             setFilterOpportunityStatusId,
         },
         dispatch

@@ -7,7 +7,7 @@ namespace App\Http\Controllers\Portal\Project;
 use App\Eco\Document\Document;
 use App\Eco\Project\Project;
 use App\Eco\User\User;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 use App\Http\Controllers\Api\Document\DocumentController;
 use App\Http\Controllers\Controller;
 use Config;
@@ -22,8 +22,16 @@ class ProjectController extends Controller
 //        if (!Auth::isPortalUser() || !$portalUser->contact) {
 //            abort(501, 'Er is helaas een fout opgetreden.');
 //        }
-//        $allowedContactOrganisationIds = $portalUser->contact->occupations->where('type_id', 'organisation')->where('primary', true)->pluck('primary_contact_id')->toArray();
-//        $allowedContactPersonIds = $portalUser->contact->occupations->where('type_id', 'person')->where('occupation_for_portal', true)->pluck('primary_contact_id')->toArray();
+//        $allowedContactOrganisationIds = $portalUser->contact->occupations
+//            ->where('type_id', 'organisation')
+//            ->where('allow_manage_in_portal', true)  // Uses the field from occupation_contact
+//            ->pluck('primary_contact_id')
+//            ->toArray();
+//        $allowedContactPersonIds = $portalUser->contact->occupations
+//            ->where('type_id', 'person')
+//            ->where('allow_manage_in_portal', true)  // Uses the field from occupation_contact
+//            ->pluck('primary_contact_id')
+//            ->toArray();
 //        $allowedContactIds = array_merge($allowedContactOrganisationIds, $allowedContactPersonIds);
 //
 //        $authorizedForContact = in_array($participantProject->contact_id, $allowedContactIds);
@@ -33,7 +41,7 @@ class ProjectController extends Controller
 
         if ($document->filename) {
             // todo wellicht moeten we hier nog wat op anders verzinnen, voornu gebruiken we responisibleUserId from settings.json, verderop zetten we dat weer terug naar portal user
-            $responsibleUserId = PortalSettings::get('responsibleUserId');
+            $responsibleUserId = PortalSettings::first()?->responsible_user_id;
             if (!$responsibleUserId) {
                 abort(501, 'Er is helaas een fout opgetreden (5).');
             }

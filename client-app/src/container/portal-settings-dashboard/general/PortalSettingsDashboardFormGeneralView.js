@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { getApiUrl } from '../../../api/utils/ApiUrl';
+
 import { connect } from 'react-redux';
 
 import ViewText from '../../../components/form/ViewText';
@@ -41,8 +43,8 @@ class PortalSettingsDashboardFormGeneralView extends Component {
             defaultWidgetTextColor,
         } = this.props.dashboardSettings;
 
-        const logoHeaderUrl = `${URL_API}/portal/images/logo-header.png?${this.props.imageHash}`;
-        const imageBgHeaderUrl = `${URL_API}/portal/images/background-header.png?${this.props.imageHash}`;
+        const logoHeaderUrl = `${getApiUrl()}/portal/images/logo-header.png?${this.props.imageHash}`;
+        const imageBgHeaderUrl = `${getApiUrl()}/portal/images/background-header.png?${this.props.imageHash}`;
 
         return (
             <>

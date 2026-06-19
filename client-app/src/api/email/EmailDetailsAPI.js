@@ -1,11 +1,10 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_EMAIL = `${URL_API}/api/email-details`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchEmail: id => {
-        return axiosInstance
-            .get(`${URL_EMAIL}/${id}`)
+        return getAxiosInstance()
+            .get(`${getApiUrl()}/api/email-details/${id}`)
             .then(response => response.data);
     },
 };

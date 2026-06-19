@@ -11,7 +11,9 @@ namespace App\Http\Controllers\Api\Campaign;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Campaign\CampaignResponse;
 use App\Eco\Contact\Contact;
+use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\Organisation\Organisation;
+use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Eco\User\User;
 use App\Helpers\Delete\Models\DeleteCampaign;
 use App\Helpers\RequestInput\RequestInput;
@@ -20,6 +22,7 @@ use App\Http\RequestQueries\Campaign\Grid\RequestQuery;
 use App\Http\Resources\Campaign\CampaignIntakesCollection;
 use App\Http\Resources\Campaign\CampaignOpportunityCollection;
 use App\Http\Resources\Campaign\CampaignPeek;
+use App\Http\Resources\Campaign\CampaignWorkflowStatusPeek;
 use App\Http\Resources\Campaign\FullCampaign;
 use App\Http\Resources\Campaign\GridCampaign;
 use Carbon\Carbon;
@@ -55,6 +58,14 @@ class CampaignController extends ApiController
             'opportunityActions',
             'status',
             'type',
+            'inspectionPlannedEmailTemplate',
+            'inspectionRecordedEmailTemplate',
+            'inspectionReleasedEmailTemplate',
+            'inspectionPlannedMailbox',
+            'defaultWorkflowMailbox',
+            'campaignWorkflows',
+            'campaignWorkflows.opportunityStatus',
+            'campaignWorkflows.quotationRequestStatus',
             'responses.contact.primaryAddress',
             'organisations',
             'organisations.contact.contactPerson.contact',
@@ -109,6 +120,8 @@ class CampaignController extends ApiController
             ->string('endDate')->validate('date')->onEmpty(null)->alias('end_date')->next()
             ->integer('statusId')->validate('exists:campaign_status,id')->onEmpty(null)->alias('status_id')->next()
             ->integer('typeId')->validate('required|exists:campaign_types,id')->alias('type_id')->next()
+            ->boolean('subsidyPossible')->validate('required')->alias('subsidy_possible')->next()
+            ->double('wozLimit')->whenMissing(null)->alias('woz_limit')->next()
             ->get();
 
         $campaign = new Campaign();
@@ -136,7 +149,6 @@ class CampaignController extends ApiController
 
     public function update(Request $request, RequestInput $requestInput, Campaign $campaign)
     {
-
         $this->authorize('manage', Campaign::class);
 
         $data = $requestInput
@@ -147,6 +159,8 @@ class CampaignController extends ApiController
             ->string('endDate')->validate('nullable|date')->onEmpty(null)->alias('end_date')->next()
             ->integer('statusId')->validate('exists:campaign_status,id')->onEmpty(null)->alias('status_id')->next()
             ->integer('typeId')->validate('required|exists:campaign_types,id')->alias('type_id')->next()
+            ->boolean('subsidyPossible')->alias('subsidy_possible')->next()
+            ->double('wozLimit')->whenMissing(null)->alias('woz_limit')->next()
             ->get();
 
         $measureCategoryIds = explode(',', $request->measureCategoryIds);
@@ -164,6 +178,43 @@ class CampaignController extends ApiController
         }
 
         $campaign->opportunityActions()->sync($opportunityActionIds);
+
+        $campaign->fill($data);
+        $campaign->save();
+
+        return FullCampaign::make($campaign->fresh());
+    }
+    public function updateInspection(Request $request, RequestInput $requestInput, Campaign $campaign)
+    {
+        $this->authorize('manage', Campaign::class);
+
+        $data = $requestInput
+            ->integer('inspectionPlannedMailboxId')->validate('nullable|exists:mailboxes,id')->alias('inspection_planned_mailbox_id')->next()
+            ->integer('inspectionPlannedEmailTemplateId')->validate('nullable|exists:email_templates,id')->alias('inspection_planned_email_template_id')->next()
+            ->integer('inspectionRecordedEmailTemplateId')->validate('nullable|exists:email_templates,id')->alias('inspection_recorded_email_template_id')->next()
+            ->integer('inspectionReleasedEmailTemplateId')->validate('nullable|exists:email_templates,id')->alias('inspection_released_email_template_id')->next()
+            ->get();
+
+        $data['inspection_planned_mailbox_id'] = $data['inspection_planned_mailbox_id'] != 0 ? $data['inspection_planned_mailbox_id'] : null;
+        $data['inspection_planned_email_template_id'] = $data['inspection_planned_email_template_id'] != 0 ? $data['inspection_planned_email_template_id'] : null;
+        $data['inspection_recorded_email_template_id'] = $data['inspection_recorded_email_template_id'] != 0 ? $data['inspection_recorded_email_template_id'] : null;
+        $data['inspection_released_email_template_id'] = $data['inspection_released_email_template_id'] != 0 ? $data['inspection_released_email_template_id'] : null;
+
+        $campaign->fill($data);
+        $campaign->save();
+
+        return FullCampaign::make($campaign->fresh());
+    }
+
+    public function updateWorkflowSetting(Request $request, RequestInput $requestInput, Campaign $campaign)
+    {
+        $this->authorize('manage', Campaign::class);
+
+        $data = $requestInput
+            ->integer('defaultWorkflowMailboxId')->validate('nullable|exists:mailboxes,id')->alias('default_workflow_mailbox_id')->next()
+            ->get();
+
+        $data['default_workflow_mailbox_id'] = $data['default_workflow_mailbox_id'] != 0 ? $data['default_workflow_mailbox_id'] : null;
 
         $campaign->fill($data);
         $campaign->save();
@@ -197,6 +248,7 @@ class CampaignController extends ApiController
     public function attachResponse(Campaign $campaign, Contact $contact)
     {
         $this->authorize('manage', Campaign::class);
+
         $campaignResponse = new CampaignResponse([
             'campaign_id' => $campaign->id,
             'contact_id' => $contact->id,
@@ -208,6 +260,7 @@ class CampaignController extends ApiController
     public function detachResponse(Campaign $campaign, Contact $contact)
     {
         $this->authorize('manage', Campaign::class);
+
         $campaign->responses()->where('contact_id', $contact->id)->delete();
         $campaign->save();
     }
@@ -215,53 +268,63 @@ class CampaignController extends ApiController
     public function attachOrganisation(Campaign $campaign, Organisation $organisation)
     {
         $this->authorize('manage', Campaign::class);
+
         $campaign->organisations()->attach($organisation);
     }
 
     public function detachOrganisation(Campaign $campaign, Organisation $organisation)
     {
         $this->authorize('manage', Campaign::class);
+
         $campaign->organisations()->detach($organisation);
     }
 
     public function attachCoach(Campaign $campaign, Contact $coach)
     {
         $this->authorize('manage', Campaign::class);
+
         $campaign->coaches()->attach($coach);
     }
 
     public function detachCoach(Campaign $campaign, Contact $coach)
     {
         $this->authorize('manage', Campaign::class);
+
         $campaign->coaches()->detach($coach);
     }
 
     public function attachProjectManager(Campaign $campaign, Contact $projectManager)
     {
         $this->authorize('manage', Campaign::class);
+
         $campaign->projectManagers()->attach($projectManager);
     }
 
     public function detachProjectManager(Campaign $campaign, Contact $projectManager)
     {
         $this->authorize('manage', Campaign::class);
+
         $campaign->projectManagers()->detach($projectManager);
     }
 
     public function attachExternalParty(Campaign $campaign, Contact $externalParty)
     {
         $this->authorize('manage', Campaign::class);
+
         $campaign->externalParties()->attach($externalParty);
     }
 
     public function detachExternalParty(Campaign $campaign, Contact $externalParty)
     {
         $this->authorize('manage', Campaign::class);
+
         $campaign->externalParties()->detach($externalParty);
     }
 
     public function peek()
     {
+//        $this->authorize('view', Campaign::class);
+
         $teamContactIds = Auth::user()->getTeamContactIds();
         if ($teamContactIds){
             $campaigns = Campaign::whereHas('intakes', function($query) use($teamContactIds){
@@ -273,9 +336,26 @@ class CampaignController extends ApiController
 
         return CampaignPeek::collection($campaigns);
     }
+    public function workflowStatuses(Campaign $campaign, $workflowForType = null)
+    {
+        if($workflowForType === 'opportunity'){
+            $existingOpportunityStatusIds = $campaign->campaignWorkflows()->get()->pluck('opportunity_status_id')->toArray();
+            Log::info($existingOpportunityStatusIds);
+            $workflowStatuses =  OpportunityStatus::orderBy('order')->get()->whereNotIn('id', $existingOpportunityStatusIds);
+        } else if ($workflowForType === 'quotationrequest'){
+            $existingQuotationRequestStatusIds = $campaign->campaignWorkflows()->get()->pluck('qotation_request_status_id')->toArray();
+            $workflowStatuses =  QuotationRequestStatus::orderBy('opportunity_action_id')->orderBy('order')->get()->whereNotIn('id', $existingQuotationRequestStatusIds);
+        } else {
+            return null;
+        }
+
+        return CampaignWorkflowStatusPeek::collection($workflowStatuses);
+    }
 
     public function peekNotFinished()
     {
+//        $this->authorize('view', Campaign::class);
+
         $campaigns = Campaign::whereNull('status_id')->orWhere('status_id', '!=', Campaign::STATUS_CLOSED)->orderBy('id')->get();
 
         return CampaignPeek::collection($campaigns);
@@ -284,6 +364,7 @@ class CampaignController extends ApiController
     public function associateOwner(Campaign $campaign, User $user)
     {
         $this->authorize('manage', Campaign::class);
+
         $campaign->ownedBy()->associate($user);
         $campaign->save();
     }

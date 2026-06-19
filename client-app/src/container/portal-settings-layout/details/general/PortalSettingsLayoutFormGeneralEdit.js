@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { getApiUrl } from '../../../../api/utils/ApiUrl';
 import { connect } from 'react-redux';
 import { FaUser } from 'react-icons/fa';
 import validator from 'validator';
@@ -379,11 +380,11 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
             buttonTextColor,
         } = this.state.portalSettingsLayout;
 
-        const logoUrl = `${URL_API}/portal/images/${portalLogoFileName}?${this.props.imageHash}`;
-        const logoHeaderUrl = `${URL_API}/portal/images/${portalLogoFileNameHeader}?${this.props.imageHash}`;
-        const imageBgLoginUrl = `${URL_API}/portal/images/${portalImageBgFileNameLogin}?${this.props.imageHash}`;
-        const imageBgHeaderUrl = `${URL_API}/portal/images/${portalImageBgFileNameHeader}?${this.props.imageHash}`;
-        const faviconUrl = `${URL_API}/portal/${portalFaviconFileName}?${this.props.imageHash}`;
+        const logoUrl = `${getApiUrl()}/portal/images/${portalLogoFileName}?${this.props.imageHash}`;
+        const logoHeaderUrl = `${getApiUrl()}/portal/images/${portalLogoFileNameHeader}?${this.props.imageHash}`;
+        const imageBgLoginUrl = `${getApiUrl()}/portal/images/${portalImageBgFileNameLogin}?${this.props.imageHash}`;
+        const imageBgHeaderUrl = `${getApiUrl()}/portal/images/${portalImageBgFileNameHeader}?${this.props.imageHash}`;
+        const faviconUrl = `${getApiUrl()}/portal/${portalFaviconFileName}?${this.props.imageHash}`;
 
         const { managePortalSettings = {} } = this.props.permissions;
 

@@ -2,12 +2,18 @@ import React, { Component } from 'react';
 
 import Modal from '../../../../components/modal/Modal';
 import InvoiceDetailsAPI from '../../../../api/invoice/InvoiceDetailsAPI';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import InputDate from '../../../../components/form/InputDate';
 import validator from 'validator';
 import moment from 'moment/moment';
 import { connect } from 'react-redux';
 import { setError } from '../../../../actions/general/ErrorActions';
+
+// Functionele wrapper voor de class component
+const InvoiceListSendWrapper = props => {
+    const navigate = useNavigate();
+    return <InvoiceListSend {...props} navigate={navigate} />;
+};
 
 class InvoiceListSend extends Component {
     constructor(props) {
@@ -52,12 +58,12 @@ class InvoiceListSend extends Component {
 
             if (!hasErrors) {
                 InvoiceDetailsAPI.sendAll([this.props.invoiceId], dateCollection).then(payload => {
-                    hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
+                    this.props.navigate(`/financieel/${this.props.administrationId}/notas/verzonden`);
                 });
             }
         } else {
             InvoiceDetailsAPI.sendAll([this.props.invoiceId], null).then(payload => {
-                hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
+                this.props.navigate(`/financieel/${this.props.administrationId}/notas/verzonden`);
             });
         }
     };
@@ -130,4 +136,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(InvoiceListSend);
+export default connect(mapStateToProps, mapDispatchToProps)(InvoiceListSendWrapper);

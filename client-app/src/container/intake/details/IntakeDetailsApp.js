@@ -8,6 +8,13 @@ import IntakeDetailsHarmonica from './IntakeDetailsHarmonica';
 
 import PanelBody from '../../../components/panel/PanelBody';
 import Panel from '../../../components/panel/Panel';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const IntakeDetailsAppWrapper = props => {
+    const params = useParams();
+    return <IntakeDetailsApp {...props} params={params} />;
+};
 
 class IntakeDetailsApp extends Component {
     constructor(props) {
@@ -46,4 +53,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(IntakeDetailsApp);
+export default connect(null, mapDispatchToProps)(IntakeDetailsAppWrapper);

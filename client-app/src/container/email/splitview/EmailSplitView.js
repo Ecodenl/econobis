@@ -8,27 +8,42 @@ import { EmailModalContext } from '../../../context/EmailModalContext';
 import EmailGenericAPI from '../../../api/email/EmailGenericAPI';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 import ButtonIcon from '../../../components/button/ButtonIcon';
-import axiosInstance from '../../../api/default-setup/AxiosInstance';
-import { hashHistory } from 'react-router';
+import getAxiosInstance from '../../../api/default-setup/AxiosInstance';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
+// import queryString from 'query-string';
 import Icon from 'react-icons-kit';
 import { undo } from 'react-icons-kit/fa/undo';
-import { useSelector } from 'react-redux';
-import ContactGroupDetailsLapostaListDeActivate from '../../contact-groups/details/ContactGroupDetailsLapostaListDeActivate';
 import Modal from '../../../components/modal/Modal';
+import EmailMailboxStatuses from './EmailMailboxStatuses';
+import axios from 'axios';
 
-export default function EmailSplitView({ router }) {
+export default function EmailSplitView() {
+    const navigate = useNavigate();
+    const params = useParams();
+    const location = useLocation();
+    const query = Object.fromEntries(new URLSearchParams(location.search));
+
     const perPage = 50;
     const [emails, setEmails] = useState([]);
+    const [isLoadingMailboxes, setIsLoadingMailboxes] = useState(false);
+    const [activeMailboxes, setActiveMailboxes] = useState([]);
     const [emailCount, setEmailCount] = useState(0);
     const [selectedEmailId, setSelectedEmailId] = useState(null);
     const [isRefreshingData, setIsRefreshingData] = useState(false);
-    const [isFetchingMoreEmails, setIsFetchingMoreEmails] = useState(false);
+    const [isFetchingEmails, setIsFetchingEmails] = useState(false);
     const [contact, setContact] = useState(null);
     const [filters, setFilters] = useState({ ...defaultFilters });
+    const [eigenOpenstaand, setEigenOpenstaand] = useState(false);
+
     const { isEmailDetailsModalOpen, isEmailSendModalOpen, openEmailSendModal } = useContext(EmailModalContext);
-    const hasMailboxes = useSelector(state => state.meDetails.mailboxes.length > 0);
+    const hasMailboxes = activeMailboxes.length > 0;
+
     const [multiselectEnabled, setMultiselectEnabled] = useState(false);
     const [message, setMessage] = useState('Nieuwe e-mails worden opgehaald ...');
+
+    useEffect(() => {
+        fetchActiveMailboxes(true);
+    }, []);
 
     useEffect(() => {
         if (!isEmailDetailsModalOpen && emailCount > 0) {
@@ -37,6 +52,7 @@ export default function EmailSplitView({ router }) {
     }, [isEmailDetailsModalOpen]);
 
     useEffect(() => {
+        // if (!isEmailSendModalOpen && emails.length > 0) {
         if (!isEmailSendModalOpen && emailCount > 0) {
             refetchCurrentEmails();
         }
@@ -45,19 +61,25 @@ export default function EmailSplitView({ router }) {
     useEffect(() => {
         setFilters({ ...getFiltersFromStorage(), fetch: true });
         setSelectedEmailId(null);
-    }, [router.params.folder]);
+    }, [params.folder]);
 
     useEffect(() => {
         setFilters({ ...getFiltersFromStorage(), fetch: true });
 
-        if (router.location.query.contact) {
-            fetchContactName(router.location.query.contact).then(response => {
+        if (query.contact) {
+            fetchContactName(query.contact).then(response => {
                 setContact(response.data.data);
             });
         } else {
             setContact(null);
         }
-    }, [router.location.query.contact]);
+    }, [query.contact]);
+
+    useEffect(() => {
+        setFilters({ ...getFiltersFromStorage(), fetch: true });
+
+        setEigenOpenstaand(query.eigen === '1');
+    }, [query.eigen]);
 
     useEffect(() => {
         /**
@@ -72,6 +94,7 @@ export default function EmailSplitView({ router }) {
 
         storeFiltersToStorage(filters);
 
+        setIsFetchingEmails(true);
         EmailSplitviewAPI.fetchSelectList({
             filter: getFilter(),
             limit: perPage,
@@ -80,15 +103,16 @@ export default function EmailSplitView({ router }) {
         }).then(response => {
             setEmails(response.data.items);
             setEmailCount(response.data.total);
+            setIsFetchingEmails(false);
         });
     }, [filters.fetch]);
 
     const fetchMoreEmails = () => {
-        if (isFetchingMoreEmails) {
+        if (isFetchingEmails) {
             return;
         }
 
-        setIsFetchingMoreEmails(true);
+        setIsFetchingEmails(true);
         return EmailSplitviewAPI.fetchSelectList({
             filter: getFilter(),
             limit: perPage,
@@ -96,11 +120,16 @@ export default function EmailSplitView({ router }) {
             sorts: getSorts(),
         }).then(response => {
             setEmails([...emails, ...response.data.items]);
-            setIsFetchingMoreEmails(false);
+            setIsFetchingEmails(false);
         });
     };
 
     const refetchCurrentEmails = () => {
+        if (isFetchingEmails) {
+            return;
+        }
+
+        setIsFetchingEmails(true);
         return EmailSplitviewAPI.fetchSelectList({
             filter: getFilter(),
             limit: Math.max(emails.length, perPage),
@@ -109,9 +138,27 @@ export default function EmailSplitView({ router }) {
         }).then(response => {
             setEmails(response.data.items);
             setEmailCount(response.data.total);
+            setIsFetchingEmails(false);
         });
     };
-
+    const fetchActiveMailboxes = doRefreshData => {
+        setIsLoadingMailboxes(true);
+        axios
+            .all([MailboxAPI.fetchMailboxesLoggedInUser()])
+            .then(
+                axios.spread(payloadActiveMailboxes => {
+                    setActiveMailboxes(payloadActiveMailboxes.data.data);
+                    if (doRefreshData && payloadActiveMailboxes.data.meta.activateAutomaticRefreshEmailData) {
+                        refreshData();
+                    }
+                    setIsLoadingMailboxes(false);
+                })
+            )
+            .catch(error => {
+                console.log(error);
+                setIsLoadingMailboxes(false);
+            });
+    };
     const updateEmailAttributes = (emailId, attributes) => {
         const newEmails = emails.map(email => {
             if (email.id === emailId) {
@@ -125,11 +172,11 @@ export default function EmailSplitView({ router }) {
     };
 
     const getFilter = () => {
-        return getJoryFilter(filters, router.params.folder, router.location.query.contact, router.location.query.eigen);
+        return getJoryFilter(filters, params.folder, query.contact, query.eigen === '1');
     };
 
     const getSorts = () => {
-        if (router.params.folder === 'concept') {
+        if (params.folder === 'concept') {
             return ['-createdAt'];
         }
 
@@ -143,14 +190,14 @@ export default function EmailSplitView({ router }) {
     };
 
     const resetFilters = () => {
-        if (router.location.query.contact) {
+        if (query.contact || query.eigen) {
             /**
-             * Als er nog een contactfilter is via de querystring dan willen we die ook wissen.
+             * Als er nog een contactfilter of eigen filter is via de querystring dan willen we die ook wissen.
              * Dus redirecten naar dezelfde pagina zonder querystring en zorgen dat filters gereset worden.
              */
             storeFiltersToStorage(defaultFilters);
 
-            hashHistory.push(router.location.pathname);
+            navigate(location.pathname);
 
             return;
         }
@@ -178,6 +225,7 @@ export default function EmailSplitView({ router }) {
             .then(() => {
                 setMessage('Ophalen nieuwe e-mails is voltooid.');
                 refetchCurrentEmails();
+                fetchActiveMailboxes(false);
                 setTimeout(closeModal, 5000);
             })
             .catch(error => {
@@ -189,12 +237,20 @@ export default function EmailSplitView({ router }) {
         setIsRefreshingData(false);
     }
     const hasFilters = () => {
-        return Object.keys(filters).some(key => !!filters[key] && key !== 'fetch');
+        return eigenOpenstaand || Object.keys(filters).some(key => !!filters[key] && key !== 'fetch');
     };
 
     return (
         <div>
-            {!hasMailboxes ? (
+            {isLoadingMailboxes ? (
+                <div className={'row'}>
+                    <div className="col-xs-12">
+                        <div className="alert alert-info" role="alert">
+                            Bezig met ophalen mailbox statussen ...
+                        </div>
+                    </div>
+                </div>
+            ) : !hasMailboxes ? (
                 <div className={'row'}>
                     <div className="col-xs-12">
                         <div className="alert alert-info" role="alert">
@@ -203,91 +259,111 @@ export default function EmailSplitView({ router }) {
                     </div>
                 </div>
             ) : (
-                <div className="row">
-                    <div className="col-md-4" style={{ paddingLeft: '17px', marginTop: '-10px', marginBottom: '5px' }}>
-                        <div className="btn-group" role="group">
-                            <ButtonIcon
-                                iconName={'refresh'}
-                                onClickAction={refreshData}
-                                title={'Alle mappen verzenden/ontvangen'}
-                            />
-                            <ButtonIcon iconName={'plus'} onClickAction={createMail} title={'Nieuwe e-mail'} />
-                            <ButtonIcon
-                                iconName={'check'}
-                                onClickAction={() => setMultiselectEnabled(!multiselectEnabled)}
-                                title="Contactselectie maken"
-                            />
-                        </div>
-                    </div>
-                    <div className="col-md-4" style={{ marginTop: '-10px', marginBottom: '5px' }}>
-                        {contact && (
-                            <span style={{ marginLeft: '6px' }}>
-                                Email voor contact <strong>{contact?.fullName}</strong>
-                                <a
-                                    role="button"
-                                    style={{ marginLeft: '10px' }}
-                                    className="btn btn-success btn-sm"
-                                    onClick={() => hashHistory.push(router.location.pathname)}
-                                >
-                                    Filter wissen
-                                </a>
-                            </span>
-                        )}
-                    </div>
-                    <div className="col-md-4" style={{ marginTop: '-10px', marginBottom: '5px' }}>
-                        {hasFilters() && (
-                            <button
-                                type="button"
-                                className="btn btn-success pull-right btn-sm"
-                                style={{ marginRight: '4px' }}
-                                onClick={resetFilters}
-                            >
-                                Wis alle filters
-                            </button>
-                        )}
-                    </div>
-                    {isRefreshingData && (
-                        <Modal
-                            buttonClassName={'btn-danger'}
-                            closeModal={closeModal}
-                            buttonCancelText={'Sluiten'}
-                            showConfirmAction={false}
-                            title="Alle mappen verzenden/ontvangen"
+                <>
+                    <EmailMailboxStatuses activeMailboxes={activeMailboxes} />
+                    <div className="row">
+                        <div
+                            className="col-md-4"
+                            style={{ paddingLeft: '17px', marginTop: '-10px', marginBottom: '5px' }}
                         >
-                            <p>{message}</p>
-                            {/*{errors.length ? (*/}
-                            {/*    <ul>*/}
-                            {/*        {errors.map(item => (*/}
-                            {/*            <li>{item}</li>*/}
-                            {/*        ))}*/}
-                            {/*    </ul>*/}
-                            {/*) : null}*/}
-                        </Modal>
-                    )}
-                </div>
+                            <div className="btn-group" role="group">
+                                <ButtonIcon
+                                    iconName={'refresh'}
+                                    onClickAction={refreshData}
+                                    title={'Alle mappen ontvangen'}
+                                />
+                                <ButtonIcon iconName={'plus'} onClickAction={createMail} title={'Nieuwe e-mail'} />
+                                <ButtonIcon
+                                    iconName={'check'}
+                                    onClickAction={() => setMultiselectEnabled(!multiselectEnabled)}
+                                    title="Contactselectie maken"
+                                />
+                            </div>
+                        </div>
+                        <div className="col-md-4" style={{ marginTop: '-10px', marginBottom: '5px' }}>
+                            {(contact || eigenOpenstaand) && (
+                                <span style={{ marginLeft: '6px' }}>
+                                    {eigenOpenstaand ? <strong>Eigen openstaande e-mails</strong> : 'E-mails'}{' '}
+                                    {contact && (
+                                        <span>
+                                            voor contact <strong>{contact?.fullName}</strong>
+                                        </span>
+                                    )}
+                                    <a
+                                        role="button"
+                                        style={{ marginLeft: '10px' }}
+                                        className="btn btn-success btn-sm"
+                                        onClick={() => navigate(location.pathname)}
+                                    >
+                                        Filter wissen
+                                    </a>
+                                </span>
+                            )}
+                        </div>
+                        <div className="col-md-4" style={{ marginTop: '-10px', marginBottom: '5px' }}>
+                            {hasFilters() && (
+                                <button
+                                    type="button"
+                                    className="btn btn-success pull-right btn-sm"
+                                    style={{ marginRight: '4px' }}
+                                    onClick={resetFilters}
+                                >
+                                    Wis alle filters
+                                </button>
+                            )}
+                        </div>
+                        {isRefreshingData && (
+                            <Modal
+                                buttonClassName={'btn-danger'}
+                                closeModal={closeModal}
+                                buttonCancelText={'Sluiten'}
+                                showConfirmAction={false}
+                                title="Alle mappen ontvangen"
+                            >
+                                <p>{message}</p>
+                                {/*{errors.length ? (*/}
+                                {/*    <ul>*/}
+                                {/*        {errors.map(item => (*/}
+                                {/*            <li>{item}</li>*/}
+                                {/*        ))}*/}
+                                {/*    </ul>*/}
+                                {/*) : null}*/}
+                            </Modal>
+                        )}
+                    </div>
+                </>
             )}
             <div className="row">
                 <div className="col-md-12">
                     <form onKeyUp={handleFilterKeyUp}>
-                        <EmailSplitViewFiltersPanel filters={filters} setFilters={setFilters} />
+                        <EmailSplitViewFiltersPanel
+                            filters={filters}
+                            setFilters={setFilters}
+                            activeMailboxes={activeMailboxes}
+                            eigenOpenstaand={eigenOpenstaand}
+                        />
                     </form>
                 </div>
             </div>
             <div className="row">
                 <div className="col-md-4 margin-10-top" style={{ paddingRight: '0px' }}>
-                    {hasFilters() && (
-                        <div className="panel panel-default">
-                            <div className="panel-body panel-small">
+                    {isFetchingEmails ? (
+                        <div className="alert alert-info" role="alert">
+                            Let op: bezig met ophalen/bijwerken lijst met emails...
+                        </div>
+                    ) : (
+                        hasFilters() && (
+                            <div className="alert alert-info" role="alert">
                                 Let op: filters actief &nbsp;
                                 <a role="button" onClick={resetFilters}>
                                     <Icon size={16} icon={undo} />
                                 </a>
                             </div>
-                        </div>
+                        )
                     )}
                     <EmailSplitViewSelectList
                         emails={emails}
-                        folder={router.params.folder}
+                        folder={params.folder}
                         emailCount={emailCount}
                         fetchMoreEmails={fetchMoreEmails}
                         selectedEmailId={selectedEmailId}
@@ -301,13 +377,16 @@ export default function EmailSplitView({ router }) {
                 <div className="col-md-8 margin-10-top">
                     <EmailSplitViewDetails
                         emailId={selectedEmailId}
+                        folder={params.folder}
                         updatedEmailHandler={refetchCurrentEmails}
-                        folder={router.params.folder}
-                        deleted={() => {
+                        revertFromRemovedHandler={() => {
                             localStorage.setItem('lastOpenedEmailId', null);
-
                             setSelectedEmailId(null);
-
+                            refetchCurrentEmails();
+                        }}
+                        deletedHandler={() => {
+                            localStorage.setItem('lastOpenedEmailId', null);
+                            setSelectedEmailId(null);
                             refetchCurrentEmails();
                         }}
                     />
@@ -318,7 +397,7 @@ export default function EmailSplitView({ router }) {
 }
 
 const fetchContactName = contactId => {
-    return axiosInstance.get('/jory/contact/' + contactId, {
+    return getAxiosInstance().get('/jory/contact/' + contactId, {
         params: {
             jory: {
                 fld: ['fullName'],

@@ -10,11 +10,11 @@ import Modal from '../../../../../../components/modal/Modal';
 import InputSelect from '../../../../../../components/form/InputSelect';
 import DocumentTemplateAPI from '../../../../../../api/document-template/DocumentTemplateAPI';
 import validator from 'validator';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import ViewText from '../../../../../../components/form/ViewText';
 import EmailTemplateAPI from '../../../../../../api/email-template/EmailTemplateAPI';
 import InputText from '../../../../../../components/form/InputText';
-import { getDistribution, previewReport } from '../../../../../../actions/project/ProjectDetailsActions';
+import { fetchRevenue, getDistribution, previewReport } from '../../../../../../actions/project/ProjectDetailsActions';
 import { setError } from '../../../../../../actions/general/ErrorActions';
 import ProjectRevenueAPI from '../../../../../../api/project/ProjectRevenueAPI';
 import moment from 'moment-business-days';
@@ -22,6 +22,12 @@ import InputDate from '../../../../../../components/form/InputDate';
 import ButtonIcon from '../../../../../../components/button/ButtonIcon';
 import ErrorModal from '../../../../../../components/modal/ErrorModal';
 import InputToggle from '../../../../../../components/form/InputToggle';
+
+// Functionele wrapper voor de class component
+const RevenueDistributionFormWrapper = props => {
+    const navigate = useNavigate();
+    return <RevenueDistributionForm {...props} navigate={navigate} />;
+};
 
 class RevenueDistributionForm extends Component {
     constructor(props) {
@@ -39,7 +45,8 @@ class RevenueDistributionForm extends Component {
                 .nextBusinessDay()
                 .format('YYYY-MM-DD'),
             datePayoutError: false,
-            subject: [],
+            subject: '',
+            subjectError: false,
             documentGroup: '',
             checkedAll: false,
             showCheckboxList: false,
@@ -140,17 +147,23 @@ class RevenueDistributionForm extends Component {
                 createType: '',
             });
         } else {
-            const distributionIdsTotal =
-                createType === 'createInvoices'
-                    ? this.props.projectRevenue.distribution.meta.distributionIdsTotalToProcess
-                    : this.props.projectRevenue.distribution.meta.distributionIdsTotal;
+            if (
+                this.props.projectRevenue &&
+                this.props.projectRevenue.distribution &&
+                this.props.projectRevenue.distribution.meta
+            ) {
+                const distributionIdsTotal =
+                    createType === 'createInvoices'
+                        ? this.props.projectRevenue.distribution.meta.distributionIdsTotalToProcess
+                        : this.props.projectRevenue.distribution.meta.distributionIdsTotal;
 
-            this.setState({
-                showCheckboxList: true,
-                createType: createType,
-                distributionIds: distributionIdsTotal,
-                checkedAll: true,
-            });
+                this.setState({
+                    showCheckboxList: true,
+                    createType: createType,
+                    distributionIds: distributionIdsTotal,
+                    checkedAll: true,
+                });
+            }
         }
     };
 
@@ -243,6 +256,17 @@ class RevenueDistributionForm extends Component {
             });
         }
 
+        if (validator.isEmpty(this.state.subject)) {
+            error = true;
+            this.setState({
+                subjectError: true,
+            });
+        } else {
+            this.setState({
+                subjectError: false,
+            });
+        }
+
         if (validator.isEmpty(this.state.datePayout + '')) {
             error = true;
             this.setState({
@@ -262,7 +286,7 @@ class RevenueDistributionForm extends Component {
                 distributionIds: this.state.distributionIds,
                 showOnPortal: this.state.showOnPortal,
             });
-            hashHistory.push(`/project/opbrengst/${this.props.projectRevenue.id}/rapportage`);
+            this.props.navigate(`/project/opbrengst/${this.props.projectRevenue.id}/rapportage`);
         } else if (!error) {
             this.setState({
                 showModal: true,
@@ -388,6 +412,7 @@ class RevenueDistributionForm extends Component {
             this.state.description
         )
             .then(payload => {
+                this.props.fetchRevenue(this.props.projectRevenue.id);
                 document.body.style.cursor = 'default';
                 this.setState({
                     showSuccessMessage: true,
@@ -395,10 +420,10 @@ class RevenueDistributionForm extends Component {
                 });
             })
             .catch(error => {
-                let errorObject = JSON.parse(JSON.stringify(error));
+                // let errorObject = JSON.parse(JSON.stringify(error));
                 let errorMessage = 'Er is iets misgegaan bij opslaan. Probeer het opnieuw.';
-                if (errorObject.response.status !== 500) {
-                    errorMessage = errorObject.response.data.message;
+                if (error.response.status !== 500) {
+                    errorMessage = error.response.data.message;
                 }
                 this.setState({
                     showErrorModal: true,
@@ -523,6 +548,8 @@ class RevenueDistributionForm extends Component {
                                             name={'subject'}
                                             value={this.state.subject}
                                             onChangeAction={this.handleSubjectChange}
+                                            required={'required'}
+                                            error={this.state.subjectError}
                                         />
                                     </div>
                                     <div className="col-md-12">
@@ -688,6 +715,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
+    fetchRevenue: id => {
+        dispatch(fetchRevenue(id));
+    },
     previewReport: id => {
         dispatch(previewReport(id));
     },
@@ -699,4 +729,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(RevenueDistributionForm);
+export default connect(mapStateToProps, mapDispatchToProps)(RevenueDistributionFormWrapper);

@@ -5,6 +5,7 @@ import PhoneNumberAPI from '../../api/contact/PhoneNumberAPI';
 import EmailAddressAPI from '../../api/contact/EmailAddressAPI';
 import ContactNoteAPI from '../../api/contact/ContactNoteAPI';
 import AddressEnergySupplierAPI from '../../api/contact/AddressEnergySupplierAPI';
+import AddressDongleAPI from '../../api/contact/AddressDongleAPI';
 import PortalUserAPI from '../../api/contact/PortalUserAPI';
 
 export function* fetchContactDetailsSaga({ payload }) {
@@ -71,5 +72,14 @@ export function* deleteAddressEnergySupplierSaga({ id }) {
         yield put({ type: 'DELETE_ADDRESS_ENERGY_SUPPLIER_SUCCESS', id });
     } catch (error) {
         yield put({ type: 'DELETE_ADDRESS_ENERGY_SUPPLIER_ERROR', error });
+    }
+}
+
+export function* deleteAddressDongleSaga({ id }) {
+    try {
+        yield call(AddressDongleAPI.deleteAddressDongle, id);
+        yield put({ type: 'DELETE_ADDRESS_DONGLE_SUCCESS', id });
+    } catch (error) {
+        yield put({ type: 'DELETE_ADDRESS_DONGLE_ERROR', error });
     }
 }

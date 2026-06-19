@@ -32,6 +32,11 @@ export const setFilterMeasureRequested = measureRequested => ({
     measureRequested,
 });
 
+export const setFilterIntakeSource = intakeSource => ({
+    type: 'SET_FILTER_INTAKE_SOURCE',
+    intakeSource,
+});
+
 export const setFilterIntakeStatus = statusId => ({
     type: 'SET_FILTER_INTAKE_STATUS',
     statusId,

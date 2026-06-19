@@ -4,6 +4,7 @@ namespace App\Http\Resources\Opportunity;
 
 use App\Http\Resources\Measure\FullMeasure;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
 
 class GridOpportunity extends JsonResource
 {
@@ -18,6 +19,8 @@ class GridOpportunity extends JsonResource
         return [
             'id' => $this->id,
             'number' => $this->number,
+            'address' => optional(optional($this->intake)->address)->full_address,
+            'postalCode' => optional(optional($this->intake)->address)->postal_code,
             'createdAt' => $this->created_at,
             'desiredDate' => $this->desired_date,
             'contactName' => optional(optional($this->intake)->contact)->full_name,

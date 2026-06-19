@@ -10,6 +10,13 @@ import InvoiceSendToolbar from './InvoiceSendToolbar';
 import { clearPreviewSend } from '../../../../actions/invoice/InvoicesActions';
 import { connect } from 'react-redux';
 import { fetchAdministrationDetails } from '../../../../actions/administration/AdministrationDetailsActions';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const InvoiceSendAppWrapper = props => {
+    const params = useParams();
+    return <InvoiceSendApp {...props} params={params} />;
+};
 
 class InvoiceSendApp extends Component {
     constructor(props) {
@@ -127,4 +134,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(InvoiceSendApp);
+export default connect(mapStateToProps, mapDispatchToProps)(InvoiceSendAppWrapper);

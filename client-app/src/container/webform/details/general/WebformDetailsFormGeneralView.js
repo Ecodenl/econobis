@@ -67,7 +67,7 @@ const WebformDetailsFormGeneralView = props => {
                         <ViewText
                             label={'Verantwoordelijke'}
                             value={responsibleUser ? responsibleUser.fullName : responsibleTeam.name}
-                            link={responsibleUser ? 'gebruiker/' + responsibleUser.id : 'team/' + responsibleTeam.id}
+                            link={responsibleUser ? '/gebruiker/' + responsibleUser.id : '/team/' + responsibleTeam.id}
                         />
                     </div>
 

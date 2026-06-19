@@ -5,6 +5,10 @@ export default function(participation, errors, hasErrors, statusCodeRef, project
         errors.contactId = true;
         hasErrors = true;
     }
+    if (!participation.addressId) {
+        errors.addressId = true;
+        hasErrors = true;
+    }
     if (!participation.projectId) {
         errors.projectId = true;
         hasErrors = true;

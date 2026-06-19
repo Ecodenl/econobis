@@ -6,11 +6,11 @@ use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\Project\Project;
 use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\RevenuesKwh\RevenuesKwh;
+use App\Helpers\Mail\MailHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 
 class checkTerminationDateParticipants extends Command
 {
@@ -20,7 +20,7 @@ class checkTerminationDateParticipants extends Command
      * @var string
      */
     protected $signature = 'participants:checkTerminationDate';
-    protected $mailTo = 'wim.mosman@xaris.nl';
+    protected $mailTo = 'xaris.software@econobis.nl';
 
     /**
      * The console command description.
@@ -55,22 +55,35 @@ class checkTerminationDateParticipants extends Command
         foreach($projects as $project) {
             $participantsProject = $project->participantsProject()->whereNotNull('date_terminated')->get();
             $mutationTypeWithDrawalId = ParticipantMutationType::where('code_ref', 'withDrawal')->where('project_type_id',  $project->projectType->id)->first()->id;
+            $mutationTypeResultDepositId = ParticipantMutationType::where('code_ref', 'result_deposit')->where('project_type_id',  $project->projectType->id)->first()->id;
 
             foreach($participantsProject as $participantProject) {
 
-                $lastMutation = $participantProject->mutationsDefinitiveDesc()->where('participant_mutations.type_id', $mutationTypeWithDrawalId)->first();
+                $lastMutation = $participantProject->mutationsDefinitiveDesc()
+                    ->where(function ($query) use ($mutationTypeWithDrawalId, $mutationTypeResultDepositId) {
+                        $query->where('participant_mutations.type_id', $mutationTypeWithDrawalId)
+                            ->orWhere(function ($query) use ($mutationTypeResultDepositId) {
+                                $query->where('participant_mutations.type_id', $mutationTypeResultDepositId)
+                                    ->where('participant_mutations.amount', '<', 0);
+                            });
+                    })
+                    ->first();
                 if($lastMutation) {
                     $lastmutationDateEntry = Carbon::parse($lastMutation->date_entry)->format('Y-m-d');
                 } else {
                     $lastmutationDateEntry = null;
                 }
                 $participantProjectDateTerminated = Carbon::parse($participantProject->date_terminated)->format('Y-m-d');
-                $participantProjectDateTerminatedDayAfter = Carbon::parse($participantProject->date_terminated)->addDay(1)->format('Y-m-d');
+                $participantProjectDateTerminatedDayAfter = Carbon::parse($participantProject->date_terminated)->addDay()->format('Y-m-d');
 
-//Log::info('Deelnemer: ' . $participantProject->id);
-//Log::info('Date Terminated: ' . $participantProjectDateTerminated);
-//Log::info('Date Terminated (next day): ' . $participantProjectDateTerminatedDayAfter);
-//Log::info('Date Last mutation withdrawel: ' . $lastmutationDateEntry);
+//if($participantProject->id === 184) {
+//	Log::info('Deelnemer: ' . $participantProject->id);
+//					Log::info($mutationTypeWithDrawalId);
+//					Log::info($mutationTypeResultDepositId);
+//	Log::info('Date Terminated: ' . $participantProjectDateTerminated);
+//	Log::info('Date Terminated (next day): ' . $participantProjectDateTerminatedDayAfter);
+//	Log::info('Date Last mutation withdrawel: ' . $lastmutationDateEntry);
+//}
                 if(
                     isSet($lastMutation)
                     && ($lastmutationDateEntry != null)
@@ -126,7 +139,7 @@ class checkTerminationDateParticipants extends Command
             ;
         }
 
-        $mail = Mail::to($this->mailTo);
+        $mail = MailHelper::to($this->mailTo);
         $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'.$subject.'</title></head><body><p>'. $subject . '</p>' . $wrongParticipantProjectsHtml . '</body></html>';
 
         $mail->subject = $subject;

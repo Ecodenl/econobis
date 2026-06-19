@@ -20,7 +20,10 @@ class Joiner extends RequestJoiner
 
     protected function applyAddressJoin($query)
     {
-        $query->join('addresses', 'intakes.address_id', '=', 'addresses.id');
+        $query->leftJoin('addresses', function ($join) {
+            $join->on('addresses.id', '=', 'intakes.address_id')
+                ->whereNull('addresses.deleted_at');
+        });
     }
 
     protected function applyAddressAreaNameJoin($query)
@@ -28,7 +31,7 @@ class Joiner extends RequestJoiner
         $query->join('addresses as addressAreaName',  'intakes.address_id', '=', 'addressAreaName.id');
     }
 
-    protected function applySourceJoin($query)
+    protected function applyIntakeSourceJoin($query)
     {
         $query->join('intake_source', 'intakes.id', '=', 'intake_source.intake_id');
     }

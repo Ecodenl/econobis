@@ -9,6 +9,8 @@ import InputText from '../../../components/form/InputText';
 import InputTextArea from '../../../components/form/InputTextArea';
 import MeasuresOfCategory from '../../../selectors/MeasuresOfCategory';
 import InputMultiSelect from '../../../components/form/InputMultiSelect';
+import ViewText from '../../../components/form/ViewText';
+import MoneyPresenter from '../../../helpers/MoneyPresenter';
 
 const OpportunityNew = props => {
     const {
@@ -20,10 +22,23 @@ const OpportunityNew = props => {
         measureIds,
         measureIdsSelected,
         amount,
+        belowWozLimit,
+        exceptionDebtRelief,
     } = props.opportunity;
 
     const measuresMatchToCategory = MeasuresOfCategory(props.measures, measureCategoryId);
     const measureCategory = props.measureCategories.find(measureCategory => measureCategory.id == measureCategoryId);
+
+    const yesNoOptions = [
+        {
+            id: '0',
+            name: 'Nee',
+        },
+        {
+            id: '1',
+            name: 'Ja',
+        },
+    ];
 
     return (
         <form className="form-horizontal col-md-12" onSubmit={props.handleSubmit}>
@@ -38,6 +53,16 @@ const OpportunityNew = props => {
                     label={'Adres'}
                     name={'address'}
                     value={props.intake ? props.intake.fullAddress : ''}
+                    readOnly={true}
+                />
+            </div>
+
+            <div className="row">
+                <div className="form-group col-sm-6"></div>
+                <InputText
+                    label={'Postcode'}
+                    name={''}
+                    value={props.intake && props.intake.address && props.intake.address.postalCode}
                     readOnly={true}
                 />
             </div>
@@ -119,6 +144,48 @@ const OpportunityNew = props => {
                     onChangeAction={props.handleInputChangeDate}
                 />
             </div>
+
+            {props.intake.campaign && props.intake.campaign.subsidyPossible != false ? (
+                <>
+                    <div className="row">
+                        <ViewText
+                            className={'form-group col-sm-6'}
+                            label={'Campagne WOZ grens'}
+                            value={MoneyPresenter(props.intake.campaign.wozLimit)}
+                        />
+                        <ViewText
+                            className={'form-group col-sm-6'}
+                            label={'WOZ waarde woningdossier'}
+                            value={
+                                props.intake?.address?.housingFile
+                                    ? MoneyPresenter(props.intake.address.housingFile.wozValue)
+                                    : ''
+                            }
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputSelect
+                            label={'Onder WOZ grens'}
+                            size={'col-sm-6'}
+                            name={'belowWozLimit'}
+                            options={yesNoOptions}
+                            value={belowWozLimit}
+                            onChangeAction={props.handleInputChange}
+                            error={props.errors.belowWozLimit}
+                        />
+                        <InputSelect
+                            label={'Uitzondering schuldhulpsanering'}
+                            size={'col-sm-6'}
+                            name={'exceptionDebtRelief'}
+                            options={yesNoOptions}
+                            value={exceptionDebtRelief}
+                            onChangeAction={props.handleInputChange}
+                            error={props.errors.exceptionDebtRelief}
+                        />
+                    </div>
+                </>
+            ) : null}
 
             <PanelFooter>
                 <div className="pull-right btn-group" role="group">

@@ -2,7 +2,6 @@ import { put, call } from 'redux-saga/effects';
 import ProjectDetailsAPI from '../../api/project/ProjectDetailsAPI';
 import ProjectValueCourseAPI from '../../api/project/ProjectValueCourseAPI';
 import ProjectRevenueAPI from '../../api/project/ProjectRevenueAPI';
-import { hashHistory } from 'react-router';
 import RevenuesKwhAPI from '../../api/project/RevenuesKwhAPI';
 import RevenuePartsKwhAPI from '../../api/project/RevenuePartsKwhAPI';
 
@@ -56,7 +55,6 @@ export function* deleteProjectSaga({ id }) {
     try {
         yield call(ProjectDetailsAPI.deleteProject, id);
         yield put({ type: 'DELETE_PROJECT_SUCCESS', id });
-        hashHistory.push(`/projecten`);
     } catch (error) {
         yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
         yield put({ type: 'DELETE_PROJECT_ERROR', error });

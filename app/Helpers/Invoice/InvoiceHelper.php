@@ -12,6 +12,7 @@ use App\Eco\Invoice\InvoicesToSend;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Order\Order;
 use App\Eco\User\User;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\Resources\Invoice\Templates\InvoiceMail;
@@ -20,7 +21,6 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class InvoiceHelper
@@ -86,6 +86,15 @@ class InvoiceHelper
                 }
             }
 
+            $vatPercentage = null;
+            if($orderProduct->product->currentPrice) {
+                $vatPercentage = $orderProduct->product->currentPrice->vat_percentage;
+            } else {
+                if ($orderProduct->product->ledger && $orderProduct->product->ledger->vatCode) {
+                    $vatPercentage = $orderProduct->product->ledger->vatCode->percentage;
+                }
+            }
+
             $invoiceProduct = new InvoiceProduct();
             $invoiceProduct->product_id = $orderProduct->product_id;
             $invoiceProduct->invoice_id = $invoice->id;
@@ -95,7 +104,7 @@ class InvoiceHelper
             $invoiceProduct->price_number_of_decimals = $priceNumberOfDecimals;
             $invoiceProduct->price = $price;
             $invoiceProduct->price_incl_vat = $priceInclVat;
-            $invoiceProduct->vat_percentage = $orderProduct->product->currentPrice ? $orderProduct->product->currentPrice->vat_percentage : 0;
+            $invoiceProduct->vat_percentage = $vatPercentage;
             $invoiceProduct->product_code = $orderProduct->product->code;
             $invoiceProduct->product_name = $orderProduct->product->name;
             $invoiceProduct->description = $orderProduct->product->invoice_text;
@@ -131,7 +140,9 @@ class InvoiceHelper
             && $invoice->status_id !== 'is-sending'
             && $invoice->status_id !== 'error-making'
             && $invoice->status_id !== 'error-sending'
-            && $invoice->status_id !== 'is-resending')
+            && $invoice->status_id !== 'is-resending'
+            && $invoice->status_id !== 'is-exporting'
+            && $invoice->status_id !== 'error-exporting')
         {
             if($invoice->status_id === 'paid' && $invoice->amount_open != 0){
                 if($invoice->twinfield_number){
@@ -232,11 +243,19 @@ class InvoiceHelper
         $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'contact', $invoice->order->contact);
         $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'order', $invoice->order);
         $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'nota', $invoice);
+        if($invoice->order->participation){
+            $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'project', $invoice->order->participation->project);
+            $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'deelname', $invoice->order->participation);
+        }
 
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'ik', $user);
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'contact', $invoice->order->contact);
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'order', $invoice->order);
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'nota', $invoice);
+        if($invoice->order->participation){
+            $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'project', $invoice->order->participation->project);
+            $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'deelname', $invoice->order->participation);
+        }
 
         $htmlBody = TemplateVariableHelper::stripRemainingVariableTags($htmlBody);
 
@@ -245,7 +264,7 @@ class InvoiceHelper
             . $subject . '</title></head>'
             . $htmlBody . '</html>';
 
-        $mail = Mail::fromMailbox($mailbox)
+        $mail = MailHelper::fromMailbox($mailbox)
             ->to($contactInfo['email']);
 
         $bcc = $invoice->administration->email_bcc_notas;
@@ -289,29 +308,32 @@ class InvoiceHelper
             $invoice->date_exhortation = Carbon::today();
             $invoice->email_exhortation = $contactInfo['email'];
         } elseif ($invoice->date_reminder_2) {
-            InvoiceHelper::sendNotificationEmail($invoice->order->emailTemplateReminder, $invoice, $userId);
             if($invoice->number_of_invoice_reminders === 2){
+                InvoiceHelper::sendNotificationEmail($invoice->order->emailTemplateExhortation, $invoice, $userId);
                 $invoice->date_exhortation = Carbon::today();
                 $invoice->email_exhortation = $contactInfo['email'];
             } else {
+                InvoiceHelper::sendNotificationEmail($invoice->order->emailTemplateReminder, $invoice, $userId);
                 $invoice->date_reminder_3 = Carbon::today();
                 $invoice->email_reminder_3 = $contactInfo['email'];
             }
         } elseif ($invoice->date_reminder_1) {
-            InvoiceHelper::sendNotificationEmail($invoice->order->emailTemplateReminder, $invoice, $userId);
             if($invoice->number_of_invoice_reminders === 1){
+                InvoiceHelper::sendNotificationEmail($invoice->order->emailTemplateExhortation, $invoice, $userId);
                 $invoice->date_exhortation = Carbon::today();
                 $invoice->email_exhortation = $contactInfo['email'];
             } else {
+                InvoiceHelper::sendNotificationEmail($invoice->order->emailTemplateReminder, $invoice, $userId);
                 $invoice->date_reminder_2 = Carbon::today();
                 $invoice->email_reminder_2 = $contactInfo['email'];
             }
         } else {
-            InvoiceHelper::sendNotificationEmail($invoice->order->emailTemplateReminder, $invoice, $userId);
             if($invoice->number_of_invoice_reminders === 0){
+                InvoiceHelper::sendNotificationEmail($invoice->order->emailTemplateExhortation, $invoice, $userId);
                 $invoice->date_exhortation = Carbon::today();
                 $invoice->email_exhortation = $contactInfo['email'];
             } else {
+                InvoiceHelper::sendNotificationEmail($invoice->order->emailTemplateReminder, $invoice, $userId);
                 $invoice->date_reminder_1 = Carbon::today();
                 $invoice->email_reminder_1 = $contactInfo['email'];
             }
@@ -333,7 +355,7 @@ class InvoiceHelper
             return false;
         }
 
-        $mail = Mail::fromMailbox($mailbox)
+        $mail = MailHelper::fromMailbox($mailbox)
             ->to($contactInfo['email']);
 
         $subject = 'Betalingsherinnering';
@@ -359,11 +381,19 @@ class InvoiceHelper
         $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'contact', $invoice->order->contact);
         $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'order', $invoice->order);
         $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'nota', $invoice);
+        if($invoice->order->participation){
+            $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'project', $invoice->order->participation->project);
+            $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'deelname', $invoice->order->participation);
+        }
 
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'ik', $user);
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'contact', $invoice->order->contact);
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'order', $invoice->order);
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'nota', $invoice);
+        if($invoice->order->participation){
+            $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'project', $invoice->order->participation->project);
+            $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'deelname', $invoice->order->participation);
+        }
 
         $htmlBody = TemplateVariableHelper::stripRemainingVariableTags($htmlBody);
 
@@ -387,7 +417,9 @@ class InvoiceHelper
 
         $img = '';
         if ($invoice->administration->logo_filename) {
-            $path = storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $invoice->administration->logo_filename);
+//            todo WM: opschonen
+//            $path = storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $invoice->administration->logo_filename);
+            $path = Storage::disk('administration-logos')->path($invoice->administration->logo_filename);
             $logo = file_get_contents($path);
 
             $src = 'data:' . mime_content_type($path)
@@ -403,8 +435,24 @@ class InvoiceHelper
         $contactName = null;
 
         if ($invoice->order->contact->type_id == 'person') {
-            $prefix = $invoice->order->contact->person->last_name_prefix;
-            $contactName = $prefix ? $invoice->order->contact->person->first_name . ' ' . $prefix . ' ' . $invoice->order->contact->person->last_name : $invoice->order->contact->person->first_name . ' ' . $invoice->order->contact->person->last_name;
+            $titleAddress = $invoice->order->contact?->person?->title?->address;
+            $initials = $invoice->order->contact?->person?->initials ? $invoice->order->contact?->person?->initials : ($invoice->order->contact?->person?->first_name ? substr($invoice->order->contact?->person?->first_name, 0, 1) . "." : "");
+            $prefix = $invoice->order->contact?->person->last_name_prefix;
+
+            $contactName = '';
+            // Als er een title address is beginnen we daarmee
+            if ($titleAddress) {
+                $contactName .= $titleAddress . ' ';
+            }
+            // Hierna voegen we toe: initials + ' '
+            $contactName .= $initials . ' ';
+            // Als er een prefix is, dan voegen we die toe: prefix + ' '
+            if ($prefix) {
+                $contactName .= $prefix . ' ';
+            }
+            // Tenslotte voegen we toe: last_name
+            $contactName .= $invoice->order->contact?->person->last_name;
+
         } elseif ($invoice->order->contact->type_id == 'organisation') {
             $contactName = optional($invoice->order->contact->organisation)->statutory_name ? $invoice->order->contact->organisation->statutory_name : $invoice->order->contact->full_name;
         }
@@ -416,6 +464,13 @@ class InvoiceHelper
                 'contactName' => $contactName,
                 'logo' => $img,
             ]);
+
+            // Preview op scherm levert een fout op servers: file_exists(): open_basedir restriction in effect. File(/.ufm) is not within the allowed path(s)
+            // Setten van option "isPphpEnabled" is nodig voor toevoegen pagina nummers in PDF zelf.
+            // Op scherm zelf staat ook al een paginator, dus doen we het maar even zonder die in PDF zelf.
+            // Bij het daadwerkelijk maken van de PDF werkt dit wel op de server, dus dan kunnen paginanummers wel toevoegen in echte PDF zelf.
+            //
+            //  return $pdf->setOption('isPhpEnabled', true)->output();
             return $pdf->output();
         }
 
@@ -456,9 +511,10 @@ class InvoiceHelper
         $path = 'administration_' . $invoice->administration->id
             . DIRECTORY_SEPARATOR . 'invoices' . DIRECTORY_SEPARATOR . $name;
 
-        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $path);
-
-        $pdf->save($filePath);
+//        todo WM: opschonen
+//        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $path);
+        $filePath = Storage::disk('administrations')->path($path);
+        $pdf->setOption('isPhpEnabled', true)->save($filePath);
 
         $invoiceDocument = new InvoiceDocument();
         $invoiceDocument->invoice_id = $invoice->id;
@@ -468,13 +524,14 @@ class InvoiceHelper
 
         self::invoicePdfIsCreated($invoice);
 
-        return true;
+        return $path;
     }
 
     public static function checkStorageDir($administration_id)
     {
         //Check if storage map exists
-        $storageDir = Storage::disk('administrations')->path(DIRECTORY_SEPARATOR . 'administration_' . $administration_id . DIRECTORY_SEPARATOR . 'invoices');
+        $storageDir = Storage::disk('administrations')
+            ->path(DIRECTORY_SEPARATOR . 'administration_' . $administration_id . DIRECTORY_SEPARATOR . 'invoices');
 
         if (!is_dir($storageDir)) {
             mkdir($storageDir, 0777, true);
@@ -527,7 +584,7 @@ class InvoiceHelper
     }
     public static function invoiceIsResending(Invoice $invoice)
     {
-        //Nota moet nog status in-progress hebben
+        //Nota moet nog status error-sending hebben
         if($invoice->status_id === 'error-sending')
         {
             $invoice->status_id = 'is-resending';
@@ -546,6 +603,40 @@ class InvoiceHelper
             $invoice->save();
         }
     }
+    public static function invoiceIsExporting(Invoice $invoice)
+    {
+        //Nota moet nog status sent of error-exporting hebben
+        if($invoice->status_id === 'sent' || $invoice->status_id === 'error-exporting')
+        {
+            $invoice->status_id = 'is-exporting';
+            $invoice->save();
+        }
+    }
+    public static function invoiceExported(Invoice $invoice, ?string $twinfieldNumber = null)
+    {
+        //Nota moet nog status is-exporting hebben
+        if ($invoice->status_id === 'is-exporting') {
+            // 0 invoice meteen op betaald zetten
+            $isNullInvoice = $invoice->getTotalInclVatInclReductionAttribute() == 0;
+            $invoice->status_id = $isNullInvoice ? 'paid' : 'exported';
+            // Twinfieldnummer opslaan
+            if ($twinfieldNumber !== null) {
+                $invoice->twinfield_number = $twinfieldNumber;
+            }
+            $invoice->save();
+        }
+    }
+    public static function invoiceErrorExporting(Invoice $invoice)
+    {
+        //Nota moet nog status is-exporting hebben
+        if($invoice->status_id === 'is-exporting')
+        {
+            //Status naar error-exporting
+            $invoice->status_id = 'error-exporting';
+            $invoice->save();
+        }
+    }
+
     public static function invoicePdfIsCreated(Invoice $invoice)
     {
         $invoicesToSend = $invoice->invoicesToSend()->first();

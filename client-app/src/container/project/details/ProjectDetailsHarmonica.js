@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import TaskHarmonica from './harmonica/TaskHarmonica';
 import DocumentHarmonica from './harmonica/DocumentHarmonica';
 import EmailInboxHarmonica from './harmonica/EmailInboxHarmonica';
 import EmailSentHarmonica from './harmonica/EmailSentHarmonica';
+
+// Functionele wrapper voor de class component
+const ProjectDetailsHarmonicaWrapper = props => {
+    const navigate = useNavigate();
+    return <ProjectDetailsHarmonica {...props} navigate={navigate} />;
+};
 
 class ProjectDetailsHarmonica extends Component {
     constructor(props) {
@@ -35,18 +41,18 @@ class ProjectDetailsHarmonica extends Component {
     }
 
     newTask = () => {
-        hashHistory.push(`/taak/nieuw/project/${this.props.project.id}`);
+        this.props.navigate(`/taak/nieuw/project/${this.props.project.id}`);
     };
 
     newDocumentNotOnPortal = type => {
-        hashHistory.push(`/document/nieuw/${type}/eco/project/${this.props.project.id}`);
+        this.props.navigate(`/document/nieuw/${type}/eco/project/${this.props.project.id}`);
     };
     newDocumentOnPortal = type => {
-        hashHistory.push(`/document/nieuw/${type}/portal/project/${this.props.project.id}`);
+        this.props.navigate(`/document/nieuw/${type}/portal/project/${this.props.project.id}`);
     };
 
     newEmail = () => {
-        hashHistory.push(`/email/nieuw`);
+        this.props.navigate(`/email/nieuw`);
     };
 
     render() {
@@ -101,4 +107,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(ProjectDetailsHarmonica);
+export default connect(mapStateToProps)(ProjectDetailsHarmonicaWrapper);

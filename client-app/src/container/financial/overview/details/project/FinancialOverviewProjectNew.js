@@ -85,10 +85,10 @@ class FinancialOverviewProjectNew extends Component {
                     this.props.refreshFinancialOverviewProjects();
                 })
                 .catch(error => {
-                    let errorObject = JSON.parse(JSON.stringify(error));
+                    // let errorObject = JSON.parse(JSON.stringify(error));
                     let errorMessage = 'Er is iets misgegaan bij opslaan. Probeer het opnieuw.';
-                    if (errorObject.response.status !== 500) {
-                        errorMessage = errorObject.response.data.message;
+                    if (error.response.status !== 500) {
+                        errorMessage = error.response.data.message;
                     }
                     this.setState({
                         showErrorModal: true,

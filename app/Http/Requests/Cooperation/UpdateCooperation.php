@@ -24,6 +24,7 @@ class UpdateCooperation extends FormRequest
      */
     public function rules()
     {
+        // todo WM: opschonen inspection* velden
         return [
             'name' => ['required'],
             'address' => [''],
@@ -35,17 +36,19 @@ class UpdateCooperation extends FormRequest
             'ibanAttn' => [''],
             'email' => ['email'],
             'website' => [''],
-            'logoFilename' => [''],
-            'logoName' => [''],
+//            'logoFilename' => [''],
+//            'logoName' => [''],
             'hoomLink' => [''],
             'hoomConnectCoachLink' => [''],
             'hoomKey' => [''],
             'sendEmail' => [''],
             'hoomEmailTemplateId' => [''],
             'hoomGroupId' => [''],
+            'hoomMailboxId' => [''],
             'useLaposta' => [''],
             'lapostaKey' => [''],
             'useExportAddressConsumption' => [''],
+            'useDongleRegistration' => [''],
             'requireTwoFactorAuthentication' => [''],
             'inspectionPlannedEmailTemplateId' => [''],
             'inspectionPlannedMailboxId' => [''],
@@ -56,6 +59,11 @@ class UpdateCooperation extends FormRequest
             'fontFamilyDefault' => [''],
             'fontSizeDefault' => [''],
             'fontColorDefault' => [''],
+            'showExternalUrlForContacts' => [''],
+            'externalUrlContacts' => [''],
+            'externalUrlContactsButtonText' => [''],
+            'externalUrlContactsOnNewPage' => [''],
+            'requireTeamOnUserCreate' => [''],
         ];
     }
 }

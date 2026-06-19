@@ -9,7 +9,7 @@ use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\Task\Task;
 use App\Eco\Task\TaskType;
 use App\Eco\User\User;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 use App\Helpers\Workflow\TaskWorkflowHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\ContactGroup\ContactGroupController;
@@ -17,6 +17,8 @@ use App\Http\Controllers\Api\ParticipantMutation\ParticipantMutationController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Mollie\Api\Exceptions\ApiException;
 
 class ParticipantMutationMolliePaymentController extends ApiController
 {
@@ -43,7 +45,7 @@ class ParticipantMutationMolliePaymentController extends ApiController
             /**
              * Hackje; Tijdelijk user setten om alle observers tevreden te houden.
              */
-            $responsibleUser = User::find(PortalSettings::get('responsibleUserId'));
+            $responsibleUser = User::find(PortalSettings::first()?->responsible_user_id);;
             $responsibleUser->occupation = '@portal-update@';
             Auth::setUser($responsibleUser);
 
@@ -56,7 +58,9 @@ class ParticipantMutationMolliePaymentController extends ApiController
 
             $participantMutation->status_id = ParticipantMutationStatus::where('code_ref', 'final')->first()->id;
             $participantMutation->date_payment = Carbon::now()->format('Y-m-d');
-            $participantMutation->date_entry = $participantMutation->participation->project->date_entry ?: Carbon::now();
+            if($participantMutation->date_entry === null){
+                $participantMutation->date_entry = $participantMutation->participation->project->date_entry ?: Carbon::now()->format('Y-m-d');
+            }
             $participantMutation->save();
 
             (new ParticipantMutationController())->recalculateParticipantMutation($participantMutation);
@@ -91,6 +95,7 @@ class ParticipantMutationMolliePaymentController extends ApiController
             (new ParticipationProjectController())->createAndSendRegistrationDocument(
                 $participantMutation->participation->contact,
                 $participantMutation->participation->project,
+                $participantMutation->register_type,
                 $participantMutation->participation,
                 $responsibleUser->id,
                 $participantMutation,
@@ -112,7 +117,32 @@ class ParticipantMutationMolliePaymentController extends ApiController
         }
     }
 
-    /**
+    public function testWebhook(Request $request)
+    {
+        Log::info('Test createAndSendRegistrationDocument voor participantMutationCode: ' . $request->participantMutationCode);
+
+        $responsibleUser = User::find(PortalSettings::first()?->responsible_user_id);
+        $responsibleUser->occupation = '@portal-update@';
+        Auth::setUser($responsibleUser);
+
+        $participantMutation = ParticipantMutation::firstWhere('code', $request->participantMutationCode);
+        // todo WM: Moeten in portal anders doen volgens mij (niet met een view)
+        if (!$participantMutation) {
+            Log::error('ParticipantMutationMolliePaymentController - Geen participantMutation gevonden bij code: ' . $request->participantMutationCode);
+            return view('mollie.422');
+        }
+
+        (new ParticipationProjectController())->createAndSendRegistrationDocument(
+            $participantMutation->participation->contact,
+            $participantMutation->participation->project,
+            $participantMutation->register_type,
+            $participantMutation->participation,
+            $responsibleUser->id,
+            $participantMutation,
+        );
+    }
+
+        /**
      * Deze link wordt door inschrijver geopend bij betaling.
      * Hier maken we de Mollie transactie aan en redirecten we de gebruiker naar de betaalpagina.
      */
@@ -120,7 +150,9 @@ class ParticipantMutationMolliePaymentController extends ApiController
     {
         $participantMutation = ParticipantMutation::firstWhere('code', $participantMutationCode);
 
+        // todo WM: Moeten in portal anders doen volgens mij (niet met een view)
         if (!$participantMutation) {
+            Log::error('ParticipantMutationMolliePaymentController - Geen participantMutation gevonden bij code: ' . $participantMutationCode);
             return view('mollie.404');
         }
 
@@ -138,6 +170,12 @@ class ParticipantMutationMolliePaymentController extends ApiController
          */
         $participantMutationMolliePayment = $this->createParticipantMutationMolliePayment($participantMutation);
 
+        // todo WM: Moeten in portal anders doen volgens mij (niet met een view)
+        if(!$participantMutationMolliePayment){
+            Log::error('ParticipantMutationMolliePaymentController - Geen participantMutationMolliePayment gevonden bij participation id: ' . $participantMutation->participation_id. ' en participantMutation id: ' . $participantMutation->id);
+            return view('mollie.422');
+        }
+
         return redirect($participantMutationMolliePayment->checkout_url);
     }
 
@@ -152,7 +190,7 @@ class ParticipantMutationMolliePaymentController extends ApiController
                 'value' => $participantMutation->getMollieAmountFormatted(),
             ],
             "description" => $participantMutation->participation->project->name . ' ' . config('app.name'),
-            "redirectUrl" => 'https://' . PortalSettings::get("portalUrl") . '/#/inschrijven/mollie-resultaat/' . $participantMutation->code,
+            "redirectUrl" => 'https://' . PortalSettings::first()?->portal_url . '/#/inschrijven/mollie-resultaat/' . $participantMutation->code,
         ];
 
         /**
@@ -164,7 +202,13 @@ class ParticipantMutationMolliePaymentController extends ApiController
         }
 
         $mollieApi = $participantMutation->participation->project->administration->getMollieApiFacade();
-        $payment = $mollieApi->payments()->create($molliePostData);
+        try{
+            $payment = $mollieApi->payments->create($molliePostData);
+        } catch (ApiException $exception) {
+            Log::error('ParticipantMutationMolliePaymentController - Fout in/met MolliApi bij participation id: ' . $participantMutation->participation_id. ' en participantMutation id: ' . $participantMutation->id);
+            Log::error($exception);
+            return null;
+        }
 
         return ParticipantMutationMolliePayment::create([
             'participant_mutation_id' => $participantMutation->id,
@@ -180,8 +224,8 @@ class ParticipantMutationMolliePaymentController extends ApiController
             "Contact IBAN: " . $participantMutationMolliePayment->participantMutation->participation->contact->iban . "\n" .
             "Mollie betaling IBAN: " . $participantMutationMolliePayment->iban . "\n";
 
-        $checkContactTaskResponsibleUserId = PortalSettings::get('checkContactTaskResponsibleUserId');
-        $checkContactTaskResponsibleTeamId = PortalSettings::get('checkContactTaskResponsibleTeamId');
+        $checkContactTaskResponsibleUserId = PortalSettings::first()?->check_contact_task_responsible_user_id;
+        $checkContactTaskResponsibleTeamId = PortalSettings::first()?->check_contact_task_responsible_team_id;
         $taskTypeForPortal = TaskType::where('default_portal_task_type', true)->first();
 
         if($taskTypeForPortal){

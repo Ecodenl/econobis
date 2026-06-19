@@ -9,6 +9,13 @@ import PanelBody from '../../components/panel/PanelBody';
 import { fetchAdministrationDetails } from '../../actions/administration/AdministrationDetailsActions';
 import AdministrationDetailsAPI from '../../api/administration/AdministrationDetailsAPI';
 import ErrorUnauthorized from '../global/ErrorUnauthorized';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const FinancialAppWrapper = props => {
+    const params = useParams();
+    return <FinancialApp {...props} params={params} />;
+};
 
 class FinancialApp extends Component {
     constructor(props) {
@@ -98,4 +105,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(FinancialApp);
+export default connect(mapStateToProps, mapDispatchToProps)(FinancialAppWrapper);

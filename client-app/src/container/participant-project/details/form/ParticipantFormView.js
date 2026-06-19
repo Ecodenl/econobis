@@ -34,7 +34,7 @@ const ParticipantFormView = props => {
         participationsIndicationOfRestitutionEnergyTaxTotal,
     } = props.participantProject;
 
-    const projectTypeCodeRef = props.participantProject.project.projectType.codeRef;
+    const projectTypeCodeRef = props.participantProject.project.typeCodeRef;
 
     return (
         <div>
@@ -42,7 +42,7 @@ const ParticipantFormView = props => {
                 <ViewText
                     label={'Project'}
                     value={project ? project.name : ''}
-                    link={project ? 'project/' + project.id : ''}
+                    link={project ? '/project/' + project.id : ''}
                 />
                 <ViewText label={'Status'} value={uniqueMutationStatuses.map(item => item.name).join(', ')} />
             </div>
@@ -51,9 +51,9 @@ const ParticipantFormView = props => {
                 <ViewText
                     label={'Contact'}
                     value={contact ? contact.fullName : ''}
-                    link={contact ? 'contact/' + contact.id : ''}
+                    link={contact ? '/contact/' + contact.id : ''}
                 />
-                <ViewText label={'Administratie'} value={project.administration ? project.administration.name : ''} />
+                <ViewText label={'Administratie'} value={project ? project.administrationName : ''} />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
@@ -125,7 +125,7 @@ const ParticipantFormView = props => {
             </div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Totale opbrengsten'} value={moneyPresenter(participationsReturnsTotal)} />
-                {project.projectType.codeRef === 'loan' ? (
+                {project.typeCodeRef === 'loan' ? (
                     <ViewText label={'Uitkeren op'} value={type ? type.name : ''} />
                 ) : null}
             </div>

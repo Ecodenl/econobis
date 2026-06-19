@@ -52,7 +52,7 @@ class FinancialOverviewDetailsFormGeneral extends Component {
                 onMouseEnter={() => this.onDivEnter()}
                 onMouseLeave={() => this.onDivLeave()}
             >
-                {this.state.showEdit && permissions.manageFinancial ? (
+                {this.state.showEdit && permissions.manageFinancialOverview ? (
                     <FinancialOverviewDetailsFormGeneralEdit
                         {...this.props.financialOverview}
                         switchToView={this.switchToView}
@@ -64,7 +64,6 @@ class FinancialOverviewDetailsFormGeneral extends Component {
                         {...this.props.financialOverview}
                         switchToEdit={this.switchToEdit}
                         callFetchFinancialOverviewDetails={this.props.callFetchFinancialOverviewDetails}
-                        administrations={this.props.administrations}
                     />
                 )}
             </div>

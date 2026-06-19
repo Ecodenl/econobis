@@ -1,12 +1,12 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_MEASURE = `${URL_API}/api/measure`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchMeasureGrid: () => {
+        const URL_MEASURE = `${getApiUrl()}/api/measure`;
         const requestUrl = `${URL_MEASURE}/grid`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -15,9 +15,10 @@ export default {
     },
 
     fetchMeasure: id => {
+        const URL_MEASURE = `${getApiUrl()}/api/measure`;
         const requestUrl = `${URL_MEASURE}/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -26,9 +27,10 @@ export default {
     },
 
     updateMeasure: (id, data) => {
+        const URL_MEASURE = `${getApiUrl()}/api/measure`;
         const requestUrl = `${URL_MEASURE}/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, data)
             .then(response => response.data.data)
             .catch(error => {
@@ -37,9 +39,10 @@ export default {
     },
 
     storeFaq: (measureId, data) => {
+        const URL_MEASURE = `${getApiUrl()}/api/measure`;
         const requestUrl = `${URL_MEASURE}/${measureId}/faq`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, data)
             .then(response => response.data.data)
             .catch(error => {
@@ -48,9 +51,10 @@ export default {
     },
 
     deleteFaq: id => {
+        const URL_MEASURE = `${getApiUrl()}/api/measure`;
         const requestUrl = `${URL_MEASURE}/faq/${id}/delete`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -59,9 +63,10 @@ export default {
     },
 
     updateFaq: faq => {
+        const URL_MEASURE = `${getApiUrl()}/api/measure`;
         const requestUrl = `${URL_MEASURE}/faq/${faq.id}/update`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, faq)
             .then(function(response) {
                 return response.data;
@@ -72,9 +77,10 @@ export default {
     },
 
     attachSupplier: (measureId, organisationId) => {
+        const URL_MEASURE = `${getApiUrl()}/api/measure`;
         const requestUrl = `${URL_MEASURE}/${measureId}/supplier/${organisationId}/attach`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -83,9 +89,10 @@ export default {
     },
 
     detachSupplier: (measureId, organisationId) => {
+        const URL_MEASURE = `${getApiUrl()}/api/measure`;
         const requestUrl = `${URL_MEASURE}/${measureId}/supplier/${organisationId}/detach`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -94,9 +101,10 @@ export default {
     },
 
     associateOpportunity: (measureId, opportunityId) => {
+        const URL_MEASURE = `${getApiUrl()}/api/measure`;
         const requestUrl = `${URL_MEASURE}/${measureId}/opportunity/${opportunityId}/associate`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -105,9 +113,10 @@ export default {
     },
 
     peekMeasures: () => {
+        const URL_MEASURE = `${getApiUrl()}/api/measure`;
         const requestUrl = `${URL_MEASURE}/peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;

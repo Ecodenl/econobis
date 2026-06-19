@@ -35,14 +35,18 @@ class ParticipantProjectObserver
 
         $contact->calculateParticipationTotals()->save();
 
-        // When participations are definitive then add participant to project revenue distribution if available
-        if($participantProject->isDirty('participations_definitive') || $participantProject->isDirty('amount_definitive')) {
+        // When participations definitive or anmount definitive are added or changed then add/change/delete participant to project revenue distribution if available
+        // also when (payout) type is changed.
+        if($participantProject->isDirty('participations_definitive') || $participantProject->isDirty('amount_definitive') || $participantProject->isDirty('type_id')) {
+
+            $projectTypeCodeRef = (ProjectType::where('id', $participantProject->project->project_type_id)->first())->code_ref;
+
             foreach($participantProject->project->projectRevenues as $projectRevenue) {
                 // If project revenue is already confirmed then continue
                 if($projectRevenue->confirmed) continue;
 
                 $projectRevenueController = new ProjectRevenueController();
-                $projectRevenueController->saveDistribution($projectRevenue, $participantProject, false);
+                $projectRevenueController->saveDistributions($projectRevenue, $participantProject, $projectTypeCodeRef);
 
                 $projectTypeCodeRef = (ProjectType::where('id', $projectRevenue->project->project_type_id)->first())->code_ref;
                 if($projectRevenue->category->code_ref == 'revenueEuro'

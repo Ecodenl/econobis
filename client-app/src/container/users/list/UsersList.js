@@ -30,10 +30,11 @@ class UsersList extends Component {
                 <DataTable>
                     <DataTableHead>
                         <tr className="thead-title">
-                            <DataTableHeadTitle title={'Voornaam'} width={'30%'} />
+                            <DataTableHeadTitle title={'Voornaam'} width={'20%'} />
                             <DataTableHeadTitle title={'Achternaam'} width={'25%'} />
-                            <DataTableHeadTitle title={'E-mail'} width={'30%'} />
-                            <DataTableHeadTitle title={'Status'} width={'10%'} />
+                            <DataTableHeadTitle title={'E-mail'} width={'25%'} />
+                            <DataTableHeadTitle title={'Status'} width={'5%'} />
+                            <DataTableHeadTitle title={'Geblokkeerd tot'} width={'20%'} />
                             <DataTableHeadTitle title={''} width={'5%'} />
                         </tr>
                     </DataTableHead>

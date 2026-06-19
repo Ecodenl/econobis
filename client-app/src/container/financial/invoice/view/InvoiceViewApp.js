@@ -9,6 +9,13 @@ import InvoiceViewToolbar from './InvoiceViewToolbar';
 import InvoiceViewForm from './InvoiceViewForm';
 import InvoiceDetailsAPI from '../../../../api/invoice/InvoiceDetailsAPI';
 import fileDownload from 'js-file-download';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const InvoiceViewAppWrapper = props => {
+    const params = useParams();
+    return <InvoiceViewApp {...props} params={params} />;
+};
 
 class InvoiceViewApp extends Component {
     constructor(props) {
@@ -72,7 +79,7 @@ class InvoiceViewApp extends Component {
                     </div>
 
                     <div className="col-md-12 margin-10-top">
-                        <InvoiceViewForm invoiceDetails={this.props.invoiceDetails} scale={this.state.scale} />
+                        <InvoiceViewForm scale={this.state.scale} />
                     </div>
                 </div>
             </div>
@@ -95,4 +102,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(InvoiceViewApp);
+export default connect(mapStateToProps, mapDispatchToProps)(InvoiceViewAppWrapper);

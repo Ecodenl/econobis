@@ -10,6 +10,7 @@ export default function(state = { isLoading: false }, action) {
                 data: action.tasks.data.data,
                 meta: {
                     total: action.tasks.data.meta.total,
+                    taskIdsTotal: action.tasks.data.meta.taskIdsTotal,
                 },
                 isLoading: false,
             };

@@ -8,6 +8,8 @@
 
 namespace App\Eco\Opportunity;
 
+use App\Eco\Campaign\CampaignWorkflow;
+use App\Eco\PortalSettings\PortalSettings;
 use App\Helpers\Workflow\OpportunityWorkflowHelper;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -22,8 +24,16 @@ class OpportunityObserver
         $opportunity->number = 'temp';
 
         $userId = Auth::id();
-        $opportunity->created_by_id = $userId;
-        $opportunity->updated_by_id = $userId;
+        if(Auth::isPortalUser()) {
+            $responsibleUserId = PortalSettings::first()?->responsible_user_id;
+            if ($responsibleUserId) {
+                $opportunity->created_by_id = $responsibleUserId;
+                $opportunity->updated_by_id = $responsibleUserId;
+            }
+        } else {
+            $opportunity->created_by_id = $userId;
+            $opportunity->updated_by_id = $userId;
+        }
     }
 
     public function created(Opportunity $opportunity)
@@ -35,16 +45,27 @@ class OpportunityObserver
     public function updating(Opportunity $opportunity)
     {
         $userId = Auth::id();
-        $opportunity->updated_by_id = $userId;
+        if(Auth::isPortalUser()) {
+            $responsibleUserId = PortalSettings::first()?->responsible_user_id;
+            if ($responsibleUserId) {
+                $opportunity->updated_by_id = $responsibleUserId;
+            }
+        } else {
+            $opportunity->updated_by_id = $userId;
+        }
     }
 
     public function saving(Opportunity $opportunity)
     {
         if ($opportunity->isDirty('status_id'))
         {
-            $days = $opportunity->status->uses_wf ? $opportunity->status->number_of_days_to_send_email : 0;
-//            $mailDate = Carbon::now()->addDays($days)->addDay(1);
-            $mailDate = Carbon::now()->addDays($days);
+            $campaignWorkflow = CampaignWorkflow::where('workflow_for_type', 'opportunity')->where('campaign_id', $opportunity->intake->campaign_id)->where('opportunity_status_id', $opportunity->status_id)->first();
+            if($opportunity->status->uses_wf && $campaignWorkflow && $campaignWorkflow->is_active){
+                $days = $campaignWorkflow->number_of_days_to_send_email;
+            } else {
+                $days = 0;
+            }
+            $mailDate = Carbon::now()->addDays((int) $days);
             $opportunity->date_planned_to_send_wf_email_status = $mailDate;
         }
     }
@@ -53,9 +74,10 @@ class OpportunityObserver
     {
         if ($opportunity->isDirty('status_id'))
         {
-            if ($opportunity->status->uses_wf && $opportunity->status->number_of_days_to_send_email === 0){
+            $campaignWorkflow = CampaignWorkflow::where('workflow_for_type', 'opportunity')->where('campaign_id', $opportunity->intake->campaign_id)->where('opportunity_status_id', $opportunity->status_id)->first();
+            if ($opportunity->status->uses_wf && $campaignWorkflow && $campaignWorkflow->is_active && $campaignWorkflow->number_of_days_to_send_email === 0){
                 $opportunityWorkflowHelper = new OpportunityWorkflowHelper($opportunity);
-                $opportunityWorkflowHelper->processWorkflowEmail();
+                $opportunityWorkflowHelper->processWorkflowEmail($campaignWorkflow);
             }
         }
     }

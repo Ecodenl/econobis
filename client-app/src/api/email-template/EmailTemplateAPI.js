@@ -1,18 +1,19 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_EMAIL_TEMPLATE = `${URL_API}/api/email-template`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchEmailTemplates: () => {
+        const URL_EMAIL_TEMPLATE = `${getApiUrl()}/api/email-template`;
         const requestUrl = `${URL_EMAIL_TEMPLATE}/grid`;
 
-        return axiosInstance.get(requestUrl);
+        return getAxiosInstance().get(requestUrl);
     },
 
     fetchEmailTemplate: id => {
+        const URL_EMAIL_TEMPLATE = `${getApiUrl()}/api/email-template`;
         const requestUrl = `${URL_EMAIL_TEMPLATE}/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -21,9 +22,10 @@ export default {
     },
 
     fetchEmailTemplateWithUser: id => {
+        const URL_EMAIL_TEMPLATE = `${getApiUrl()}/api/email-template`;
         const requestUrl = `${URL_EMAIL_TEMPLATE}/with-user/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -32,9 +34,10 @@ export default {
     },
 
     storeEmailTemplate: data => {
+        const URL_EMAIL_TEMPLATE = `${getApiUrl()}/api/email-template`;
         const requestUrl = `${URL_EMAIL_TEMPLATE}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, data)
             .then(response => response.data.data)
             .catch(error => {
@@ -43,9 +46,10 @@ export default {
     },
 
     updateEmailTemplate: data => {
+        const URL_EMAIL_TEMPLATE = `${getApiUrl()}/api/email-template`;
         const requestUrl = `${URL_EMAIL_TEMPLATE}/${data.id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, data)
             .then(response => response.data.data)
             .catch(error => {
@@ -54,9 +58,10 @@ export default {
     },
 
     fetchEmailTemplatesPeek: () => {
+        const URL_EMAIL_TEMPLATE = `${getApiUrl()}/api/email-template`;
         const requestUrl = `${URL_EMAIL_TEMPLATE}/peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -67,8 +72,16 @@ export default {
     },
 
     deleteEmailTemplate: id => {
+        const URL_EMAIL_TEMPLATE = `${getApiUrl()}/api/email-template`;
         const requestUrl = `${URL_EMAIL_TEMPLATE}/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
+    },
+
+    duplicateTemplate: id => {
+        const URL_EMAIL_TEMPLATE = `${getApiUrl()}/api/email-template`;
+        const requestUrl = `${URL_EMAIL_TEMPLATE}/${id}/duplicate`;
+
+        return getAxiosInstance().post(requestUrl);
     },
 };

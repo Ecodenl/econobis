@@ -8,10 +8,13 @@ use App\Eco\FinancialOverview\FinancialOverviewContact;
 use App\Eco\FinancialOverview\FinancialOverviewParticipantProject;
 use App\Eco\Project\ProjectType;
 use App\Helpers\FinancialOverview\FinancialOverviewHelper;
+use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\RequestQueries\FinancialOverviewContact\Grid\RequestQuery;
+use App\Http\Resources\FinancialOverviewContact\FullFinancialOverviewContact;
 use App\Http\Resources\FinancialOverviewContact\SendFinancialOverviewContact;
 use App\Http\Resources\FinancialOverviewContact\GridFinancialOverviewContact;
+use App\Http\Resources\GenericResource;
 use App\Jobs\FinancialOverview\CreateAllFinancialOverviewContactsPost;
 use App\Jobs\FinancialOverview\SendAllFinancialOverviewContacts;
 use Illuminate\Database\Eloquent\Collection;
@@ -24,12 +27,15 @@ class FinancialOverviewContactController extends Controller
 {
     public function grid(RequestQuery $requestQuery)
     {
+        $this->authorize('view', FinancialOverview::class);
+
         $financialOverviewContacts = $requestQuery->get();
 
         $financialOverviewContacts->load(['financialOverview', 'contact']);
 
         foreach ($financialOverviewContacts as $financialOverviewContact) {
             $financialOverviewContact->emailToAddress = self::getContactInfoForFinancialOverview($financialOverviewContact->contact)['email'];
+            $financialOverviewContact->allowInterimFinancialOverview = self::getAllowInterimFinancialOverview($financialOverviewContact);
         }
 
         $selectedFinancialOverviewContacts = new Collection();
@@ -53,6 +59,8 @@ class FinancialOverviewContactController extends Controller
 
     public function getFinancialOverviewContact(FinancialOverviewContact $financialOverviewContact, $preview = false)
     {
+        $this->authorize('view', FinancialOverview::class);
+
         $financialOverviewContact->append('status');
 
         $loanTypeId = ProjectType::where('code_ref', 'loan')->first()->id;
@@ -68,14 +76,11 @@ class FinancialOverviewContactController extends Controller
         $contactId = $financialOverviewContact->contact->id;
         $financialOverviewId = $financialOverviewContact->financialOverview->id;
 
-        if($preview){
-            $definitiveFilter = [true, false];
-        } else {
-            $definitiveFilter = [true];
-        }
-        $financialOverviewContactTotalProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverviewId, $definitiveFilter){
-            $query->whereIn('definitive', $definitiveFilter)
-                ->where('financial_overview_id', $financialOverviewId);
+        $financialOverviewContactTotalStart = 0;
+        $financialOverviewContactTotalEnd = 0;
+
+        $financialOverviewContactTotalLoanProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverviewId){
+            $query->where('financial_overview_id', $financialOverviewId);
         })
             ->whereHas('participantProject', function ($query) use($contactId){
                 $query->where('contact_id', $contactId);
@@ -84,14 +89,55 @@ class FinancialOverviewContactController extends Controller
             ->join('projects', 'financial_overview_projects.project_id', '=', 'projects.id')
             ->join('participation_project', 'participant_project_id', '=', 'participation_project.id')
             ->join('project_type', 'projects.project_type_id', '=', 'project_type.id')
-            ->select('project_type.code_ref', DB::raw('SUM(quantity_start_value) as total_quantity_start_value'), DB::raw('SUM(quantity_end_value) as total_quantity_end_value'), DB::raw('SUM(amount_start_value) as total_amount_start_value'), DB::raw('SUM(amount_end_value) as total_amount_end_value'))
-            ->groupBy('project_type.code_ref')
-            ->orderBy('project_type.id')
-            ->get();
+            ->select(DB::raw('COUNT(*) as numberOfRecords'), DB::raw('SUM(amount_start_value) as total_amount_start_value'), DB::raw('SUM(amount_end_value) as total_amount_end_value'))
+            ->where('project_type.id', $loanTypeId)
+            ->first();
+
+        if($financialOverviewContactTotalLoanProjects){
+            $financialOverviewContactTotalStart += $financialOverviewContactTotalLoanProjects->total_amount_start_value;
+            $financialOverviewContactTotalEnd += $financialOverviewContactTotalLoanProjects->total_amount_end_value;
+        }
+
+        $financialOverviewContactTotalObligationProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverviewId){
+            $query->where('financial_overview_id', $financialOverviewId);
+        })
+            ->whereHas('participantProject', function ($query) use($contactId){
+                $query->where('contact_id', $contactId);
+            })
+            ->join('financial_overview_projects', 'financial_overview_project_id', '=', 'financial_overview_projects.id')
+            ->join('projects', 'financial_overview_projects.project_id', '=', 'projects.id')
+            ->join('participation_project', 'participant_project_id', '=', 'participation_project.id')
+            ->join('project_type', 'projects.project_type_id', '=', 'project_type.id')
+            ->select(DB::raw('COUNT(*) as numberOfRecords'), DB::raw('SUM(amount_start_value) as total_amount_start_value'), DB::raw('SUM(amount_end_value) as total_amount_end_value'))
+            ->where('project_type.id', $obligationTypeId)
+            ->first();
+
+        if($financialOverviewContactTotalObligationProjects){
+            $financialOverviewContactTotalStart += $financialOverviewContactTotalObligationProjects->total_amount_start_value;
+            $financialOverviewContactTotalEnd += $financialOverviewContactTotalObligationProjects->total_amount_end_value;
+        }
+
+        $financialOverviewContactTotalCapitalProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverviewId){
+            $query->where('financial_overview_id', $financialOverviewId);
+        })
+            ->whereHas('participantProject', function ($query) use($contactId){
+                $query->where('contact_id', $contactId);
+            })
+            ->join('financial_overview_projects', 'financial_overview_project_id', '=', 'financial_overview_projects.id')
+            ->join('projects', 'financial_overview_projects.project_id', '=', 'projects.id')
+            ->join('participation_project', 'participant_project_id', '=', 'participation_project.id')
+            ->join('project_type', 'projects.project_type_id', '=', 'project_type.id')
+            ->select(DB::raw('COUNT(*) as numberOfRecords'), DB::raw('SUM(amount_start_value) as total_amount_start_value'), DB::raw('SUM(amount_end_value) as total_amount_end_value'))
+            ->whereIn('project_type.id', [$capitalTypeId, $pcrTypeId])
+            ->first();
+
+        if($financialOverviewContactTotalCapitalProjects){
+            $financialOverviewContactTotalStart += $financialOverviewContactTotalCapitalProjects->total_amount_start_value;
+            $financialOverviewContactTotalEnd += $financialOverviewContactTotalCapitalProjects->total_amount_end_value;
+        }
 
         $financialOverviewContactLoanProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverviewId, $loanTypeId, $contactId){
-            $query->where('definitive', true)
-                ->where('financial_overview_id', $financialOverviewId)
+            $query->where('financial_overview_id', $financialOverviewId)
                 ->whereHas('project', function ($query) use($loanTypeId){
                     $query->where('project_type_id', $loanTypeId);
                 });
@@ -106,8 +152,7 @@ class FinancialOverviewContactController extends Controller
             ->get();
 
         $financialOverviewContactObligationProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverviewId, $obligationTypeId, $contactId){
-            $query->where('definitive', true)
-                ->where('financial_overview_id', $financialOverviewId)
+            $query->where('financial_overview_id', $financialOverviewId)
                 ->whereHas('project', function ($query) use($obligationTypeId){
                     $query->where('project_type_id', $obligationTypeId);
                 });
@@ -121,27 +166,10 @@ class FinancialOverviewContactController extends Controller
             ->select('participant_project_id', 'participation_project.contact_id', 'financial_overview_projects.project_id', 'projects.name', 'quantity_start_value', 'quantity_end_value', 'bookworth_start_value', 'bookworth_end_value', 'amount_start_value', 'amount_end_value')
             ->get();
 
-        $financialOverviewContactCapitalProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverviewId, $capitalTypeId, $contactId){
-            $query->where('definitive', true)
-                ->where('financial_overview_id', $financialOverviewId)
-                ->whereHas('project', function ($query) use($capitalTypeId){
-                    $query->where('project_type_id', $capitalTypeId);
-                });
-        })
-            ->whereHas('participantProject', function ($query) use($contactId){
-                $query->where('contact_id', $contactId);
-            })
-            ->join('financial_overview_projects', 'financial_overview_project_id', '=', 'financial_overview_projects.id')
-            ->join('projects', 'financial_overview_projects.project_id', '=', 'projects.id')
-            ->join('participation_project', 'participant_project_id', '=', 'participation_project.id')
-            ->select('participant_project_id', 'participation_project.contact_id', 'financial_overview_projects.project_id', 'projects.name', 'quantity_start_value', 'quantity_end_value', 'bookworth_start_value', 'bookworth_end_value', 'amount_start_value', 'amount_end_value')
-            ->get();
-
-        $financialOverviewContactPcrProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverviewId, $pcrTypeId, $contactId){
-            $query->where('definitive', true)
-                ->where('financial_overview_id', $financialOverviewId)
-                ->whereHas('project', function ($query) use($pcrTypeId){
-                    $query->where('project_type_id', $pcrTypeId);
+        $financialOverviewContactCapitalProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverviewId, $capitalTypeId, $pcrTypeId, $contactId){
+            $query->where('financial_overview_id', $financialOverviewId)
+                ->whereHas('project', function ($query) use($capitalTypeId, $pcrTypeId){
+                    $query->whereIn('project_type_id', [$capitalTypeId, $pcrTypeId]);
                 });
         })
             ->whereHas('participantProject', function ($query) use($contactId){
@@ -154,16 +182,46 @@ class FinancialOverviewContactController extends Controller
             ->get();
 
         $financialOverviewContactData = collect([
-            'financialOverviewContact' => $financialOverviewContact,
-            'financialOverviewContactTotalProjects' => $financialOverviewContactTotalProjects,
+            'financialOverviewContact' => FullFinancialOverviewContact::make($financialOverviewContact),
+            'financialOverviewContactTotalLoanProjects' => $financialOverviewContactTotalLoanProjects->numberOfRecords > 0 ? $financialOverviewContactTotalLoanProjects : null,
+            'financialOverviewContactTotalObligationProjects' => $financialOverviewContactTotalObligationProjects->numberOfRecords > 0 ? $financialOverviewContactTotalObligationProjects : null,
+            'financialOverviewContactTotalCapitalProjects' => $financialOverviewContactTotalCapitalProjects->numberOfRecords > 0 ? $financialOverviewContactTotalCapitalProjects : null,
+            'financialOverviewContactTotalStart' => $financialOverviewContactTotalStart,
+            'financialOverviewContactTotalEnd' => $financialOverviewContactTotalEnd,
             'financialOverviewContactLoanProjects' => $financialOverviewContactLoanProjects,
             'financialOverviewContactObligationProjects' => $financialOverviewContactObligationProjects,
             'financialOverviewContactCapitalProjects' => $financialOverviewContactCapitalProjects,
-            'financialOverviewContactPcrProjects' => $financialOverviewContactPcrProjects,
         ]);
         return $financialOverviewContactData;
     }
 
+    public function getFinancialOverviewContactForInterim(FinancialOverviewContact $financialOverviewContact)
+    {
+        $this->authorize('view', FinancialOverview::class);
+
+        $financialOverviewContact->load([
+            'financialOverview',
+        ]);
+
+        $financialOverviewContact->allowInterimFinancialOverview = self::getAllowInterimFinancialOverview($financialOverviewContact);
+        $emailedTo = self::getContactInfoForFinancialOverview($financialOverviewContact->contact)['email'];
+        $financialOverviewContact->emailed_to = $emailedTo;
+        $financialOverviewContact->emailToAllowed = ($emailedTo !== 'Geen e-mail bekend') ? true : false;
+
+        return FullFinancialOverviewContact::make($financialOverviewContact);
+    }
+    public function updateForInterim(RequestInput $input, FinancialOverviewContact $financialOverviewContact)
+    {
+        $this->authorize('manage', FinancialOverview::class);
+        $data = $input->integer('documentTemplateFinancialOverviewId')->validate('exists:document_templates,id')->alias('document_template_financial_overview_id')->next()
+            ->integer('emailTemplateFinancialOverviewId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_financial_overview_id')->next()
+            ->get();
+
+        $financialOverviewContact->fill($data);
+        $financialOverviewContact->save();
+
+        return GenericResource::make($financialOverviewContact);
+    }
 
     public function getFinancialOverviewContactsForSendingEmail(FinancialOverview $financialOverview, Request $request)
     {
@@ -206,8 +264,7 @@ class FinancialOverviewContactController extends Controller
         $this->authorize('manage', FinancialOverview::class);
 
         if ($financialOverviewContact->filename) {
-            $filePath = Storage::disk('administrations')
-                ->path($financialOverviewContact->filename);
+            $filePath = Storage::disk('administrations')->path($financialOverviewContact->filename);
             header('Access-Control-Expose-Headers: X-Filename');
             header('X-Filename:' . $financialOverviewContact->name);
         } else {
@@ -239,7 +296,6 @@ class FinancialOverviewContactController extends Controller
         set_time_limit(0);
         $this->authorize('manage', FinancialOverview::class);
 
-        $financialOverviewContacts = null;
         $financialOverviewContacts = self::getFinancialOverviewContactsForSending($financialOverview, $request, 'email');
 
         $response = [];
@@ -281,7 +337,6 @@ class FinancialOverviewContactController extends Controller
         set_time_limit(0);
         $this->authorize('manage', FinancialOverview::class);
 
-        $financialOverviewContacts = null;
         $financialOverviewContacts = self::getFinancialOverviewContactsForSending($financialOverview, $request, 'post');
 
         $response = [];
@@ -304,6 +359,69 @@ class FinancialOverviewContactController extends Controller
                 $chunkNumber = $chunkNumber + 1;
                 CreateAllFinancialOverviewContactsPost::dispatch($chunkNumber, $numberOfChunks, $financialOverview->id, $financialOverviewContactsSet, Auth::id());
             }
+        }
+
+        return $response;
+    }
+    public function sendInterim(FinancialOverviewContact $financialOverviewContact, Request $request)
+    {
+        set_time_limit(0);
+        $this->authorize('manage', FinancialOverview::class);
+
+        $response = [];
+
+        // ToDo WM: hier nog check op allow Interim?
+        if ($financialOverviewContact) {
+
+            // Check emailTo nog een keer.
+            $emailTo = self::getContactInfoForFinancialOverview($financialOverviewContact->contact)['email'];
+
+            if ($emailTo === 'Geen e-mail bekend') {
+                abort(404, 'Geen e-mail bekend');
+            } else {
+                // Eerst in progress of is resending zetten (mag bij Interim ook vanuit concept status
+                if ($financialOverviewContact->status_id === 'concept') {
+                    $financialOverviewContact->emailed_to = $emailTo;
+                    $financialOverviewContact->status_id = 'to-send';
+                    $financialOverviewContact->save();
+                }
+                if($financialOverviewContact->status_id === 'to-send') {
+                    FinancialOverviewHelper::financialOverviewContactInProgress($financialOverviewContact);
+                }elseif($financialOverviewContact->status_id === 'error-sending'){
+                    FinancialOverviewHelper::financialOverviewContactIsResending($financialOverviewContact);
+                }else{
+                    abort(404, "Waardestaat contact met ID " . $financialOverviewContact->id . " heeft geen status Concept, Te verzenden of Opnieuw te verzenden");
+                }
+            }
+            $financialOverviewContactsSet = collect([$financialOverviewContact]);
+            SendAllFinancialOverviewContacts::dispatch(1, 1, $financialOverviewContact->financial_overview_id, $financialOverviewContactsSet, Auth::id());
+        }
+
+        return $response;
+    }
+
+    public function sendInterimPost(FinancialOverviewContact $financialOverviewContact, Request $request)
+    {
+        set_time_limit(0);
+        $this->authorize('manage', FinancialOverview::class);
+
+        $response = [];
+
+        // ToDo WM: hier nog check op allow Interim?
+        if ($financialOverviewContact) {
+
+            // Eerst in progress zetten (mag bij Interim ook vanuit concept status
+            if ($financialOverviewContact->status_id === 'concept') {
+                $financialOverviewContact->status_id = 'to-send';
+                $financialOverviewContact->save();
+            }
+            if ($financialOverviewContact->status_id === 'to-send') {
+                FinancialOverviewHelper::financialOverviewContactInProgress($financialOverviewContact);
+            } else {
+                abort(404, "Waardestaat contact met ID " . $financialOverviewContact->id . " heeft geen status Concept of Te verzenden");
+            }
+            $financialOverviewContactsSet = collect([$financialOverviewContact]);
+            CreateAllFinancialOverviewContactsPost::dispatch(1, 1, $financialOverviewContact->financial_overview_id, $financialOverviewContactsSet, Auth::id());
         }
 
         return $response;
@@ -351,6 +469,19 @@ class FinancialOverviewContactController extends Controller
         }
 
         return $contactInfo;
+    }
+    // Tussentijdse waardestaat toegestaan?
+    // - contact mag lopende deelnames meer hebben.
+    // - Status moet nog concept zijn
+    // - bij gekoppelde administratie moet Gebruik aan staan
+    public function getAllowInterimFinancialOverview(FinancialOverviewContact $financialOverviewContact)
+    {
+        // All participations for the contact must be terminated
+        return !$financialOverviewContact->contact->participations()
+            ->whereNull('date_terminated')
+            ->exists()
+            && ($financialOverviewContact?->status_id === 'concept' ?? false)
+            && ($financialOverviewContact?->financialOverview?->administration?->uses_interim_financial_overviews ?? false);
     }
 
     protected function getOrganisationEmailAddressFinancialOverview(Contact $contact){

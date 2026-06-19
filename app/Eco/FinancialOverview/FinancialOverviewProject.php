@@ -12,9 +12,9 @@ class FinancialOverviewProject extends Model
 {
     protected $guarded = ['id'];
 
-    protected $dates = [
-        'created_at',
-        'updated_at',
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function project()
@@ -29,17 +29,34 @@ class FinancialOverviewProject extends Model
     {
         return $this->hasMany(FinancialOverviewParticipantProject::class);
     }
+    public function financialOverviewContactsForThisProject()
+    {
+        return $this->hasMany(FinancialOverviewContact::class, 'financial_overview_id', 'financial_overview_id')
+            ->whereRelation('contact.participations', function ($q) {
+                $q->where('participation_project.project_id', $this->project_id);
+            });
+    }
     public function getStatusAttribute()
     {
         if(!$this->status_id) return null;
 
         switch ($this->status_id) {
             case 'in-progress':
-                return 'Wordt toegevoegd';
+                return 'Wordt toegevoegd...';
             case 'concept':
-                return 'Concept';
+                if( $this->has_interim_financial_overview_contacts ) {
+                    return 'Concept / Verwerkt';
+                } else {
+                    return 'Concept';
+                }
             case 'definitive':
-                return 'Definitief';
+                if( $this->has_interim_financial_overview_contacts ) {
+                    return 'Definitief / Verwerkt';
+                } else {
+                    return 'Definitief';
+                }
+            case 'processed':
+                return 'Verwerkt';
             default:
                 return null;
         }
@@ -58,37 +75,68 @@ class FinancialOverviewProject extends Model
         return $this->financialOverviewParticipantProjects->count();
     }
 
+    public function getNumberOfFinancialOverviewContactsSendAttribute()
+    {
+        return $this->financialOverviewContactsForThisProject()
+            ->where('status_id', 'sent')
+            ->count();    }
+    public function getHasInterimFinancialOverviewContactsAttribute()
+    {
+        return $this->financialOverviewContactsForThisProject()
+            ->where('status_id', 'sent')
+            ->exists();
+    }
+
     public function getTotalQuantityStartValueAttribute()
     {
-        $projectTypeCodeRef = (ProjectType::where('id', $this->project->project_type_id)->first())->code_ref;
-        if($projectTypeCodeRef === 'loan') {
+        $projectTypeCodeRef = $this->project?->projectType?->code_ref ?? '';
+        if ($projectTypeCodeRef === 'loan') {
             return null;
         }
         return $this->financialOverviewParticipantProjects->sum('quantity_start_value');
     }
+
     public function getTotalQuantityEndValueAttribute()
     {
-        $projectTypeCodeRef = (ProjectType::where('id', $this->project->project_type_id)->first())->code_ref;
-        if($projectTypeCodeRef === 'loan') {
+        $projectTypeCodeRef = $this->project?->projectType?->code_ref ?? '';
+        if ($projectTypeCodeRef === 'loan') {
             return null;
         }
         return $this->financialOverviewParticipantProjects->sum('quantity_end_value');
     }
 
-    public function getBookworthStartValueAttribute(){
-        $projectTypeCodeRef = (ProjectType::where('id', $this->project->project_type_id)->first())->code_ref;
-        if($projectTypeCodeRef === 'loan') {
+    public function getBookworthStartValueAttribute()
+    {
+        $projectTypeCodeRef = $this->project?->projectType?->code_ref ?? '';
+        if ($projectTypeCodeRef === 'loan') {
             return null;
         }
-        $projectValueCourse = ProjectValueCourse::where('project_id', $this->project->id)->where('date', '<=', $this->getStartDateAttribute())->orderBy('date', 'DESC')->first();
+
+        $startDate = Carbon::parse($this->getStartDateAttribute()); // 01-01-[jaar]
+
+        $projectValueCourse = ProjectValueCourse::where('project_id', $this->project_id)
+            ->where('date', '<', $startDate->toDateString())   // < i.p.v. <=
+            ->latest('date')
+            ->first();
+
         return $projectValueCourse ? $projectValueCourse->book_worth : 0;
     }
-    public function getBookworthEndValueAttribute(){
-        $projectTypeCodeRef = (ProjectType::where('id', $this->project->project_type_id)->first())->code_ref;
-        if($projectTypeCodeRef === 'loan') {
+
+    public function getBookworthEndValueAttribute()
+    {
+        $projectTypeCodeRef = $this->project?->projectType?->code_ref ?? '';
+        if ($projectTypeCodeRef === 'loan') {
             return null;
         }
-        $projectValueCourse = ProjectValueCourse::where('project_id', $this->project->id)->where('date', '<=', $this->getEndDateAttribute())->orderBy('date', 'DESC')->first();
+
+        $endDate = Carbon::parse($this->getEndDateAttribute());     // 31-12-[jaar]
+        $endPeil = $endDate->copy()->addDay();                      // 01-01-[jaar+1]
+
+        $projectValueCourse = ProjectValueCourse::where('project_id', $this->project_id)
+            ->where('date', '<', $endPeil->toDateString())          // < 01-01 volgend jaar
+            ->latest('date')
+            ->first();
+
         return $projectValueCourse ? $projectValueCourse->book_worth : 0;
     }
 
@@ -96,9 +144,9 @@ class FinancialOverviewProject extends Model
     {
         return $this->financialOverviewParticipantProjects->sum('amount_start_value');
     }
+
     public function getTotalAmountEndValueAttribute()
     {
         return $this->financialOverviewParticipantProjects->sum('amount_end_value');
     }
-
 }

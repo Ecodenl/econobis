@@ -13,6 +13,10 @@ const filtersReducerDefaultState = {
         field: 'typeId',
         data: '',
     },
+    createdById: {
+        field: 'createdById',
+        data: '',
+    },
 };
 
 export default (state = filtersReducerDefaultState, action) => {
@@ -31,6 +35,14 @@ export default (state = filtersReducerDefaultState, action) => {
                 status: {
                     ...state.status,
                     data: action.status,
+                },
+            };
+        case 'SET_FILTER_CONTACT_GROUP_CREATED_BY_ID':
+            return {
+                ...state,
+                createdById: {
+                    ...state.createdById,
+                    data: action.createdById,
                 },
             };
         case 'SET_FILTER_CONTACT_GROUP_TYPE_ID':

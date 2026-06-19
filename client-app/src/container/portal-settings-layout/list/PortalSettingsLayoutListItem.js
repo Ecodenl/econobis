@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
+
+// Functionele wrapper voor de class component
+const PortalSettingsLayoutListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <PortalSettingsLayoutListItem {...props} navigate={navigate} />;
+};
 
 class PortalSettingsLayoutListItem extends Component {
     constructor(props) {
@@ -31,7 +37,7 @@ class PortalSettingsLayoutListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/portal-instellingen-layout/${id}`);
+        this.props.navigate(`/portal-instellingen-layout/${id}`);
     }
 
     render() {
@@ -74,4 +80,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(PortalSettingsLayoutListItem);
+export default connect(mapStateToProps)(PortalSettingsLayoutListItemWrapper);

@@ -22,7 +22,16 @@ class RevenueDistributionKwhCSVHelper
         $csv = '';
         $headers = true;
 
-        $distributionPartsKwh = $this->revenuesKwh->distributionPartsKwh->where('is_visible', true)->sortBy('distribution_id');
+        $distributionPartsKwh = $this->revenuesKwh->distributionPartsKwh()
+            ->where(function($query) {
+                $query->where('is_end_participation', true)
+                    ->orWhere('is_energy_supplier_switch', true)
+                    ->orWhere('is_end_total_period', true);
+            })
+            ->join('revenue_parts_kwh', 'revenue_distribution_parts_kwh.parts_id', '=', 'revenue_parts_kwh.id')
+            ->orderBy('revenue_distribution_parts_kwh.distribution_id')
+            ->orderBy('revenue_parts_kwh.date_begin')
+            ->get(['revenue_distribution_parts_kwh.*']); // Select only columns from the main table
 
         foreach ($distributionPartsKwh->chunk(500) as $chunk) {
             $chunk->load([
@@ -31,8 +40,7 @@ class RevenueDistributionKwhCSVHelper
             ]);
 
             $this->csvExporter->beforeEach(function ($distributionPartsKwh) {
-//                $distributionPartsKwh->created_at_date = $distributionPartsKwh->distributionKwh->created_at->format('d-m-Y');
-//                $distributionPartsKwh->updated_at_date = $distributionPartsKwh->distributionKwh->updated_at->format('d-m-Y');
+                $distributionPartsKwh->power_kwh_consumption = $distributionPartsKwh->distributionKwh->participation->power_kwh_consumption;
 
                 $distributionPartsKwh->period_start = $this->formatDate($distributionPartsKwh->date_begin_from_till_visible);
                 $distributionPartsKwh->period_end = $this->formatDate($distributionPartsKwh->partsKwh->date_end);
@@ -69,6 +77,7 @@ class RevenueDistributionKwhCSVHelper
                 'distributionKwh.contact.number' => 'Nummer',
                 'distributionKwh.contact.full_name' => 'Naam',
                 'participations_quantity' => 'Participaties',
+                'power_kwh_consumption' => 'Jaarlijks verbruik',
                 'payout_formatted' => 'Uit te keren bedrag',
                 'payout_type' => 'Uitkeren op',
                 'date_payout' => 'Datum uitkering',
@@ -88,8 +97,6 @@ class RevenueDistributionKwhCSVHelper
                 'country' => 'Land',
                 'period_start' => 'Begin periode',
                 'period_end' => 'Eind periode',
-//                'updated_at_date' => 'Laatste update op',
-//                'created_at_date' => 'Gemaakt op',
             ], $headers);
             $headers = false;
         }

@@ -19,8 +19,17 @@ const PartEnergySupplierExcelNew = props => {
                     required={'required'}
                     error={props.errors.documentName}
                     errorMessage={props.errorMessage.documentName}
+                    divSize={'col-sm-12'}
+                    labelSize={'col-sm-3'}
+                    size={'col-sm-9'}
                 />
-                (Bestandsnaam wordt aangevuld met afkorting leverancier en ingestelde bestandsformaat)
+                <ViewText
+                    className={'form-group col-sm-12'}
+                    labelSize={'col-sm-3'}
+                    valueSize={'col-sm-9'}
+                    label={''}
+                    value={'(Bestandsnaam wordt aangevuld met afkorting leverancier en ingestelde bestandsformaat)'}
+                />
             </div>
 
             <div className="row">
@@ -30,7 +39,9 @@ const PartEnergySupplierExcelNew = props => {
                 props.revenuePartsKwhForReport.distributionForReportEnergySupplier.length > 100 ? (
                     <>
                         <ViewText
-                            className={'form-group col-sm-6'}
+                            className={'form-group col-sm-12'}
+                            labelSize={'col-sm-3'}
+                            valueSize={'col-sm-9'}
                             label={'Rapportage voor deelnames'}
                             value={
                                 'Alle (aantal: ' +
@@ -76,7 +87,9 @@ const PartEnergySupplierExcelNew = props => {
                 ) : (
                     <>
                         <ViewText
-                            className={'form-group col-sm-6'}
+                            className={'form-group col-sm-12'}
+                            labelSize={'col-sm-3'}
+                            valueSize={'col-sm-9'}
                             label={'Rapportage voor deelnames'}
                             value={'Geen'}
                         />

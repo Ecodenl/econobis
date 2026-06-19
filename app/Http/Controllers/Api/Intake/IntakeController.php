@@ -26,6 +26,7 @@ use App\Http\Resources\Intake\FullIntakeWithCustomCampaigns;
 use App\Http\Resources\Intake\IntakePeek;
 use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -35,6 +36,8 @@ class IntakeController extends ApiController
 
     public function grid(RequestQuery $requestQuery)
     {
+        $this->authorize('view', Intake::class);
+
         $intakes = $requestQuery->get();
 
         $intakes->load(['contact', 'address', 'campaign', 'measuresRequested', 'status']);
@@ -42,6 +45,7 @@ class IntakeController extends ApiController
         return GridIntake::collection($intakes)
             ->additional(['meta' => [
             'total' => $requestQuery->total(),
+            'intakeIdsTotal' => $requestQuery->totalIds(),
             ]
         ]);
     }
@@ -51,6 +55,8 @@ class IntakeController extends ApiController
      */
     public function getStore(Contact $contact)
     {
+        $this->authorize('manage', Intake::class);
+
         $info[] = $contact->getPrettyAddresses();
 
         return $info;
@@ -58,6 +64,8 @@ class IntakeController extends ApiController
 
     public function show(Intake $intake)
     {
+        $this->authorize('view', Intake::class);
+
         $intake->load([
             'contact',
             'address.housingFile',
@@ -101,6 +109,8 @@ class IntakeController extends ApiController
 
     public function showWithCustomCampaigns(Intake $intake)
     {
+        $this->authorize('view', Intake::class);
+
         $intake->load([
             'contact',
             'address.housingFile',
@@ -144,6 +154,8 @@ class IntakeController extends ApiController
 
     public function excel(RequestQuery $requestQuery, Request $request)
     {
+        $this->authorize('view', Intake::class);
+
         set_time_limit(0);
         $intakes = $requestQuery->getQueryNoPagination()->get();
 
@@ -242,10 +254,14 @@ class IntakeController extends ApiController
         //relations
         if ($data['sourceIds']) {
             $intake->sources()->sync($data['sourceIds']);
+        } else {
+            $intake->sources()->detach();
         }
 
         if ($data['intakeReasonIds']) {
             $intake->reasons()->sync($data['intakeReasonIds']);
+        } else {
+            $intake->reasons()->detach();
         }
 
         return $this->show($intake);
@@ -299,6 +315,66 @@ class IntakeController extends ApiController
         }
     }
 
+    public function bulkDelete(Request $request)
+    {
+        $this->authorize('manage', Intake::class);
+
+        $allResult = [];
+
+        if($request->input('ids')){
+            $intakesToDelete = Intake::whereIn('id', $request->input('ids'))->get();
+            foreach ($intakesToDelete as $intake) {
+
+                try {
+                    DB::beginTransaction();
+
+                    $deleteIntake = new DeleteIntake($intake);
+                    $result = $deleteIntake->delete();
+                    if(count($result) > 0){
+                        $allResult[] = $result;
+                        DB::rollBack();
+                    }
+
+                    DB::commit();
+                } catch (\PDOException $e) {
+                    DB::rollBack();
+                    Log::error($e->getMessage());
+                    abort(501, 'Er is helaas een fout opgetreden.');
+                }
+
+            }
+        }
+
+        return $allResult;
+    }
+
+    public function bulkUpdate(Request $request)
+    {
+        $this->authorize('manage', Intake::class);
+
+        $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:intakes,id'],
+        ]);
+
+        $intakes = Intake::whereIn('id', $request->input('ids'))->get();
+
+        // todo WM: is dit nodig?
+//        foreach ($intakes as $intake) {
+//            $this->authorize('manage', $intake);
+//        }
+        $data = $request->validate([
+            'intakeStatusId' => ['nullable', 'exists:intake_status,id'],
+            'campaignId' => ['nullable', 'exists:campaigns,id'],
+        ]);
+
+        foreach ($intakes as $intake) {
+            $intake->update(Arr::keysToSnakeCase($data));
+        }
+
+    }
+
+
     public function tasks(Intake $intake)
     {
         return SidebarTask::collection($intake->tasks);
@@ -316,6 +392,8 @@ class IntakeController extends ApiController
 
     public function peek(Request $request)
     {
+//        $this->authorize('view', Intake::class);
+
         $teamContactIds = Auth::user()->getTeamContactIds();
 
         $query = Intake::query();

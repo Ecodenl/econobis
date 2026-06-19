@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
@@ -26,10 +26,14 @@ const ContactDetailsFormAddressEdit = props => {
         eanGas,
     } = props.address;
 
-    // if primairy address and more then 1 addresses (not old), then don't allow set to type old.
-    let addressTypesToSelect = props.addressTypes;
+    // Redux state ophalen
+    const addressTypes = useSelector(state => state.systemData.addressTypes);
+    const countries = useSelector(state => state.systemData.countries);
+
+    // filter 'old' adres type indien nodig
+    let addressTypesToSelect = addressTypes;
     if (primary && props.numberOfAddressesNotOld > 1) {
-        addressTypesToSelect = addressTypesToSelect.filter(filter => filter.id !== 'old');
+        addressTypesToSelect = addressTypesToSelect.filter(type => type.id !== 'old');
     }
 
     return (
@@ -48,25 +52,25 @@ const ContactDetailsFormAddressEdit = props => {
                                 error={props.postalCodeError}
                             />
                             <div className="form-group col-sm-6">
-                                <label htmlFor={'number'} className={`col-sm-6 required`}>
-                                    {'Nummer'}
+                                <label htmlFor={'number'} className="col-sm-6 required">
+                                    Nummer
                                 </label>
-                                <div className={`col-sm-4`}>
+                                <div className="col-sm-4">
                                     <input
-                                        type={'number'}
-                                        className={`form-control input-sm` + (props.numberError ? 'has-error' : '')}
-                                        id={'number'}
-                                        name={'number'}
+                                        type="number"
+                                        className={`form-control input-sm${props.numberError ? ' has-error' : ''}`}
+                                        id="number"
+                                        name="number"
                                         value={number}
                                         onChange={props.handleInputChange}
                                     />
                                 </div>
-                                <div className={`col-sm-2`}>
+                                <div className="col-sm-2">
                                     <input
-                                        type={'text'}
-                                        className={`form-control input-sm`}
-                                        id={'addition'}
-                                        name={'addition'}
+                                        type="text"
+                                        className="form-control input-sm"
+                                        id="addition"
+                                        name="addition"
                                         value={addition}
                                         onChange={props.handleInputChange}
                                     />
@@ -77,17 +81,17 @@ const ContactDetailsFormAddressEdit = props => {
                         <div className="row">
                             <InputText
                                 label={'Adres'}
-                                id={'adres'}
+                                id="adres"
                                 size={'col-sm-6'}
-                                name={'street'}
+                                name="street"
                                 value={street}
                                 onChangeAction={props.handleInputChange}
                             />
                             <InputText
                                 label={'Plaats'}
-                                id={'plaats'}
+                                id="plaats"
                                 size={'col-sm-6'}
-                                name={'city'}
+                                name="city"
                                 value={city}
                                 onChangeAction={props.handleInputChange}
                             />
@@ -99,32 +103,32 @@ const ContactDetailsFormAddressEdit = props => {
                                     <span>
                                         Type
                                         {typeId === 'old' && primary && props.numberOfAddresses === 1 ? (
-                                            <React.Fragment>
+                                            <>
                                                 <br />
                                                 <small style={{ color: 'red', fontWeight: 'normal' }}>
                                                     <strong>Let op!</strong> Dit is een primair adres en enige adres bij
                                                     contact.
                                                 </small>
-                                            </React.Fragment>
+                                            </>
                                         ) : typeId === 'old' && primary ? (
-                                            <React.Fragment>
+                                            <>
                                                 <br />
                                                 <small style={{ color: 'red', fontWeight: 'normal' }}>
                                                     <strong>Let op!</strong> Dit is een primair adres met type Oud.
                                                 </small>
-                                            </React.Fragment>
+                                            </>
                                         ) : (
                                             ''
                                         )}
                                     </span>
                                 }
                                 id="type"
-                                size={'col-sm-6'}
-                                name={'typeId'}
+                                size="col-sm-6"
+                                name="typeId"
                                 options={addressTypesToSelect}
                                 value={typeId}
                                 onChangeAction={props.handleInputChange}
-                                required={'required'}
+                                required="required"
                                 error={props.typeIdError}
                             />
                             {typeId === 'old' && (
@@ -133,7 +137,7 @@ const ContactDetailsFormAddressEdit = props => {
                                     name="endDate"
                                     value={endDate}
                                     onChangeAction={props.handleInputChangeDate}
-                                    required={'required'}
+                                    required="required"
                                     error={props.endDateError}
                                 />
                             )}
@@ -142,18 +146,18 @@ const ContactDetailsFormAddressEdit = props => {
                         <div className="row">
                             <InputText
                                 label={'Buurt'}
-                                id={'areaName'}
-                                size={'col-sm-6'}
-                                name={'areaName'}
+                                id="areaName"
+                                size="col-sm-6"
+                                name="areaName"
                                 value={areaName}
                                 disabled={true}
                                 onChangeAction={props.handleInputChange}
                             />
                             <InputText
                                 label={'Wijk'}
-                                id={'districtName'}
-                                size={'col-sm-6'}
-                                name={'districtName'}
+                                id="districtName"
+                                size="col-sm-6"
+                                name="districtName"
                                 value={districtName}
                                 disabled={true}
                                 onChangeAction={props.handleInputChange}
@@ -162,36 +166,37 @@ const ContactDetailsFormAddressEdit = props => {
 
                         <div className="row">
                             <InputSelect
-                                label={'Land'}
+                                label="Land"
                                 id="countryId"
-                                size={'col-sm-6'}
-                                name={'countryId'}
-                                options={props.countries}
+                                size="col-sm-6"
+                                name="countryId"
+                                options={countries}
                                 value={countryId}
                                 onChangeAction={props.handleInputChange}
                                 error={props.countryIdError}
                             />
                             <InputToggle
-                                label={'Primair adres'}
-                                name={'primary'}
+                                label="Primair adres"
+                                name="primary"
                                 value={primary}
                                 onChangeAction={props.handleInputChange}
                                 disabled={primary && typeId !== 'old'}
                             />
                         </div>
+
                         <div className="row">
                             <InputText
-                                label={'EAN elektriciteit'}
-                                id={'eanElectricity'}
-                                name={'eanElectricity'}
+                                label="EAN elektriciteit"
+                                id="eanElectricity"
+                                name="eanElectricity"
                                 value={eanElectricity}
                                 onChangeAction={props.handleInputChange}
                                 error={props.eanElectricityError}
                             />
                             <InputText
-                                label={'EAN gas'}
-                                id={'eanGas'}
-                                name={'eanGas'}
+                                label="EAN gas"
+                                id="eanGas"
+                                name="eanGas"
                                 value={eanGas}
                                 onChangeAction={props.handleInputChange}
                                 error={props.eanGasError}
@@ -200,15 +205,15 @@ const ContactDetailsFormAddressEdit = props => {
 
                         <div className="pull-right btn-group" role="group">
                             <ButtonText
-                                buttonClassName={'btn-default'}
-                                buttonText={'Annuleren'}
+                                buttonClassName="btn-default"
+                                buttonText="Annuleren"
                                 onClickAction={props.cancelEdit}
                             />
                             <ButtonText
-                                buttonText={'Opslaan'}
+                                buttonText="Opslaan"
                                 onClickAction={props.handleSubmit}
-                                type={'submit'}
-                                value={'Submit'}
+                                type="submit"
+                                value="Submit"
                             />
                         </div>
                     </PanelBody>
@@ -218,11 +223,4 @@ const ContactDetailsFormAddressEdit = props => {
     );
 };
 
-const mapStateToProps = state => {
-    return {
-        addressTypes: state.systemData.addressTypes,
-        countries: state.systemData.countries,
-    };
-};
-
-export default connect(mapStateToProps, null)(ContactDetailsFormAddressEdit);
+export default ContactDetailsFormAddressEdit;

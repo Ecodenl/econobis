@@ -43,7 +43,7 @@ class DataTableFreeFieldsFieldFilter extends Component {
         return (
             <>
                 {!freeFieldFormatType ? (
-                    <span>Kies eerst een vrij veld contact</span>
+                    <span>Kies eerst een vrij veld</span>
                 ) : freeFieldFormatType === 'boolean' ? (
                     <select
                         className={`form-control input-sm`}

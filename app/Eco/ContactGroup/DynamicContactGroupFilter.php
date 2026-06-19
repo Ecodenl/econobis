@@ -2,6 +2,8 @@
 
 namespace App\Eco\ContactGroup;
 
+use App\Eco\AddressDongle\AddressDongleTypeDongle;
+use App\Eco\AddressDongle\AddressDongleTypeReadOut;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
 use App\Eco\FreeFields\FreeFieldsField;
@@ -12,6 +14,7 @@ use App\Eco\HousingFile\HousingFileHoomHousingStatus;
 use App\Eco\HousingFile\HousingFileHoomLink;
 use App\Eco\HousingFile\RoofType;
 use App\Eco\Intake\IntakeStatus;
+use App\Eco\IntakeSource\IntakeSource;
 use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Occupation\Occupation;
@@ -56,8 +59,18 @@ class DynamicContactGroupFilter extends Model
             if (preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $this->data))  return Carbon::parse($this->data)->format('d-m-Y');
 
             // Booleans omzetten
-            $yesNoFields = ['didAcceptAgreement', 'didAgreeAvg', 'portalUser', 'housingFileExists','didUnderstandInfo'];
+            $yesNoFields = ['didAcceptAgreement', 'didAgreeAvg', 'portalUser', 'housingFileExists','didUnderstandInfo','hoomdossierExists','hasEmailAddress','hasPhoneNumber'];
             if (in_array($this->field, $yesNoFields)) return $this->data ? 'Ja' : 'Nee';
+
+            // Yes/No/Empty omzetten
+            $yesNoWithEmptyFields = ['addressDongleHasEnergyId'];
+            if (in_array($this->field, $yesNoWithEmptyFields)){
+                return $this->data == '1'
+                    ? 'Nee'
+                    : ($this->data == '2'
+                        ? 'Ja'
+                        : '');
+            }
 
             // opportunityMeasureCategory omzetten
             if ($this->field == 'opportunityMeasureCategory'){
@@ -107,6 +120,14 @@ class DynamicContactGroupFilter extends Model
                 }
                 return '';
             }
+            // intakeSource omzetten
+            if ($this->field == 'intakeSource'){
+                if($this->data){
+                    $intakeSource = IntakeSource::find($this->data);
+                    return $intakeSource->name_source;
+                }
+                return '';
+            }
             // intakeStatus omzetten
             if ($this->field == 'intakeStatus'){
                 if($this->data){
@@ -141,14 +162,24 @@ class DynamicContactGroupFilter extends Model
             }
             // housingFileFieldValue omzetten
             if ($this->field == 'housingFileFieldValue'){
-                if($this->data){
+                if(is_string($this->data) && $this->data !== ''){
                     $parentDynamicContactGroupFilter = $this->parentHousingFileFieldFilter();
+                    $arrayHousingFileHoomLinkSelectNoYesUnknownFieldsIds = HousingFileHoomLink::whereIn('external_hoom_short_name', HousingFileHoomLink::SELECT_NO_YES_UNKNOWN_FIELDS)->pluck('id')->toArray();
+                    if($parentDynamicContactGroupFilter && in_array($parentDynamicContactGroupFilter->data, $arrayHousingFileHoomLinkSelectNoYesUnknownFieldsIds ) ){
+                        $housingFileHoomLink = HousingFileHoomLink::find($parentDynamicContactGroupFilter->data);
+                        if($housingFileHoomLink){
+                            if($housingFileHoomLink->external_hoom_short_name == 'building-contract-type' || $housingFileHoomLink->external_hoom_short_name == 'monument') {
+                                return $this->data === '0' ? 'Nee' : ($this->data === '1' ? 'Ja' : ($this->data === '2' ? 'Onbekend' : 'Ongeldige waarde') );
+                            } else {
+                                return 'onbekend';
+                            }
+                        }
+                    }
                     $arrayHousingFileHoomLinkSelectDropdownFieldsIds = HousingFileHoomLink::whereIn('external_hoom_short_name', HousingFileHoomLink::SELECT_DROPDOWN_FIELDS)->pluck('id')->toArray();
-
                     if($parentDynamicContactGroupFilter && in_array($parentDynamicContactGroupFilter->data, $arrayHousingFileHoomLinkSelectDropdownFieldsIds ) ){
                         $housingFileHoomLink = HousingFileHoomLink::find($parentDynamicContactGroupFilter->data);
                         if($housingFileHoomLink){
-                            if($housingFileHoomLink->external_hoom_short_name == 'building-type-category') {
+                            if ($housingFileHoomLink->external_hoom_short_name == 'building-type-category') {
                                 return BuildingType::find($this->data)->name;
                             } elseif ($housingFileHoomLink->external_hoom_short_name == 'roof-type') {
                                 return RoofType::find($this->data)->name;
@@ -166,7 +197,7 @@ class DynamicContactGroupFilter extends Model
             }
 
             // freeFieldsFieldName omzetten
-            if ($this->field == 'freeFieldsFieldName'){
+            if ($this->field == 'contactFreeFieldsFieldName' || $this->field == 'addressFreeFieldsFieldName'){
                 if($this->data){
                     $freeFieldsField = FreeFieldsField::find($this->data);
                     return $freeFieldsField ? $freeFieldsField->freeFieldsTable->name . ' / '. $freeFieldsField->field_name : '';
@@ -174,7 +205,7 @@ class DynamicContactGroupFilter extends Model
                 return '';
             }
             // freeFieldsFieldValue omzetten
-            if ($this->field == 'freeFieldsFieldValue'){
+            if ($this->field == 'contactFreeFieldsFieldValue' || $this->field == 'addressFreeFieldsFieldValue'){
                 if($this->data){
                     $parentDynamicContactGroupFilter = $this->parentFreeFieldsFieldFilter();
 
@@ -210,8 +241,14 @@ class DynamicContactGroupFilter extends Model
 
             // participantMutationStatusId omzetten
             if ($this->field == 'participantMutationStatusId'){
+
                 if($this->data){
-                    return ParticipantMutationStatus::find($this->data)->name;
+                    switch ($this->data) {
+                        case 'isTerminated':
+                            return "Beëindigd";
+                        default:
+                            return ParticipantMutationStatus::find($this->data)->name;
+                    }
                 }
                 return '';
             }
@@ -221,6 +258,23 @@ class DynamicContactGroupFilter extends Model
                 if($this->data){
                     $sharedArea = SharedArea::find($this->data);
                     return $sharedArea ? $sharedArea->area_name : '';
+                }
+                return '';
+            }
+
+            // addressDongleTypeReadOut omzetten
+            if ($this->field == 'addressDongleTypeReadOut'){
+                if($this->data){
+                    $addressDongleTypeReadOut = AddressDongleTypeReadOut::find($this->data);
+                    return $addressDongleTypeReadOut ? $addressDongleTypeReadOut->name : '';
+                }
+                return '';
+            }
+            // addressDongleTypeDongle omzetten
+            if ($this->field == 'addressDongleTypeDongle'){
+                if($this->data){
+                    $addressDongleTypDongle = AddressDongleTypeDongle::find($this->data);
+                    return $addressDongleTypDongle ? $addressDongleTypDongle->name : '';
                 }
                 return '';
             }

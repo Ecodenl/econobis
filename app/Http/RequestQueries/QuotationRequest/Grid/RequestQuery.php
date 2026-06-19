@@ -30,4 +30,11 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
             ->whereTeamContactIds(Auth::user())
             ->select('quotation_requests.*');
     }
+
+    public function getQuery()
+    {
+        $query = parent::getQuery();
+
+        return $query->orderByDesc('quotation_requests.created_at');
+    }
 }

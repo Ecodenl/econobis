@@ -26,7 +26,7 @@ class Filter extends RequestFilter
     ];
 
     protected $mapping = [
-        'createdAt' => 'created_at',
+        'createdAt' => 'housing_files.created_at',
         'fullName' => 'full_name',
         'buildingTypeId' => 'building_type_id',
         'energyLabelId' => 'energy_label_id',

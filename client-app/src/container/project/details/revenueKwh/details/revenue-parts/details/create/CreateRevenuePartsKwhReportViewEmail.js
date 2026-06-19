@@ -20,16 +20,13 @@ class CreateRevenuePartsKwhReportViewEmail extends Component {
     }
 
     downloadEmail(distributionId) {
-        RevenuePartsKwhAPI.previewEmail(
-            distributionId,
-            this.props.subject,
-            this.props.documentTemplateId,
-            this.props.emailTemplateId
-        ).then(payload => {
-            this.setState({
-                email: payload.data,
-            });
-        });
+        RevenuePartsKwhAPI.previewEmail(distributionId, this.props.subject, this.props.emailTemplateId).then(
+            payload => {
+                this.setState({
+                    email: payload.data,
+                });
+            }
+        );
     }
 
     render() {

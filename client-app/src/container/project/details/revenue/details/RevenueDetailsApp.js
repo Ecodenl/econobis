@@ -9,6 +9,13 @@ import RevenueConclusion from './conclusion/RevenueConclusion';
 import Panel from '../../../../../components/panel/Panel';
 import PanelHeader from '../../../../../components/panel/PanelHeader';
 import RevenueFormGeneral from './form/RevenueFormGeneral';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const RevenueDetailsAppWrapper = props => {
+    const params = useParams();
+    return <RevenueDetailsApp {...props} params={params} />;
+};
 
 class RevenueDetailsApp extends Component {
     constructor(props) {
@@ -71,4 +78,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(RevenueDetailsApp);
+export default connect(mapStateToProps, mapDispatchToProps)(RevenueDetailsAppWrapper);

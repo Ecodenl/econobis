@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import moment from 'moment';
 moment.locale('nl');
@@ -8,6 +8,12 @@ moment.locale('nl');
 import TasksAPI from '../../api/task/TasksAPI';
 import { setSelectedView, setSelectedDate } from '../../actions/calendar/CalendarActions';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
+
+// Functionele wrapper voor de class component
+const CalendarBodyWrapper = props => {
+    const navigate = useNavigate();
+    return <CalendarBody {...props} navigate={navigate} />;
+};
 
 class CalendarBody extends Component {
     constructor(props) {
@@ -90,7 +96,7 @@ class CalendarBody extends Component {
 
     // Open item in new view
     openItem({ id }) {
-        hashHistory.push(`/taak/${id}`);
+        this.props.navigate(`/taak/${id}`);
     }
 
     render() {
@@ -161,4 +167,4 @@ const eventPropGetter = event => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CalendarBody);
+export default connect(mapStateToProps, mapDispatchToProps)(CalendarBodyWrapper);

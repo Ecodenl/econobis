@@ -6,6 +6,13 @@ import FinancialOverviewContactViewForm from './FinancialOverviewContactViewForm
 import FinancialOverviewContactViewToolbar from './FinancialOverviewContactViewToolbar';
 import FinancialOverviewContactAPI from '../../../../../../api/financial/overview/FinancialOverviewContactAPI';
 import fileDownload from 'js-file-download';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const FinancialOverviewContactViewAppWrapper = props => {
+    const params = useParams();
+    return <FinancialOverviewContactViewApp {...props} params={params} />;
+};
 
 class FinancialOverviewContactViewApp extends Component {
     constructor(props) {
@@ -87,4 +94,4 @@ class FinancialOverviewContactViewApp extends Component {
     }
 }
 
-export default FinancialOverviewContactViewApp;
+export default FinancialOverviewContactViewAppWrapper;

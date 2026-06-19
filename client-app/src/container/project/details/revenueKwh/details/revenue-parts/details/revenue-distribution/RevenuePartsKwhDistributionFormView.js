@@ -153,7 +153,11 @@ const RevenuePartsKwhDistributionFormView = props => {
                         />
                     </>
                 ) : null}
-                {(status == 'confirmed' || status == 'processed') && !isPreviousVisiblePartReported ? (
+                {props.showCheckboxList &&
+                props.createType === 'createReport' &&
+                (status == 'confirmed' || status == 'processed') &&
+                dateParticipantReport == null &&
+                !isPreviousVisiblePartReported ? (
                     <>
                         {' '}
                         <FaExclamationCircle

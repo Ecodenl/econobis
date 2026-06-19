@@ -4,11 +4,11 @@ namespace App\Console\Commands\Checks;
 
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
+use App\Helpers\Mail\MailHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 
 class checkWrongRevenueDistributionPartsKwhIndicatorFields extends Command
 {
@@ -18,7 +18,7 @@ class checkWrongRevenueDistributionPartsKwhIndicatorFields extends Command
      * @var string
      */
     protected $signature = 'revenue:checkWrongRevenueDistributionPartsKwhIndicatorFields {--recover=false}';
-    protected $mailTo = 'wim.mosman@xaris.nl';
+    protected $mailTo = 'xaris.software@econobis.nl';
 
     /**
      * The console command description.
@@ -96,6 +96,8 @@ class checkWrongRevenueDistributionPartsKwhIndicatorFields extends Command
                     "revenue_id" => $revenueDistributionPartKwh->revenue_id,
                     "project_id" => $revenueDistributionPartKwh->revenuesKwh->project_id,
                     "distribution_id" => $revenueDistributionPartKwh->distribution_id,
+                    "participation_id" => $revenueDistributionPartKwh->distributionKwh->participation_id,
+                    "contact_id" => $revenueDistributionPartKwh->distributionKwh->contact_id,
                     "part_id" => $revenueDistributionPartKwh->partsKwh->id,
                     "distribution_part_id" => $revenueDistributionPartKwh->id,
                     "part_date_begin" => $revenueDistributionPartKwh->partsKwh->date_begin,
@@ -154,6 +156,8 @@ class checkWrongRevenueDistributionPartsKwhIndicatorFields extends Command
                 "<p>revenue_id: " . $wrongRevenueDistributionPartKwh['revenue_id'] . ", " .
                 "project_id: " . $wrongRevenueDistributionPartKwh['project_id'] . ", " .
                 "distribution_id: " . $wrongRevenueDistributionPartKwh['distribution_id'] . ", " .
+                "participation_id: " . $wrongRevenueDistributionPartKwh['participation_id'] . ", " .
+                "contact_id: " . $wrongRevenueDistributionPartKwh['contact_id'] . ", " .
                 "part_id: " . $wrongRevenueDistributionPartKwh['part_id'] . ", " .
                 "distribution_part_id: " . $wrongRevenueDistributionPartKwh['distribution_part_id'] . ", " .
                 "part_date_begin: " . $wrongRevenueDistributionPartKwh['part_date_begin'] . ", " .
@@ -162,7 +166,7 @@ class checkWrongRevenueDistributionPartsKwhIndicatorFields extends Command
             ;
         }
 
-        $mail = Mail::to($this->mailTo);
+        $mail = MailHelper::to($this->mailTo);
         $htmlBody = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>.$subject.</title></head><body><p>'. $subject . '</p>' . $wrongRevenueDistributionPartsKwhHtml . '</body></html>';
 
         $mail->subject = $subject;

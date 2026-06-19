@@ -43,4 +43,12 @@ class Joiner extends RequestJoiner
         $query->join('contacts', 'intakes3.contact_id', '=', 'contacts.id');
     }
 
+    protected function applyAddressJoin($query)
+    {
+        $query->join('intakes as intakes4',  'opportunities.intake_id', '=', 'intakes4.id');
+        $query->leftJoin('addresses', function ($join) {
+            $join->on('addresses.id', '=', 'intakes4.address_id')
+                ->whereNull('addresses.deleted_at');
+        });
+    }
 }

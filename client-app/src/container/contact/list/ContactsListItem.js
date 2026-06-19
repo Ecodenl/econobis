@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 
 import { setCheckedContact } from '../../../actions/contact/ContactsActions';
 import Icon from 'react-icons-kit';
 import { trash } from 'react-icons-kit/fa/trash';
 import { pencil } from 'react-icons-kit/fa/pencil';
+
+// Functionele wrapper voor de class component
+const ContactsListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <ContactsListItem {...props} navigate={navigate} />;
+};
 
 class ContactsListItem extends Component {
     constructor(props) {
@@ -37,12 +43,17 @@ class ContactsListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/contact/${id}`);
+        this.props.navigate(`/contact/${id}`);
     }
 
     render() {
         const {
+            showCheckbox,
+            showCheckboxMerge,
             checked,
+            keepSelected,
+            removeSelected,
+            blockSelecting,
             id,
             number,
             typeId,
@@ -57,18 +68,27 @@ class ContactsListItem extends Component {
             statusName,
             createdAt,
             permissions,
+            iban,
+            vatNumber,
+            chamberOfCommerceNumber,
         } = this.props;
-
         return (
             <tr
-                className={this.state.highlightRow}
-                onDoubleClick={() => this.openItem(id)}
+                className={keepSelected ? 'success-row' : removeSelected ? 'error-row' : this.state.highlightRow}
+                onDoubleClick={() => (!showCheckbox && !showCheckboxMerge ? this.openItem(id) : void 0)}
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
-                {this.props.showCheckbox && (
+                {showCheckbox && (
                     <td>
                         <input type="checkbox" checked={checked} onChange={() => this.setCheckedContact(id)} />
+                    </td>
+                )}
+                {showCheckboxMerge && (
+                    <td>
+                        {!blockSelecting && (
+                            <input type="checkbox" checked={checked} onChange={() => this.setCheckedContact(id)} />
+                        )}
                     </td>
                 )}
                 <td className="hidden-xs">{number}</td>
@@ -81,7 +101,14 @@ class ContactsListItem extends Component {
                 </td>
                 {/*<td className="hidden-xs">{areaName}</td>*/}
                 <td className="hidden-xs">{emailAddress}</td>
-                <td>{phoneNumber}</td>
+                <td> {phoneNumber}</td>
+                {this.props.dataControleType === 'zelfde-iban' ? <td className="hidden-xs">{iban}</td> : ''}
+                {this.props.dataControleType === 'zelfde-btwnummer' ? <td className="hidden-xs">{vatNumber}</td> : ''}
+                {this.props.dataControleType === 'zelfde-kvknummer' ? (
+                    <td className="hidden-xs">{chamberOfCommerceNumber}</td>
+                ) : (
+                    ''
+                )}
                 <td className="hidden-xs hidden-sm">{moment(createdAt).format('DD-MM-Y')}</td>
                 <td>
                     {this.state.showActionButtons ? (
@@ -127,4 +154,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactsListItem);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactsListItemWrapper);

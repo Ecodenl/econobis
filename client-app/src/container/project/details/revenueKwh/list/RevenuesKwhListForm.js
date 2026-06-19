@@ -4,11 +4,14 @@ import RevenuesKwhListFormList from './RevenuesKwhListFormList';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../../components/panel/PanelHeader';
-import { hashHistory, Link } from 'react-router';
+import { useNavigate } from 'react-router-dom';
+
 import { connect } from 'react-redux';
 import ButtonIcon from '../../../../../components/button/ButtonIcon';
 
 const RevenuesKwhListForm = ({ permissions, projectId, projectStatus, revenuesKwh, projectRevenueCategories }) => {
+    const navigate = useNavigate();
+
     let disabled = false;
     let revenueDisabledKwh = false;
     let revenueTitleKwh = 'Nieuwe opbrengst Kwh verdeling maken';
@@ -35,12 +38,12 @@ const RevenuesKwhListForm = ({ permissions, projectId, projectStatus, revenuesKw
         <Panel>
             <PanelHeader>
                 <span className="h5 text-bold">Opbrengsten Kwh</span>
-                {permissions.manageFinancial && (
+                {permissions.manageProject && (
                     <React.Fragment>
                         <ButtonIcon
                             buttonClassName={'pull-right btn btn-link'}
                             onClickAction={() =>
-                                hashHistory.push(`/project/opbrengst-kwh/nieuw/${projectId}/${revenueKwhCategoryId}`)
+                                navigate(`/project/opbrengst-kwh/nieuw/${projectId}/${revenueKwhCategoryId}`)
                             }
                             disabled={disabled || revenueDisabledKwh}
                             title={revenueTitleKwh}

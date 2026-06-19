@@ -6,6 +6,13 @@ import EmailTemplateDetailsToolbar from './EmailTemplateDetailsToolbar';
 import EmailTemplateDetailsForm from './EmailTemplateDetailsForm';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const EmailTemplateDetailsAppWrapper = props => {
+    const params = useParams();
+    return <EmailTemplateDetailsApp {...props} params={params} />;
+};
 
 class EmailTemplateDetailsApp extends Component {
     constructor(props) {
@@ -14,6 +21,12 @@ class EmailTemplateDetailsApp extends Component {
 
     componentDidMount() {
         this.props.fetchEmailTemplate(this.props.params.id);
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.params.id !== prevProps.params.id) {
+            this.props.fetchEmailTemplate(this.props.params.id);
+        }
     }
 
     render() {
@@ -50,4 +63,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(EmailTemplateDetailsApp);
+export default connect(mapStateToProps, mapDispatchToProps)(EmailTemplateDetailsAppWrapper);

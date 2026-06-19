@@ -7,12 +7,11 @@ const RevenuesListFormList = ({ revenues, projectTypeCodeRef }) => {
     return (
         <div>
             <div className="row header">
-                <div className="col-sm-2">Soort</div>
-                <div className={projectTypeCodeRef !== 'loan' ? 'col-sm-1' : 'col-sm-2'}>Begin periode</div>
-                <div className={projectTypeCodeRef !== 'loan' ? 'col-sm-1' : 'col-sm-2'}>Eind periode</div>
-                <div className="col-sm-1">Uitgekeerd op</div>
-                {projectTypeCodeRef !== 'loan' ? <div className="col-sm-2">Type opbrengst</div> : null}
-                <div className="col-sm-2">Status</div>
+                <div className="col-sm-1 custom-col-width-12-5">Soort</div>
+                <div className="col-sm-2">Begin periode</div>
+                <div className="col-sm-2">Eind periode</div>
+                <div className="col-sm-2">Uitgekeerd op</div>
+                <div className="col-sm-1 custom-col-width-12-5">Status</div>
                 <div className="col-sm-2">Bedrag</div>
                 <div className="col-sm-1" />
             </div>

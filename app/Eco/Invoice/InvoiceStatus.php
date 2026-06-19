@@ -30,7 +30,9 @@ class InvoiceStatus extends EnumWithIdAndName
             new static('error-sending', 'Opnieuw te verzenden'),
             new static('is-resending', 'Wordt opnieuw verstuurd'),
             new static('sent', 'Verzonden'),
-            new static('exported', 'Geboekt'),
+            new static('is-exporting', 'Wordt gesynchroniseerd naar Twinfield'),
+            new static('error-exporting', 'Fout bij synchroniseren naar Twinfield'),
+            new static('exported', 'Geboekt naar Twinfield'),
             new static('paid', 'Betaald'),
             new static('irrecoverable', 'Oninbaar'),
         ];

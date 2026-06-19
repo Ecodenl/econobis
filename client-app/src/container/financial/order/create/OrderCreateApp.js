@@ -9,6 +9,13 @@ import OrderCreateViewEmail from './OrderCreateViewEmail';
 import OrderCreateToolbar from './OrderCreateToolbar';
 import { clearPreviewCreate } from '../../../../actions/order/OrdersActions';
 import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const OrderCreateAppWrapper = props => {
+    const params = useParams();
+    return <OrderCreateApp {...props} params={params} />;
+};
 
 class OrderCreateApp extends Component {
     constructor(props) {
@@ -120,4 +127,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrderCreateApp);
+export default connect(mapStateToProps, mapDispatchToProps)(OrderCreateAppWrapper);

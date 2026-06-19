@@ -6,6 +6,14 @@ import UserDetailsToolbar from './UserDetailsToolbar';
 import UserDetailsForm from './UserDetailsForm';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
+import { useParams } from 'react-router-dom';
+import UserAPI from '../../../api/user/UserAPI';
+
+// Functionele wrapper voor de class component
+const UserDetailsAppWrapper = props => {
+    const params = useParams();
+    return <UserDetailsApp {...props} params={params} />;
+};
 
 class UserDetailsApp extends Component {
     constructor(props) {
@@ -16,6 +24,18 @@ class UserDetailsApp extends Component {
         this.props.fetchUserDetails(this.props.params.id);
     }
 
+    // handleUnblock = event => {
+    // }
+    handleUnBlock() {
+        UserAPI.unblockUser(this.props.params.id)
+            .then(payload => {
+                this.props.fetchUserDetails(this.props.params.id);
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    }
+
     render() {
         return (
             <div className="row">
@@ -23,7 +43,7 @@ class UserDetailsApp extends Component {
                     <div className="col-md-12 margin-10-top">
                         <Panel>
                             <PanelBody className={'panel-small'}>
-                                <UserDetailsToolbar />
+                                <UserDetailsToolbar handleUnBlock={() => this.handleUnBlock()} />
                             </PanelBody>
                         </Panel>
                     </div>
@@ -50,4 +70,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserDetailsApp);
+export default connect(mapStateToProps, mapDispatchToProps)(UserDetailsAppWrapper);

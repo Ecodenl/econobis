@@ -1,15 +1,21 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import ButtonIcon from '../../../../components/button/ButtonIcon';
 import * as PropTypes from 'prop-types';
 
+// Functionele wrapper voor de class component
+const FinancialOverviewListToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <FinancialOverviewListToolbar {...props} navigate={navigate} />;
+};
+
 class FinancialOverviewListToolbar extends Component {
     render() {
         let { financialOverviewsCount, refreshFinancialOverviewsData, permissions } = this.props;
         const newFinancialOverview = () => {
-            hashHistory.push(`/waardestaat/nieuw`);
+            this.props.navigate(`/waardestaat/nieuw`);
         };
 
         return (
@@ -17,7 +23,7 @@ class FinancialOverviewListToolbar extends Component {
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
                         <ButtonIcon iconName={'refresh'} onClickAction={refreshFinancialOverviewsData} />
-                        {permissions.manageFinancial && (
+                        {permissions.manageFinancialOverview && (
                             <ButtonIcon iconName={'plus'} onClickAction={newFinancialOverview} />
                         )}
                     </div>
@@ -45,4 +51,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(FinancialOverviewListToolbar);
+export default connect(mapStateToProps, null)(FinancialOverviewListToolbarWrapper);

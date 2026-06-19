@@ -11,22 +11,24 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 class ParticipantExcelHelper
 {
     private $participants;
-//    private $isPcrProject = false;
+    private $isObligationProject = false;
 
     public function __construct($participants, $filterProjectId)
     {
         $this->participants = $participants;
-//        if($filterProjectId && $filterProjectId > 0){
-//            $project = Project::find($filterProjectId);
-//            $this->isPcrProject = $project->projectType->code_ref == 'postalcode_link_capital';
-//        }
+        if($filterProjectId && $filterProjectId > 0){
+            $project = Project::find($filterProjectId);
+            $this->isObligationProject = $project->projectType->code_ref == 'obligation';
+        }
     }
 
     public function downloadExcel()
     {
         set_time_limit(300);
 
-        $completeData = [];
+//        $completeData = [];
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
 
         $headerData = [];
 // [0]
@@ -173,7 +175,16 @@ class ParticipantExcelHelper
         $headerData[] = 'kWh';
         $headerData[] = 'Indicatie teruggave EB';
 
-        $completeData[] = $headerData;
+        $headerData[] = 'Mollie ID';
+        $headerData[] = 'Mollie betaaldatum';
+
+        if($this->isObligationProject) {
+            $headerData[] = 'Obligatienummer(s)';
+        }
+
+//        $completeData[] = $headerData;
+        $sheet->fromArray($headerData, null, 'A1');
+        $rowIndex = 2; // we gaan vanaf rij 2 data schrijven
 
         foreach ($this->participants->chunk(500) as $chunk) {
             foreach ($chunk as $participant) {
@@ -436,35 +447,6 @@ class ParticipantExcelHelper
                 $rowData[] = $participant->lrcPrimaryEmailAddress;
                 $rowData[] = $participant->lrcPrimaryPhonenumber;
                 $rowData[] =implode(', ', collect($participant->getUniqueMutationStatusesAttribute())->pluck('name')->toArray());
-//// [100]
-//                $rowData[100] = "";
-//                $rowData[] = "";
-//                $rowData[] = $participant->participations_interessed;
-//                $rowData[] = $participant->amount_interessed;
-//                $rowData[] = "";
-//                $rowData[] = "";
-//                $rowData[] = $participant->participations_optioned;
-//                $rowData[] = $participant->amount_optioned;
-//                $rowData[] = "";
-//                $rowData[] = "";
-//// [110]
-//                $rowData[] = $participant->participations_granted;
-//                $rowData[] = $participant->amount_granted;
-//                $rowData[] = "";
-//                $rowData[] = "";
-//                $rowData[] = $participant->participations_definitive;
-//                $rowData[] = $participant->amount_definitive;
-//                $rowData[] = "";
-//                $rowData[] = "";
-//                $rowData[] = "";
-//                $rowData[] = "";
-//// [120]
-//                $rowData[] = "";
-//                $rowData[] = "";
-//                $rowData[] = "";
-//                $rowData[] = "";
-//                $rowData[] = "";
-//                $rowData[] = "";
 
                 foreach ($participant->mutations as $mutation) {
                     $rowData[1] = $mutation->id;
@@ -483,6 +465,19 @@ class ParticipantExcelHelper
 // [100]
                     $rowData[100] = $mutationType ? $mutationType->name : '';
                     $rowData[101] = $mutationStatus ? $mutationStatus->name : '';
+
+                    if($mutation->molliePayments) {
+                        $mollieIds = implode(', ', $mutation->molliePayments->pluck('mollie_id')->toArray());
+                        $mollieDatePaidsRaw = $mutation->molliePayments->pluck('date_paid');
+                        $mollieDatePaidsArray = [];
+                        foreach ($mollieDatePaidsRaw as $mollieDatePaid){
+                            $mollieDatePaidsArray[] = $mollieDatePaid != '' ? Carbon::parse($mollieDatePaid)->format('d-m-Y') : '';
+                        }
+                        $mollieDatePaids = implode(', ', $mollieDatePaidsArray);
+                    } else {
+                        $mollieIds = "";
+                        $mollieDatePaids = "";
+                    }
 
                     if($mutationType->code_ref === 'first_deposit' || $mutationType->code_ref === 'deposit' || $mutationType->code_ref === 'withDrawal' )
                     {
@@ -511,9 +506,11 @@ class ParticipantExcelHelper
                         $rowData[123] = "";
                         $rowData[124] = "";
                         $rowData[125]= "";
+                        $rowData[126] = $mollieIds;
+                        $rowData[127] = $mollieDatePaids;
                     }
 
-                    if($mutationType->code_ref === 'redemption')
+                    else if($mutationType->code_ref === 'redemption')
                     {
 // [96] of [102]
                         $rowData[102] = "";
@@ -540,8 +537,10 @@ class ParticipantExcelHelper
                         $rowData[123] = "";
                         $rowData[124] = "";
                         $rowData[125] = "";
+                        $rowData[126] = "";
+                        $rowData[127] = "";
                     }
-                    if($mutationType->code_ref === 'result')
+                    else if($mutationType->code_ref === 'result' || $mutationType->code_ref === 'result_deposit')
                     {
 // [96] of [102]
                         $rowData[102] = "";
@@ -568,8 +567,10 @@ class ParticipantExcelHelper
                         $rowData[123] = "";
                         $rowData[124] = "";
                         $rowData[125] = "";
+                        $rowData[126] = "";
+                        $rowData[127] = "";
                     }
-                    if($mutationType->code_ref === 'energyTaxRefund')
+                    else if($mutationType->code_ref === 'energyTaxRefund')
                     {
 // [96] of [102]
                         $rowData[102] = "";
@@ -596,27 +597,67 @@ class ParticipantExcelHelper
                         $rowData[123] = $mutation->payout_kwh_price;
                         $rowData[124] = $mutation->payout_kwh;
                         $rowData[125] = $mutation->indication_of_restitution_energy_tax;
+                        $rowData[126] = "";
+                        $rowData[127] = "";
+                    }
+                    else
+                    {
+// [96] of [102]
+                        $rowData[102] = "";
+                        $rowData[103] = "";
+                        $rowData[104] = "";
+                        $rowData[105] = "";
+                        $rowData[106] = "";
+                        $rowData[107] = "";
+                        $rowData[108] = "";
+                        $rowData[109] = "";
+                        $rowData[110] = "";
+                        $rowData[111] = "";
+                        $rowData[112] = "";
+                        $rowData[113] = "";
+                        $rowData[114] = "";
+                        $rowData[115] = "";
+                        $rowData[116] = "";
+                        $rowData[117] = "";
+                        $rowData[118] = "";
+                        $rowData[119] = "";
+                        $rowData[120] = "";
+                        $rowData[121] = "";
+                        $rowData[122] = "";
+                        $rowData[123] = "";
+                        $rowData[124] = "";
+                        $rowData[125] = "";
+                        $rowData[126] = "";
+                        $rowData[127] = "";
                     }
 
-                    $completeData[] = $rowData;
+                    if($this->isObligationProject) {
+                        $rowData[128] = $participant->obligationNumbersAsString;
+                    }
+
+//                    $completeData[] = $rowData;
+                    $sheet->fromArray($rowData, null, 'A' . $rowIndex);
+                    $rowIndex++;
                 }
-
             }
+            // kleine hint om GC te helpen
+            unset($chunk);
         }
 
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
+//        $spreadsheet = new Spreadsheet();
+//        $sheet = $spreadsheet->getActiveSheet();
 
-        for ($col = 'A'; $col !== 'DL'; $col++) {
-            $spreadsheet->getActiveSheet()
-                ->getColumnDimension($col)
-                ->setAutoSize(true);
-        }
+//        autoSize uitgezet, kost voor deze excel download met potentieel heel veel cellen enorm veel geheugen.
+//        for ($col = 'A'; $col !== 'DZ'; $col++) {
+//            $spreadsheet->getActiveSheet()
+//                ->getColumnDimension($col)
+//                ->setAutoSize(true);
+//        }
 
         $sheet->getStyle('1:1')->getFont()->setBold(true);
 
         // Load all data in worksheet
-        $sheet->fromArray($completeData);
+//        $sheet->fromArray($completeData);
 
         $writer = new Xlsx($spreadsheet);
         $document = $writer->save('php://output');
@@ -646,6 +687,10 @@ class ParticipantExcelHelper
         $headerData[] = 'Aantal deelnames definitief';
         $headerData[] = 'Lening deelname definitief';
         $headerData[] = 'Eerste ingangsdatum deelname';
+
+        if($this->isObligationProject) {
+            $headerData[] = 'Obligatienummer(s)';
+        }
 
         $completeData[] = $headerData;
 
@@ -690,6 +735,10 @@ class ParticipantExcelHelper
                 $rowData[] = $participant->amount_definitive ;
                 $rowData[] = $participant->date_register;
 
+                if($this->isObligationProject) {
+                    $rowData[] = $participant->obligationNumbersAsString;
+                }
+
                 $completeData[] = $rowData;
 
             }
@@ -698,7 +747,7 @@ class ParticipantExcelHelper
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        for ($col = 'A'; $col !== 'Q'; $col++) {
+        for ($col = 'A'; $col !== 'R'; $col++) {
             $spreadsheet->getActiveSheet()
                 ->getColumnDimension($col)
                 ->setAutoSize(true);

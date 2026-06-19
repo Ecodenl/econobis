@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import validator from 'validator';
-import { hashHistory } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import ParticipationTransferToolbar from './ParticipationTransferToolbar';
 import ParticipationTransfer from './ParticipationTransfer';
@@ -8,6 +8,13 @@ import ParticipationTransfer from './ParticipationTransfer';
 import ParticipantProjectDetailsAPI from '../../../../api/participant-project/ParticipantProjectDetailsAPI';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
+
+// Functionele wrapper voor de class component
+const ParticipationTransferAppWrapper = props => {
+    const navigate = useNavigate();
+    const params = useParams();
+    return <ParticipationTransferApp {...props} navigate={navigate} params={params} />;
+};
 
 class ParticipationTransferApp extends Component {
     constructor(props) {
@@ -40,7 +47,7 @@ class ParticipationTransferApp extends Component {
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         ParticipantProjectDetailsAPI.getContactsMembershipPeek(this.state.participationTransfer.participationId).then(
             payload => {
                 payload.unshift({ id: '0', fullName: 'Teruggave energieleverancier' });
@@ -149,7 +156,7 @@ class ParticipationTransferApp extends Component {
 
         !hasErrors &&
             ParticipantProjectDetailsAPI.transferParticipation(participationTransfer).then(payload => {
-                hashHistory.push(`/project/deelnemer/${participationTransfer.participationId}`);
+                this.props.navigate(`/project/deelnemer/${participationTransfer.participationId}`);
             });
     };
 
@@ -187,4 +194,4 @@ class ParticipationTransferApp extends Component {
     }
 }
 
-export default ParticipationTransferApp;
+export default ParticipationTransferAppWrapper;

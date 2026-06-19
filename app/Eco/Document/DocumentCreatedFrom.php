@@ -17,11 +17,11 @@ class DocumentCreatedFrom extends Model
     protected $guarded = [
         'id', 'code_ref'
     ];
-    protected $dates
-        = [
-            'created_at',
-            'updated_at',
-        ];
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
     public function documents()
     {

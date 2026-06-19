@@ -3,7 +3,13 @@ import React, { Component } from 'react';
 import Modal from '../../../../components/modal/Modal';
 import InvoiceDetailsAPI from '../../../../api/invoice/InvoiceDetailsAPI';
 
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const InvoiceListSetIrrecoverableWrapper = props => {
+    const navigate = useNavigate();
+    return <InvoiceListSetIrrecoverable {...props} navigate={navigate} />;
+};
 
 class InvoiceListSetIrrecoverable extends Component {
     constructor(props) {
@@ -13,7 +19,7 @@ class InvoiceListSetIrrecoverable extends Component {
     confirmAction = event => {
         event.preventDefault();
         InvoiceDetailsAPI.setIrrecoverable(this.props.invoiceId).then(payload => {
-            hashHistory.push(`/financieel/${this.props.administrationId}/notas/oninbaar`);
+            this.props.navigate(`/financieel/${this.props.administrationId}/notas/oninbaar`);
         });
     };
 
@@ -30,4 +36,4 @@ class InvoiceListSetIrrecoverable extends Component {
     }
 }
 
-export default InvoiceListSetIrrecoverable;
+export default InvoiceListSetIrrecoverableWrapper;

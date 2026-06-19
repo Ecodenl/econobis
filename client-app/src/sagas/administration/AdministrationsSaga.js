@@ -1,7 +1,6 @@
 import { put, call } from 'redux-saga/effects';
 import AdministrationsAPI from '../../api/administration/AdministrationsAPI';
 import AdministrationDetailsAPI from '../../api/administration/AdministrationDetailsAPI';
-import { hashHistory } from 'react-router';
 
 export function* fetchAdministrationsSaga() {
     try {
@@ -19,7 +18,6 @@ export function* deleteAdministrationSaga({ id }) {
     try {
         yield call(AdministrationDetailsAPI.deleteAdministration, id);
         yield put({ type: 'DELETE_ADMINISTRATION_SUCCESS', id });
-        hashHistory.push(`/administraties`);
     } catch (error) {
         yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
         yield put({ type: 'DELETE_ADMINISTRATION_ERROR', error });

@@ -134,17 +134,26 @@
                 <td class="align-left">{{ $invoice->administration->btw_number ? 'IBAN ' . $invoice->administration->IBAN : 'BIC ' . $invoice->administration->bic }}</td>
             </tr>
             <tr>
-                <td class="align-left">&nbsp;</td>
+                @if($invoice->order->po_number)
+                    <td class="align-left">Opdrachtnummer: {{ $invoice->order->po_number }}</td>
+                @else
+                    <td class="align-left">&nbsp;</td>
+                @endif
                 <td class="align-left">{!! ($invoice->administration->btw_number) ? 'BIC ' . $invoice->administration->bic : ( $invoice->administration->rsin_number ? 'RSIN ' . $invoice->administration->rsin_number : '&nbsp;') !!}</td>
             </tr>
             <tr>
-                <td class="align-left">&nbsp;</td>
+                @if($invoice->order->project_number)
+                    <td class="align-left">Projectnummer: {{ $invoice->order->project_number }}</td>
+                @else
+                    <td class="align-left">&nbsp;</td>
+                @endif
                 <td class="align-left">{!! ($invoice->administration->btw_number && $invoice->administration->rsin_number) ? 'RSIN ' . $invoice->administration->rsin_number : '&nbsp;' !!}</td>
             </tr>
             </tbody>
         </table>
     </div>
 
+    <br/>
     <h4 class="subject-text">Betreft: {{ $invoice->order->subject }}</h4>
     <br/>
 
@@ -162,7 +171,7 @@
                 <td class="align-left">{!! (str_replace('€', '&euro;', $invoiceProduct->description)) !!}</td>
                 <td class="align-right"><span class="euro-sign">&euro;</span> {{ number_format($invoiceProduct->price, $invoiceProduct->price_number_of_decimals, ',', '.') }}</td>
                 <td class="align-right">{{ $invoiceProduct->amount }}</td>
-                <td class="align-right">@if($invoice->vatInfo){{ $invoiceProduct->vat_percentage ? number_format($invoiceProduct->vat_percentage, 2, ',', '.') . '%' : 'Geen'}}@endif</td>
+                <td class="align-right">@if($invoice->vatInfo){{ ($invoiceProduct->vat_percentage !== null) ? number_format($invoiceProduct->vat_percentage, 2, ',', '.') . '%' : 'Geen'}}@endif</td>
                 <td class="align-right"><span class="euro-sign">&euro;</span> {{ $invoiceProduct->amount_excl_vat_formatted }}</td>
             </tr>
 
@@ -227,14 +236,6 @@
 
     <div class="conclusion-text">{!! (str_replace('€', '&euro;', $invoice->order->invoice_text)) !!}</div>
 
-    @if($invoice->order->po_number || $invoice->order->project_number)
-        <div class="conclusion-text">
-            @if($invoice->order->po_number) Opdrachtnummer: {{ $invoice->order->po_number }} @endif
-            @if($invoice->order->po_number && $invoice->order->project_number) <br> @endif
-            @if($invoice->order->project_number) Projectnummer: {{ $invoice->order->project_number }} @endif
-        </div>
-    @endif
-
     @if($invoice->payment_type_id == 'collection')
         <br/><br/>
         <div class="conclusion-text">Het bedrag wordt omstreeks @if($invoice->date_collection){{ Carbon\Carbon::parse($invoice->date_collection)->format('d-m-Y') }} @else
@@ -258,6 +259,19 @@
             notanummer {{ $invoice->number }}.
         </div>
     @endif
+
+    {{-- Here's the magic. This MUST be inside body tag. Page count / total, centered at bottom of page --}}
+    <script type="text/php">
+        if (isset($pdf)) {
+            $text = "pagina: {PAGE_NUM} van {PAGE_COUNT}";
+            $size = 10;
+            $font = $fontMetrics->getFont("Verdana");
+            $width = $fontMetrics->get_text_width($text, $font, $size) / 2;
+            $x = ($pdf->get_width() - $width) / 2;
+            $y = $pdf->get_height() - 35;
+            $pdf->page_text($x, $y, $text, $font, $size);
+        }
+    </script>
 </div>
 </body>
 </html>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import { connect } from 'react-redux';
 
@@ -8,6 +8,12 @@ import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
 
 moment.locale('nl');
+
+// Functionele wrapper voor de class component
+const DocumentTemplatesItemWrapper = props => {
+    const navigate = useNavigate();
+    return <DocumentTemplatesItem {...props} navigate={navigate} />;
+};
 
 class DocumentTemplatesItem extends Component {
     constructor(props) {
@@ -34,7 +40,7 @@ class DocumentTemplatesItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/document-template/${id}`);
+        this.props.navigate(`/document-template/${id}`);
     }
 
     render() {
@@ -79,4 +85,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(DocumentTemplatesItem);
+export default connect(mapStateToProps)(DocumentTemplatesItemWrapper);

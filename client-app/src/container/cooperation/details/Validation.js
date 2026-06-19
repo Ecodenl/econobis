@@ -18,6 +18,21 @@ export const CooperationValidation = Yup.object().shape({
     website: Yup.string().url('Ongeldige url'),
     hoomLink: Yup.string().url('Ongeldige url'),
     hoomConnectCoachLink: Yup.string().url('Ongeldige url'),
+
+    // Nieuwe velden
+    showExternalUrlForContacts: Yup.boolean(),
+    externalUrlContacts: Yup.string().when('showExternalUrlForContacts', {
+        is: true,
+        then: schema => schema.required('Verplicht').url('Ongeldige url'),
+        otherwise: schema => schema.notRequired(),
+    }),
+    externalUrlContactsButtonText: Yup.string().when('showExternalUrlForContacts', {
+        is: true,
+        then: schema => schema.required('Verplicht'),
+        otherwise: schema => schema.notRequired(),
+    }),
+    externalUrlContactsOnNewPage: Yup.boolean(),
+    requireTeamOnUserCreate: Yup.boolean(),
 });
 
 export const CreateCooperationHoomCampaignValidation = Yup.object().shape({

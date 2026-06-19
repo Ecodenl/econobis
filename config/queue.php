@@ -97,6 +97,7 @@ return [
 
     'email' => [
         'chunk_size' => env('EMAIL_JOB_CHUNK_SIZE', 1),
+        'contacts_group_chunk_size' => env('EMAIL_JOB_CONTACTS_GROUP_CHUNK_SIZE', 1000),
     ],
 
 ];

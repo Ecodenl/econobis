@@ -1,4 +1,4 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
 
 const URL_COST_CENTER = `cost-center`;
 
@@ -6,7 +6,7 @@ export default {
     fetchCostCenterDetails: id => {
         const requestUrl = `jory/cost-center/${id}`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 jory: {
                     fld: ['id', 'description', 'twinfieldCostCenterCode'],
@@ -22,18 +22,18 @@ export default {
             fld: ['id'],
         });
 
-        return axiosInstance.post(requestUrl, costCenter);
+        return getAxiosInstance().post(requestUrl, costCenter);
     },
 
     updateCostCenter: costCenter => {
         const requestUrl = `${URL_COST_CENTER}/${costCenter.id}`;
 
-        return axiosInstance.post(requestUrl, costCenter);
+        return getAxiosInstance().post(requestUrl, costCenter);
     },
 
     deleteCostCenter: id => {
         const requestUrl = `${URL_COST_CENTER}/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 };

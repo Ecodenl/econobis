@@ -211,7 +211,7 @@ class conversionProjectRevenuesOzon2021 extends Command
      */
     protected function createOrUpdateRevenueValuesKwhSimulate($revenueId, $partDateBegin, $partDateEnd, $dateRegistrationDayAfterEnd): void
     {
-        $daysOfPeriod = Carbon::parse($dateRegistrationDayAfterEnd)->diffInDays(Carbon::parse($partDateBegin));
+        $daysOfPeriod = Carbon::parse($dateRegistrationDayAfterEnd)->diffInDays(Carbon::parse($partDateBegin), true);
         $beginRevenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenueId)->where('date_registration', $partDateBegin)->first();
         $endRevenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenueId)->where('date_registration', $dateRegistrationDayAfterEnd)->first();
 
@@ -462,7 +462,7 @@ class conversionProjectRevenuesOzon2021 extends Command
 
             $dateEndForPeriod = clone $dateEndMutation;
             $dateEndForPeriod->endOfDay();
-            $daysOfPeriod = $dateEndForPeriod->addDay()->diffInDays($dateBegin);
+            $daysOfPeriod = $dateEndForPeriod->addDay()->diffInDays($dateBegin, true);
             if($dateBegin->format('Y-m-d') <= $dateEndMutation->format('Y-m-d')) {
                 RevenueDistributionValuesKwh::updateOrCreate(
                     [
@@ -485,7 +485,7 @@ class conversionProjectRevenuesOzon2021 extends Command
 
         $dateEndForPeriod = clone $dateEnd;
         $dateEndForPeriod->endOfDay();
-        $daysOfPeriod = $dateEndForPeriod->addDay()->diffInDays($dateBegin);
+        $daysOfPeriod = $dateEndForPeriod->addDay()->diffInDays($dateBegin, true);
 
         RevenueDistributionValuesKwh::create(
             [

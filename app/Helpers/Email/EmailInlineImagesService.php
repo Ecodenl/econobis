@@ -202,7 +202,7 @@ class EmailInlineImagesService
             /**
              * Maak een nieuwe unieke filename aan.
              */
-            $filename = 'mailbox_' . $this->email->mailbox_id . '/outbox' . '/' . Str::random(40) . '.' . $extension;
+            $filename = 'mailbox_' . $this->email->mailbox_id . '/outbox' . '/' . Str::uuid() . '.' . $extension;
 
             /**
              * Haal de data:base64... prefix er af.

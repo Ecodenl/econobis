@@ -8,6 +8,7 @@ import CooperationDetailsFormView from './View';
 import { connect } from 'react-redux';
 import ErrorUnauthorized from '../../global/ErrorUnauthorized';
 
+// todo WM: opschonen inspection* velden
 const INITIAL_STATE = {
     result: {
         id: null,
@@ -21,17 +22,19 @@ const INITIAL_STATE = {
         ibanAttn: '',
         email: '',
         website: '',
-        logoFilename: '',
-        logoName: '',
+        // logoFilename: '',
+        // logoName: '',
         hoomLink: '',
         hoomConnectCoachLink: '',
         hoomKey: '',
         hoomCampaigns: {},
         hoomEmailTemplateId: '',
         hoomGroupId: '',
+        hoomMailboxId: '',
         useLaposta: false,
         lapostaKey: '',
         useExportAddressConsumption: false,
+        useDongleRegistration: false,
         requireTwoFactorAuthentication: false,
         inspectionPlannedEmailTemplateId: '',
         inspectionRecordedEmailTemplateId: '',
@@ -44,6 +47,11 @@ const INITIAL_STATE = {
         fontFamilyDefault: '',
         fontSizeDefault: '',
         fontColorDefault: '',
+        showExternalUrlForContacts: false,
+        externalUrlContacts: '',
+        externalUrlContactsButtonText: '',
+        externalUrlContactsOnNewPage: true,
+        requireTeamOnUserCreate: false,
     },
     isLoading: true,
     showEdit: false,

@@ -1,12 +1,14 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import { connect } from 'react-redux';
 
 const DocumentTemplatesListToolbar = props => {
+    const navigate = useNavigate();
+
     const newDocumentTemplate = () => {
-        hashHistory.push(`/document-template/nieuw`);
+        navigate(`/document-template/nieuw`);
     };
 
     const { permissions = {} } = props;

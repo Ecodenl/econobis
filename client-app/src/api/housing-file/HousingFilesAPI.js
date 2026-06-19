@@ -1,10 +1,11 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchHousingFiles: ({ filters, sorts, pagination }) => {
-        const requestUrl = `${URL_API}/api/housing-file/grid`;
+        const requestUrl = `${getApiUrl()}/api/housing-file/grid`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),
@@ -15,9 +16,9 @@ export default {
     },
 
     peekHousingFiles: () => {
-        const requestUrl = `${URL_API}/api/housing-file/peek`;
+        const requestUrl = `${getApiUrl()}/api/housing-file/peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -28,9 +29,9 @@ export default {
     },
 
     getAmountActive: () => {
-        const requestUrl = `${URL_API}/api/housing-file/amount-active`;
+        const requestUrl = `${getApiUrl()}/api/housing-file/amount-active`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data)
             .catch(error => {
@@ -39,9 +40,9 @@ export default {
     },
 
     fetchHousingFilesByContact: contactId => {
-        const requestUrl = `${URL_API}/api/contact/${contactId}/housing-files`;
+        const requestUrl = `${getApiUrl()}/api/contact/${contactId}/housing-files`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data;
@@ -52,8 +53,8 @@ export default {
     },
 
     getExcelHousingFiles: ({ filters, sorts }) => {
-        const requestUrl = `${URL_API}/api/housing-file/excel`;
-        return axiosInstance.get(requestUrl, {
+        const requestUrl = `${getApiUrl()}/api/housing-file/excel`;
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),

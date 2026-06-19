@@ -1,7 +1,6 @@
 import { put, call } from 'redux-saga/effects';
 import OpportunitiesAPI from '../../api/opportunity/OpportunitiesAPI';
 import OpportunityDetailsAPI from '../../api/opportunity/OpportunityDetailsAPI';
-import { hashHistory } from 'react-router';
 
 export function* fetchOpportunitiesSaga({ filters, sorts, pagination }) {
     try {
@@ -20,11 +19,6 @@ export function* deleteOpportunitySaga({ id, contactId }) {
     try {
         yield call(OpportunityDetailsAPI.deleteOpportunity, id);
         yield put({ type: 'DELETE_OPPORTUNITY_SUCCESS', id });
-        if (contactId == 0) {
-            hashHistory.push(`/kansen`);
-        } else {
-            hashHistory.push(`/contact/` + contactId);
-        }
     } catch (error) {
         yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
         yield put({ type: 'DELETE_OPPORTUNITY_ERROR', error });

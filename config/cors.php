@@ -17,7 +17,7 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'oauth/*', 'portal/*'],
+    'paths' => ['api/*', 'oauth/*', 'portal/*', 'frontend-config', 'client-version'],
     'supports_credentials' => false,
     'allowed_origins' => [],
     'allowed_origins_patterns' => json_decode(env('CORS_ORIGIN_PATTERNS', '[]')),

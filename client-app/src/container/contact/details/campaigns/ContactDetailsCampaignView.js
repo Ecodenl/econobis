@@ -1,8 +1,10 @@
 import React from 'react';
 import moment from 'moment';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 const ContactDetailsCampaignView = props => {
+    const navigate = useNavigate();
+
     const { id, number, name, startDate, endDate, taskCount } = props.campaign;
 
     return (
@@ -11,7 +13,7 @@ const ContactDetailsCampaignView = props => {
             onMouseEnter={() => props.onLineEnter()}
             onMouseLeave={() => props.onLineLeave()}
         >
-            <div onClick={() => hashHistory.push(`/campagne/${id}`)}>
+            <div onClick={() => navigate(`/campagne/${id}`)}>
                 <div className="col-sm-2">{number}</div>
                 <div className="col-sm-3">{name}</div>
                 <div className="col-sm-3">{startDate ? moment(startDate).format('L') : ''}</div>

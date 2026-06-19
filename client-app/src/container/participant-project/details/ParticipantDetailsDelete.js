@@ -1,21 +1,23 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 
 import Modal from '../../../components/modal/Modal';
 import { deleteParticipantProject } from '../../../actions/participants-project/ParticipantProjectDetailsActions';
-import { connect } from 'react-redux';
 
-const ParticipantDetailsDelete = props => {
+const ParticipantDetailsDelete = ({ id, closeDeleteItemModal }) => {
+    const dispatch = useDispatch();
+
     const confirmAction = () => {
-        props.deleteParticipantProject(props.id);
-        props.closeDeleteItemModal();
+        dispatch(deleteParticipantProject(id));
+        closeDeleteItemModal();
     };
 
     return (
         <Modal
             buttonConfirmText="Verwijder"
             buttonClassName={'btn-danger'}
-            closeModal={props.closeDeleteItemModal}
-            confirmAction={() => confirmAction()}
+            closeModal={closeDeleteItemModal}
+            confirmAction={confirmAction}
             title="Verwijderen"
         >
             <p>Weet u zeker dat u deze deelname wilt verwijderen?</p>
@@ -23,10 +25,4 @@ const ParticipantDetailsDelete = props => {
     );
 };
 
-const mapDispatchToProps = dispatch => ({
-    deleteParticipantProject: id => {
-        dispatch(deleteParticipantProject(id));
-    },
-});
-
-export default connect(null, mapDispatchToProps)(ParticipantDetailsDelete);
+export default ParticipantDetailsDelete;

@@ -25,7 +25,7 @@ class ContactGroupComposedGroupAddGroup extends Component {
     }
 
     componentDidMount() {
-        GroupAPI.peekContactGroups().then(payload => {
+        GroupAPI.peekActiveContactGroups().then(payload => {
             this.setState({ contactGroups: payload });
         });
     }

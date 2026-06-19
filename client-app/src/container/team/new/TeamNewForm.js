@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 
 import InputText from '../../../components/form/InputText';
@@ -9,6 +9,12 @@ import PanelBody from '../../../components/panel/PanelBody';
 import Panel from '../../../components/panel/Panel';
 import TeamDetailsAPI from '../../../api/team/TeamDetailsAPI';
 import { fetchSystemData } from '../../../actions/general/SystemDataActions';
+
+// Functionele wrapper voor de class component
+const TeamNewFormWrapper = props => {
+    const navigate = useNavigate();
+    return <TeamNewForm {...props} navigate={navigate} />;
+};
 
 class TeamNewForm extends Component {
     constructor(props) {
@@ -60,7 +66,7 @@ class TeamNewForm extends Component {
             TeamDetailsAPI.newTeam(team)
                 .then(payload => {
                     this.props.fetchSystemData();
-                    hashHistory.push(`/team/${payload.data.data.id}`);
+                    this.props.navigate(`/team/${payload.data.data.id}`);
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -108,4 +114,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(TeamNewForm);
+export default connect(null, mapDispatchToProps)(TeamNewFormWrapper);

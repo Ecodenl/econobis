@@ -5,6 +5,13 @@ import OpportunityStatusDetailsForm from './OpportunityStatusDetailsForm';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import OpportunityStatusDetailsAPI from '../../../api/opportunity-status/OpportunityStatusDetailsAPI';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const OpportunityStatusDetailsAppWrapper = props => {
+    const params = useParams();
+    return <OpportunityStatusDetailsApp {...props} params={params} />;
+};
 
 class OpportunityStatusDetailsApp extends Component {
     constructor(props) {
@@ -68,4 +75,4 @@ class OpportunityStatusDetailsApp extends Component {
     }
 }
 
-export default OpportunityStatusDetailsApp;
+export default OpportunityStatusDetailsAppWrapper;

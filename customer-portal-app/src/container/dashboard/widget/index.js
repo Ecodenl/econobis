@@ -11,6 +11,7 @@ const DashboardWidget = function({
     buttonLink,
     backgroundColorUsed,
     textColorUsed,
+    hideGroupId,
 }) {
     const history = useHistory();
     const key = 'widget-' + id;
@@ -21,6 +22,8 @@ const DashboardWidget = function({
         externalLink = 'https://' + buttonLink;
     } else if (buttonLink.toLowerCase().startsWith('http') || buttonLink.toLowerCase().startsWith('https')) {
         externalLink = buttonLink;
+    } else if (buttonLink.toLowerCase() === "toevoegen-aan-groep") {
+        buttonLink = buttonLink + '/' + hideGroupId;
     }
 
     return (

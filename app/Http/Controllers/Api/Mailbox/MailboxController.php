@@ -115,7 +115,7 @@ class MailboxController extends Controller
                 return response()->json($client, 401);
             }
         } else if ($mailbox->incoming_server_type === 'mailgun') {
-            $mailgunHelper->updateMailgunForwarding($mailbox);
+            $mailgunHelper->createInboundForwardRoute($mailbox);
         } else if ($mailbox->incoming_server_type !== 'mailgun') {
             $mailFetcher = new MailFetcher($mailbox);
             $mailFetcher->checkMailbox();
@@ -158,27 +158,32 @@ class MailboxController extends Controller
             ->boolean('emailMarkAsSeen')->alias('email_mark_as_seen')->whenMissing(true)->next()
             ->get();
 
-        //if incomingServerType is not mailgun clear some fields just to be safe
-        if ($data['incoming_server_type'] != 'mailgun') {
-            $data['inbound_mailgun_email'] = null;
-            $data['inbound_mailgun_post_token'] = null;
-            $data['inbound_mailgun_route_id'] = null;
-        }
+        $originalIncomingServerType = $mailbox->incoming_server_type;
+        $originalInboundMailgunRouteId = $mailbox->inbound_mailgun_route_id;
 
         $mailbox->login_tries = 0;
         $mailbox->fill($data);
-        $updateMailgunForwarding = $mailbox->isDirty('incoming_server_type');
         $mailbox->save();
 
-        if ($updateMailgunForwarding) {
-            try {
-                $mailgunHelper->updateMailgunForwarding($mailbox);
-            } catch (\Exception $e) {
-                /**
-                 * Error loggen maar niet hele script laten stoppen.
-                 */
-                Log::info('Mailgun forwarding update failed: ' . $e->getMessage());
+        try {
+            // Was mailgun, maar is nu iets anders geworden: route verwijderen.
+            if (
+                $originalIncomingServerType === 'mailgun'
+                && $mailbox->incoming_server_type !== 'mailgun'
+                && $originalInboundMailgunRouteId
+            ) {
+                $mailgunHelper->deleteInboundForwardRoute($mailbox, $originalInboundMailgunRouteId);
             }
+
+            // Is nu mailgun, maar heeft nog geen forwarding: route aanmaken.
+            if (
+                $mailbox->incoming_server_type === 'mailgun'
+                && !$mailbox->inbound_mailgun_email
+            ) {
+                $mailgunHelper->createInboundForwardRoute($mailbox);
+            }
+        } catch (\Exception $e) {
+            Log::info('Mailgun forwarding update failed: ' . $e->getMessage());
         }
 
         if ($mailbox->incoming_server_type == 'ms-oauth' || $mailbox->outgoing_server_type == 'ms-oauth') {

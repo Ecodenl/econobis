@@ -561,7 +561,7 @@ function MailboxDefaultFormGeneral({
                     </>
                 )}
 
-                {values.id && (
+                {values.incomingServerType !== 'mailgun' && values.id && (
                     <>
                         <PanelHeader>
                             <span className="h5">
@@ -579,11 +579,13 @@ function MailboxDefaultFormGeneral({
                                     }
                                     className={'form-group col-sm-6'}
                                 />
-                                <ViewText
-                                    label={'UID email laatst opgehaald'}
-                                    value={values.imapIdLastFetched}
-                                    className={'form-group col-sm-6'}
-                                />
+                                {values.incomingServerType === 'imap' && (
+                                    <ViewText
+                                        label={'UID email laatst opgehaald'}
+                                        value={values.imapIdLastFetched}
+                                        className={'form-group col-sm-6'}
+                                    />
+                                )}
                             </div>
                         </PanelBody>
                     </>

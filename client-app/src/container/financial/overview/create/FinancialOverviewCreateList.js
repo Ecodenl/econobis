@@ -1,68 +1,84 @@
-import React, { Component } from 'react';
-
+import React from 'react';
 import SideNav, { NavItem, NavText } from '@trendmicro/react-sidenav';
 import { Link } from 'react-router-dom';
 
-class FinancialOverviewCreateList extends Component {
-    render() {
-        const { financialOverviewContacts = [], isLoading, changeFinancialOverviewContact } = this.props;
+const FinancialOverviewCreateList = ({
+    financialOverviewContacts = [],
+    isLoading = false,
+    changeFinancialOverviewContact,
+}) => {
+    const hasContacts = Array.isArray(financialOverviewContacts) && financialOverviewContacts.length > 0;
 
-        return (
-            <nav className="financialOverviewContacts-list open sticky">
-                <div className="send-financial-overview-contacts-sidebar-menu" style={{ color: '$brand-primary' }}>
-                    <SideNav
-                        className="eco-sidenav"
-                        defaultSelected={
-                            financialOverviewContacts.length > 0
-                                ? `foc-${financialOverviewContacts[0].id}`
-                                : 'financialOverviewContact'
-                        }
-                        onSelect={selected => {
-                            if (selected?.startsWith('foc-')) {
-                                const id = selected.split('foc-')[1];
-                                if (id) changeFinancialOverviewContact(Number(id));
-                            }
-                        }}
-                    >
-                        <SideNav.Nav>
-                            {financialOverviewContacts.length > 0 ? (
-                                financialOverviewContacts.map((financialOverviewContact, i) => (
-                                    <NavItem key={i} eventKey={`foc-${financialOverviewContact.id}`}>
-                                        <NavText>
-                                            <span
-                                                className={
-                                                    financialOverviewContact.emailed_to === 'Geen e-mail bekend'
-                                                        ? 'send-financial-overview-contacts-list-link-error'
-                                                        : 'send-financial-overview-contacts-list-link'
-                                                }
-                                            >
-                                                {financialOverviewContact.contactNumber} -{' '}
-                                                {financialOverviewContact.contactName}
-                                            </span>
-                                        </NavText>
-                                    </NavItem>
-                                ))
-                            ) : (
-                                <NavItem eventKey="financialOverviewContact">
+    return (
+        <nav className="financialOverviewContacts-list open sticky">
+            <div className="send-financial-overview-contacts-sidebar-menu" style={{ color: '$brand-primary' }}>
+                <SideNav
+                    highlightColor="$brand-primary"
+                    highlightBgColor="#e5e5e5"
+                    hoverBgColor="#F1EFF0"
+                    defaultSelected="financialOverviewContact"
+                >
+                    {hasContacts ? (
+                        financialOverviewContacts.map(contact => {
+                            // probeer verschillende vormen uit backend
+                            const id = contact.id;
+                            const number =
+                                contact.contactNumber ??
+                                contact.contact_number ??
+                                contact.contactId ??
+                                contact.contact_id ??
+                                ''; // fallback
+
+                            const name =
+                                contact.contactName ??
+                                contact.contactFullNameFnf ??
+                                contact.contact?.fullNameFnf ??
+                                'Onbekende contactpersoon';
+
+                            const noEmail =
+                                contact.emailed_to === 'Geen e-mail bekend' || contact.emailToAllowed === false;
+
+                            return (
+                                <Nav
+                                    onNavClick={() =>
+                                        changeFinancialOverviewContact && changeFinancialOverviewContact(id)
+                                    }
+                                    key={id}
+                                    id={`foc-${id}`}
+                                >
                                     <NavText>
-                                        {isLoading ? (
-                                            <span className="send-financial-overview-contacts-list-link">
-                                                Gegevens aan het laden.
-                                            </span>
-                                        ) : (
-                                            <span className="send-financial-overview-contacts-list-link">
-                                                Geen waardestaten beschikbaar.
-                                            </span>
-                                        )}
+                                        <Link
+                                            className={
+                                                noEmail
+                                                    ? 'send-financial-overview-contacts-list-link-error'
+                                                    : 'send-financial-overview-contacts-list-link'
+                                            }
+                                        >
+                                            {number ? `${number} - ${name}` : name}
+                                        </Link>
                                     </NavText>
-                                </NavItem>
-                            )}
-                        </SideNav.Nav>
-                    </SideNav>
-                </div>
-            </nav>
-        );
-    }
-}
+                                </Nav>
+                            );
+                        })
+                    ) : (
+                        <Nav id="financialOverviewContact">
+                            <NavText>
+                                {isLoading ? (
+                                    <Link className="send-financial-overview-contacts-list-link">
+                                        Gegevens aan het laden.
+                                    </Link>
+                                ) : (
+                                    <Link className="send-financial-overview-contacts-list-link">
+                                        Geen waardestaten beschikbaar.
+                                    </Link>
+                                )}
+                            </NavText>
+                        </Nav>
+                    )}
+                </SideNav>
+            </div>
+        </nav>
+    );
+};
 
 export default FinancialOverviewCreateList;

@@ -493,6 +493,7 @@ Route::namespace('Api')
         Route::get('/quotation-request/grid', 'QuotationRequest\QuotationRequestController@grid');
         Route::get('/quotation-request/peek', 'QuotationRequest\QuotationRequestController@peek');
         Route::get('/quotation-request/csv', 'QuotationRequest\QuotationRequestController@csv');
+        Route::get('/quotation-request/excel/{type}', 'QuotationRequest\QuotationRequestController@excel');
         Route::get('/quotation-request/amount-open', 'QuotationRequest\QuotationRequestController@getAmountOfOpenQuotationRequests');
         Route::get('/opportunity/{opportunity}/{opportunityAction}/quotation-request', 'QuotationRequest\QuotationRequestController@getStore');
         Route::post('/quotation-request', 'QuotationRequest\QuotationRequestController@store');
@@ -732,10 +733,14 @@ Route::namespace('Api')
         Route::get('financial-overview-contact/{financialOverviewContact}/download-preview', 'FinancialOverview\FinancialOverviewContactController@downloadPreview');
         Route::get('financial-overview-contact/{financialOverviewContact}/download', 'FinancialOverview\FinancialOverviewContactController@download');
         Route::get('financial-overview-contact/{financialOverviewContact}/get', 'FinancialOverview\FinancialOverviewContactController@getFinancialOverviewContact');
+        Route::get('financial-overview-contact/{financialOverviewContact}/get-for-interim', 'FinancialOverview\FinancialOverviewContactController@getFinancialOverviewContactForInterim');
         Route::post('financial-overview-contact/{financialOverview}/sending/email', 'FinancialOverview\FinancialOverviewContactController@getFinancialOverviewContactsForSendingEmail');
         Route::post('financial-overview-contact/{financialOverview}/sending/post', 'FinancialOverview\FinancialOverviewContactController@getFinancialOverviewContactsForSendingPost');
         Route::post('financial-overview-contact/{financialOverview}/send-all', 'FinancialOverview\FinancialOverviewContactController@sendAll');
         Route::post('financial-overview-contact/{financialOverview}/send-all-post', 'FinancialOverview\FinancialOverviewContactController@sendAllPost');
+        Route::post('financial-overview-contact/{financialOverviewContact}/update-for-interim', 'FinancialOverview\FinancialOverviewContactController@updateForInterim');
+        Route::post('financial-overview-contact/{financialOverviewContact}/send-interim', 'FinancialOverview\FinancialOverviewContactController@sendInterim');
+        Route::post('financial-overview-contact/{financialOverviewContact}/send-interim-post', 'FinancialOverview\FinancialOverviewContactController@sendInterimPost');
 
         Route::get('financial-overview-post/grid', 'FinancialOverview\FinancialOverviewPostController@grid');
         Route::get('financial-overview-post/{financialOverviewPost}/download', 'FinancialOverview\FinancialOverviewPostController@downloadFinancialOverviewPost');

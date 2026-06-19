@@ -29,7 +29,8 @@ class GridFinancialOverviewContact extends JsonResource
             'statusId' => $this->status_id,
             'status' => $this->status,
             'dateSent' => $this->date_sent,
-            'emailedTo' => !empty($emailedTo) ? $emailedTo : 'Geen e-mail bekend'
+            'emailedTo' => !empty($emailedTo) ? $emailedTo : 'Geen e-mail bekend',
+            'allowInterimFinancialOverview' => $this->allowInterimFinancialOverview,
         ];
     }
 }

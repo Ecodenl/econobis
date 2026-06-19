@@ -9,6 +9,7 @@
 namespace App\Helpers\Delete\Models;
 
 
+use App\Eco\FinancialOverview\FinancialOverviewContact;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Helpers\Delete\DeleteInterface;
 use Illuminate\Database\Eloquent\Model;
@@ -45,13 +46,18 @@ class DeleteFinancialOverviewParticipantProject implements DeleteInterface
      */
     public function delete()
     {
-        $this->canDelete();
+        if (! $this->canDelete()) {
+            return $this->errorMessage;
+        }
+
         $this->deleteModels();
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->financialOverviewParticipantProject->delete();
 
+        if (count($this->errorMessage) === 0) {
+            $this->financialOverviewParticipantProject->delete();
+        }
         return $this->errorMessage;
     }
 
@@ -59,11 +65,29 @@ class DeleteFinancialOverviewParticipantProject implements DeleteInterface
      */
     public function canDelete()
     {
+        $isDraft = $this->financialOverviewParticipantProject->status_id === 'concept';
+
+        if ($isDraft) {
+            return true;
+        }
+
+        if($this->financialOverviewParticipantProject->status_id === 'sent'){
+            array_push($this->errorMessage, "Er zijn al waardestaten voor deelnemer verzonden.");
+        }
         $hasFinancialOverviewDefinitive = ParticipantMutation::where('participation_id', $this->financialOverviewParticipantProject->participant_project_id)
             ->where('financial_overview_definitive', true)->exists();
         if($hasFinancialOverviewDefinitive){
             array_push($this->errorMessage, "Er zijn al mutaties voor deelnemer verwerkt in een definitieve project waarde staat.");
         }
+        $hasFinancialOverviewContactSent = FinancialOverviewContact::where('financial_overview_id',  $this->financialOverviewParticipantProject->financialOverviewProject->financial_overview_id)
+            ->where('contact_id',  $this->financialOverviewParticipantProject->contact_id)
+            ->where('status_id', 'sent')->exists();
+
+        if($hasFinancialOverviewContactSent){
+            array_push($this->errorMessage, "Er zijn al waardestaten voor contact verzonden.");
+        }
+
+        return count($this->errorMessage) === 0;
     }
 
     /** Deletes models recursive

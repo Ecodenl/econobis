@@ -3,6 +3,7 @@
 namespace App\Eco\Email;
 
 use App\Eco\EmailAddress\EmailAddress;
+use Illuminate\Support\Facades\Log;
 
 class EmailRecipient
 {
@@ -17,6 +18,9 @@ class EmailRecipient
 
     public function __construct(mixed $idOrEmailAddress)
     {
+        if( $idOrEmailAddress === null ) {
+            Log::error('Id or emailaddress null gevonden !');
+        };
         if (is_numeric($idOrEmailAddress)) {
             $this->type = static::TYPE_MODEL;
             $this->emailAddressModel = EmailAddress::find($idOrEmailAddress) ?? new EmailAddress();

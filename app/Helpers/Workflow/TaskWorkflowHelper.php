@@ -5,10 +5,10 @@ namespace App\Helpers\Workflow;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
-use Illuminate\Support\Facades\Mail;
 
 class TaskWorkflowHelper
 {
@@ -20,7 +20,7 @@ class TaskWorkflowHelper
         $this->contact = $task->contact;
         $this->responsibleUser = $task->responsibleUser;
         $this->responsibleTeam = $task->responsibleTeam;
-        $this->cooperativeName = PortalSettings::get('cooperativeName');
+        $this->cooperativeName = PortalSettings::first()?->cooperative_name;;
 
     }
 
@@ -47,7 +47,7 @@ class TaskWorkflowHelper
             return false;
         }
 
-        $mail = Mail::to($this->contact->primaryEmailAddress);
+        $mail = MailHelper::to($this->contact->primaryEmailAddress?->email);
         $this->mailWorkflow($emailTemplate, $mail);
         return true;
     }
@@ -82,7 +82,7 @@ class TaskWorkflowHelper
             return false;
         }
 
-        $mail = Mail::to($users->pluck('email')->toArray());
+        $mail = MailHelper::to($users->pluck('email')->toArray());
         $this->mailWorkflow($emailTemplate, $mail);
         return true;
     }
@@ -117,7 +117,7 @@ class TaskWorkflowHelper
             return false;
         }
 
-        $mail = Mail::to($users->pluck('email')->toArray());
+        $mail = MailHelper::to($users->pluck('email')->toArray());
         $this->mailWorkflow($emailTemplate, $mail);
         return true;
     }

@@ -82,6 +82,8 @@ use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberPolicy;
 use App\Eco\Portal\PortalUser;
 use App\Eco\Portal\PortalUserPolicy;
+use App\Eco\PortalSettings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettingsPolicy;
 use App\Eco\PortalSettingsDashboard\PortalSettingsDashboard;
 use App\Eco\PortalSettingsDashboard\PortalSettingsDashboardPolicy;
 use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
@@ -178,6 +180,7 @@ class AuthServiceProvider extends ServiceProvider
         QuotationRequestStatus::class => QuotationRequestStatusPolicy::class,
         OpportunityStatus::class => OpportunityStatusPolicy::class,
         FinancialOverview::class => FinancialOverviewPolicy::class,
+        PortalSettings::class => PortalSettingsPolicy::class,
         PortalSettingsLayout::class => PortalSettingsLayoutPolicy::class,
         PortalSettingsDashboard::class => PortalSettingsDashboardPolicy::class,
         Cooperation::class => CooperationPolicy::class,
@@ -195,8 +198,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         // Access tokens (user-based: portal + auth code)
-        // Tijdelijk even op 7 dagen, later wrs weer terug naar 1 dag
-        Passport::tokensExpireIn(now()->addDays(7));
+        Passport::tokensExpireIn(now()->addDays(1));
 
         // Refresh tokens (user-based flows)
         Passport::refreshTokensExpireIn(now()->addDays(90));

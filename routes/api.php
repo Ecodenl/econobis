@@ -356,6 +356,10 @@ Route::namespace('Api')
         Route::get('mailbox/receive/from-mailboxes-user', 'Mailbox\MailboxController@receiveMailFromMailboxesUser');
         Route::get('mailbox/{mailbox}/make-primary', 'Mailbox\MailboxController@makePrimary');
 
+        Route::post('mailbox/{mailbox}/ms-oauth/force-reconnect', [MailboxController::class, 'forceMsOauthReconnect']);
+        Route::post('mailbox/{mailbox}/ms-oauth/force-select-account', [MailboxController::class, 'forceMsOauthSelectAccount']);
+
+
         /**
          * Districts
          */
@@ -489,6 +493,7 @@ Route::namespace('Api')
         Route::get('/quotation-request/grid', 'QuotationRequest\QuotationRequestController@grid');
         Route::get('/quotation-request/peek', 'QuotationRequest\QuotationRequestController@peek');
         Route::get('/quotation-request/csv', 'QuotationRequest\QuotationRequestController@csv');
+        Route::get('/quotation-request/excel/{type}', 'QuotationRequest\QuotationRequestController@excel');
         Route::get('/quotation-request/amount-open', 'QuotationRequest\QuotationRequestController@getAmountOfOpenQuotationRequests');
         Route::get('/opportunity/{opportunity}/{opportunityAction}/quotation-request', 'QuotationRequest\QuotationRequestController@getStore');
         Route::post('/quotation-request', 'QuotationRequest\QuotationRequestController@store');
@@ -710,10 +715,6 @@ Route::namespace('Api')
         Route::get('opportunity-status/jory', 'Opportunity\OpportunityStatusController@jory');
         Route::post('opportunity-status/{opportunityStatus}', 'Opportunity\OpportunityStatusController@update');
 
-        Route::get('setting', 'Setting\SettingController@get');
-        Route::get('setting/multiple', 'Setting\SettingController@multiple');
-        Route::post('setting', 'Setting\SettingController@store');
-
         Route::get('financial-overview/jory', 'FinancialOverview\FinancialOverviewController@jory');
         Route::post('financial-overview', 'FinancialOverview\FinancialOverviewController@store');
         Route::post('financial-overview/{financialOverview}', 'FinancialOverview\FinancialOverviewController@update');
@@ -732,23 +733,30 @@ Route::namespace('Api')
         Route::get('financial-overview-contact/{financialOverviewContact}/download-preview', 'FinancialOverview\FinancialOverviewContactController@downloadPreview');
         Route::get('financial-overview-contact/{financialOverviewContact}/download', 'FinancialOverview\FinancialOverviewContactController@download');
         Route::get('financial-overview-contact/{financialOverviewContact}/get', 'FinancialOverview\FinancialOverviewContactController@getFinancialOverviewContact');
+        Route::get('financial-overview-contact/{financialOverviewContact}/get-for-interim', 'FinancialOverview\FinancialOverviewContactController@getFinancialOverviewContactForInterim');
         Route::post('financial-overview-contact/{financialOverview}/sending/email', 'FinancialOverview\FinancialOverviewContactController@getFinancialOverviewContactsForSendingEmail');
         Route::post('financial-overview-contact/{financialOverview}/sending/post', 'FinancialOverview\FinancialOverviewContactController@getFinancialOverviewContactsForSendingPost');
         Route::post('financial-overview-contact/{financialOverview}/send-all', 'FinancialOverview\FinancialOverviewContactController@sendAll');
         Route::post('financial-overview-contact/{financialOverview}/send-all-post', 'FinancialOverview\FinancialOverviewContactController@sendAllPost');
+        Route::post('financial-overview-contact/{financialOverviewContact}/update-for-interim', 'FinancialOverview\FinancialOverviewContactController@updateForInterim');
+        Route::post('financial-overview-contact/{financialOverviewContact}/send-interim', 'FinancialOverview\FinancialOverviewContactController@sendInterim');
+        Route::post('financial-overview-contact/{financialOverviewContact}/send-interim-post', 'FinancialOverview\FinancialOverviewContactController@sendInterimPost');
 
         Route::get('financial-overview-post/grid', 'FinancialOverview\FinancialOverviewPostController@grid');
         Route::get('financial-overview-post/{financialOverviewPost}/download', 'FinancialOverview\FinancialOverviewPostController@downloadFinancialOverviewPost');
         Route::post('financial-overview-post/{financialOverviewPost}/delete', 'FinancialOverview\FinancialOverviewPostController@deleteFinancialOverviewPost');
+
+        Route::get('portal-settings/jory', 'PortalSettings\PortalSettingsController@jory');
+        Route::post('portal-settings/{portalSettings}', 'PortalSettings\PortalSettingsController@update');
+
+        Route::get('portal-settings-dashboard/jory', 'PortalSettingsDashboard\PortalSettingsDashboardController@jory');
+        Route::post('portal-settings-dashboard/{portalSettingsDashboard}', 'PortalSettingsDashboard\PortalSettingsDashboardController@update');
 
         Route::get('portal-settings-layout/jory', 'PortalSettingsLayout\PortalSettingsLayoutController@jory');
         Route::get('portal-settings-layout/default', 'PortalSettingsLayout\PortalSettingsLayoutController@getDefault');
         Route::post('portal-settings-layout', 'PortalSettingsLayout\PortalSettingsLayoutController@store');
         Route::post('portal-settings-layout/{portalSettingsLayout}', 'PortalSettingsLayout\PortalSettingsLayoutController@update');
         Route::post('portal-settings-layout/{portalSettingsLayout}/delete', 'PortalSettingsLayout\PortalSettingsLayoutController@destroy');
-
-        Route::get('portal-settings-dashboard/jory', 'PortalSettingsDashboard\PortalSettingsDashboardController@jory');
-        Route::post('portal-settings-dashboard/{portalSettingsDashboard}', 'PortalSettingsDashboard\PortalSettingsDashboardController@update');
 
         Route::get('portal-settings-dashboard-widget/jory', 'PortalSettingsDashboard\PortalSettingsDashboardWidgetController@jory');
         Route::post('portal-settings-dashboard-widget', 'PortalSettingsDashboard\PortalSettingsDashboardWidgetController@store');

@@ -7,7 +7,7 @@ namespace App\Http\Controllers\Portal\Project;
 use App\Eco\Document\Document;
 use App\Eco\Project\Project;
 use App\Eco\User\User;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 use App\Http\Controllers\Api\Document\DocumentController;
 use App\Http\Controllers\Controller;
 use Config;
@@ -41,7 +41,7 @@ class ProjectController extends Controller
 
         if ($document->filename) {
             // todo wellicht moeten we hier nog wat op anders verzinnen, voornu gebruiken we responisibleUserId from settings.json, verderop zetten we dat weer terug naar portal user
-            $responsibleUserId = PortalSettings::get('responsibleUserId');
+            $responsibleUserId = PortalSettings::first()?->responsible_user_id;
             if (!$responsibleUserId) {
                 abort(501, 'Er is helaas een fout opgetreden (5).');
             }

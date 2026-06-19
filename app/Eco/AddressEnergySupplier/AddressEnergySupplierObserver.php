@@ -25,6 +25,11 @@ class AddressEnergySupplierObserver
             $addressEnergySupplierController = new AddressEnergySupplierController();
             $addressEnergySupplierController->determineIsCurrentSupplier($addressEnergySupplier);
 
+            // Voor alleen Gas hoeven we geen distributionPartsKwh te controleren.
+            if ((int) $addressEnergySupplier->energy_supply_type_id === 1) {
+                return;
+            }
+
             $participations = $addressEnergySupplier->address->participations;
             foreach($participations as $participation) {
                 $distributionsKwh = $participation->revenueDistributionKwh->whereIn('status', ['concept', 'confirmed']);
@@ -54,6 +59,11 @@ class AddressEnergySupplierObserver
 
         if($addressEnergySupplier->isDirty('es_number'))
         {
+            // Voor alleen Gas hoeven we geen distributionPartsKwh te controleren.
+            if ((int) $addressEnergySupplier->energy_supply_type_id === 1) {
+                return;
+            }
+
             // Check if any linked revenue distribution part is present with status concept or confirmed
             // If so, then change energy supplier data
             $participations = $addressEnergySupplier->address->participations;
@@ -78,6 +88,11 @@ class AddressEnergySupplierObserver
 
     public function deleted(AddressEnergySupplier $addressEnergySupplier)
     {
+        // Voor alleen Gas hoeven we geen distributionPartsKwh te controleren.
+        if ((int) $addressEnergySupplier->energy_supply_type_id === 1) {
+            return;
+        }
+
         $aesMemberSince = $addressEnergySupplier->member_since ? Carbon::parse($addressEnergySupplier->member_since)->format('Y-m-d') : '1900-01-01';
         $aesEndDate = $addressEnergySupplier->end_date ? Carbon::parse($addressEnergySupplier->end_date)->format('Y-m-d') : '9999-12-31';
 

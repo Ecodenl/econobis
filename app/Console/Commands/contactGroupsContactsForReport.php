@@ -6,13 +6,13 @@ use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\Schedule\CommandRun;
 use App\Eco\User\User;
+use App\Helpers\Mail\MailHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 
 class contactGroupsContactsForReport extends Command
 {
@@ -134,7 +134,7 @@ class contactGroupsContactsForReport extends Command
             return;
         }
 
-        $mail = Mail::to($cooperation->email_report_table_problems);
+        $mail = MailHelper::to($cooperation->email_report_table_problems);
         $subject = "Probleem bij vullen contactgroep/contact koppelingen report tabel - " . \Config::get('app.APP_COOP_NAME');
         $bodyText = "De taak voor het automatische vullen van contactgroep/contact koppelingen report tabel (tbv Power BI) is aangeroepen terwijl deze nog bezig was.";
 

@@ -32,6 +32,7 @@ function MailboxesListFilter({ filter, handleChangeFilter }) {
                     </select>
                 </th>
                 <th />
+                <th />
             </tr>
         </>
     );

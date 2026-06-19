@@ -12,6 +12,7 @@ use App\Eco\Invoice\InvoicesToSend;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Order\Order;
 use App\Eco\User\User;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\Resources\Invoice\Templates\InvoiceMail;
@@ -20,7 +21,6 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class InvoiceHelper
@@ -264,7 +264,7 @@ class InvoiceHelper
             . $subject . '</title></head>'
             . $htmlBody . '</html>';
 
-        $mail = Mail::fromMailbox($mailbox)
+        $mail = MailHelper::fromMailbox($mailbox)
             ->to($contactInfo['email']);
 
         $bcc = $invoice->administration->email_bcc_notas;
@@ -355,7 +355,7 @@ class InvoiceHelper
             return false;
         }
 
-        $mail = Mail::fromMailbox($mailbox)
+        $mail = MailHelper::fromMailbox($mailbox)
             ->to($contactInfo['email']);
 
         $subject = 'Betalingsherinnering';

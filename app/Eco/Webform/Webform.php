@@ -19,8 +19,8 @@ class Webform extends Model
         'date_start' => 'date',
         'date_end' => 'date',
         'api_key_date' => 'date',
-        'created_at' => 'date',
-        'updated_at' => 'date',
+//        'created_at' => 'date',
+//        'updated_at' => 'date',
         'last_requests' => 'array',
     ];
 
@@ -28,19 +28,18 @@ class Webform extends Model
         'api_key'
     ];
 
-    /**
-     * optional
-     */
     public function responsibleUser()
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * optional
-     */
     public function responsibleTeam()
     {
         return $this->belongsTo(Team::class);
+    }
+
+    public function actions()
+    {
+        return $this->hasMany(WebformAction::class);
     }
 }

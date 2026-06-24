@@ -78,6 +78,8 @@ use App\Eco\Team\Team;
 use App\Eco\Title\Title;
 use App\Eco\User\User;
 use App\Eco\Webform\Webform;
+use App\Eco\Webform\WebformActionCode;
+use App\Eco\Webform\WebformActionGuard;
 use App\Helpers\Address\AddressHelper;
 use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
@@ -220,10 +222,51 @@ class ExternalWebformController extends Controller
 
         if($this->contact) {
             $this->log('Aanroep succesvol afgerond tot nu toe. Eventueel verwerken van deelname, order, taak en aanmaak Hoomdossier volgen nog.');
+            try {
+                \DB::transaction(function () use ( $data ) {
 
-            $participation = $this->addParticipationToContact($this->contact, $data['participation'], $this->webform);
-            $order = $this->addOrderToContact($this->contact, $data['order']);
-            $this->addTaskToContact($this->contact, $data['responsible_ids'], $data['task'], $this->webform, $this->intake, $this->housingFile, $participation, $order);
+                    $participation = $this->addParticipationToContact($this->contact, $data['participation'], $this->webform);
+                    $order = $this->addOrderToContact($this->contact, $data['order']);
+                    $this->addTaskToContact($this->contact, $data['responsible_ids'], $data['task'], $this->webform, $this->intake, $this->housingFile, $participation, $order);
+                });
+            } catch (WebformException $e) {
+                // Er is een bewuste fout vanuit het verwerken van de aanroep onstaan
+                // Deze kan worden weergegeven in het log.
+                // Doordat er een fout is ontstaan tijdens deze vervolg-transaction,
+                // worden alleen de wijzigingen uit deze vervolgverwerking teruggedraaid.
+                $this->log('Fout opgetreden verwerking in vervolg verwerking: ' . $e->getMessage());
+                $this->log('API aanroep vervolg is ongedaan gemaakt!');
+
+                // Log wegschrijven naar laravel logbestand
+                $this->logInfo();
+
+                // Log emailen naar verantwoordelijke(n)
+                $this->mailLog($request->all(), false, $this->webform);
+
+                // Logregels weegeven ter info voor degene die de functie aanroept
+                return Response::json($this->logs, $e->getStatusCode());
+            } catch (\Exception $e) {
+                // Er is een onbekende fout opgetreden, dit is een systeemfout en willen we dus niet weergeven.
+                // Log dus aanvullen met 'Onbekende fout'
+                // Doordat er een fout is ontstaan tijdens deze vervolg-transaction,
+                // worden alleen de wijzigingen uit deze vervolgverwerking teruggedraaid.
+                $this->log('Onbekende fout opgetreden in vervolg verwerking.');
+                $this->log('API aanroep vervolg is ongedaan gemaakt!');
+
+                // Log wegschrijven naar laravel logbestand
+                $this->logInfo();
+
+                // Exception onderwater raporteren zonder 'er uit te klappen'
+                // Zo is de error terug te vinden in de logs en evt Slack
+                report($e);
+                $this->log('Error is gerapporteerd.');
+
+                // Log emailen naar verantwoordelijke(n)
+                $this->mailLog($request->all(), false, $this->webform);
+
+                // Logregels weegeven ter info voor degene die de functie aanroept
+                return Response::json($this->logs, 500);
+            }
         }
 
         // evt nog Hoomdossier aanmaken indien van toepassing
@@ -3085,6 +3128,16 @@ class ExternalWebformController extends Controller
 
     protected function addParticipationToContact(Contact $contact, array $data, Webform $webform )
     {
+        if (!$data['project_id']) {
+            return null;
+        }
+
+        $guard = new WebformActionGuard();
+        $guard->assertAllowed($webform, WebformActionCode::PARTICIPATION_CREATE, [
+            'project_id' => $data['project_id'],
+            'status_id' => $data['participation_mutation_status_id'],
+        ]);
+
         if ($data['project_id']) {
             $this->log('Er is een project meegegeven, participatie aanmaken.');
             $project = Project::find($data['project_id']);
@@ -3711,6 +3764,16 @@ class ExternalWebformController extends Controller
 
     protected function addOrderToContact(Contact $contact, array $data)
     {
+        if (!$data['product_id']) {
+            return null;
+        }
+
+        $guard = new WebformActionGuard();
+        $guard->assertAllowed($this->webform, WebformActionCode::ORDER_CREATE, [
+            'product_id' => $data['product_id'],
+            'status_id' => $data['status_id'],
+        ]);
+
         if ($data['product_id']) {
             $this->log('Er is een product meegegeven, order aanmaken.');
 

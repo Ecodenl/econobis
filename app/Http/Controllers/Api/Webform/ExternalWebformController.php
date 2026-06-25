@@ -3639,7 +3639,7 @@ class ExternalWebformController extends Controller
         if (!$taskType) {
             $taskTypeId = 6;
             $taskType = TaskType::find($taskTypeId);
-            $this->log('Geen bekende waarde voor taak_type_id (' . $data['type_id'] . ') meegegeven, default naar ' . $taskTypeId . ' ' . $taskType->getName() . '.');
+            $this->log('Geen bekende waarde voor taak_type_id (' . $data['type_id'] . ') meegegeven, default naar ' . $taskTypeId . ' ' . $taskType->name . '.');
         }
 
         if($responsibleIds['responsible_user_id']) {
@@ -3714,7 +3714,7 @@ class ExternalWebformController extends Controller
     {
         $taskTypeId = 6;
         $taskType = TaskType::find($taskTypeId);
-        $this->log('Taak Controle contact met taak_type_id (default) ' . $taskTypeId . ' ' . $taskType->getName() . ' aanmaken.');
+        $this->log('Taak Controle contact met taak_type_id (default) ' . $taskTypeId . ' ' . $taskType->name . ' aanmaken.');
 
         if($responsibleIds['responsible_user_id']) {
             $responsibleUserId = $responsibleIds['responsible_user_id'];

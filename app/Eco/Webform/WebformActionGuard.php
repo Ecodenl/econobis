@@ -8,15 +8,12 @@ use Illuminate\Support\Facades\Log;
 class WebformActionGuard
 {
     protected const REQUIRED_FILTERS = [
-        WebformActionCode::PARTICIPATION_CREATE => ['project_id', 'status_id'],
-        WebformActionCode::ORDER_CREATE => ['product_id', 'status_id'],
+        WebformActionCode::PARTICIPATION_CREATE => ['status_id'],
+        WebformActionCode::ORDER_CREATE => [],
     ];
 
     public function assertAllowed(Webform $webform, string $actionCode, array $values): void
     {
-        Log::info('webform id: ' . $webform->id);
-        Log::info('action_code: ' . $actionCode);
-        Log::info('values: ' . implode(', ', $values ));
         $action = $webform->actions()
             ->where('action_code', $actionCode)
             ->where('enabled', true)

@@ -7,6 +7,7 @@ use App\Eco\Cooperation\Cooperation;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Mailbox\MailgunDomain;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class MailgunHelper
@@ -34,54 +35,70 @@ class MailgunHelper
         return $httpCode === 200;
     }
 
-    public function updateMailgunForwarding(Mailbox $mailbox)
+    public function createInboundForwardRoute(Mailbox $mailbox)
     {
-        if($mailbox->incoming_server_type == 'mailgun'){
-            $this->createInboundForwardRoute($mailbox);
-        }elseif($mailbox->inbound_mailgun_email != null){
-            $this->deleteInboundForwardRoute($mailbox);
+        if (!app()->environment('production')) {
+            Log::info('Skipping Mailgun route creation outside production.', [
+                'mailbox_id' => $mailbox->id,
+            ]);
+
+            return;
         }
-    }
 
-    protected function createInboundForwardRoute(Mailbox $mailbox)
-    {
-        $mailbox->inbound_mailgun_email = Str::random(24) . '@mailforward.econobis.nl'; // Iedereen gebruikt zelfde domein dus kan nog hardcoded
-        $mailbox->inbound_mailgun_post_token = Str::random(32);
+        $mailgunDomain = MailgunDomain::where('is_verified', true)->first();
 
-        /**
-         * De mailgundomeinen worden altijd door Econobis zelf aangemaakt en daar valt ook mailforward.econobis.nl onder.
-         * Daarom kunnen we gewoon het eerste mailgundomein pakken.
-         */
-        $secret = MailgunDomain::where('is_verified', true)->firstOrFail()->secret;
+        if (!$mailgunDomain) {
+            Log::warning('No verified Mailgun domain found. Mailgun inbound forward route not created.', [
+                'mailbox_id' => $mailbox->id,
+                'mailbox_name' => $mailbox->name,
+            ]);
+
+            return;
+        }
+
+        $inboundMailgunEmail = Str::random(24) . '@mailforward.econobis.nl';
+        $inboundMailgunPostToken = Str::random(32);
 
         $response = (new Client())->post('https://api.eu.mailgun.net/v3/routes', [
             'auth' => [
                 'api',
-                $secret
+                $mailgunDomain->secret,
             ],
             'form_params' => [
                 'priority' => 0,
                 'description' => optional(Cooperation::first())->name . ':' . $mailbox->name . ' mail forwarder',
-                'expression' => 'match_recipient("' . $mailbox->inbound_mailgun_email . '")',
-                'action' => 'forward("' . config('app.url') . '/mailgun/mail/' . $mailbox->inbound_mailgun_post_token . '")',
-            ]
+                'expression' => 'match_recipient("' . $inboundMailgunEmail . '")',
+                'action' => 'forward("' . config('app.url') . '/mailgun/mail/' . $inboundMailgunPostToken . '")',
+            ],
         ]);
 
+        $mailbox->inbound_mailgun_email = $inboundMailgunEmail;
+        $mailbox->inbound_mailgun_post_token = $inboundMailgunPostToken;
         $mailbox->inbound_mailgun_route_id = json_decode($response->getBody()->getContents())->route->id;
         $mailbox->valid = true;
         $mailbox->save();
     }
 
-    protected function deleteInboundForwardRoute(Mailbox $mailbox)
+    public function deleteInboundForwardRoute(Mailbox $mailbox, ?string $routeId = null)
     {
-        $client = new Client();
+        if (!app()->environment('production')) {
+            Log::info('Skipping Mailgun route deletion outside production.', [
+                'mailbox_id' => $mailbox->id,
+            ]);
 
-        $client->delete('https://api.eu.mailgun.net/v3/routes/' . $mailbox->inbound_mailgun_route_id, [
-            'auth' => [
-                'api',
-                config('services.mailgun.secret')
-            ],
-        ]);
+            return;
+        }
+
+        $routeId = $routeId ?: $mailbox->inbound_mailgun_route_id;
+
+        if ($routeId) {
+            (new Client())->delete('https://api.eu.mailgun.net/v3/routes/' . $routeId, [
+                'auth' => [
+                    'api',
+                    config('services.mailgun.secret'),
+                ],
+            ]);
+        }
 
         $mailbox->inbound_mailgun_route_id = null;
         $mailbox->inbound_mailgun_email = null;

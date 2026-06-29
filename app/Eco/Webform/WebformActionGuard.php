@@ -3,7 +3,6 @@
 namespace App\Eco\Webform;
 
 use App\Http\Controllers\Api\Webform\WebformException;
-use Illuminate\Support\Facades\Log;
 
 class WebformActionGuard
 {
@@ -49,9 +48,26 @@ class WebformActionGuard
             '>=' => (float) $value >= (float) $filterValue,
             '<' => (float) $value < (float) $filterValue,
             '>' => (float) $value > (float) $filterValue,
-            'in' => in_array((string) $value, array_map('trim', explode(',', (string) $filterValue)), true),
+
+            'in' => $this->matchesIn($value, $filterValue),
+
             default => false,
         };
+    }
+
+    private function matchesIn($value, ?string $filterValue): bool
+    {
+        $values = json_decode((string) $filterValue, true);
+
+        if (!is_array($values)) {
+            return false;
+        }
+
+        return in_array(
+            (string) $value,
+            array_map('strval', $values),
+            true
+        );
     }
 
     protected function error(string $string, int $statusCode = 422)

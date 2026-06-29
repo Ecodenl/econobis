@@ -16,7 +16,9 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import InputDate from '../../../../components/form/InputDate';
 import InputSelectGroup from '../../../../components/form/InputSelectGroup';
-import InputCheckbox from "../../../../components/form/InputCheckbox";
+import InputCheckbox from '../../../../components/form/InputCheckbox';
+import InputToggle from '../../../../components/form/InputToggle';
+import InputReactSelectMulti from '../../../../components/form/InputReactSelectMulti';
 
 class WebformDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -34,6 +36,11 @@ class WebformDetailsFormGeneralEdit extends Component {
             },
             errors: {
                 name: false,
+                maxRequestsPerMinute: false,
+                responsible: false,
+                emailAddressErrorReport: false,
+                mailErrorReport: false,
+                allowedParticipationStatusIds: false,
             },
         };
 
@@ -78,6 +85,15 @@ class WebformDetailsFormGeneralEdit extends Component {
         });
     }
 
+    handleInputChangeMultiSelect = selectedOptions => {
+        this.setState({
+            ...this.state,
+            webform: {
+                ...this.state.webform,
+                allowedParticipationStatusIds: selectedOptions ? selectedOptions.map(option => option.id) : [],
+            },
+        });
+    };
     handleSubmit(event) {
         event.preventDefault();
 
@@ -102,6 +118,11 @@ class WebformDetailsFormGeneralEdit extends Component {
             hasErrors = true;
         }
 
+        if (webform.canCreateParticipations && webform.allowedParticipationStatusIds.length === 0) {
+            errors.allowedParticipationStatusIds = true;
+            hasErrors = true;
+        }
+
         if (webform.responsible.search('user') >= 0) {
             webform.responsibleUserId = webform.responsible.replace('user', '');
             webform.responsibleTeamId = '';
@@ -119,7 +140,24 @@ class WebformDetailsFormGeneralEdit extends Component {
     }
 
     render() {
-        const { name, apiKey, apiKeyDate, emailAddressErrorReport, mailErrorReport, maxRequestsPerMinute, dateStart, dateEnd, responsible } = this.state.webform;
+        const {
+            name,
+            apiKey,
+            apiKeyDate,
+            emailAddressErrorReport,
+            mailErrorReport,
+            maxRequestsPerMinute,
+            dateStart,
+            dateEnd,
+            responsible,
+            canCreateParticipations,
+            allowedParticipationStatusIds,
+            canCreateOrders,
+        } = this.state.webform;
+
+        const allowedParticipationStatusOptions = this.props.participantMutationStatuses.filter(status =>
+            (allowedParticipationStatusIds || []).map(Number).includes(Number(status.id))
+        );
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -141,8 +179,15 @@ class WebformDetailsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleInputChange}
                                 readOnly={true}
                             />
-                            <Icon className="mybtn-success" size={14} icon={refresh} style={{ 'margin-left': '15px' }} role="button" onClick={this.refreshKey} title={'Ververs sleutel'} />
-
+                            <Icon
+                                className="mybtn-success"
+                                size={14}
+                                icon={refresh}
+                                style={{ 'margin-left': '15px' }}
+                                role="button"
+                                onClick={this.refreshKey}
+                                title={'Ververs sleutel'}
+                            />
                         </div>
                         <div className="row">
                             <InputText
@@ -212,6 +257,41 @@ class WebformDetailsFormGeneralEdit extends Component {
                                 error={this.state.errors.mailErrorReport}
                             />
                         </div>
+                        <hr />
+                        <div className="row">
+                            <InputToggle
+                                label="Kan deelnames aanmaken"
+                                name={'canCreateParticipations'}
+                                value={canCreateParticipations}
+                                onChangeAction={this.handleInputChange}
+                                // size={'col-sm-5'}
+                                // textToolTip={`...`}
+                            />
+                            {canCreateParticipations && (
+                                <InputReactSelectMulti
+                                    label="Toegestane deelnamestatussen"
+                                    name="allowedParticipationStatusIds"
+                                    options={this.props.participantMutationStatuses}
+                                    value={allowedParticipationStatusOptions}
+                                    onChangeAction={this.handleInputChangeMultiSelect}
+                                    optionId="id"
+                                    optionName="name"
+                                    multi={true}
+                                    error={this.state.errors.allowedParticipationStatusIds}
+                                />
+                            )}
+                        </div>
+
+                        <div className="row">
+                            <InputToggle
+                                label="Kan orders aanmaken"
+                                name={'canCreateOrders'}
+                                value={canCreateOrders}
+                                onChangeAction={this.handleInputChange}
+                                // size={'col-sm-5'}
+                                // textToolTip={`...`}
+                            />
+                        </div>
                     </PanelBody>
 
                     <PanelBody>
@@ -238,6 +318,7 @@ class WebformDetailsFormGeneralEdit extends Component {
 const mapStateToProps = state => {
     return {
         webformDetails: state.webformDetails,
+        participantMutationStatuses: state.systemData.participantMutationStatuses,
         teams: state.systemData.teams,
         users: state.systemData.users,
     };

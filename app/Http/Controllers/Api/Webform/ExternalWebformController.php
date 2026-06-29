@@ -164,6 +164,7 @@ class ExternalWebformController extends Controller
 
     private $newTaskToEmail = [];
     private $processWorkflowEmailNewTask = false;
+    private $createHoomDossier = false;
     private $createOpportunityToEmail = [];
     private $processWorkflowCreateOpportunity = false;
     private $onlyCheckLastName = false;
@@ -172,7 +173,7 @@ class ExternalWebformController extends Controller
     public function post(string $apiKey, Request $request)
     {
         $data = $this->getDataFromRequest($request);
-        $createHoomDossier = (bool)$data['contact']['create_hoom_dossier'];
+        $this->createHoomDossier = (bool)$data['contact']['create_hoom_dossier'];
         $this->responsibleIds = $data['responsible_ids'];
         $this->newTaskToEmail = [];
         $this->processWorkflowEmailNewTask = false;
@@ -220,113 +221,49 @@ class ExternalWebformController extends Controller
             return Response::json($this->logs, 500);
         }
 
-        if($this->contact) {
-            $this->log('Aanroep succesvol afgerond tot nu toe. Eventueel verwerken van deelname, order, taak en aanmaak Hoomdossier volgen nog.');
-            try {
-                \DB::transaction(function () use ( $data ) {
+        $this->log('Aanroep succesvol afgerond tot nu toe. Eventueel verwerken van deelname, order, taak en aanmaak Hoomdossier volgen nog.');
+        try {
+            \DB::transaction(function () use ( $data ) {
+                $this->doPostMore($data);
+            });
+        } catch (WebformException $e) {
+            // Er is een bewuste fout vanuit het verwerken van de aanroep onstaan
+            // Deze kan worden weergegeven in het log.
+            // Doordat er een fout is ontstaan tijdens deze vervolg-transaction,
+            // worden alleen de wijzigingen uit deze vervolgverwerking teruggedraaid.
+            $this->log('Fout opgetreden verwerking in vervolg verwerking: ' . $e->getMessage());
+            $this->log('API aanroep vervolg is ongedaan gemaakt!');
 
-                    $participation = $this->addParticipationToContact($this->contact, $data['participation'], $this->webform);
-                    $order = $this->addOrderToContact($this->contact, $data['order']);
-                    $this->addTaskToContact($this->contact, $data['responsible_ids'], $data['task'], $this->webform, $this->intake, $this->housingFile, $participation, $order);
-                });
-            } catch (WebformException $e) {
-                // Er is een bewuste fout vanuit het verwerken van de aanroep onstaan
-                // Deze kan worden weergegeven in het log.
-                // Doordat er een fout is ontstaan tijdens deze vervolg-transaction,
-                // worden alleen de wijzigingen uit deze vervolgverwerking teruggedraaid.
-                $this->log('Fout opgetreden verwerking in vervolg verwerking: ' . $e->getMessage());
-                $this->log('API aanroep vervolg is ongedaan gemaakt!');
+            // Log wegschrijven naar laravel logbestand
+            $this->logInfo();
 
-                // Log wegschrijven naar laravel logbestand
-                $this->logInfo();
+            // Log emailen naar verantwoordelijke(n)
+            $this->mailLog($request->all(), false, $this->webform);
 
-                // Log emailen naar verantwoordelijke(n)
-                $this->mailLog($request->all(), false, $this->webform);
+            // Logregels weegeven ter info voor degene die de functie aanroept
+            return Response::json($this->logs, $e->getStatusCode());
+        } catch (\Exception $e) {
+            // Er is een onbekende fout opgetreden, dit is een systeemfout en willen we dus niet weergeven.
+            // Log dus aanvullen met 'Onbekende fout'
+            // Doordat er een fout is ontstaan tijdens deze vervolg-transaction,
+            // worden alleen de wijzigingen uit deze vervolgverwerking teruggedraaid.
+            $this->log('Onbekende fout opgetreden in vervolg verwerking.');
+            $this->log('API aanroep vervolg is ongedaan gemaakt!');
 
-                // Logregels weegeven ter info voor degene die de functie aanroept
-                return Response::json($this->logs, $e->getStatusCode());
-            } catch (\Exception $e) {
-                // Er is een onbekende fout opgetreden, dit is een systeemfout en willen we dus niet weergeven.
-                // Log dus aanvullen met 'Onbekende fout'
-                // Doordat er een fout is ontstaan tijdens deze vervolg-transaction,
-                // worden alleen de wijzigingen uit deze vervolgverwerking teruggedraaid.
-                $this->log('Onbekende fout opgetreden in vervolg verwerking.');
-                $this->log('API aanroep vervolg is ongedaan gemaakt!');
+            // Log wegschrijven naar laravel logbestand
+            $this->logInfo();
 
-                // Log wegschrijven naar laravel logbestand
-                $this->logInfo();
+            // Exception onderwater raporteren zonder 'er uit te klappen'
+            // Zo is de error terug te vinden in de logs en evt Slack
+            report($e);
+            $this->log('Error is gerapporteerd.');
 
-                // Exception onderwater raporteren zonder 'er uit te klappen'
-                // Zo is de error terug te vinden in de logs en evt Slack
-                report($e);
-                $this->log('Error is gerapporteerd.');
+            // Log emailen naar verantwoordelijke(n)
+            $this->mailLog($request->all(), false, $this->webform);
 
-                // Log emailen naar verantwoordelijke(n)
-                $this->mailLog($request->all(), false, $this->webform);
-
-                // Logregels weegeven ter info voor degene die de functie aanroept
-                return Response::json($this->logs, 500);
-            }
+            // Logregels weegeven ter info voor degene die de functie aanroept
+            return Response::json($this->logs, 500);
         }
-
-        // evt nog Hoomdossier aanmaken indien van toepassing
-        if ($createHoomDossier) {
-            $this->createHoomDossier();
-        }
-
-        // evt nog ProcessEmailNewContactToGroup uitvoeren
-        if ($this->processEmailNewContactToGroup) {
-            $this->doProcessEmailNewContactToGroup($data['contact']);
-        }
-
-        // evt nog ProcessEmailNewContactPersonToGroup uitvoeren
-        if ($this->processEmailNewContactPersonToGroup) {
-            $this->doProcessEmailNewContactPersonToGroup($data['contact']);
-        }
-
-        // evt nog processWorkflowEmailNewTask uitvoeren
-        if ($this->processWorkflowEmailNewTask) {
-            foreach ($this->newTaskToEmail as $newTaskId){
-                $newTask = Task::find($newTaskId);
-                if ($newTask && $newTask->type && $newTask->type->uses_wf_new_task) {
-                    $taskWorkflowHelper = new TaskWorkflowHelper($newTask);
-                    $processed = $taskWorkflowHelper->processWorkflowEmailNewTask();
-                    if($processed)
-                    {
-                        $this->log('Nieuwe taak (id: ' . $newTask->id . ') gemaild aan verantwoordelijke.');
-                        $newTask->date_sent_wf_new_task =  Carbon::now();
-                        $newTask->save();
-                    } else {
-                        $this->log('Nieuwe taak (id: ' . $newTask->id . ') NIET gemaild aan verantwoordelijke.');
-                    }
-                }
-
-            }
-        }
-
-        if($data['quotation_request_visit']['status_id']){
-            $this->updateLatestQuotationRequestVisitStatus($data['quotation_request_visit']);
-        }
-
-        // evt nog processWorkflowCreateOpportunity uitvoeren
-        if ($this->processWorkflowCreateOpportunity) {
-            foreach ($this->createOpportunityToEmail as $measureCategoryId){
-                $measureCategory = MeasureCategory::find($measureCategoryId);
-                if ($this->intake && $measureCategory && $measureCategory->uses_wf_create_opportunity) {
-                    $this->log("Intake interesse (maatregel categorie) '" . $measureCategory->name . "' heeft workflow kans maken. Deze uitvoeren");
-                    $intakeWorkflowHelper = new IntakeWorkflowHelper($this->intake, $measureCategory);
-                    $processed = $intakeWorkflowHelper->processWorkflowCreateOpportunity();
-
-                    if($processed)
-                    {
-                        $this->log('Workflow kans maken uitgevoerd.');
-                    } else {
-                        $this->log('Workflow kans maken NIET uitgevoerd.');
-                    }
-                }
-            }
-        }
-
 
         $this->logInfo();
         return Response::json($this->logs);
@@ -482,6 +419,74 @@ class ExternalWebformController extends Controller
         $this->housingFile = $housingFile;
     }
 
+    /**
+     * @param array $data
+     * @return void
+     */
+    private function doPostMore(array $data): void
+    {
+        if ($this->contact) {
+            $participation = $this->addParticipationToContact($this->contact, $data['participation'], $this->webform);
+            $order = $this->addOrderToContact($this->contact, $data['order']);
+            $this->addTaskToContact($this->contact, $data['responsible_ids'], $data['task'], $this->webform, $this->intake, $this->housingFile, $participation, $order);
+        }
+
+        // evt nog Hoomdossier aanmaken indien van toepassing
+        if ($this->createHoomDossier) {
+            $this->doCreateHoomDossier();
+        }
+
+        // evt nog ProcessEmailNewContactToGroup uitvoeren
+        if ($this->processEmailNewContactToGroup) {
+            $this->doProcessEmailNewContactToGroup($data['contact']);
+        }
+
+        // evt nog ProcessEmailNewContactPersonToGroup uitvoeren
+        if ($this->processEmailNewContactPersonToGroup) {
+            $this->doProcessEmailNewContactPersonToGroup($data['contact']);
+        }
+
+        // evt nog processWorkflowEmailNewTask uitvoeren
+        if ($this->processWorkflowEmailNewTask) {
+            foreach ($this->newTaskToEmail as $newTaskId) {
+                $newTask = Task::find($newTaskId);
+                if ($newTask && $newTask->type && $newTask->type->uses_wf_new_task) {
+                    $taskWorkflowHelper = new TaskWorkflowHelper($newTask);
+                    $processed = $taskWorkflowHelper->processWorkflowEmailNewTask();
+                    if ($processed) {
+                        $this->log('Nieuwe taak (id: ' . $newTask->id . ') gemaild aan verantwoordelijke.');
+                        $newTask->date_sent_wf_new_task = Carbon::now();
+                        $newTask->save();
+                    } else {
+                        $this->log('Nieuwe taak (id: ' . $newTask->id . ') NIET gemaild aan verantwoordelijke.');
+                    }
+                }
+
+            }
+        }
+
+        if ($data['quotation_request_visit']['status_id']) {
+            $this->updateLatestQuotationRequestVisitStatus($data['quotation_request_visit']);
+        }
+
+        // evt nog processWorkflowCreateOpportunity uitvoeren
+        if ($this->processWorkflowCreateOpportunity) {
+            foreach ($this->createOpportunityToEmail as $measureCategoryId) {
+                $measureCategory = MeasureCategory::find($measureCategoryId);
+                if ($this->intake && $measureCategory && $measureCategory->uses_wf_create_opportunity) {
+                    $this->log("Intake interesse (maatregel categorie) '" . $measureCategory->name . "' heeft workflow kans maken. Deze uitvoeren");
+                    $intakeWorkflowHelper = new IntakeWorkflowHelper($this->intake, $measureCategory);
+                    $processed = $intakeWorkflowHelper->processWorkflowCreateOpportunity();
+
+                    if ($processed) {
+                        $this->log('Workflow kans maken uitgevoerd.');
+                    } else {
+                        $this->log('Workflow kans maken NIET uitgevoerd.');
+                    }
+                }
+            }
+        }
+    }
 
     protected function getDataFromRequest(Request $request)
     {
@@ -3133,10 +3138,9 @@ class ExternalWebformController extends Controller
         }
 
         $guard = new WebformActionGuard();
-        $guard->assertAllowed($webform, WebformActionCode::PARTICIPATION_CREATE, [
-            'project_id' => $data['project_id'],
-            'status_id' => $data['participation_mutation_status_id'],
-        ]);
+            $guard->assertAllowed($webform, WebformActionCode::PARTICIPATION_CREATE, [
+                'status_id' => $data['participation_mutation_status_id'],
+            ]);
 
         if ($data['project_id']) {
             $this->log('Er is een project meegegeven, participatie aanmaken.');
@@ -3769,10 +3773,7 @@ class ExternalWebformController extends Controller
         }
 
         $guard = new WebformActionGuard();
-        $guard->assertAllowed($this->webform, WebformActionCode::ORDER_CREATE, [
-            'product_id' => $data['product_id'],
-            'status_id' => $data['status_id'],
-        ]);
+        $guard->assertAllowed($this->webform, WebformActionCode::ORDER_CREATE, []);
 
         if ($data['product_id']) {
             $this->log('Er is een product meegegeven, order aanmaken.');
@@ -3974,10 +3975,7 @@ class ExternalWebformController extends Controller
         $this->taskErrors[] = $error;
     }
 
-    /**
-     * @return bool
-     */
-    private function createHoomDossier()
+    private function doCreateHoomDossier()
     {
         $cooperation = Cooperation::first();
         $this->log("Aanmaken hoomdossier contact");
@@ -4561,4 +4559,5 @@ class ExternalWebformController extends Controller
             }
         }
     }
+
 }

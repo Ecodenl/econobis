@@ -22,7 +22,15 @@ const WebformDetailsFormGeneralView = props => {
         dateEnd,
         responsibleUser,
         responsibleTeam,
+        canCreateParticipations,
+        allowedParticipationStatusIds,
+        canCreateOrders,
     } = props.webformDetails;
+
+    const allowedParticipationStatuses = props.participantMutationStatuses
+        .filter(status => (allowedParticipationStatusIds || []).map(Number).includes(Number(status.id)))
+        .map(status => status.name)
+        .join(', ');
 
     return (
         <div>
@@ -76,6 +84,19 @@ const WebformDetailsFormGeneralView = props => {
 
                         <ViewText label={'Mailen foutrapportage'} value={mailErrorReport == true ? 'Ja' : 'Nee'} />
                     </div>
+
+                    <hr />
+
+                    <div className="row" onClick={props.switchToEdit}>
+                        <ViewText label="Kan deelnames aanmaken" value={canCreateParticipations ? 'Ja' : 'Nee'} />
+                        {canCreateParticipations && (
+                            <ViewText label="Toegestane deelnamestatussen" value={allowedParticipationStatuses} />
+                        )}
+                    </div>
+
+                    <div className="row">
+                        <ViewText label="Kan orders aanmaken" value={canCreateOrders ? 'Ja' : 'Nee'} />
+                    </div>
                 </PanelBody>
             </Panel>
         </div>
@@ -85,6 +106,7 @@ const WebformDetailsFormGeneralView = props => {
 const mapStateToProps = state => {
     return {
         webformDetails: state.webformDetails,
+        participantMutationStatuses: state.systemData.participantMutationStatuses,
     };
 };
 

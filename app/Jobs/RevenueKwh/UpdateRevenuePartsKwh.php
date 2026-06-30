@@ -52,7 +52,6 @@ class UpdateRevenuePartsKwh implements ShouldQueue
 
     public function handle()
     {
-        //user voor observer
         Auth::setUser(User::find($this->userId));
 
         $this->revenuePartsKwh->calculator()->runRevenuePartsKwh();

@@ -16,6 +16,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class ProcessSendingGroupEmail implements ShouldQueue
@@ -44,11 +45,14 @@ class ProcessSendingGroupEmail implements ShouldQueue
 
     public function handle()
     {
+        Auth::setUser($this->user->fresh());
+
         if($this->firstCall){
             Log::info('ProcessSendingGroupEmail start', [
                 'contact_group_id' => $this->email->contact_group_id,
                 'email_id' => $this->email->id,
                 'user_id' => $this->user->id,
+                'auth_user_id' => Auth::id(),
                 'pid' => getmypid(),
                 'app_env' => app()->environment(),
                 'running_in_console' => app()->runningInConsole(),

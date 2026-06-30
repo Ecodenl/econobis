@@ -4,11 +4,13 @@ namespace App\Jobs\Laposta;
 
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
+use App\Eco\User\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Auth;
 use Laposta;
 use Laposta_Member;
 
@@ -33,6 +35,8 @@ class DeleteMemberToLaposta implements ShouldQueue
 
     public function handle()
     {
+        Auth::setUser(User::find($this->userId));
+
         Laposta::setApiKey($this->lapostaKey);
 
         $member = new Laposta_Member($this->contactGroup->laposta_list_id ? $this->contactGroup->laposta_list_id : '');

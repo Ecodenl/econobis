@@ -60,7 +60,6 @@ class CreateRevenueReport implements ShouldQueue
 
     public function handle()
     {
-        //user voor observer
         Auth::setUser(User::find($this->userId));
 
         $projectRevenueController = new ProjectRevenueController();

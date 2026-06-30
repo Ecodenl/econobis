@@ -15,6 +15,7 @@ import InputSelectGroup from '../../../components/form/InputSelectGroup';
 import InputDate from '../../../components/form/InputDate';
 import InputSelect from '../../../components/form/InputSelect';
 import InputToggle from '../../../components/form/InputToggle';
+import InputReactSelectMulti from '../../../components/form/InputReactSelectMulti';
 
 // Functionele wrapper voor de class component
 const WebformNewFormWrapper = props => {
@@ -36,6 +37,9 @@ class WebformNewForm extends Component {
                 dateStart: '',
                 dateEnd: '',
                 responsible: '',
+                canCreateParticipations: false,
+                allowedParticipationStatusIds: [],
+                canCreateOrders: false,
             },
             errors: {
                 apiType: false,
@@ -44,6 +48,7 @@ class WebformNewForm extends Component {
                 responsible: false,
                 emailAddressErrorReport: false,
                 mailErrorReport: false,
+                allowedParticipationStatusIds: false,
             },
             errorMessages: {
                 apiType: '',
@@ -52,6 +57,7 @@ class WebformNewForm extends Component {
                 responsible: '',
                 emailAddressErrorReport: '',
                 mailErrorReport: '',
+                allowedParticipationStatusIds: '',
             },
         };
 
@@ -127,6 +133,12 @@ class WebformNewForm extends Component {
             hasErrors = true;
         }
 
+        if (webform.canCreateParticipations && webform.allowedParticipationStatusIds.length === 0) {
+            errors.allowedParticipationStatusIds = true;
+            errorMessages.allowedParticipationStatusIds = 'Selecteer minimaal 1 status';
+            hasErrors = true;
+        }
+
         if (webform.responsible.search('user') >= 0) {
             webform.responsibleUserId = webform.responsible.replace('user', '');
             webform.responsibleTeamId = '';
@@ -168,7 +180,14 @@ class WebformNewForm extends Component {
             dateStart,
             dateEnd,
             responsible,
+            canCreateParticipations,
+            allowedParticipationStatusIds,
+            canCreateOrders,
         } = this.state.webform;
+
+        const allowedParticipationStatusOptions = this.props.participantMutationStatuses.filter(status =>
+            (allowedParticipationStatusIds || []).map(Number).includes(Number(status.id))
+        );
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -288,6 +307,45 @@ class WebformNewForm extends Component {
                                 // textToolTip={`...`}
                             />
                         </div>
+                        {apiType === 'webform_api' && (
+                            <>
+                                <hr />
+                                <div className="row">
+                                    <InputToggle
+                                        label="Kan deelnames aanmaken"
+                                        name={'canCreateParticipations'}
+                                        value={canCreateParticipations}
+                                        onChangeAction={this.handleInputChange}
+                                        // size={'col-sm-5'}
+                                        // textToolTip={`...`}
+                                    />
+                                    {canCreateParticipations && (
+                                        <InputReactSelectMulti
+                                            label="Toegestane deelnamestatussen"
+                                            name="allowedParticipationStatusIds"
+                                            options={this.props.participantMutationStatuses}
+                                            value={allowedParticipationStatusOptions}
+                                            onChangeAction={this.handleInputChangeMultiSelect}
+                                            optionId="id"
+                                            optionName="name"
+                                            multi={true}
+                                            error={this.state.errors.allowedParticipationStatusIds}
+                                            errorMessage={this.state.errorMessages.allowedParticipationStatusIds}
+                                        />
+                                    )}
+                                </div>
+                                <div className="row">
+                                    <InputToggle
+                                        label="Kan orders aanmaken"
+                                        name={'canCreateOrders'}
+                                        value={canCreateOrders}
+                                        onChangeAction={this.handleInputChange}
+                                        // size={'col-sm-5'}
+                                        // textToolTip={`...`}
+                                    />
+                                </div>
+                            </>
+                        )}
                     </PanelBody>
 
                     <PanelBody>
@@ -308,6 +366,7 @@ class WebformNewForm extends Component {
 
 const mapStateToProps = state => {
     return {
+        participantMutationStatuses: state.systemData.participantMutationStatuses,
         webformApiTypes: state.systemData.webformApiTypes,
         teams: state.systemData.teams,
         users: state.systemData.users,

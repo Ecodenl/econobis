@@ -1063,9 +1063,9 @@ class ExternalWebformController extends Controller
         return $contact;
     }
 
-    protected function error(string $string, int $statusCode = 422)
+    protected function error(string $message, int $statusCode = 422)
     {
-        throw new WebformException($string, $statusCode);
+        throw new WebformException($message, $statusCode);
     }
 
     protected function getContactByNumber(array $dataContact)
@@ -3894,13 +3894,13 @@ class ExternalWebformController extends Controller
             $webform->api_type = WebformApiType::WEBFORM_API;
             $webform->save();
 
-            $this->syncDefaultWebformActions($webform);
+            $this->initializeActionsForLegacyWebform($webform);
 
             $this->log('Api type bij webform met id ' . $webform->id . ' automatisch ingesteld op webform_api.');
         }
     }
 
-    private function syncDefaultWebformActions(Webform $webform): void
+    private function initializeActionsForLegacyWebform(Webform $webform): void
     {
         $allowedParticipationStatusIds = ParticipantMutationStatus::query()
             ->orderBy('id')

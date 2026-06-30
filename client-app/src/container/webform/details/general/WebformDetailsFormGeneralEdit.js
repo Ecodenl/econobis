@@ -246,7 +246,7 @@ class WebformDetailsFormGeneralEdit extends Component {
                                 className="mybtn-success"
                                 size={14}
                                 icon={refresh}
-                                style={{ 'margin-left': '15px' }}
+                                style={{ marginLeft: '15px' }}
                                 role="button"
                                 onClick={this.refreshKey}
                                 title={'Ververs sleutel'}

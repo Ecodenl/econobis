@@ -48,15 +48,42 @@ class WebformController extends Controller
             ->date('dateEnd')->alias('date_end')->whenMissing(null)->onEmpty(null)->next()
             ->integer('responsibleUserId')->validate('exists:users,id', 'required_unless, responsible_team_id')->whenMissing(null)->onEmpty(null)->alias('responsible_user_id')->next()
             ->integer('responsibleTeamId')->validate('exists:teams,id', 'required_unless, responsible_user_id')->whenMissing(null)->onEmpty(null)->alias('responsible_team_id')->next()
+            ->boolean('canCreateParticipations')->whenMissing(false)->next()
+            ->boolean('canCreateOrders')->whenMissing(false)->next()
             ->get();
+
+        $canCreateParticipations = $data['canCreateParticipations'];
+        $allowedParticipationStatusIds = $request->input('allowedParticipationStatusIds', []);
+        $canCreateOrders = $data['canCreateOrders'];
+
+        unset(
+            $data['canCreateParticipations'],
+            $data['canCreateOrders']
+        );
 
         $webform = new Webform($data);
         $webform->last_requests = [];
         $webform->save();
 
         if ($webform->api_type === WebformApiType::WEBFORM_API) {
-            $this->syncAction($webform, WebformActionCode::PARTICIPATION_CREATE, false);
-            $this->syncAction($webform, WebformActionCode::ORDER_CREATE, false);
+            $this->syncAction(
+                $webform,
+                WebformActionCode::PARTICIPATION_CREATE,
+                $canCreateParticipations,
+                [
+                    [
+                        'field' => 'status_id',
+                        'operator' => 'in',
+                        'value' => json_encode($allowedParticipationStatusIds),
+                    ],
+                ]
+            );
+
+            $this->syncAction(
+                $webform,
+                WebformActionCode::ORDER_CREATE,
+                $canCreateOrders
+            );
         }
 
         return $this->show($webform);

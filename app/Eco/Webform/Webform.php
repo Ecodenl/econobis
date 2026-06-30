@@ -20,6 +20,7 @@ class Webform extends Model
         'date_end' => 'date',
         'api_key_date' => 'date',
         'last_requests' => 'array',
+        'api_type' => WebformApiType::class,
     ];
 
     protected $encryptable = [

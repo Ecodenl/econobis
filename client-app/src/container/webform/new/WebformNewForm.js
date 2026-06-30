@@ -13,7 +13,8 @@ import Panel from '../../../components/panel/Panel';
 import WebformDetailsAPI from '../../../api/webform/WebformDetailsAPI';
 import InputSelectGroup from '../../../components/form/InputSelectGroup';
 import InputDate from '../../../components/form/InputDate';
-import InputCheckbox from '../../../components/form/InputCheckbox';
+import InputSelect from '../../../components/form/InputSelect';
+import InputToggle from '../../../components/form/InputToggle';
 
 // Functionele wrapper voor de class component
 const WebformNewFormWrapper = props => {
@@ -28,6 +29,7 @@ class WebformNewForm extends Component {
         this.state = {
             webform: {
                 id: '',
+                apiType: '',
                 name: '',
                 apiKey: uuid(),
                 maxRequestsPerMinute: '',
@@ -36,9 +38,20 @@ class WebformNewForm extends Component {
                 responsible: '',
             },
             errors: {
+                apiType: false,
                 name: false,
                 maxRequestsPerMinute: false,
                 responsible: false,
+                emailAddressErrorReport: false,
+                mailErrorReport: false,
+            },
+            errorMessages: {
+                apiType: '',
+                name: '',
+                maxRequestsPerMinute: '',
+                responsible: '',
+                emailAddressErrorReport: '',
+                mailErrorReport: '',
             },
         };
 
@@ -71,6 +84,15 @@ class WebformNewForm extends Component {
         });
     }
 
+    handleInputChangeMultiSelect = selectedOptions => {
+        this.setState({
+            ...this.state,
+            webform: {
+                ...this.state.webform,
+                allowedParticipationStatusIds: selectedOptions ? selectedOptions.map(option => option.id) : [],
+            },
+        });
+    };
     handleSubmit(event) {
         event.preventDefault();
 
@@ -78,20 +100,30 @@ class WebformNewForm extends Component {
 
         // Validation
         let errors = {};
+        let errorMessages = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(webform.name)) {
-            errors.name = true;
+        if (!webform.apiType || validator.isEmpty(webform.apiType)) {
+            errors.apiType = true;
+            errorMessages.apiType = 'Api type is verplicht';
             hasErrors = true;
         }
 
-        if (validator.isEmpty(webform.maxRequestsPerMinute)) {
+        if (validator.isEmpty(webform.name)) {
+            errors.name = true;
+            errorMessages.name = 'Naam is verplicht';
+            hasErrors = true;
+        }
+
+        if (validator.isEmpty(webform.maxRequestsPerMinute.toString())) {
             errors.maxRequestsPerMinute = true;
+            errorMessages.maxRequestsPerMinute = 'Aanvragen per minuut is verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty(webform.responsible)) {
             errors.responsible = true;
+            errorMessages.responsible = 'Verantwoordelijke is verplicht';
             hasErrors = true;
         }
 
@@ -105,7 +137,13 @@ class WebformNewForm extends Component {
             webform.responsibleTeamId = webform.responsible.replace('team', '');
         }
 
-        this.setState({ ...this.state, errors: errors });
+        if (webform.apiType !== 'webform_api') {
+            webform.canCreateParticipations = false;
+            webform.allowedParticipationStatusIds = [];
+            webform.canCreateOrders = false;
+        }
+
+        this.setState({ ...this.state, errors: errors, errorMessages: errorMessages });
 
         // If no errors send form
         !hasErrors &&
@@ -121,6 +159,7 @@ class WebformNewForm extends Component {
 
     render() {
         const {
+            apiType,
             name,
             apiKey,
             emailAddressErrorReport,
@@ -136,6 +175,20 @@ class WebformNewForm extends Component {
                 <Panel>
                     <PanelBody>
                         <div className="row">
+                            <InputSelect
+                                label="Api type"
+                                id="type"
+                                size="col-sm-6"
+                                name="apiType"
+                                options={this.props.webformApiTypes}
+                                value={apiType}
+                                onChangeAction={this.handleInputChange}
+                                required={'required'}
+                                error={this.state.errors.apiType}
+                                errorMessage={this.state.errorMessages.apiType}
+                            />
+                        </div>
+                        <div className="row">
                             <InputText
                                 label="Naam"
                                 name={'name'}
@@ -143,6 +196,7 @@ class WebformNewForm extends Component {
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
                                 error={this.state.errors.name}
+                                errorMessage={this.state.errorMessages.name}
                             />
                             <InputText
                                 label="Sleutel"
@@ -161,6 +215,7 @@ class WebformNewForm extends Component {
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
                                 error={this.state.errors.maxRequestsPerMinute}
+                                errorMessage={this.state.errorMessages.maxRequestsPerMinute}
                             />
                             <InputText
                                 label="Datum sleutel"
@@ -202,6 +257,7 @@ class WebformNewForm extends Component {
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
                                 error={this.state.errors.responsible}
+                                errorMessage={this.state.errorMessages.responsible}
                             />
                         </div>
                         <div className="row">
@@ -211,13 +267,25 @@ class WebformNewForm extends Component {
                                 value={emailAddressErrorReport}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.emailAddressErrorReport}
+                                errorMessage={this.state.errorMessages.emailAddressErrorReport}
                             />
-                            <InputCheckbox
+                            {/*<InputCheckbox*/}
+                            {/*    label="Mailen foutrapportage"*/}
+                            {/*    name={'mailErrorReport'}*/}
+                            {/*    value={mailErrorReport}*/}
+                            {/*    onChangeAction={this.handleInputChange}*/}
+                            {/*    error={this.state.errors.mailErrorReport}*/}
+                            {/*    errorMessage={this.state.errorMessages.mailErrorReport}*/}
+                            {/*/>*/}
+                            <InputToggle
                                 label="Mailen foutrapportage"
                                 name={'mailErrorReport'}
                                 value={mailErrorReport}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.mailErrorReport}
+                                errorMessage={this.state.errorMessages.mailErrorReport}
+                                // size={'col-sm-5'}
+                                // textToolTip={`...`}
                             />
                         </div>
                     </PanelBody>
@@ -240,6 +308,7 @@ class WebformNewForm extends Component {
 
 const mapStateToProps = state => {
     return {
+        webformApiTypes: state.systemData.webformApiTypes,
         teams: state.systemData.teams,
         users: state.systemData.users,
     };

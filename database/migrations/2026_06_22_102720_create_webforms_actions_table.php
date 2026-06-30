@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::table('webforms', function (Blueprint $table) {
+            $table->string('api_type', 50)->nullable()->after('api_key');
+        });
+
         Schema::create('webform_actions', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('webform_id');
@@ -50,5 +54,9 @@ return new class extends Migration
     {
         Schema::dropIfExists('webform_action_filters');
         Schema::dropIfExists('webform_actions');
+
+        Schema::table('webforms', function (Blueprint $table) {
+            $table->dropColumn('api_type');
+        });
     }
 };

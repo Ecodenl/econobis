@@ -80,6 +80,7 @@ use App\Eco\User\User;
 use App\Eco\Webform\Webform;
 use App\Eco\Webform\WebformActionCode;
 use App\Eco\Webform\WebformActionGuard;
+use App\Eco\Webform\WebformApiType;
 use App\Helpers\Address\AddressHelper;
 use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
@@ -285,6 +286,9 @@ class ExternalWebformController extends Controller
             $this->webform = $webform;
             $this->log('Webform met id ' . $webform->id . ' gevonden bij code ' . $apiKey . '.');
         }
+
+        $this->validateApiTypeForExternalWebform($webform);
+
         $this->checkMaxRequests($webform);
 
         // Add opportunity to existing intake
@@ -3877,6 +3881,59 @@ class ExternalWebformController extends Controller
             $this->log('Er is geen product meegegeven, geen order aanmaken.');
             return null;
         }
+    }
+
+    private function validateApiTypeForExternalWebform(Webform $webform): void
+    {
+        if ($webform->api_type === WebformApiType::HOOMDOSSIER_API) {
+            $this->log('Webform met id ' . $webform->id . ' hoort bij Hoomdossier API en mag niet gebruikt worden voor Webform API.');
+            $this->error('Webform not found', 404);
+        }
+
+        if ($webform->api_type === null) {
+            $webform->api_type = WebformApiType::WEBFORM_API;
+            $webform->save();
+
+            $this->syncDefaultWebformActions($webform);
+
+            $this->log('Api type bij webform met id ' . $webform->id . ' automatisch ingesteld op webform_api.');
+        }
+    }
+
+    private function syncDefaultWebformActions(Webform $webform): void
+    {
+        $allowedParticipationStatusIds = ParticipantMutationStatus::query()
+            ->orderBy('id')
+            ->pluck('id')
+            ->toArray();
+
+        $participationAction = $webform->actions()->firstOrCreate(
+            [
+                'action_code' => WebformActionCode::PARTICIPATION_CREATE,
+            ],
+            [
+                'enabled' => true,
+            ]
+        );
+
+        $participationAction->filters()->updateOrCreate(
+            [
+                'field' => 'status_id',
+                'operator' => 'in',
+            ],
+            [
+                'value' => json_encode($allowedParticipationStatusIds),
+            ]
+        );
+
+        $webform->actions()->firstOrCreate(
+            [
+                'action_code' => WebformActionCode::ORDER_CREATE,
+            ],
+            [
+                'enabled' => true,
+            ]
+        );
     }
 
     protected function checkMaxRequests($webform)

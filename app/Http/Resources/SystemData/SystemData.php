@@ -83,6 +83,7 @@ use App\Eco\Team\Team;
 use App\Eco\Title\Title;
 use App\Eco\User\User;
 use App\Eco\VatCode\VatCode;
+use App\Eco\Webform\WebformApiType;
 use App\Http\Resources\Administration\AdministrationPeek;
 use App\Http\Resources\CostCenter\FullCostCenter;
 use App\Http\Resources\Document\FullDocumentCreatedFrom;
@@ -273,6 +274,7 @@ class SystemData extends JsonResource
             'usesTwinfield' => Administration::whereUsesTwinfield(1)->count() > 0 ? true : false,
             'vatCodes' => VatCode::select(['id', 'description', 'percentage'])->get(),
             'versionNumber' => 'Versie: ' . config('app.version_major') . '.' . config('app.version_minor') . '.' . config('app.version_fix'),
+            'webformApiTypes' => FullEnumWithIdAndName::collection(WebformApiType::collection()),
         ];
     }
 }

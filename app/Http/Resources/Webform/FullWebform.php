@@ -13,6 +13,8 @@ class FullWebform extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'apiType' => $this->api_type?->value,
+            'apiTypeName' => $this->api_type?->getName(),
             'apiKey' => $this->api_key,
             'apiKeyDate' => $this->api_key_date,
             'emailAddressErrorReport' => $this->email_address_error_report,

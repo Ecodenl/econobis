@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api\Webform;
 
 
 use App\Eco\Webform\WebformActionCode;
+use App\Eco\Webform\WebformApiType;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericResource;
@@ -38,6 +39,7 @@ class WebformController extends Controller
         $this->authorize('manage', Webform::class);
 
         $data = $input->string('name')->validate('required')->next()
+            ->string('apiType')->alias('api_type')->validate('required')->next()
             ->string('apiKey')->alias('api_key')->validate('required')->next()
             ->string('emailAddressErrorReport')->alias('email_address_error_report')->next()
             ->boolean('mailErrorReport')->alias('mail_error_report')->next()
@@ -52,17 +54,10 @@ class WebformController extends Controller
         $webform->last_requests = [];
         $webform->save();
 
-        $this->syncAction(
-            $webform,
-            WebformActionCode::PARTICIPATION_CREATE,
-            false
-        );
-
-        $this->syncAction(
-            $webform,
-            WebformActionCode::ORDER_CREATE,
-            false
-        );
+        if ($webform->api_type === WebformApiType::WEBFORM_API) {
+            $this->syncAction($webform, WebformActionCode::PARTICIPATION_CREATE, false);
+            $this->syncAction($webform, WebformActionCode::ORDER_CREATE, false);
+        }
 
         return $this->show($webform);
     }
@@ -84,6 +79,17 @@ class WebformController extends Controller
             ->boolean('canCreateOrders')->whenMissing(false)->next()
             ->get();
 
+        // zolang niet alle webform api_type's gezet zijn, moeten we bij wijzigen wel gezet kunnen worden (verplicht).
+        if ($webform->api_type === null) {
+            $apiType = $request->input('apiType');
+
+            if (!$apiType) {
+                abort(422, 'Api type is verplicht.');
+            }
+
+            $webform->api_type = WebformApiType::from($apiType);
+        }
+
         $canCreateParticipations = $data['canCreateParticipations'];
         $allowedParticipationStatusIds = $request->input('allowedParticipationStatusIds', []);
         $canCreateOrders = $data['canCreateOrders'];
@@ -95,24 +101,26 @@ class WebformController extends Controller
         $webform->fill($data);
         $webform->save();
 
-        $this->syncAction(
-            $webform,
-            WebformActionCode::PARTICIPATION_CREATE,
-            $canCreateParticipations,
-            [
+        if ($webform->api_type === WebformApiType::WEBFORM_API) {
+            $this->syncAction(
+                $webform,
+                WebformActionCode::PARTICIPATION_CREATE,
+                $canCreateParticipations,
                 [
-                    'field' => 'status_id',
-                    'operator' => 'in',
-                    'value' => json_encode($allowedParticipationStatusIds),
-                ],
-            ]
-        );
+                    [
+                        'field' => 'status_id',
+                        'operator' => 'in',
+                        'value' => json_encode($allowedParticipationStatusIds),
+                    ],
+                ]
+            );
 
-        $this->syncAction(
-            $webform,
-            WebformActionCode::ORDER_CREATE,
-            $canCreateOrders
-        );
+            $this->syncAction(
+                $webform,
+                WebformActionCode::ORDER_CREATE,
+                $canCreateOrders
+            );
+        }
 
         return $this->show($webform);
     }

@@ -46,7 +46,6 @@ class CreateFinancialOverviewParticipantProjects implements ShouldQueue
 
     public function handle()
     {
-        //user voor observer
         Auth::setUser(User::find($this->userId));
         $financialOverviewParticipantProjectController = new FinancialOverviewParticipantProjectController();
         $financialOverviewParticipantProjectController->createParticipantProjectsForFinancialOverview($this->financialOverviewProject);

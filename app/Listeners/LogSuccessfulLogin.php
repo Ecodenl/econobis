@@ -5,8 +5,6 @@ namespace App\Listeners;
 use App\Eco\User\User;
 use Carbon\Carbon;
 use Illuminate\Auth\Events\Login;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Laravel\Passport\Events\AccessTokenCreated;
 
 class LogSuccessfulLogin

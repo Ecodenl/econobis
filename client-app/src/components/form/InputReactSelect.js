@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
-import { FaInfoCircle, FaTimesCircle } from 'react-icons/fa';
+import { FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
 
 const InputReactSelect = props => {
@@ -96,7 +96,7 @@ const InputReactSelect = props => {
                 </div>
             )}
             {error && (
-                <div className="col-sm-offset-3 col-sm-8">
+                <div className={`${size}`}>
                     <span className="has-error-message"> {errorMessage}</span>
                 </div>
             )}

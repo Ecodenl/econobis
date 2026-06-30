@@ -12,6 +12,8 @@ import { copy } from 'react-icons-kit/fa/copy';
 
 const WebformDetailsFormGeneralView = props => {
     const {
+        apiType,
+        apiTypeName,
         name,
         apiKey,
         apiKeyDate,
@@ -22,12 +24,23 @@ const WebformDetailsFormGeneralView = props => {
         dateEnd,
         responsibleUser,
         responsibleTeam,
+        canCreateParticipations,
+        allowedParticipationStatusIds,
+        canCreateOrders,
     } = props.webformDetails;
+
+    const allowedParticipationStatuses = props.participantMutationStatuses
+        .filter(status => (allowedParticipationStatusIds || []).map(Number).includes(Number(status.id)))
+        .map(status => status.name)
+        .join(', ');
 
     return (
         <div>
             <Panel>
                 <PanelBody>
+                    <div className="row">
+                        <ViewText label={'Api type'} value={apiTypeName || 'Nog te bepalen'} />
+                    </div>
                     <div className="row">
                         <div className="col-sm-6" onClick={props.switchToEdit}>
                             <label className="col-sm-6">Naam</label>
@@ -76,6 +89,29 @@ const WebformDetailsFormGeneralView = props => {
 
                         <ViewText label={'Mailen foutrapportage'} value={mailErrorReport == true ? 'Ja' : 'Nee'} />
                     </div>
+
+                    {apiType === 'webform_api' && (
+                        <>
+                            <hr />
+
+                            <div className="row" onClick={props.switchToEdit}>
+                                <ViewText
+                                    label="Kan deelnames aanmaken"
+                                    value={canCreateParticipations ? 'Ja' : 'Nee'}
+                                />
+                                {canCreateParticipations && (
+                                    <ViewText
+                                        label="Toegestane deelnamestatussen"
+                                        value={allowedParticipationStatuses}
+                                    />
+                                )}
+                            </div>
+
+                            <div className="row">
+                                <ViewText label="Kan orders aanmaken" value={canCreateOrders ? 'Ja' : 'Nee'} />
+                            </div>
+                        </>
+                    )}
                 </PanelBody>
             </Panel>
         </div>
@@ -85,6 +121,7 @@ const WebformDetailsFormGeneralView = props => {
 const mapStateToProps = state => {
     return {
         webformDetails: state.webformDetails,
+        participantMutationStatuses: state.systemData.participantMutationStatuses,
     };
 };
 

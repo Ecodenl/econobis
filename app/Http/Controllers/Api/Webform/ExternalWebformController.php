@@ -576,8 +576,8 @@ class ExternalWebformController extends Controller
                 'order_product_id' => 'product_id',
                 'order_variabele_prijs' => 'variable_price',
                 'order_aantal' => 'amount',
-                'order_iban' => 'iban',
-                'order_iban_tnv' => 'iban_attn',
+//                'order_iban' => 'iban',
+//                'order_iban_tnv' => 'iban_attn',
                 'order_betaalwijze_id' => 'payment_type_id',
                 'order_status_id' => 'status_id',
                 'order_nota_frequentie_id' => 'collection_frequency_id',
@@ -3789,8 +3789,8 @@ class ExternalWebformController extends Controller
                 'date_next_invoice' => $dateNextInvoice,
                 'collection_frequency_id' => $collectionFrequencyId,
                 'invoice_text' => ( isset($data['invoice_text']) && !empty($data['invoice_text']) ) ? $data['invoice_text'] : null,
-                'IBAN' => '',
-                'iban_attn' => '',
+//                'IBAN' => '',
+//                'iban_attn' => '',
             ]);
 
             $this->log('Order met id ' . $order->id . ' aangemaakt.');

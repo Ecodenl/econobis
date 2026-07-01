@@ -23,7 +23,26 @@ module.exports = {
             },
             {
                 test: /\.(sass|scss)$/,
-                use: [{ loader: 'style-loader' }, { loader: 'css-loader' }, { loader: 'sass-loader' }],
+                use: [
+                    { loader: 'style-loader' },
+                    { loader: 'css-loader' },
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                            // api: 'modern',
+                            sassOptions: {
+                                silenceDeprecations: [
+                                    'legacy-js-api',
+                                    'import',
+                                    'global-builtin',
+                                    'color-functions',
+                                    'slash-div',
+                                    'if-function',
+                                ],
+                            },
+                        },
+                    },
+                ],
             },
             {
                 test: /\.css$/,

@@ -537,7 +537,7 @@ class TemplateVariableHelper
             case 'contact_telefoonnummer':
                 return optional(optional($model->contact)->primaryphoneNumber)->number;
             case 'type':
-                return $model->typ?->getName() ?? '';
+                return $model->type?->name ?? '';
             case 'notitie':
                 return $model->note;
             case 'datum_afhandelen':

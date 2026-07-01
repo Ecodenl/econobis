@@ -166,8 +166,6 @@ class ContactGroup extends Model
     {
         $requestQuery = '';
 
-//        $filters = $this->filters;
-//        $extraFilters = $this->extraFilters;
         $filters = $this->filters()->get();
         $extraFilters = $this->extraFilters()->get();
 
@@ -199,13 +197,6 @@ class ContactGroup extends Model
                 new \App\Http\RequestQueries\ParticipantProject\Grid\ExtraFilter($request));
         }
 
-        //todo WM: Tijdelijke log regel voor testen in Valleienergie, later weer weghalen !!!
-//        if ($this->id === 78) {
-//            Log::info('debug sql');
-//            $sql = str_replace(array('?'), array('\'%s\''), $requestQuery->getQuery()->toSql());
-//            $sql = vsprintf($sql, $requestQuery->getQuery()->getBindings());
-//            Log::info($sql);
-//        }
         return $requestQuery;
     }
 
@@ -399,37 +390,46 @@ class ContactGroup extends Model
                 }
             }
         } elseif ($contactGroupType === ContactGroupType::DYNAMIC) {
+            if ($doLog) {
+                Log::info('getAllContacts dynamic start', [
+                    'composed_of' => $this->composed_of,
+                    'group_id' => $this->id,
+                    'group_name' => $this->name,
+                    'onlyIds' => $onlyIds,
+                    'doLog' => $doLog,
+                    'auth_check' => auth()->check(),
+                    'auth_user_id' => auth()->id(),
+                    'running_in_console' => app()->runningInConsole(),
+                    'db_database' => config('database.connections.' . config('database.default') . '.database'),
+                ]);
+            }
             if ($this->composed_of === 'contacts') {
                 if($onlyIds){
                     $result = $this->getDynamicContacts()->get()->pluck('id')->toArray();
                 } else {
                     $result = $this->getDynamicContacts()->get();
                 }
+
+                if ($doLog) {
+                    Log::info('getAllContacts dynamic contacts result', [
+                        'group_id' => $this->id,
+                        'contacts_count' => $result->count(),
+                        'contact_ids_count' => $result->pluck('id')->filter()->unique()->count(),
+                        'first_contact_ids' => $result->pluck('id')->filter()->take(10)->values()->toArray(),
+                    ]);
+                }
             } else {
                 if ($this->composed_of === 'participants') {
-//                    if ($doLog) {
-//                        Log::info('getAllContacts dynamic participants start', [
-//                            'group_id' => $this->id,
-//                            'group_name' => $this->name,
-//                            'onlyIds' => $onlyIds,
-//                            'doLog' => $doLog,
-//                            'auth_check' => auth()->check(),
-//                            'auth_user_id' => auth()->id(),
-//                            'running_in_console' => app()->runningInConsole(),
-//                            'db_database' => config('database.connections.' . config('database.default') . '.database'),
-//                        ]);
-//                    }
-
                     $participants = $this->getDynamicContacts()->get();
 
-//                    if ($doLog) {
-//                        Log::info('getAllContacts dynamic participants result', [
-//                            'group_id' => $this->id,
-//                            'participants_count' => $participants->count(),
-//                            'contact_ids_count' => $participants->pluck('contact_id')->filter()->unique()->count(),
-//                            'first_contact_ids' => $participants->pluck('contact_id')->filter()->take(10)->values()->toArray(),
-//                        ]);
-//                    }
+                    if ($doLog) {
+                        Log::info('getAllContacts dynamic participants result', [
+                            'group_id' => $this->id,
+                            'participants_count' => $participants->count(),
+                            'contact_ids_count' => $participants->pluck('contact_id')->filter()->unique()->count(),
+                            'first_contact_ids' => $participants->pluck('contact_id')->filter()->take(10)->values()->toArray(),
+                        ]);
+                    }
 
                     $participants->load(['contact']);
 

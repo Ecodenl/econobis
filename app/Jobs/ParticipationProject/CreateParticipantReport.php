@@ -54,7 +54,6 @@ class CreateParticipantReport implements ShouldQueue
 
     public function handle()
     {
-        //user voor observer
         Auth::setUser(User::find($this->userId));
 
         $participationProjectController = new ParticipationProjectController();

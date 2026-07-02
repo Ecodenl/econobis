@@ -14,6 +14,7 @@ class InvoiceMolliePayment extends Model
     protected $casts = [
         'date_activated' => 'datetime',
         'date_paid' => 'datetime',
+        'iban' => 'encrypted',
     ];
 
     public function invoice()

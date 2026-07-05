@@ -270,4 +270,11 @@ class User extends Authenticatable
     {
         return $this->present()->fullName();
     }
+
+    public function hasPrimaryRole(): bool
+    {
+        return $this->roles()
+            ->where('role_type', 'primary')
+            ->exists();
+    }
 }

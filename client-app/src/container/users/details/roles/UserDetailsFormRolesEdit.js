@@ -20,7 +20,7 @@ class UserDetailsFormRolesEdit extends Component {
             'Beheerder Mailgun domeinen',
             'Beheerder portal instellingen',
             'Beheerder coöperatie instellingen',
-            'Data opschoner',
+            'Beheerder data opschoner',
         ];
 
         // Rollen die vallen onder "extra beheerrechten"
@@ -35,7 +35,7 @@ class UserDetailsFormRolesEdit extends Component {
             <div>
                 <PanelBody>
                     <PanelHeader>
-                        <span className="h5 text-bold">Gebruikers rollen</span>
+                        <span className="h5 text-bold">Primaire gebruikers rollen</span>
                     </PanelHeader>
                     <div className="row">
                         {rolesUserPermissions.length === 0 ? (
@@ -49,7 +49,7 @@ class UserDetailsFormRolesEdit extends Component {
                         )}
                     </div>
                     <PanelHeader>
-                        <span className="h5 text-bold">Gebruikers aanvullende rechten</span>
+                        <span className="h5 text-bold">Aanvullende gebruikers rechten</span>
                     </PanelHeader>
                     <div className="row">
                         {rolesAdditionalPermissions.length === 0 ? (

@@ -45,6 +45,27 @@ class LoginAttemptThrottle
         $response = $next($request);
         $status   = $response->getStatusCode();
 
+        // Specifieke autorisatiecheck uit OauthTokenBridgeController.
+        // Deze mag niet worden omgezet naar de generieke 401.
+        if ($status === 403 && method_exists($response, 'getContent')) {
+            $body = json_decode($response->getContent(), true);
+
+            if (($body['result'] ?? null) === 'no_primary_role') {
+                $this->logAttempt(
+                    $user,
+                    $identifier,
+                    $request,
+                    false,
+                    'no_primary_role',
+                    $user?->failed_logins,
+                    $user?->blocked_until,
+                    (bool) $user?->blocked_permanent
+                );
+
+                return $response;
+            }
+        }
+
         // Geen user → nog steeds uniform reageren, maar intern loggen wat er gebeurde
         if (!$user) {
             if ($status === 200) {
@@ -63,7 +84,7 @@ class LoginAttemptThrottle
 
         // 429 van RateLimiter -> uniform 401 naar buiten, intern loggen
         if ($status === 429) {
-            $this->logAttempt($user, $identifier, $request, false, 'rate_limited', $user->failed_logins, $user->blocked_until, (bool)$user->blocked_permanent);
+            $this->logAttempt($user, $identifier, $request, false, 'rate_limited', $user->failed_logins, $user->blocked_until, (bool) $user->blocked_permanent);
             return $this->genericUnauthorized();
         }
 

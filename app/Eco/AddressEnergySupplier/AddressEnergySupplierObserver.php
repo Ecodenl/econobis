@@ -41,6 +41,11 @@ class AddressEnergySupplierObserver
 
     public function deleted(AddressEnergySupplier $addressEnergySupplier)
     {
+        // Voor alleen Gas hoeven we geen distributionPartsKwh te controleren.
+        if ((int) $addressEnergySupplier->energy_supply_type_id === 1) {
+            return;
+        }
+
         $this->refreshRevenueDistributionPartsKwh($addressEnergySupplier);
     }
 

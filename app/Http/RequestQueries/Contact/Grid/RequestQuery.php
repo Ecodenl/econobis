@@ -69,7 +69,7 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
                     // Decode the JSON string into a PHP array
                     $sortsArray = json_decode($sorts, true);
                     // Check if the first entry exists and has the field 'iban'
-                    if (isset($sortsArray[0]['field']) && $sortsArray[0]['field'] === 'iban') {
+                    if (isset($sortsArray[0]['field']) && $sortsArray[0]['field'] === 'iban' && count($sharedContactIds) > 1 ) {
                         $baseQuery->orderByRaw('FIELD(contacts.id, ' . implode(',', $sharedContactIds->toArray()) . ')');
                     } else {
                         // The first field entry does not have the value 'iban'

@@ -10,7 +10,6 @@
         "cmpayments/iban": "^1.1",
         "doctrine/dbal": "^3.0",
         "ecodenl/lvbag-php-wrapper": "^2.1",
-        "google/apiclient": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "iio/libmergepdf": "^4.0",
         "innoge/laravel-msgraph-mail": "^1.0",

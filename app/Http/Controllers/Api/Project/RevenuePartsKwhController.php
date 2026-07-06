@@ -235,8 +235,8 @@ class RevenuePartsKwhController extends ApiController
 
         $excel = null;
 
-        // Als documentnaam (prefix bestandsnaam) @geen@ is opgegeven, dan geen document aanmaken.
-        if($documentName != '@geen@'){
+        // Als documentnaam (prefix bestandsnaam) 'geen-rapportage' is opgegeven, dan geen document aanmaken.
+        if($documentName != 'geen-rapportage'){
 
             switch ($energySupplier->file_format_id){
             case 1:
@@ -315,13 +315,13 @@ class RevenuePartsKwhController extends ApiController
                 foreach($distributionsPartsKwh as $distributionPartsKwh) {
                     if ($distributionPartsKwh->status === 'in-progress-report') {
                         // Geen excel gemaakt, dan terug naar status confirmed
-                        if(!$excel && $documentName != '@geen@'){
+                        if(!$excel && $documentName != 'geen-rapportage'){
                             $distributionPartsKwh->status = 'confirmed';
                         } else {
                             $deliveredTotal = $deliveredTotal + $distributionPartsKwh->delivered_kwh;
                             $kwhReturn = $kwhReturn + $distributionPartsKwh->kwh_return_this_part;
-                            // Als documentnaam (prefix bestandsnaam) @geen@ is opgegeven, dan is er geen document aangemaakt en werken we date_energy_supplier_report ook niet bij.
-                            if($documentName != '@geen@') {
+                            // Als documentnaam (prefix bestandsnaam) 'geen-rapportage' is opgegeven, dan is er geen document aangemaakt en werken we date_energy_supplier_report ook niet bij.
+                            if($documentName != 'geen-rapportage') {
                                 $distributionPartsKwh->date_energy_supplier_report = Carbon::now()->format('Y-m-d');
                             }
                             $distributionPartsKwh->status = 'processed';
@@ -331,7 +331,7 @@ class RevenuePartsKwhController extends ApiController
                         foreach($distributionsValuesKwh as $distributionValuesKwh) {
                             if ($distributionValuesKwh->status === 'in-progress-report') {
                                 // Geen excel gemaakt, dan terug naar status confirmed
-                                if(!$excel && $documentName != '@geen@'){
+                                if(!$excel && $documentName != 'geen-rapportage'){
                                     $distributionValuesKwh->status = 'confirmed';
                                 } else {
                                     $distributionValuesKwh->status = 'processed';

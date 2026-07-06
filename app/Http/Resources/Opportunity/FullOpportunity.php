@@ -56,6 +56,8 @@ class FullOpportunity extends JsonResource
             'relatedQuotationRequestsStatuses' => $this->relatedQuotationRequestsStatuses,
             'defaultStatusId' => $this->defaultStatusId,
             'amount' => $this->amount,
+            'belowWozLimit' => $this->below_woz_limit,
+            'exceptionDebtRelief' => $this->exception_debt_relief,
         ];
     }
 }

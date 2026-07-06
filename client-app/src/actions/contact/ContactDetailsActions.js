@@ -177,10 +177,11 @@ export const updateStateAddressDongle = addressDongle => {
     };
 };
 
-export const deleteAddressEnergySupplier = id => {
+export const deleteAddressEnergySupplier = (id, onSuccess = null) => {
     return {
-        type: 'DELETE_ADDRESS_ENERGY_SUPPLIER',
+        type: 'DELETE_ADDRESS_ENERGY_SUPPLIER_REQUEST',
         id,
+        onSuccess,
     };
 };
 

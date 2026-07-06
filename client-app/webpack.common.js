@@ -1,5 +1,8 @@
 const webpack = require('webpack');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
+
+const styleOrExtractLoader = process.env.NODE_ENV === 'production' ? MiniCssExtractPlugin.loader : 'style-loader';
 
 module.exports = {
     entry: {
@@ -24,7 +27,7 @@ module.exports = {
             {
                 test: /\.(sass|scss)$/,
                 use: [
-                    { loader: 'style-loader' },
+                    styleOrExtractLoader,
                     { loader: 'css-loader' },
                     {
                         loader: 'sass-loader',
@@ -46,10 +49,9 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
+                use: [styleOrExtractLoader, { loader: 'css-loader' }],
             },
             {
-                // test: /.png$|.woff$|.woff2$|.ttf$|.eot$|.svg$|.jpg$|.gif$/,
                 test: /\.(png|woff|woff2|eot|ttf|svg|jpg|gif)$/,
                 use: [
                     {
@@ -75,7 +77,7 @@ module.exports = {
         splitChunks: {
             chunks: 'all',
         },
-        emitOnErrors: false, // emitOnErrorsPlugin
-        concatenateModules: true, //ModuleConcatenationPlugin
+        emitOnErrors: false,
+        concatenateModules: true,
     },
 };

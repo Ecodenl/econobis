@@ -13,7 +13,7 @@
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <script id="server-data" src="js/server-data.js?v=2" type="text/javascript" nonce="serverdata"></script>
+    <script id="server-data" src="js/server-data.js?v=2" type="text/javascript"></script>
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -28,15 +28,8 @@
   </head>
   <body class="portal-body">
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    <script src="%PUBLIC_URL%/js/noiesupport.js?v=1"></script>
 
-    <script nonce="noiesupport">
-        var isIE = /*@cc_on!@*/ false || !!document.documentMode;
-
-        if(isIE) {
-           element = window.location = './unsupported.html';
-           console.log(element);
-        }
-    </script>
     <div id="root"></div>
     <script defer src="https://cdn.privatecaptcha.com/widget/js/privatecaptcha.js"></script>
   </body>

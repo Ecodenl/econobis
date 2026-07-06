@@ -17,11 +17,18 @@ class Content extends Component {
             <div>
                 {this.props.children}
                 {this.props.changePasswordActive && <ChangePassword closeModal={this.props.toggleChangePassword} />}
-                <TwoFactorSettings active={this.props.twoFactorSettingsActive} closeModal={this.props.toggleTwoFactorSettings} />
+                <TwoFactorSettings
+                    active={this.props.twoFactorSettingsActive}
+                    closeModal={this.props.toggleTwoFactorSettings}
+                />
 
                 {this.props.showAboutUs && <AboutUs closeModal={this.props.toggleAboutUs} />}
                 {!isEmpty(this.props.error) && (
-                    <ErrorModal error={this.props.error} closeModal={this.props.clearError} />
+                    <ErrorModal
+                        error={this.props.error}
+                        closeModal={this.props.clearError}
+                        title={this.props.error?.title ?? undefined}
+                    />
                 )}
             </div>
         );

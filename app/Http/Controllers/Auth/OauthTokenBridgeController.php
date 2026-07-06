@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Eco\User\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-//use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
 
 class OauthTokenBridgeController extends Controller
 {
@@ -20,6 +21,20 @@ class OauthTokenBridgeController extends Controller
 //            'secret_config_prefix' => substr((string) config('app.oauth_client_secret'), 0, 5),
 //            'db_secret_prefix' => substr((string) \DB::table('oauth_clients')->where('id', config('app.oauth_client_id'))->value('secret'), 0, 5),
 //        ]);
+
+        $user = User::where('email', $request->input('username'))->first();
+
+        // Geen primaire gebruikersrol
+        if (
+            $user
+            && Hash::check($request->input('password'), $user->password)
+            && !$user->hasPrimaryRole()
+        ) {
+            return response()->json([
+                'error' => 'Inloggen is niet mogelijk omdat aan uw gebruikersaccount geen primaire gebruikersrol is gekoppeld. Neem contact op met de beheerder van uw organisatie.',
+                'result' => 'no_primary_role',
+            ], 403);
+        }
 
         $subRequest = Request::create('/oauth/token', 'POST', [
             'grant_type' => 'password',

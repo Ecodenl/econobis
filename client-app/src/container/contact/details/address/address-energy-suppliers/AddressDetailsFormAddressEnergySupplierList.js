@@ -1,9 +1,13 @@
 import React from 'react';
-import { connect } from 'react-redux';
-
 import AddressDetailsFormAddressEnergySupplierItem from './AddressDetailsFormAddressEnergySupplierItem';
 
-const AddressDetailsFormAddressEnergySupplierList = props => {
+const AddressDetailsFormAddressEnergySupplierList = ({
+    address,
+    setAddressEnergySupplierNewOrEditOpen,
+    addressEnergySupplierNewOrEditOpen,
+}) => {
+    const addressEnergySuppliers = address.addressEnergySuppliers || [];
+
     return (
         <div>
             <div className="row border header">
@@ -17,18 +21,17 @@ const AddressDetailsFormAddressEnergySupplierList = props => {
                 <div className="col-sm-1">Huidige</div>
                 <div className="col-sm-1" />
             </div>
-            {props.address.addressEnergySuppliers.length > 0 ? (
-                props.address.addressEnergySuppliers.map(addressEnergySupplier => {
-                    return (
-                        <AddressDetailsFormAddressEnergySupplierItem
-                            key={addressEnergySupplier.id}
-                            addressEnergySupplier={addressEnergySupplier}
-                            address={props.address}
-                            setAddressEnergySupplierNewOrEditOpen={props.setAddressEnergySupplierNewOrEditOpen}
-                            addressEnergySupplierNewOrEditOpen={props.addressEnergySupplierNewOrEditOpen}
-                        />
-                    );
-                })
+
+            {addressEnergySuppliers.length > 0 ? (
+                addressEnergySuppliers.map(addressEnergySupplier => (
+                    <AddressDetailsFormAddressEnergySupplierItem
+                        key={addressEnergySupplier.id}
+                        addressEnergySupplier={addressEnergySupplier}
+                        address={address}
+                        setAddressEnergySupplierNewOrEditOpen={setAddressEnergySupplierNewOrEditOpen}
+                        addressEnergySupplierNewOrEditOpen={addressEnergySupplierNewOrEditOpen}
+                    />
+                ))
             ) : (
                 <div>Geen energieleveranciers bekend.</div>
             )}

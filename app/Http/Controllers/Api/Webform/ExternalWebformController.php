@@ -98,6 +98,7 @@ use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Response;
@@ -2712,12 +2713,128 @@ class ExternalWebformController extends Controller
     }
 
 
-    protected function addContactAttachment($contact, $contactAttachmentUrl) {
-        $allowedFileTypes = ['png','jpg','jpeg','pdf'];
-        $fileType = strtolower(pathinfo($contactAttachmentUrl, PATHINFO_EXTENSION));
+    protected function addContactAttachment($contact, $contactAttachmentUrl): void
+    {
+        $allowedFileTypes = ['png', 'jpg', 'jpeg', 'pdf'];
 
-        if(in_array($fileType, $allowedFileTypes)) {
-            $fileName = basename($contactAttachmentUrl);
+        /*
+         * Haal alleen het pad uit de URL.
+         * Hierdoor hebben queryparameters geen invloed op de extensie
+         * of de eventuele bestandsnaam.
+         */
+        $urlPath = parse_url($contactAttachmentUrl, PHP_URL_PATH);
+
+        if (!$urlPath) {
+            $this->log('Contact bijlage bevat geen geldige URL.');
+
+            return;
+        }
+
+        $urlFileName = basename($urlPath);
+        $fileType = strtolower(pathinfo($urlPath, PATHINFO_EXTENSION));
+
+        /*
+         * Bestaande functionaliteit:
+         * URL bevat een toegestane bestandsextensie.
+         */
+        $isExistingAttachmentUrl = in_array(
+            $fileType,
+            $allowedFileTypes,
+            true
+        );
+
+        /*
+         * Nieuwe functionaliteit:
+         * URL zonder bestandsextensie, maar wel een signed PDF-URL.
+         *
+         * Hiervoor moeten beide voorwaarden gelden:
+         * - het URL-pad bevat /pdf/;
+         * - de queryparameter signature bestaat en is niet leeg.
+         */
+        parse_str(
+            parse_url($contactAttachmentUrl, PHP_URL_QUERY) ?? '',
+            $queryParameters
+        );
+
+        $isSignedPdfUrl =
+            str_contains($urlPath, '/pdf/')
+            && isset($queryParameters['signature'])
+            && trim((string) $queryParameters['signature']) !== '';
+
+        /*
+         * Voorkom dat een willekeurige URL wordt opgehaald.
+         */
+        if (!$isExistingAttachmentUrl && !$isSignedPdfUrl) {
+            $this->log(
+                'Contact bijlage URL heeft geen toegestaan formaat '
+                . 'en is geen geldige signed PDF URL.'
+            );
+
+            return;
+        }
+
+        try {
+            $response = Http::connectTimeout(10)
+                ->timeout(30)
+                ->get($contactAttachmentUrl);
+
+            if (!$response->successful()) {
+                $this->log(
+                    'Contact bijlage kon niet worden opgehaald. '
+                    . 'HTTP-status: ' . $response->status()
+                );
+
+                return;
+            }
+
+            if ($isExistingAttachmentUrl) {
+                /*
+                 * Bestaande URL met bestandsnaam:
+                 * behoud de huidige bestandsnaam en extensie.
+                 */
+                $fileName = $urlFileName;
+            } else {
+                /*
+                 * Signed PDF-URL zonder bestandsnaam.
+                 *
+                 * Controleer na het ophalen of het daadwerkelijk een PDF is.
+                 */
+                $contentType = strtolower(
+                    trim(
+                        explode(
+                            ';',
+                            $response->header('Content-Type', '')
+                        )[0]
+                    )
+                );
+
+                if ($contentType !== 'application/pdf') {
+                    $this->log(
+                        'Contact bijlage via signed PDF URL is geen PDF. '
+                        . 'Ontvangen Content-Type: '
+                        . ($contentType ?: 'onbekend')
+                    );
+
+                    return;
+                }
+
+                $fileType = 'pdf';
+                $fileName = 'contact-bijlage-' . Str::uuid() . '.pdf';
+            }
+
+            $documentCreatedFrom = DocumentCreatedFrom::where(
+                'code_ref',
+                'contact'
+            )->first();
+
+            if (!$documentCreatedFrom) {
+                $this->log(
+                    'Contact bijlage kon niet worden opgeslagen: '
+                    . 'DocumentCreatedFrom met code_ref contact ontbreekt.'
+                );
+
+                return;
+            }
 
             $document = new Document();
             $document->description = 'Contact bijlage';
@@ -2725,27 +2842,50 @@ class ExternalWebformController extends Controller
             $document->document_group = 'general';
             $document->filename = $fileName;
             $document->contact_id = $contact->id;
-
-            $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'contact')->first()->id;
-            $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'contact')->first()->name;
-
-            $document->document_created_from_id = $documentCreatedFromId;
-
+            $document->document_created_from_id = $documentCreatedFrom->id;
             $document->save();
 
-            $contents = file_get_contents($contactAttachmentUrl);
-            $uniqueName = Str::uuid() . '.' . pathinfo($document->filename, PATHINFO_EXTENSION);;
-            $filePathAndName = "{$document->document_group}/" .
-                Carbon::parse($document->created_at)->year .
-                "/{$uniqueName}";
-            Storage::disk('documents')->put($filePathAndName, $contents);
-            $this->log('Contact bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Bigstorage');
+            /*
+             * De fysieke bestandsnaam in Bigstorage blijft altijd uniek.
+             */
+            $uniqueName = Str::uuid() . '.' . $fileType;
+
+            $filePathAndName = "{$document->document_group}/"
+                . Carbon::parse($document->created_at)->year
+                . "/{$uniqueName}";
+
+            $stored = Storage::disk('documents')->put(
+                $filePathAndName,
+                $response->body()
+            );
+
+            if (!$stored) {
+                /*
+                 * Voorkom een Document-record zonder fysiek bestand.
+                 */
+                $document->delete();
+
+                $this->log(
+                    'Contact bijlage ' . $fileName
+                    . ' kon niet worden opgeslagen in Bigstorage.'
+                );
+
+                return;
+            }
 
             $document->file_path_and_name = $filePathAndName;
-
             $document->save();
-        } else {
-            $this->log('Contact bijlage is van een niet toegestaan formaat: ' . implode(',', $allowedFileTypes));
+
+            $this->log(
+                'Contact bijlage ' . $fileName
+                . ' opgeslagen als ' . $documentCreatedFrom->name
+                . ' document in Bigstorage'
+            );
+        } catch (\Throwable $exception) {
+            $this->log(
+                'Fout bij ophalen of opslaan contact bijlage: '
+                . $exception->getMessage()
+            );
         }
     }
 
@@ -2759,7 +2899,7 @@ class ExternalWebformController extends Controller
         // Als kans_code is meegegeven, dan werken we die bij
         $opportunityCode = null;
         if ($dataOpportunity['opportunity_code']) {
-                $opportunityCode = $dataOpportunity['opportunity_code'];
+            $opportunityCode = $dataOpportunity['opportunity_code'];
         }
 
         $opportunity = null;
@@ -3184,9 +3324,9 @@ class ExternalWebformController extends Controller
         }
 
         $guard = new WebformActionGuard();
-            $guard->assertAllowed($webform, WebformActionCode::PARTICIPATION_CREATE, [
-                'status_id' => $data['participation_mutation_status_id'],
-            ]);
+        $guard->assertAllowed($webform, WebformActionCode::PARTICIPATION_CREATE, [
+            'status_id' => $data['participation_mutation_status_id'],
+        ]);
 
         if ($data['project_id']) {
             $this->log('Er is een project meegegeven, participatie aanmaken.');

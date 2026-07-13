@@ -83,6 +83,7 @@ use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Project\RevenuesKwhHelper;
 use App\Helpers\Workflow\IntakeWorkflowHelper;
 use App\Helpers\Workflow\TaskWorkflowHelper;
+use App\Http\Controllers\Api\Address\AddressController;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use App\Http\Controllers\Api\Contact\ContactController;
 use App\Http\Controllers\Api\ParticipantMutation\ParticipantMutationController;
@@ -94,12 +95,12 @@ use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use App\Http\Controllers\Api\Address\AddressController;
 
 class ExternalWebformController extends Controller
 {
@@ -1719,13 +1720,40 @@ class ExternalWebformController extends Controller
 
         // Indien contact bijlage url meegegeven deze als document opslaan
         if($data['contact_attachment']){
-            $this->addContactAttachment($contact, $data['contact_attachment']);
+            $this->addAttachment(
+                description: 'Contact bijlage',
+                documentCreatedFromCodeRef: 'contact',
+                contactId: $contact->id,
+                opportunityId: null,
+                intakeId: null,
+                campaignId: null,
+                quotationRequestId: null,
+                attachmentUrl: $data['contact_attachment']
+            );
         }
         if($data['contact_attachment_2']){
-            $this->addContactAttachment($contact, $data['contact_attachment_2']);
+            $this->addAttachment(
+                description: 'Contact bijlage',
+                documentCreatedFromCodeRef: 'contact',
+                contactId: $contact->id,
+                opportunityId: null,
+                intakeId: null,
+                campaignId: null,
+                quotationRequestId: null,
+                attachmentUrl: $data['contact_attachment_2']
+            );
         }
         if($data['contact_attachment_3']){
-            $this->addContactAttachment($contact, $data['contact_attachment_3']);
+            $this->addAttachment(
+                description: 'Contact bijlage',
+                documentCreatedFromCodeRef: 'contact',
+                contactId: $contact->id,
+                opportunityId: null,
+                intakeId: null,
+                campaignId: null,
+                quotationRequestId: null,
+                attachmentUrl: $data['contact_attachment_3']
+            );
         }
 
         //freeFieldsFieldRecords aanmaken
@@ -1898,13 +1926,40 @@ class ExternalWebformController extends Controller
 
         // Indien contact bijlage url meegegeven deze als document opslaan
         if($data['contact_attachment']){
-            $this->addContactAttachment($contact, $data['contact_attachment']);
+            $this->addAttachment(
+                description: 'Contact bijlage',
+                documentCreatedFromCodeRef: 'contact',
+                contactId: $contact->id,
+                opportunityId: null,
+                intakeId: null,
+                campaignId: null,
+                quotationRequestId: null,
+                attachmentUrl: $data['contact_attachment']
+            );
         }
         if($data['contact_attachment_2']){
-            $this->addContactAttachment($contact, $data['contact_attachment_2']);
+            $this->addAttachment(
+                description: 'Contact bijlage',
+                documentCreatedFromCodeRef: 'contact',
+                contactId: $contact->id,
+                opportunityId: null,
+                intakeId: null,
+                campaignId: null,
+                quotationRequestId: null,
+                attachmentUrl: $data['contact_attachment_2']
+            );
         }
         if($data['contact_attachment_3']){
-            $this->addContactAttachment($contact, $data['contact_attachment_3']);
+            $this->addAttachment(
+                description: 'Contact bijlage',
+                documentCreatedFromCodeRef: 'contact',
+                contactId: $contact->id,
+                opportunityId: null,
+                intakeId: null,
+                campaignId: null,
+                quotationRequestId: null,
+                attachmentUrl: $data['contact_attachment_3']
+            );
         }
 
         //freeFieldsFieldRecords updaten
@@ -2536,13 +2591,43 @@ class ExternalWebformController extends Controller
 
             // Indien kans bijlage url meegegeven deze als document opslaan
             if($dataIntake['intake_opportunity_attachment']){
-                $this->addIntakeOpportunityAttachment($intake, $saveOpportunity, $dataIntake['intake_opportunity_attachment']);
+                $documentCreatedFromCodeRef = $saveOpportunity ? 'opportunity' : 'intake';
+                $this->addAttachment(
+                    description: 'Intake kans bijlage',
+                    documentCreatedFromCodeRef: $documentCreatedFromCodeRef,
+                    contactId: $intake->contact_id,
+                    opportunityId: $saveOpportunity ? $saveOpportunity->id : null,
+                    intakeId: $intake->id,
+                    campaignId: null,
+                    quotationRequestId: null,
+                    attachmentUrl: $dataIntake['intake_opportunity_attachment']
+                );
             }
             if($dataIntake['intake_opportunity_attachment_2']){
-                $this->addIntakeOpportunityAttachment($intake, $saveOpportunity, $dataIntake['intake_opportunity_attachment_2']);
+                $documentCreatedFromCodeRef = $saveOpportunity ? 'opportunity' : 'intake';
+                $this->addAttachment(
+                    description: 'Intake kans bijlage',
+                    documentCreatedFromCodeRef: $documentCreatedFromCodeRef,
+                    contactId: $intake->contact_id,
+                    opportunityId: $saveOpportunity ? $saveOpportunity->id : null,
+                    intakeId: $intake->id,
+                    campaignId: null,
+                    quotationRequestId: null,
+                    attachmentUrl: $dataIntake['intake_opportunity_attachment_2']
+                );
             }
             if($dataIntake['intake_opportunity_attachment_3']){
-                $this->addIntakeOpportunityAttachment($intake, $saveOpportunity, $dataIntake['intake_opportunity_attachment_3']);
+                $documentCreatedFromCodeRef = $saveOpportunity ? 'opportunity' : 'intake';
+                $this->addAttachment(
+                    description: 'Intake kans bijlage',
+                    documentCreatedFromCodeRef: $documentCreatedFromCodeRef,
+                    contactId: $intake->contact_id,
+                    opportunityId: $saveOpportunity ? $saveOpportunity->id : null,
+                    intakeId: $intake->id,
+                    campaignId: null,
+                    quotationRequestId: null,
+                    attachmentUrl: $dataIntake['intake_opportunity_attachment_3']
+                );
             }
 
             return $intake;
@@ -2622,80 +2707,6 @@ class ExternalWebformController extends Controller
         }
     }
 
-    protected function addIntakeOpportunityAttachment($intake, $opportunity, $intakeOpportunityAttachmentUrl) {
-        $fileName = basename($intakeOpportunityAttachmentUrl);
-
-        $document = new Document();
-        $document->description = 'Intake kans bijlage';
-        $document->document_type = 'upload';
-        $document->document_group = 'general';
-        $document->filename = $fileName;
-        $document->contact_id = $intake->contact_id;
-        $document->intake_id = $intake->id;
-
-        if($opportunity){
-            $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'opportunity')->first()->id;
-            $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'opportunity')->first()->name;
-            $document->opportunity_id = $opportunity->id;
-        } else {
-            $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'intake')->first()->id;
-            $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'intake')->first()->name;
-        }
-        $document->document_created_from_id = $documentCreatedFromId;
-
-        $document->save();
-
-        $contents = file_get_contents($intakeOpportunityAttachmentUrl);
-        $uniqueName = Str::uuid() . '.' . pathinfo($document->filename, PATHINFO_EXTENSION);;
-        $filePathAndName = "{$document->document_group}/" .
-            Carbon::parse($document->created_at)->year .
-            "/{$uniqueName}";
-        Storage::disk('documents')->put($filePathAndName, $contents);
-        $this->log('Intake kans bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Bigstorage');
-
-        $document->file_path_and_name = $filePathAndName;
-
-        $document->save();
-    }
-
-
-    protected function addContactAttachment($contact, $contactAttachmentUrl) {
-        $allowedFileTypes = ['png','jpg','jpeg','pdf'];
-        $fileType = strtolower(pathinfo($contactAttachmentUrl, PATHINFO_EXTENSION));
-
-        if(in_array($fileType, $allowedFileTypes)) {
-            $fileName = basename($contactAttachmentUrl);
-
-            $document = new Document();
-            $document->description = 'Contact bijlage';
-            $document->document_type = 'upload';
-            $document->document_group = 'general';
-            $document->filename = $fileName;
-            $document->contact_id = $contact->id;
-
-            $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'contact')->first()->id;
-            $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'contact')->first()->name;
-
-            $document->document_created_from_id = $documentCreatedFromId;
-
-            $document->save();
-
-            $contents = file_get_contents($contactAttachmentUrl);
-            $uniqueName = Str::uuid() . '.' . pathinfo($document->filename, PATHINFO_EXTENSION);;
-            $filePathAndName = "{$document->document_group}/" .
-                Carbon::parse($document->created_at)->year .
-                "/{$uniqueName}";
-            Storage::disk('documents')->put($filePathAndName, $contents);
-            $this->log('Contact bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Bigstorage');
-
-            $document->file_path_and_name = $filePathAndName;
-
-            $document->save();
-        } else {
-            $this->log('Contact bijlage is van een niet toegestaan formaat: ' . implode(',', $allowedFileTypes));
-        }
-    }
-
     /**
      * @param $measure
      * @param $intake
@@ -2706,7 +2717,7 @@ class ExternalWebformController extends Controller
         // Als kans_code is meegegeven, dan werken we die bij
         $opportunityCode = null;
         if ($dataOpportunity['opportunity_code']) {
-                $opportunityCode = $dataOpportunity['opportunity_code'];
+            $opportunityCode = $dataOpportunity['opportunity_code'];
         }
 
         $opportunity = null;
@@ -4220,13 +4231,40 @@ class ExternalWebformController extends Controller
 
             // Indien kansactie bijlage url meegegeven deze als document opslaan
             if($dataQuotationRequest['quotation_request_attachment']){
-                $this->addQuotationRequestAttachment($quotationRequest, $dataQuotationRequest['quotation_request_attachment']);
+                $this->addAttachment(
+                    description: 'Kansactie bijlage',
+                    documentCreatedFromCodeRef: 'quotationrequest',
+                    contactId: $quotationRequest->opportunity->intake->contact_id,
+                    opportunityId: $quotationRequest->opportunity_id,
+                    intakeId: $quotationRequest->opportunity->intake->id,
+                    campaignId: $quotationRequest->opportunity->intake->campaign_id,
+                    quotationRequestId: $quotationRequest->id,
+                    attachmentUrl: $dataQuotationRequest['quotation_request_attachment']
+                );
             }
             if($dataQuotationRequest['quotation_request_attachment_2']){
-                $this->addQuotationRequestAttachment($quotationRequest, $dataQuotationRequest['quotation_request_attachment_2']);
+                $this->addAttachment(
+                    description: 'Kansactie bijlage',
+                    documentCreatedFromCodeRef: 'quotationrequest',
+                    contactId: $quotationRequest->opportunity->intake->contact_id,
+                    opportunityId: $quotationRequest->opportunity_id,
+                    intakeId: $quotationRequest->opportunity->intake->id,
+                    campaignId: $quotationRequest->opportunity->intake->campaign_id,
+                    quotationRequestId: $quotationRequest->id,
+                    attachmentUrl: $dataQuotationRequest['quotation_request_attachment_2']
+                );
             }
             if($dataQuotationRequest['quotation_request_attachment_3']){
-                $this->addQuotationRequestAttachment($quotationRequest, $dataQuotationRequest['quotation_request_attachment_3']);
+                $this->addAttachment(
+                    description: 'Kansactie bijlage',
+                    documentCreatedFromCodeRef: 'quotationrequest',
+                    contactId: $quotationRequest->opportunity->intake->contact_id,
+                    opportunityId: $quotationRequest->opportunity_id,
+                    intakeId: $quotationRequest->opportunity->intake->id,
+                    campaignId: $quotationRequest->opportunity->intake->campaign_id,
+                    quotationRequestId: $quotationRequest->id,
+                    attachmentUrl: $dataQuotationRequest['quotation_request_attachment_3']
+                );
             }
 
             $this->log("Kansactie " . $opportunityAction->name . " met id " . $quotationRequest->id . " aangemaakt voor kans '" . $opportunity->number . "' en coach/organisatie '" . ($coachOrOrganisation ? $coachOrOrganisation->full_name : 'geen') . "'.");
@@ -4414,51 +4452,245 @@ class ExternalWebformController extends Controller
 
         // Indien kansactie bijlage url meegegeven deze als document opslaan
         if($dataQuotationRequest['quotation_request_attachment']){
-            $this->addQuotationRequestAttachment($quotationRequest, $dataQuotationRequest['quotation_request_attachment']);
+            $this->addAttachment(
+                description: 'Kansactie bijlage',
+                documentCreatedFromCodeRef: 'quotationrequest',
+                contactId: $quotationRequest->opportunity->intake->contact_id,
+                opportunityId: $quotationRequest->opportunity_id,
+                intakeId: $quotationRequest->opportunity->intake->id,
+                campaignId: $quotationRequest->opportunity->intake->campaign_id,
+                quotationRequestId: $quotationRequest->id,
+                attachmentUrl: $dataQuotationRequest['quotation_request_attachment']
+            );
         }
         if($dataQuotationRequest['quotation_request_attachment_2']){
-            $this->addQuotationRequestAttachment($quotationRequest, $dataQuotationRequest['quotation_request_attachment_2']);
+            $this->addAttachment(
+                description: 'Kansactie bijlage',
+                documentCreatedFromCodeRef: 'quotationrequest',
+                contactId: $quotationRequest->opportunity->intake->contact_id,
+                opportunityId: $quotationRequest->opportunity_id,
+                intakeId: $quotationRequest->opportunity->intake->id,
+                campaignId: $quotationRequest->opportunity->intake->campaign_id,
+                quotationRequestId: $quotationRequest->id,
+                attachmentUrl: $dataQuotationRequest['quotation_request_attachment_2']
+            );
         }
         if($dataQuotationRequest['quotation_request_attachment_3']){
-            $this->addQuotationRequestAttachment($quotationRequest, $dataQuotationRequest['quotation_request_attachment_3']);
+            $this->addAttachment(
+                description: 'Kansactie bijlage',
+                documentCreatedFromCodeRef: 'quotationrequest',
+                contactId: $quotationRequest->opportunity->intake->contact_id,
+                opportunityId: $quotationRequest->opportunity_id,
+                intakeId: $quotationRequest->opportunity->intake->id,
+                campaignId: $quotationRequest->opportunity->intake->campaign_id,
+                quotationRequestId: $quotationRequest->id,
+                attachmentUrl: $dataQuotationRequest['quotation_request_attachment_3']
+            );
         }
 
         $this->log("Kansactie " . $quotationRequest->opportunityAction->name . " met id " . $quotationRequest->id . " bijgewerkt bij kans: " . $quotationRequest->opportunity->number . ") en coach/organisatie '" . ($coachOrOrganisation ? $coachOrOrganisation->full_name : 'geen') . "'.");
     }
 
-    protected function addQuotationRequestAttachment($quotationRequest, $quotationRequestAttachmentUrl) {
-        $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'quotationrequest')->first()->id;
-        $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'quotationrequest')->first()->name;
+    protected function addAttachment($description, $documentCreatedFromCodeRef, $contactId, $opportunityId, $intakeId, $campaignId, $quotationRequestId, $attachmentUrl)
+    {
+        $allowedFileTypes = ['png', 'jpg', 'jpeg', 'pdf'];
 
-        $fileName = basename($quotationRequestAttachmentUrl);
+        /*
+         * Haal alleen het pad uit de URL.
+         * Hierdoor hebben queryparameters geen invloed op de extensie
+         * of de eventuele bestandsnaam.
+         */
+        $urlPath = parse_url($attachmentUrl, PHP_URL_PATH);
 
-        $document = new Document();
-        $document->description = 'Kansactie bijlage';
-        $document->document_type = 'upload';
-        $document->document_group = 'general';
-        $document->filename = $fileName;
-        $document->document_created_from_id = $documentCreatedFromId;
-        $document->contact_id = $quotationRequest->opportunity->intake->contact_id;
-        $document->opportunity_id = $quotationRequest->opportunity_id;
-        $document->intake_id = $quotationRequest->opportunity->intake_id;
-        $document->campaign_id = $quotationRequest->opportunity->intake->campaign_id;
-        $document->quotation_request_id = $quotationRequest->id;
+        if (!$urlPath) {
+            $this->log($description . ' bevat geen geldige URL.');
 
-        $document->document_created_from_id = $documentCreatedFromId;
+            return;
+        }
 
-        $document->save();
+        $urlFileName = basename($urlPath);
+        $fileType = strtolower(pathinfo($urlPath, PATHINFO_EXTENSION));
 
-        $contents = file_get_contents($quotationRequestAttachmentUrl);
-        $uniqueName = Str::uuid() . '.' . pathinfo($document->filename, PATHINFO_EXTENSION);;
-        $filePathAndName = "{$document->document_group}/" .
-            Carbon::parse($document->created_at)->year .
-            "/{$uniqueName}";
-        Storage::disk('documents')->put($filePathAndName, $contents);
-        $this->log('Kansactie bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Bigstorage');
+        /*
+         * Bestaande functionaliteit:
+         * URL bevat een toegestane bestandsextensie.
+         */
+        $isExistingAttachmentUrl = in_array(
+            $fileType,
+            $allowedFileTypes,
+            true
+        );
 
-        $document->file_path_and_name = $filePathAndName;
+        /*
+         * Nieuwe functionaliteit:
+         * URL zonder bestandsextensie, maar wel een signed PDF-URL.
+         *
+         * Hiervoor moeten beide voorwaarden gelden:
+         * - het URL-pad bevat /pdf/;
+         * - de queryparameter signature bestaat en is niet leeg.
+         */
+        parse_str(
+            parse_url($attachmentUrl, PHP_URL_QUERY) ?? '',
+            $queryParameters
+        );
 
-        $document->save();
+        $isSignedPdfUrl =
+            str_contains($urlPath, '/pdf/')
+            && isset($queryParameters['signature'])
+            && trim((string)$queryParameters['signature']) !== '';
+
+        /*
+         * Voorkom dat een willekeurige URL wordt opgehaald.
+         */
+        if (!$isExistingAttachmentUrl && !$isSignedPdfUrl) {
+            $this->log(
+                $description . '  URL heeft geen toegestaan formaat '
+                . 'en is geen geldige signed PDF URL.'
+            );
+
+            return;
+        }
+
+        try {
+            $response = Http::connectTimeout(10)
+                ->timeout(30)
+                ->get($attachmentUrl);
+
+            if (!$response->successful()) {
+                $this->log(
+                    $description . '  kon niet worden opgehaald. '
+                    . 'HTTP-status: ' . $response->status()
+                );
+
+                return;
+            }
+
+            if ($isExistingAttachmentUrl) {
+                /*
+                 * Bestaande URL met bestandsnaam:
+                 * behoud de huidige bestandsnaam en extensie.
+                 */
+                $fileName = $urlFileName;
+            } else {
+                /*
+                 * Signed PDF-URL zonder bestandsnaam.
+                 *
+                 * Controleer na het ophalen of het daadwerkelijk een PDF is.
+                 */
+                $contentType = strtolower(
+                    trim(
+                        explode(
+                            ';',
+                            $response->header('Content-Type', '')
+                        )[0]
+                    )
+                );
+
+                if ($contentType !== 'application/pdf') {
+                    $this->log(
+                        $description . '  via signed PDF URL is geen PDF. '
+                        . 'Ontvangen Content-Type: '
+                        . ($contentType ?: 'onbekend')
+                    );
+
+                    return;
+                }
+
+                $fileType = 'pdf';
+                $contentDisposition = $response->header('Content-Disposition');
+
+                $fileName = null;
+
+                if ($contentDisposition) {
+                    if (preg_match('/filename\*=UTF-8\'\'([^;]+)/i', $contentDisposition, $matches)) {
+                        $fileName = rawurldecode(trim($matches[1]));
+                    } elseif (preg_match('/filename="?([^";]+)"?/i', $contentDisposition, $matches)) {
+                        $fileName = trim($matches[1]);
+                    }
+                }
+
+                if ($fileName) {
+                    $fileName = basename(
+                        str_replace('\\', '/', trim($fileName, "\"' "))
+                    );
+                }
+
+                if (!$fileName) {
+                    $fileName = Str::slug($description) . '.pdf';
+                }
+            }
+
+            $documentCreatedFrom = DocumentCreatedFrom::where(
+                'code_ref',
+                $documentCreatedFromCodeRef
+            )->first();
+
+            if (!$documentCreatedFrom) {
+                $this->log(
+                    $description . '  kon niet worden opgeslagen: '
+                    . 'DocumentCreatedFrom met code_ref ' . $documentCreatedFromCodeRef . ' ontbreekt.'
+                );
+
+                return;
+            }
+
+            $document = new Document();
+            $document->description = $description;
+            $document->document_type = 'upload';
+            $document->document_group = 'general';
+            $document->filename = $fileName;
+
+            $document->contact_id = $contactId;
+            $document->opportunity_id = $opportunityId;
+            $document->intake_id = $intakeId;
+            $document->campaign_id = $campaignId;
+            $document->quotation_request_id = $quotationRequestId;
+            $document->document_created_from_id = $documentCreatedFrom->id;
+
+            $document->save();
+
+            /*
+             * De fysieke bestandsnaam in Bigstorage blijft altijd uniek.
+             */
+            $uniqueName = Str::uuid() . '.' . $fileType;
+
+            $filePathAndName = "{$document->document_group}/"
+                . Carbon::parse($document->created_at)->year
+                . "/{$uniqueName}";
+
+            $stored = Storage::disk('documents')->put(
+                $filePathAndName,
+                $response->body()
+            );
+
+            if (!$stored) {
+                /*
+                 * Voorkom een Document-record zonder fysiek bestand.
+                 */
+                $document->delete();
+
+                $this->log(
+                    $description . '  ' . $fileName
+                    . ' kon niet worden opgeslagen in Bigstorage.'
+                );
+
+                return;
+            }
+
+            $document->file_path_and_name = $filePathAndName;
+            $document->save();
+
+            $this->log(
+                $description . '  ' . $fileName
+                . ' opgeslagen als ' . $documentCreatedFrom->name
+                . ' document in Bigstorage'
+            );
+        } catch (\Throwable $exception) {
+            $this->log(
+                'Fout bij ophalen of opslaan ' . $description . ': '
+                . $exception->getMessage()
+            );
+        }
     }
 
     /**

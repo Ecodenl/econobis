@@ -51,7 +51,7 @@ const TaskDetailsFormGeneralView = props => {
                             Taak / notitie
                         </label>
                     </div>
-                    <div className="col-sm-9" id="description">
+                    <div className="col-sm-9 pre-wrap" id="description">
                         {note}
                     </div>
                 </div>

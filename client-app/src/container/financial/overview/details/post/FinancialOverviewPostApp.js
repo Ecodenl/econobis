@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
@@ -6,8 +7,11 @@ import PanelHeader from '../../../../../components/panel/PanelHeader';
 import FinancialOverviewPostList from './FinancialOverviewPostList';
 import axios from 'axios';
 import FinancialOverviewPostAPI from '../../../../../api/financial/overview/FinancialOverviewPostAPI';
+import { setError } from '../../../../../actions/general/ErrorActions';
 
 function FinancialOverviewPostApp({ financialOverview }) {
+    const dispatch = useDispatch();
+
     const [financialOverviewPosts, setFinancialOverviewPosts] = useState([]);
     const [meta, setMetaData] = useState({ total: 0 });
     const [isLoading, setLoading] = useState(true);
@@ -35,7 +39,13 @@ function FinancialOverviewPostApp({ financialOverview }) {
             )
             .catch(error => {
                 setLoading(false);
-                alert('Er is iets misgegaan met ophalen van de gegevens.');
+
+                dispatch(
+                    setError(
+                        error?.response?.status ?? 500,
+                        error?.response?.data?.message ?? 'Er is iets misgegaan met ophalen van de gegevens.'
+                    )
+                );
             });
     }
 

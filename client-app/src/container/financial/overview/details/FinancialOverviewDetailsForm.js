@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { isEmpty } from 'lodash';
 
 import FinancialOverviewDetailsFormGeneral from './general/FinancialOverviewDetailsFormGeneral';
 import * as PropTypes from 'prop-types';
@@ -8,26 +7,10 @@ import FinancialOverviewProjectApp from './project/FinancialOverviewProjectApp';
 import FinancialOverviewPostApp from './post/FinancialOverviewPostApp';
 
 class FinancialOverviewDetailsForm extends Component {
-    constructor(props) {
-        super(props);
-    }
     render() {
-        let { financialOverview, hasError, isLoading } = this.props;
-        let loadingText = '';
-        let loading = true;
+        const { financialOverview } = this.props;
 
-        if (hasError) {
-            loadingText = 'Fout bij het ophalen van waardestaat.';
-        } else if (isLoading) {
-            loadingText = 'Gegevens aan het laden.';
-        } else if (isEmpty(financialOverview)) {
-            loadingText = 'Geen waardestaat gevonden!';
-        } else {
-            loading = false;
-        }
-        return loading ? (
-            <div>{loadingText}</div>
-        ) : (
+        return (
             <div>
                 <FinancialOverviewDetailsFormGeneral
                     financialOverview={financialOverview}
@@ -46,8 +29,7 @@ class FinancialOverviewDetailsForm extends Component {
 
 FinancialOverviewDetailsForm.propTypes = {
     financialOverview: PropTypes.any,
-    hasError: PropTypes.any,
-    isLoading: PropTypes.any,
+    callFetchFinancialOverviewDetails: PropTypes.func,
 };
 
 export default FinancialOverviewDetailsForm;

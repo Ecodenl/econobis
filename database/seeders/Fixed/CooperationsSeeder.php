@@ -11,9 +11,6 @@ class CooperationsSeeder extends Seeder
 {
     public function run(): void
     {
-//        $adminUser = User::where('email', config('app.admin_user.email'))->first();
-//        $adminUserId = User::where('email', config('app.admin_user.email'))
-//            ->value('id') ?? 1;
         $adminUserId = User::where('email', config('app.admin_user.email'))
             ->value('id');
         if (!$adminUserId) {
@@ -42,13 +39,7 @@ class CooperationsSeeder extends Seeder
 
         // Alle velden (op id na natuurlijk), zijn muteerbaar voor gebruiker.
         // We voegen alleen ontbrekende (nieuwe) records toe en laten bestaande ongemoeid.
-        // We gebruiken hier daarom firstOrCreate() ipv updateOrCreate() en doen geen update().
-//        foreach ($cooperations as $cooperation) {
-//            Cooperation::firstOrCreate(
-//                ['id' =>  (int) $cooperation['id']],
-//                $cooperation
-//            );
-//        }
+        // Om problemen met CooperationOpserver te voorkomen doen we hier een saveQuitely.
         foreach ($cooperations as $cooperationData) {
             if (!Cooperation::whereKey($cooperationData['id'])->exists()) {
                 $cooperation = new Cooperation();

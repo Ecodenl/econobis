@@ -19,6 +19,9 @@ class SecurityHeaders
         $response = $next($request);
 
 
+//        $response->headers->set('Content-Security-Policy',
+//            "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; worker-src 'self' blob:; connect-src 'self' https://*.econobis.nl;  object-src 'none'; frame-ancestors 'none';"
+//        );
         $response->headers->set('Content-Security-Policy',
             "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; worker-src 'self' blob:; connect-src 'self' https://*.econobis.nl; object-src 'none'; frame-ancestors 'none';"
         );

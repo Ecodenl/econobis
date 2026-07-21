@@ -1,29 +1,29 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../../components/panel/PanelHeader';
 import FinancialOverviewProjectNew from './FinancialOverviewProjectNew';
 import FinancialOverviewProjectList from './FinancialOverviewProjectList';
-import axios from 'axios';
 import FinancialOverviewProjectAPI from '../../../../../api/financial/overview/FinancialOverviewProjectAPI';
-import FinancialOverviewDetailsAPI from '../../../../../api/financial/overview/FinancialOverviewDetailsAPI';
+import { setError } from '../../../../../actions/general/ErrorActions';
 
 import Icon from 'react-icons-kit';
 import { plus } from 'react-icons-kit/fa/plus';
 
 function FinancialOverviewProjectApp({ financialOverview, callFetchFinancialOverviewDetails }) {
+    const dispatch = useDispatch();
+
     const [showNew, setShowNew] = useState(false);
     const [financialOverviewProjects, setFinancialOverviewProjects] = useState([]);
     const [meta, setMetaData] = useState({ total: 0 });
-    const [totalsInfo, setTotalsInfo] = useState([]);
     const [isLoading, setLoading] = useState(true);
 
     // If pagination, sort or filter created at change then reload data
     useEffect(
         function() {
             fetchFinancialOverviewProjects();
-            callFetchFinancialOverviewDetails();
         },
         [
             financialOverview.statusId,
@@ -44,27 +44,25 @@ function FinancialOverviewProjectApp({ financialOverview, callFetchFinancialOver
         setLoading(true);
         setFinancialOverviewProjects([]);
 
-        axios
-            .all([
-                FinancialOverviewProjectAPI.fetchFinancialOverviewProjects(financialOverview.id),
-                FinancialOverviewDetailsAPI.fetchTotalsInfoFinancialOverview(financialOverview),
-            ])
-            .then(
-                axios.spread((payloadFinancialOverviewProjects, payloadTotalsInfoFinancialOverview) => {
-                    setFinancialOverviewProjects(payloadFinancialOverviewProjects.data.data);
-                    setMetaData(payloadFinancialOverviewProjects.data.meta);
-                    setTotalsInfo(payloadTotalsInfoFinancialOverview.data);
-                    setLoading(false);
-                })
-            )
+        FinancialOverviewProjectAPI.fetchFinancialOverviewProjects(financialOverview.id)
+            .then(payload => {
+                setFinancialOverviewProjects(payload.data.data);
+                setMetaData(payload.data.meta);
+                setLoading(false);
+            })
             .catch(error => {
                 setLoading(false);
-                alert('Er is iets misgegaan met ophalen van de gegevens.');
+
+                dispatch(
+                    setError(
+                        error?.response?.status ?? 500,
+                        error?.response?.data?.message ?? 'Er is iets misgegaan met ophalen van de gegevens.'
+                    )
+                );
             });
     }
 
     function refreshFinancialOverviewProjects() {
-        fetchFinancialOverviewProjects();
         callFetchFinancialOverviewDetails();
     }
 

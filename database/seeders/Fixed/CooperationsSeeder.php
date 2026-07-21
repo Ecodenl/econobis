@@ -43,11 +43,18 @@ class CooperationsSeeder extends Seeder
         // Alle velden (op id na natuurlijk), zijn muteerbaar voor gebruiker.
         // We voegen alleen ontbrekende (nieuwe) records toe en laten bestaande ongemoeid.
         // We gebruiken hier daarom firstOrCreate() ipv updateOrCreate() en doen geen update().
-        foreach ($cooperations as $cooperation) {
-            Cooperation::firstOrCreate(
-                ['id' =>  (int) $cooperation['id']],
-                $cooperation
-            );
+//        foreach ($cooperations as $cooperation) {
+//            Cooperation::firstOrCreate(
+//                ['id' =>  (int) $cooperation['id']],
+//                $cooperation
+//            );
+//        }
+        foreach ($cooperations as $cooperationData) {
+            if (!Cooperation::whereKey($cooperationData['id'])->exists()) {
+                $cooperation = new Cooperation();
+                $cooperation->forceFill($cooperationData);
+                $cooperation->saveQuietly();
+            }
         }
     }
 }

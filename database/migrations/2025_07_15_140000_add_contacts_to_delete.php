@@ -53,7 +53,7 @@ class AddContactsToDelete extends Migration
 
 
         Schema::table('cooperations', function (Blueprint $table) {
-            $table->unsignedInteger('contact_id_deleted_contacts');
+            $table->unsignedInteger('contact_id_deleted_contacts')->nullable();
         });
 
 //        $this->createContactDeletedContacts();

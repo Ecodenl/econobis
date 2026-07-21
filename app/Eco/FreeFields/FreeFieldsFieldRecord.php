@@ -23,6 +23,11 @@ class FreeFieldsFieldRecord extends Model
         return $this->belongsTo(FreeFieldsField::class, 'field_id');
     }
 
+    public function freeFieldsFieldLogs()
+    {
+        return $this->hasMany(FreeFieldsFieldLog::class, 'free_fields_field_record_id');
+    }
+
 }
 
 

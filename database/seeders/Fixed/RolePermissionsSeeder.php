@@ -808,7 +808,7 @@ class RolePermissionsSeeder extends Seeder
                 'view_quotation_request',
                 'view_task',
             ],
-            'Data opschoner' => [
+            'Beheerder data opschoner' => [
                 'menu_data_cleanup',
                 'manage_cleanup_exception_products',
             ],

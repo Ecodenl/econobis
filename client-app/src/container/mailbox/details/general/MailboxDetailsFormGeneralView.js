@@ -227,34 +227,44 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, meDetails, switchToEdit
                     </>
                 )}
 
-                <PanelHeader>
-                    <span className="h5">
-                        <strong>Log</strong>
-                    </span>
-                </PanelHeader>
-                <PanelBody>
-                    <div className="row">
-                        <ViewText
-                            label={'Datum email laatst opgehaald'}
-                            value={dateLastFetched ? moment(dateLastFetched).format('L HH:mm:ss') : 'Nog niet bepaald'}
-                        />
-                        <ViewText label={'UID email laatst opgehaald'} value={imapIdLastFetched} />
-                    </div>
-                    <div className="row">
-                        <ViewText
-                            label={'Status ophalen van e-mail'}
-                            value={
-                                startFetchMail ? (
-                                    <span style={{ color: 'red' }}>
-                                        Procedure bezig vanaf: {moment(startFetchMail).format('L HH:mm:ss')}
-                                    </span>
-                                ) : (
-                                    'wacht op synchronisatie ronde'
-                                )
-                            }
-                        />
-                    </div>
-                </PanelBody>
+                {incomingServerType !== 'mailgun' && (
+                    <>
+                        <PanelHeader>
+                            <span className="h5">
+                                <strong>Log</strong>
+                            </span>
+                        </PanelHeader>
+                        <PanelBody>
+                            <div className="row">
+                                <ViewText
+                                    label={'Datum email laatst opgehaald'}
+                                    value={
+                                        dateLastFetched
+                                            ? moment(dateLastFetched).format('L HH:mm:ss')
+                                            : 'Nog niet bepaald'
+                                    }
+                                />
+                                {incomingServerType === 'imap' && (
+                                    <ViewText label={'UID email laatst opgehaald'} value={imapIdLastFetched} />
+                                )}
+                            </div>
+                            <div className="row">
+                                <ViewText
+                                    label={'Status ophalen van e-mail'}
+                                    value={
+                                        startFetchMail ? (
+                                            <span style={{ color: 'red' }}>
+                                                Procedure bezig vanaf: {moment(startFetchMail).format('L HH:mm:ss')}
+                                            </span>
+                                        ) : (
+                                            'wacht op synchronisatie ronde'
+                                        )
+                                    }
+                                />
+                            </div>
+                        </PanelBody>
+                    </>
+                )}
             </Panel>
         </div>
     );

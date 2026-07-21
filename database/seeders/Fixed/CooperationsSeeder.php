@@ -5,13 +5,21 @@ namespace Database\Seeders\Fixed;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\User\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Log;
 
 class CooperationsSeeder extends Seeder
 {
     public function run(): void
     {
-        $adminUser = User::where('email', config('app.admin_user.email'))->first();
-
+//        $adminUser = User::where('email', config('app.admin_user.email'))->first();
+//        $adminUserId = User::where('email', config('app.admin_user.email'))
+//            ->value('id') ?? 1;
+        $adminUserId = User::where('email', config('app.admin_user.email'))
+            ->value('id');
+        if (!$adminUserId) {
+            Log::info('Admin user not found for ' . config('app.admin_user.email'));
+            $adminUserId = 1;
+        }
         $cooperations = [
             [
                 'id' => 1,
@@ -27,8 +35,8 @@ class CooperationsSeeder extends Seeder
                 'require_two_factor_authentication' => false,
                 'create_contacts_for_report_table' => false,
                 'create_contacts_for_report_table_in_progress' => false,
-                'created_by_id' => $adminUser ? $adminUser->id : 1,
-                'updated_by_id' => $adminUser ? $adminUser->id : 1,
+                'created_by_id' => $adminUserId,
+                'updated_by_id' => $adminUserId,
             ]
         ];
 

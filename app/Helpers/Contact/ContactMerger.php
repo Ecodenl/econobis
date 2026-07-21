@@ -104,13 +104,6 @@ class ContactMerger
         $this->validateNoDuplicateFinancialOverviewContacts();
     }
 
-    private function validateSameRole(string $method, string $label): void
-    {
-        if ($this->toContact->{$method}() !== $this->fromContact->{$method}()) {
-            throw new ContactMergeException("Contacten kunnen niet worden samengevoegd omdat één van beide {$label} is en de andere niet.");
-        }
-    }
-
     private function validateAddressEnergySuppliersCanBeRemovedOnMerge(): void
     {
         foreach ($this->fromContact->addresses as $fromAddress) {
@@ -148,6 +141,12 @@ class ContactMerger
         }
     }
 
+    private function validateSameRole(string $method, string $label): void
+    {
+        if ($this->toContact->{$method}() !== $this->fromContact->{$method}()) {
+            throw new ContactMergeException("Contacten kunnen niet worden samengevoegd omdat één van beide {$label} is en de andere niet.");
+        }
+    }
     private function validateNoDuplicateFinancialOverviewContacts(): void
     {
         $toFinancialOverviewIds = $this->toContact->financialOverviewContacts()

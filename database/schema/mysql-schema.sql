@@ -532,6 +532,8 @@ CREATE TABLE `campaigns` (
   `inspection_recorded_email_template_id` int(10) unsigned DEFAULT NULL,
   `inspection_released_email_template_id` int(10) unsigned DEFAULT NULL,
   `default_workflow_mailbox_id` int(10) unsigned DEFAULT NULL,
+  `subsidy_possible` tinyint(1) NOT NULL DEFAULT 0,
+  `woz_limit` double DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `campaigns_status_id_foreign` (`status_id`),
   KEY `campaigns_type_id_foreign` (`type_id`),
@@ -1858,6 +1860,7 @@ CREATE TABLE `housing_files` (
   `glass_in_lead_replace_rooms_heated` varchar(191) DEFAULT NULL,
   `amount_gas` varchar(191) DEFAULT NULL,
   `amount_electricity` varchar(191) DEFAULT NULL,
+  `woz_value` double DEFAULT NULL,
   `created_by_id` int(10) unsigned NOT NULL,
   `updated_by_id` int(10) unsigned NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -2585,6 +2588,8 @@ CREATE TABLE `opportunities` (
   `evaluation_agreed_date` date DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
   `amount` int(11) DEFAULT NULL,
+  `below_woz_limit` tinyint(1) DEFAULT 1,
+  `exception_debt_relief` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `opportunities_status_id_foreign` (`status_id`),
   KEY `opportunities_intake_id_foreign` (`intake_id`),
@@ -5301,47 +5306,50 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (758,'2025_01_14_10
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (759,'2025_01_31_125141_change_name_energy_supplier_d_g_b_energie',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (760,'2025_01_31_131415_add_housing_file_specification_sides_jan2025',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (761,'2025_02_10_143500_new_energy_supplier_noordstroom',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (762,'2025_02_21_142300_seed_february_2025_measure_categories_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (763,'2025_02_21_143500_seed_spuk_measure_categories_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (764,'2025_03_18_120700_change_key_user_role_name',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (765,'2025_03_28_100117_add_show_external_url_for_contacts_to_cooperations_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (766,'2025_04_23_111536_migrate_passport_keys',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (767,'2025_05_16_092650_add_register_type_to_participant_mutations_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (768,'2025_05_19_124456_add_new_text_link_name_fields_to_projects_table',1);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (769,'2025_06_18_155153_create_portal_settings_table',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (770,'2025_06_25_151800_change_quotationrequest_name_in_document_created_froms_table',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (771,'2025_06_27_141738_change_housing_files_boolean_fields_to_varchar',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (772,'2025_07_02_163700_change_projectmedewerker_role_name',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (773,'2025_07_03_144600_change_roles_permissions',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (774,'2025_07_07_122000_add_calendar_color_fields_to_measure_categories_table',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (775,'2025_07_28_115838_new_energy_supplier_groen_stroom_lokaal',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (776,'2025_08_07_131714_correction_migrations_after_laravel-11_upgrade',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (777,'2025_08_18_140000_add_name_custom_and_visible_to_sources_table',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (778,'2025_08_18_145400_add_new_sources_august_18_2025',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (779,'2025_08_19_110000_new_energy_supplier_volti',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (780,'2025_08_22_163500_add_source_permissions',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (781,'2025_08_26_115147_add_approved_statusses_quotatoin_requests',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (782,'2025_08_26_125200_add_new_occupation_august2025',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (783,'2025_08_27_151200_add_portal_dashboard_widget_groepen_beheer',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (784,'2025_08_28_153800_add_portal_sort_order_to_contact_groups_table',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (785,'2025_09_25_140112_add_field_code_extern_to_intakes_table',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (786,'2025_09_29_140439_add_rate_limit_login_fields',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (787,'2025_10_01_113800_seed_oktober_2025_measures_and_measure_categories_table',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (788,'2025_10_06_110439_add_rate_limit_login_portal_fields',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (789,'2025_10_16_124925_add_require_team_on_user_create_to_cooperations_table',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (790,'2025_10_21_093544_add_new_fields_to_contact_to_imports_table',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (791,'2025_10_23_160636_add_uses_interim_financial_overview_to_administrations_table',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (792,'2025_11_04_154507_add_new_fields_to_financial_overviews_tables',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (793,'2025_11_04_154508_add_indexen_to_financial_overviews_tables',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (794,'2025_11_12_123018_create_free_fields_field_log_table',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (795,'2025_11_12_154900_seed_aan_den_last_name_prefixes_table',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (796,'2025_11_27_153623_add_public_idto_contacts_table',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (797,'2025_11_27_154023_unique_for_public_id_contacts_table',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (798,'2025_12_05_150323_add_fields_to_contact_email_table',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (799,'2025_12_31_084729_add_opportunity_code_field_to_opportunities_table',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (800,'2026_01_06_080932_create_team_district_table',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (801,'2026_02_05_162535_add_soft_deletes_to_contact_notes_table',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (802,'2026_02_18_135950_new_fields_mailboxen_table',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (803,'2026_03_04_150000_new_energy_supplier_audax_renewables',2);
-INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (804,'2026_03_19_155857_create_system_check_runs_table',2);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (762,'2025_02_18_132700_add_subsidy_possible_and_woz_limit_to_campaigns_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (763,'2025_02_18_152900_add_below_woz_limit_and_exception_debt_relief_to_opportunities_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (764,'2025_02_18_152900_add_woz_value_to_housing_files_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (765,'2025_02_21_142300_seed_february_2025_measure_categories_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (766,'2025_02_21_143500_seed_spuk_measure_categories_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (767,'2025_03_18_120700_change_key_user_role_name',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (768,'2025_03_28_100117_add_show_external_url_for_contacts_to_cooperations_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (769,'2025_04_23_111536_migrate_passport_keys',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (770,'2025_05_16_092650_add_register_type_to_participant_mutations_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (771,'2025_05_19_124456_add_new_text_link_name_fields_to_projects_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (772,'2025_06_18_155153_create_portal_settings_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (773,'2025_06_25_151800_change_quotationrequest_name_in_document_created_froms_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (774,'2025_06_27_141738_change_housing_files_boolean_fields_to_varchar',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (775,'2025_07_02_163700_change_projectmedewerker_role_name',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (776,'2025_07_03_144600_change_roles_permissions',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (777,'2025_07_07_122000_add_calendar_color_fields_to_measure_categories_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (778,'2025_07_28_115838_new_energy_supplier_groen_stroom_lokaal',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (779,'2025_08_07_131714_correction_migrations_after_laravel-11_upgrade',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (780,'2025_08_18_140000_add_name_custom_and_visible_to_sources_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (781,'2025_08_18_145400_add_new_sources_august_18_2025',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (782,'2025_08_19_110000_new_energy_supplier_volti',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (783,'2025_08_22_163500_add_source_permissions',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (784,'2025_08_26_115147_add_approved_statusses_quotatoin_requests',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (785,'2025_08_26_125200_add_new_occupation_august2025',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (786,'2025_08_27_151200_add_portal_dashboard_widget_groepen_beheer',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (787,'2025_08_28_153800_add_portal_sort_order_to_contact_groups_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (788,'2025_09_25_140112_add_field_code_extern_to_intakes_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (789,'2025_09_29_140439_add_rate_limit_login_fields',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (790,'2025_10_01_113800_seed_oktober_2025_measures_and_measure_categories_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (791,'2025_10_06_110439_add_rate_limit_login_portal_fields',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (792,'2025_10_16_124925_add_require_team_on_user_create_to_cooperations_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (793,'2025_10_21_093544_add_new_fields_to_contact_to_imports_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (794,'2025_10_23_160636_add_uses_interim_financial_overview_to_administrations_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (795,'2025_11_04_154507_add_new_fields_to_financial_overviews_tables',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (796,'2025_11_04_154508_add_indexen_to_financial_overviews_tables',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (797,'2025_11_12_123018_create_free_fields_field_log_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (798,'2025_11_12_154900_seed_aan_den_last_name_prefixes_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (799,'2025_11_27_153623_add_public_idto_contacts_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (800,'2025_11_27_154023_unique_for_public_id_contacts_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (801,'2025_12_05_150323_add_fields_to_contact_email_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (802,'2025_12_31_084729_add_opportunity_code_field_to_opportunities_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (803,'2026_01_06_080932_create_team_district_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (804,'2026_02_05_162535_add_soft_deletes_to_contact_notes_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (805,'2026_02_18_135950_new_fields_mailboxen_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (806,'2026_03_04_150000_new_energy_supplier_audax_renewables',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (807,'2026_03_19_155857_create_system_check_runs_table',1);
 commit;

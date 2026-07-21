@@ -1673,12 +1673,27 @@ class ExternalWebformController extends Controller
                     'date_of_birth' => $data['date_of_birth'] ?: null,
                 ]);
 
-                OccupationContact::create([
-                    'occupation_id' => 14, // Relatie type "medewerker"
-                    'primary_contact_id' => $organisation->contact_id,
-                    'contact_id' => $person->contact_id,
-                    'primary' => true,
-                ]);
+                $occupationId = null;
+                if (!empty($data['occupation_id'])) {
+                    $occupationId = Occupation::whereKey($data['occupation_id'])->value('id');
+                }
+                if (!$occupationId) {
+                    $occupationId = Occupation::where(
+                        'primary_occupation',
+                        'Medewerker'
+                    )->value('id');
+                }
+
+                if(!$occupationId){
+                    $this->log('Verbinding type kon niet bepaald worden, geen verbinding gemaakt.');
+                } else {
+                    OccupationContact::create([
+                        'occupation_id' => $occupationId,
+                        'primary_contact_id' => $organisation->contact_id,
+                        'contact_id' => $person->contact_id,
+                        'primary' => true,
+                    ]);
+                }
 
                 // Overige gegevens aan person hangen
                 $this->addEmailToContact($data, $contactPerson);
@@ -3195,9 +3210,9 @@ class ExternalWebformController extends Controller
         }
 
         $guard = new WebformActionGuard();
-            $guard->assertAllowed($webform, WebformActionCode::PARTICIPATION_CREATE, [
-                'status_id' => $data['participation_mutation_status_id'],
-            ]);
+        $guard->assertAllowed($webform, WebformActionCode::PARTICIPATION_CREATE, [
+            'status_id' => $data['participation_mutation_status_id'],
+        ]);
 
         if ($data['project_id']) {
             $this->log('Er is een project meegegeven, participatie aanmaken.');

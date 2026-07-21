@@ -34,7 +34,7 @@ class TaskTypesSeeder extends Seeder
         // We gebruiken hier daarom firstOrCreate() en doen daarna een update() voor niet-muteerbare velden (voor gebruiker).
         foreach ($taskTypes as $taskType) {
             $existingTaskType = TaskType::firstOrCreate(
-                ['id' => $taskType['id']],
+                ['name' => $taskType['name']],
                 $taskType
             );
 

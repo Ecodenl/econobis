@@ -40,6 +40,8 @@ class OccupationsSeeder extends Seeder
             ['primary_occupation' => 'Politicus', 'secondary_occupation' => 'Politicus van', 'occupation_for_portal' => 0],
             ['primary_occupation' => 'Coördinator', 'secondary_occupation' => 'Coördinator van', 'occupation_for_portal' => 0],
             ['primary_occupation' => 'VvE lid', 'secondary_occupation' => 'VvE lid van', 'occupation_for_portal' => 0],
+            ['primary_occupation' => 'Algemeen lid', 'secondary_occupation' => 'Algemeen lid van', 'occupation_for_portal' => 0],
+            ['primary_occupation' => 'Vrijwilliger', 'secondary_occupation' => 'Vrijwilliger van', 'occupation_for_portal' => 0],
         ];
 
         foreach ($occupations as $occupation) {

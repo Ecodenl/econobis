@@ -13,7 +13,7 @@ enum FinancialOverviewContactStatus: string
     case IN_PROGRESS = 'in-progress';
     case ERROR_MAKING = 'error-making';
     case IS_SENDING = 'is-sending';
-    CASE ERROR_SENDING = 'ERROR-SENDING';
+    case ERROR_SENDING = 'error-sending';
     case IS_RESENDING = 'is-resending';
     case SENT = 'sent';
 

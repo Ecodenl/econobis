@@ -46,7 +46,6 @@ class OccupationsSeeder extends Seeder
             Occupation::updateOrCreate(
                 [
                     'primary_occupation' => $occupation['primary_occupation'],
-                    'secondary_occupation' => $occupation['secondary_occupation'],
                 ],
                 $occupation
             );

@@ -161,7 +161,11 @@ class ContactGroupController extends Controller
             ->get();
 
         //Van dynamisch een statische groep maken
-        if($contactGroup->type_id === ContactGroupType::DYNAMIC && $data['type_id'] === ContactGroupType::STATIC){
+        // type_id uit het model is een enum, de requestwaarde is nog een string (vergelijk met ContactGroupType::XXX->value).
+        if(
+            $contactGroup->type_id === ContactGroupType::DYNAMIC
+            && $data['type_id'] === ContactGroupType::STATIC->value
+        ){
             $this->makeStatic($contactGroup);
         }
 

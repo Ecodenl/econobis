@@ -11,6 +11,7 @@ namespace App\Helpers\Delete\Models;
 
 use App\Eco\Cooperation\Cooperation;
 use App\Helpers\Delete\DeleteInterface;
+use App\Helpers\Delete\Traits\ChecksExcludedCleanupContacts;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -23,6 +24,8 @@ use Illuminate\Support\Facades\Log;
  */
 class DeleteMail implements DeleteInterface
 {
+    use ChecksExcludedCleanupContacts;
+
     private $errorMessage = [];
     private $mail;
 
@@ -40,21 +43,51 @@ class DeleteMail implements DeleteInterface
      * @return array
      * @throws
      */
-    public function cleanup()
+    public function canCleanup(): bool
     {
-        try{
-            if (! $this->canCleanup()) {
-                return $this->errorMessage;
-            }
-            return $this->delete();
-        }catch (\Exception $exception){
-            Log::error('Fout bij opschonen Emails', [
-                'exception' => $exception->getMessage(),
-                'errormessages' => implode(' | ', $this->errorMessage),
-            ]);
-            array_push($this->errorMessage, "Fout bij opschonen Emails. (meld dit bij Econobis support)");
-            return $this->errorMessage;
+        $cooperation = Cooperation::first();
+
+        if (! $cooperation?->cleanup_email) {
+            $this->errorMessage[] =
+                "E-mailcorrespondentie opschonen staat uit voor deze coöperatie.";
+
+            return false;
         }
+
+        if (
+            $this->mail->order_id !== null
+            || $this->mail->invoice_id !== null
+            || $this->mail->participation_project_id !== null
+            || $this->mail->intake_id !== null
+            || $this->mail->opportunity_id !== null
+        ) {
+            $this->errorMessage[] =
+                "E-mail {$this->mail->id} is nog gekoppeld aan een order, "
+                . "nota, deelname, intake of kans en mag daarom niet "
+                . "opgeschoond worden.";
+
+            return false;
+        }
+
+        $contactIds = array_merge(
+            $this->mail->contacts()
+                ->pluck('contacts.id')
+                ->all(),
+            $this->mail->manualContacts()
+                ->pluck('contacts.id')
+                ->all()
+        );
+
+        if ($this->containsExcludedCleanupContact($contactIds)) {
+            $this->errorMessage[] =
+                "E-mail {$this->mail->id} kan niet worden opgeschoond: "
+                . "minimaal één gekoppeld contact valt in een "
+                . "uitzonderingsgroep.";
+
+            return false;
+        }
+
+        return true;
     }
 
     /** Main method for deleting this model and all it's relations
@@ -87,33 +120,6 @@ class DeleteMail implements DeleteInterface
         // van hier uit altijd true
         return true;
 
-    }
-
-    public function canCleanup(): bool
-    {
-        $cooperation = Cooperation::first();
-
-        if (! $cooperation?->cleanup_email) {
-            $this->errorMessage[] =
-                "E-mailcorrespondentie opschonen staat uit voor deze coöperatie.";
-
-            return false;
-        }
-
-        if (
-            $this->mail->order_id !== null
-            || $this->mail->invoice_id !== null
-            || $this->mail->participation_project_id !== null
-            || $this->mail->intake_id !== null
-            || $this->mail->opportunity_id !== null
-        ) {
-            $this->errorMessage[] =
-                "Email {$this->mail->id} is nog gekoppeld aan een order, nota, deelname, intake of kans en mag daarom niet opgeschoond worden.";
-
-            return false;
-        }
-
-        return true;
     }
 
     /** Deletes models recursive

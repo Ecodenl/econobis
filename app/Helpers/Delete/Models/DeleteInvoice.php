@@ -6,6 +6,7 @@ use App\Eco\Cooperation\Cooperation;
 use App\Eco\DataCleanup\CleanupRegistry;
 use App\Eco\Invoice\InvoiceStatus;
 use App\Helpers\Delete\DeleteInterface;
+use App\Helpers\Delete\Traits\ChecksExcludedCleanupContacts;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
@@ -17,13 +18,14 @@ use Illuminate\Support\Facades\Log;
  */
 class DeleteInvoice implements DeleteInterface
 {
+    use ChecksExcludedCleanupContacts;
+
     private array $errorMessage = [];
     private $invoice;
 
     private int $yearsForDelete;
     private Carbon $cutoffDate;
     private $cooperation;
-    private ?array $excludedContactIds = null;
     private string $cleanupCodeRef = 'invoices';
 
     public function __construct(Model $invoice)
@@ -41,15 +43,39 @@ class DeleteInvoice implements DeleteInterface
     public function cleanup()
     {
         try {
+            if (! $this->canCleanup()) {
+                return $this->errorMessage;
+            }
+
             return $this->delete();
         } catch (\Exception $exception) {
             Log::error("Fout bij opschonen Nota's", [
                 'exception' => $exception->getMessage(),
                 'errormessages' => implode(' | ', $this->errorMessage),
             ]);
-            $this->errorMessage[] = "Fout bij opschonen Nota's. (meld dit bij Econobis support)";
+
+            $this->errorMessage[] =
+                "Fout bij opschonen Nota's. (meld dit bij Econobis support)";
+
             return $this->errorMessage;
         }
+    }
+
+    public function canCleanup(): bool
+    {
+        $contactId = $this->invoice->order?->contact_id;
+
+        if ($this->isContactExcludedFromCleanup($contactId)) {
+            $this->errorMessage[] =
+                "Nota {$this->invoice->number} ({$this->invoice->id}), "
+                . "administratie {$this->invoice->administration->name} "
+                . "kan niet worden opgeschoond: het gekoppelde contact valt "
+                . "in een uitzonderingsgroep.";
+
+            return false;
+        }
+
+        return true;
     }
 
     public function delete()
@@ -70,7 +96,7 @@ class DeleteInvoice implements DeleteInterface
         return $this->errorMessage;
     }
 
-    public function canDelete()
+    public function canDelete(): bool
     {
         if ($this->invoice->invoicesToSend()->exists()) {
             $this->errorMessage[] =
@@ -100,13 +126,18 @@ class DeleteInvoice implements DeleteInterface
             return false;
         }
 
-        // Extra restrictie voor fiscal-date items:
-        // gekoppelde contact_id mag niet in excluded groups zitten
+        // Bij fiscale bewaarplicht mag een definitieve nota van een contact
+        // in een uitzonderingsgroep ook niet los worden verwijderd.
         if ($this->isFiscalRetention()) {
             $contactId = $this->invoice->order?->contact_id;
-            if ($contactId && in_array((int)$contactId, $this->getExcludedContactIds(), true)) {
+
+            if ($this->isContactExcludedFromCleanup($contactId)) {
                 $this->errorMessage[] =
-                    "Nota {$this->invoice->number} ({$this->invoice->id}), administratie {$this->invoice->administration->name} kan niet worden verwijderd: gekoppeld contact valt in een uitgesloten contactgroep.";
+                    "Nota {$this->invoice->number} ({$this->invoice->id}), "
+                    . "administratie {$this->invoice->administration->name} "
+                    . "kan niet worden verwijderd: het gekoppelde contact valt "
+                    . "in een uitzonderingsgroep.";
+
                 return false;
             }
         }
@@ -195,24 +226,6 @@ class DeleteInvoice implements DeleteInterface
     private function isFiscalRetention(): bool
     {
         return CleanupRegistry::retentionModeFor($this->cleanupCodeRef) === CleanupRegistry::RETENTION_FISCAL_DATE;
-    }
-    private function getExcludedContactIds(): array
-    {
-        if ($this->excludedContactIds !== null) {
-            return $this->excludedContactIds;
-        }
-
-        $ids = [];
-        $groups = $this->cooperation?->cleanupContactsExcludedGroups ?? [];
-
-        foreach ($groups as $excludedGroup) {
-            // getAllContacts(true) geeft (waarschijnlijk) IDs terug
-            $ids = array_merge($ids, $excludedGroup->contactGroup->getAllContacts(true) ?? []);
-        }
-
-        $ids = array_values(array_unique(array_map('intval', $ids)));
-
-        return $this->excludedContactIds = $ids;
     }
 
 }

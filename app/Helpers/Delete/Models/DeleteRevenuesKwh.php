@@ -4,6 +4,7 @@ namespace App\Helpers\Delete\Models;
 
 use App\Eco\Cooperation\Cooperation;
 use App\Helpers\Delete\DeleteInterface;
+use App\Helpers\Delete\Traits\ChecksExcludedCleanupContacts;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
@@ -15,6 +16,8 @@ use Illuminate\Support\Facades\Log;
  */
 class DeleteRevenuesKwh implements DeleteInterface
 {
+    use ChecksExcludedCleanupContacts;
+
     private bool $force = true; // default: oude gedrag (hard)
     private $errorMessage = [];
     private $revenuesKwh;
@@ -40,21 +43,98 @@ class DeleteRevenuesKwh implements DeleteInterface
      * @return array
      * @throws
      */
-    public function cleanup(): array
+    public function cleanup()
     {
         try {
-            $this->force = false;   // cleanup = soft
+            $this->force = false;
+
+            if (! $this->canCleanup()) {
+                return $this->errorMessage;
+            }
+
             return $this->delete();
         } catch (\Exception $exception) {
-            Log::error('Fout bij opschonen Opbrengsten Kwh', [
+            Log::error('Fout bij opschonen Opbrengsten Kwh deelperioden', [
                 'exception' => $exception->getMessage(),
                 'errormessages' => implode(' | ', $this->errorMessage),
             ]);
-            array_push($this->errorMessage, "Fout bij opschonen Opbrengsten Kwh. (meld dit bij Econobis support)");
+
+            $this->errorMessage[] =
+                "Fout bij opschonen Opbrengsten Kwh deelperioden. "
+                . "(meld dit bij Econobis support)";
+
             return $this->errorMessage;
         }
-
     }
+
+    public function canCleanup(): bool
+    {
+        $revenues = $this->revenuePartsKwh?->revenuesKwh;
+
+        $processedBeforeRetention =
+            $revenues?->confirmed
+            && $revenues->status === 'processed'
+            && $revenues->date_end < $this->dateAllowedToDelete;
+
+        $query = $processedBeforeRetention
+            ? $this->revenuePartsKwh->distributionPartsKwh()
+            : $this->revenuePartsKwh->newOrConceptDistributionPartsKwh();
+
+        $contactIds = $query
+            ->with('distributionKwh:id,contact_id')
+            ->get()
+            ->pluck('distributionKwh.contact_id')
+            ->all();
+
+        if ($this->containsExcludedCleanupContact($contactIds)) {
+            $this->errorMessage[] =
+                "Opbrengstverdeling Kwh deelperiode "
+                . "{$this->revenuePartsKwh->id} kan niet worden opgeschoond: "
+                . "minimaal één gekoppeld contact valt in een "
+                . "uitzonderingsgroep.";
+
+            return false;
+        }
+
+        return true;
+    }
+
+// Wellicht sneller:
+//    public function canCleanup(): bool
+//    {
+//        $revenues = $this->revenuePartsKwh?->revenuesKwh;
+//
+//        $processedBeforeRetention =
+//            $revenues?->confirmed
+//            && $revenues->status === 'processed'
+//            && $revenues->date_end < $this->dateAllowedToDelete;
+//
+//        $query = $processedBeforeRetention
+//            ? $this->revenuePartsKwh->distributionPartsKwh()
+//            : $this->revenuePartsKwh->newOrConceptDistributionPartsKwh();
+//
+//        $contactIds = $query
+//            ->join(
+//                'revenue_distribution_kwh',
+//                'revenue_distribution_kwh.id',
+//                '=',
+//                'revenue_distribution_parts_kwh.distribution_id'
+//            )
+//            ->pluck('revenue_distribution_kwh.contact_id')
+//            ->all();
+//
+//        if ($this->containsExcludedCleanupContact($contactIds)) {
+//            $this->errorMessage[] =
+//                "Opbrengstverdeling Kwh deelperiode "
+//                . "{$this->revenuePartsKwh->id} kan niet worden opgeschoond: "
+//                . "minimaal één gekoppeld contact valt in een "
+//                . "uitzonderingsgroep.";
+//
+//            return false;
+//        }
+//
+//        return true;
+//    }
 
     /** Main method for deleting this model and all it's relations
      *
@@ -105,21 +185,45 @@ class DeleteRevenuesKwh implements DeleteInterface
     public function deleteModels()
     {
         $queryDistributionKwh = $this->revenuesKwh->distributionKwh();
-        $itemsDistributionKwh = $this->force ? $queryDistributionKwh->withTrashed()->get() : $queryDistributionKwh->get();
+
+        $itemsDistributionKwh = $this->force
+            ? $queryDistributionKwh->withTrashed()->get()
+            : $queryDistributionKwh->get();
+
         foreach ($itemsDistributionKwh as $distributionKwh) {
-            $deleteRevenueDistributionKwh = new DeleteRevenueDistributionKwh($distributionKwh);
-            $this->errorMessage = array_merge( $this->errorMessage, ($this->force ? $deleteRevenueDistributionKwh->delete() : ($deleteRevenueDistributionKwh->cleanup() ?? [])));
+            $deleteRevenueDistributionKwh =
+                new DeleteRevenueDistributionKwh($distributionKwh);
+
+            $result = $this->force
+                ? $deleteRevenueDistributionKwh->delete()
+                : $deleteRevenueDistributionKwh->cleanup();
+
+            $this->errorMessage = array_merge(
+                $this->errorMessage,
+                $result ?? []
+            );
         }
 
         $queryPartsKwh = $this->revenuesKwh->partsKwh();
-        $itemsPartsKwh = $this->force ? $queryPartsKwh->withTrashed()->get() : $queryPartsKwh->get();
+
+        $itemsPartsKwh = $this->force
+            ? $queryPartsKwh->withTrashed()->get()
+            : $queryPartsKwh->get();
+
         foreach ($itemsPartsKwh as $partsKwh) {
-            $deleteRevenuePartsKwh = new DeleteRevenuePartsKwh($partsKwh);
-            $this->errorMessage = array_merge( $this->errorMessage, ($this->force ? $deleteRevenuePartsKwh->delete() : ($deleteRevenuePartsKwh->cleanup() ?? [])));
+            $deleteRevenuePartsKwh =
+                new DeleteRevenuePartsKwh($partsKwh);
+
+            $result = $this->force
+                ? $deleteRevenuePartsKwh->delete()
+                : $deleteRevenuePartsKwh->cleanup();
+
+            $this->errorMessage = array_merge(
+                $this->errorMessage,
+                $result ?? []
+            );
         }
-
     }
-
 
     /** The relations which should be dissociated
      */

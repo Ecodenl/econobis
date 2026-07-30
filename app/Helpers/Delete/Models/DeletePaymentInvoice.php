@@ -5,6 +5,7 @@ namespace App\Helpers\Delete\Models;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\DataCleanup\CleanupRegistry;
 use App\Helpers\Delete\DeleteInterface;
+use App\Helpers\Delete\Traits\ChecksExcludedCleanupContacts;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
@@ -16,13 +17,14 @@ use Illuminate\Support\Facades\Log;
  */
 class DeletePaymentInvoice implements DeleteInterface
 {
+    use ChecksExcludedCleanupContacts;
+
     private $errorMessage = [];
     private $paymentInvoice;
 
     private int $yearsForDelete;
     private Carbon $cutoffDate;
     private $cooperation;
-    private ?array $excludedContactIds = null;
     private string $cleanupCodeRef = 'paymentInvoices';
 
     public function __construct(Model $paymentInvoice)
@@ -40,15 +42,42 @@ class DeletePaymentInvoice implements DeleteInterface
     public function cleanup()
     {
         try {
+            if (! $this->canCleanup()) {
+                return $this->errorMessage;
+            }
+
             return $this->delete();
         } catch (\Exception $exception) {
             Log::error('Fout bij opschonen Uitkeringsnota\'s', [
                 'exception' => $exception->getMessage(),
                 'errormessages' => implode(' | ', $this->errorMessage),
             ]);
-            $this->errorMessage[] = "Fout bij opschonen Uitkeringsnota's. (meld dit bij Econobis support)";
+
+            $this->errorMessage[] =
+                "Fout bij opschonen Uitkeringsnota's. (meld dit bij Econobis support)";
+
             return $this->errorMessage;
         }
+    }
+
+    public function canCleanup(): bool
+    {
+        $this->paymentInvoice->loadMissing('revenueDistribution');
+
+        $contactId = $this->paymentInvoice
+            ->revenueDistribution
+            ?->contact_id;
+
+        if ($this->isContactExcludedFromCleanup($contactId)) {
+            $this->errorMessage[] =
+                "Uitkeringsnota {$this->paymentInvoice->id} kan niet worden "
+                . "opgeschoond: het gekoppelde contact valt in een "
+                . "uitzonderingsgroep.";
+
+            return false;
+        }
+
+        return true;
     }
 
     public function delete()
@@ -69,26 +98,37 @@ class DeletePaymentInvoice implements DeleteInterface
         return $this->errorMessage;
     }
 
-    public function canDelete()
+    public function canDelete(): bool
     {
-        // Extra restrictie voor fiscal-date items:
-        // gekoppelde contact_id mag niet in excluded groups zitten
+        // Bij fiscale bewaarplicht mag een uitkeringsnota van een contact
+        // in een uitzonderingsgroep ook niet los worden verwijderd.
         if ($this->isFiscalRetention()) {
             $this->paymentInvoice->loadMissing('revenueDistribution');
 
-            $contactId = $this->paymentInvoice?->revenueDistribution?->contact_id;
-            if ($contactId && in_array((int)$contactId, $this->getExcludedContactIds(), true)) {
+            $contactId = $this->paymentInvoice
+                ->revenueDistribution
+                ?->contact_id;
+
+            if ($this->isContactExcludedFromCleanup($contactId)) {
                 $this->errorMessage[] =
-                    "Uitkeringsnota kan niet worden verwijderd: gekoppeld contact valt in een uitgesloten contactgroep.";
+                    "Uitkeringsnota {$this->paymentInvoice->id} kan niet worden "
+                    . "verwijderd: het gekoppelde contact valt in een "
+                    . "uitzonderingsgroep.";
+
                 return false;
             }
         }
 
-        // Bewaarplicht check: date_paid moet ouder zijn dan cutoff
-        $datePaid = $this->paymentInvoice->date_paid ? Carbon::parse($this->paymentInvoice->date_paid)->startOfDay() : null;
+        // Bewaarplicht check: date_paid moet ouder zijn dan cutoff.
+        $datePaid = $this->paymentInvoice->date_paid
+            ? Carbon::parse($this->paymentInvoice->date_paid)->startOfDay()
+            : null;
 
         if (! $datePaid) {
-            $this->errorMessage[] = "Uitkeringsnota kan niet worden verwijderd: betaalopdrachtdatum ontbreekt (bewaarde uitkeringsnota).";
+            $this->errorMessage[] =
+                "Uitkeringsnota kan niet worden verwijderd: "
+                . "betaalopdrachtdatum ontbreekt (bewaarde uitkeringsnota).";
+
             return false;
         }
 
@@ -96,12 +136,17 @@ class DeletePaymentInvoice implements DeleteInterface
             return true;
         }
 
+//        $this->errorMessage[] =
+//            "Er is al een uitkeringsnota aangemaakt. Uitkeringsnota kan niet "
+//            . "worden verwijderd vanwege de bewaarplicht: "
+//            . $this->yearsForDelete
+//            . " jaar (peiljaar: "
+//            . $this->cutoffDate->year
+//            . ").";
         $this->errorMessage[] =
-            "Er is al een uitkeringsnota aangemaakt. Uitkeringsnota kan niet worden verwijderd vanwege de bewaarplicht: "
-            . $this->yearsForDelete
-            . " jaar (peiljaar: "
-            . $this->cutoffDate->year
-            . ").";
+            "Uitkeringsnota {$this->paymentInvoice->invoice_number} kan niet worden verwijderd "
+            . "vanwege de bewaarplicht van {$this->yearsForDelete} jaar "
+            . "(peiljaar: {$this->cutoffDate->year}).";
 
         return false;
     }
@@ -137,24 +182,6 @@ class DeletePaymentInvoice implements DeleteInterface
     private function isFiscalRetention(): bool
     {
         return CleanupRegistry::retentionModeFor($this->cleanupCodeRef) === CleanupRegistry::RETENTION_FISCAL_DATE;
-    }
-    private function getExcludedContactIds(): array
-    {
-        if ($this->excludedContactIds !== null) {
-            return $this->excludedContactIds;
-        }
-
-        $ids = [];
-        $groups = $this->cooperation?->cleanupContactsExcludedGroups ?? [];
-
-        foreach ($groups as $excludedGroup) {
-            // getAllContacts(true) geeft (waarschijnlijk) IDs terug
-            $ids = array_merge($ids, $excludedGroup->contactGroup->getAllContacts(true) ?? []);
-        }
-
-        $ids = array_values(array_unique(array_map('intval', $ids)));
-
-        return $this->excludedContactIds = $ids;
     }
 
 }

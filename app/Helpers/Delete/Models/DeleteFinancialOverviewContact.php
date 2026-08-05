@@ -31,10 +31,9 @@ class DeleteFinancialOverviewContact implements DeleteInterface
     private $cooperation;
     private string $cleanupCodeRef = 'financialOverviewContacts';
 
-    public function __construct(Model $financialOverviewContact, bool $isCleanup = false)
+    public function __construct(Model $financialOverviewContact)
     {
         $this->financialOverviewContact = $financialOverviewContact;
-        $this->isCleanup = $isCleanup;
 
         $this->cooperation = Cooperation::first();
 
@@ -129,12 +128,13 @@ class DeleteFinancialOverviewContact implements DeleteInterface
             return false;
         }
 
-        // Concept: UI mag hard delete, vanuit cleanup blijft soft
-        $isDraft = ($this->financialOverviewContact->status_id) === 'concept';
+        $isDraft = $this->financialOverviewContact->status_id === 'concept';
+
         if ($isDraft) {
-            if (! $this->isCleanup) {
-                $this->force = true; // alleen UI delete hard bij concept
-            }
+            // Conceptgegevens hebben geen bewaarplicht en mogen ook vanuit cleanup
+            // definitief worden verwijderd.
+            $this->force = true;
+
             return true;
         }
 

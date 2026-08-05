@@ -24,8 +24,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class DeleteFinancialOverviewPost implements DeleteInterface
 {
-    private bool $isCleanup = false;
-    private bool $force = false; // default softdelete
     private $errorMessage = [];
     private $financialOverviewPost;
 
@@ -34,10 +32,9 @@ class DeleteFinancialOverviewPost implements DeleteInterface
      * @param Model $financialOverviewPost the model to delete
      */
 
-    public function __construct(Model $financialOverviewPost, bool $isCleanup = false)
+    public function __construct(Model $financialOverviewPost)
     {
         $this->financialOverviewPost = $financialOverviewPost;
-        $this->isCleanup = $isCleanup;
     }
 
     /** Main method for deleting this model and all it's relations

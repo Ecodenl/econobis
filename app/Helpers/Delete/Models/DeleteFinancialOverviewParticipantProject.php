@@ -30,7 +30,6 @@ class DeleteFinancialOverviewParticipantProject implements DeleteInterface
 {
     use ChecksExcludedCleanupContacts;
 
-    private bool $isCleanup = false;
     private bool $force = false; // default softdelete
     private $errorMessage = [];
     private $financialOverviewParticipantProject;
@@ -40,17 +39,14 @@ class DeleteFinancialOverviewParticipantProject implements DeleteInterface
      * @param Model $financialOverviewParticipantProject the model to delete
      */
 
-    public function __construct(Model $financialOverviewParticipantProject, bool $isCleanup = false)
+    public function __construct(Model $financialOverviewParticipantProject)
     {
         $this->financialOverviewParticipantProject = $financialOverviewParticipantProject;
-        $this->isCleanup = $isCleanup;
     }
 
     public function cleanup(): array
     {
         try {
-            $this->isCleanup = true;
-
             if (! $this->canCleanup()) {
                 return $this->errorMessage;
             }
@@ -117,9 +113,9 @@ class DeleteFinancialOverviewParticipantProject implements DeleteInterface
         $isDraft = $this->financialOverviewParticipantProject->status_id === 'concept';
 
         if ($isDraft) {
-            if (! $this->isCleanup) {
-                $this->force = true;
-            }
+            // Conceptgegevens hebben geen bewaarplicht en mogen ook vanuit cleanup
+            // definitief worden verwijderd.
+            $this->force = true;
 
             return true;
         }

@@ -35,10 +35,9 @@ class DeleteFinancialOverviewProject implements DeleteInterface
      * @param Model $financialOverviewProject the model to delete
      */
 
-    public function __construct(Model $financialOverviewProject, bool $isCleanup = false)
+    public function __construct(Model $financialOverviewProject)
     {
         $this->financialOverviewProject = $financialOverviewProject;
-        $this->isCleanup = $isCleanup;
     }
 
     public function cleanup(): array

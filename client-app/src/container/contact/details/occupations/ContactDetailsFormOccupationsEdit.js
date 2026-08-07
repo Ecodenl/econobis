@@ -22,6 +22,10 @@ const ContactDetailsFormOccupationsEdit = props => {
         allowManageInPortal,
     } = props.occupation;
 
+    const availableOccupations = props.occupations.filter(
+        occupation => occupation.isActive || occupation.id === occupationId
+    );
+
     return (
         <div>
             <form className="form-horizontal" onSubmit={props.handleSubmit}>
@@ -54,7 +58,7 @@ const ContactDetailsFormOccupationsEdit = props => {
                                 size={'col-sm-6'}
                                 name={'occupationId'}
                                 optionName={'primaryOccupation'}
-                                options={props.occupations}
+                                options={availableOccupations}
                                 value={occupationId}
                                 onChangeAction={props.handleInputChange}
                                 required={'required'}

@@ -29,7 +29,7 @@ const ContactDetailsFormOccupationsView = props => {
                         </Link>
                     )}
                 </div>
-                <div className="col-sm-2">
+                <div className={`col-sm-2 ${!occupation.isActive ? 'text-danger' : ''}`}>
                     {props.primaryOccupation ? occupation.primaryOccupation : occupation.secondaryOccupation}
                 </div>
                 <div className="col-sm-2">{startDate ? moment(startDate).format('DD-MM-Y') : ''}</div>

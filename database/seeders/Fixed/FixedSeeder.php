@@ -4,6 +4,13 @@ namespace Database\Seeders\Fixed;
 
 use Illuminate\Database\Seeder;
 
+/**
+ * Seeder voor vaste (basis)gegevens.
+ *
+ * Uitvoeren:
+ * php artisan db:seed --class="Database\\Seeders\\Fixed\\FixedSeeder"
+ */
+
 class FixedSeeder extends Seeder
 {
     public function run(): void

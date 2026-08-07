@@ -165,6 +165,8 @@ class ContactDetailsFormOccupationsNew extends Component {
     render() {
         const { contactId, occupationId, startDate, endDate, primary, allowManageInPortal } = this.state.occupation;
 
+        const activeOccupations = this.props.occupations.filter(occupation => occupation.isActive);
+
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel className={'panel-grey'}>
@@ -185,7 +187,7 @@ class ContactDetailsFormOccupationsNew extends Component {
                                 size={'col-sm-6'}
                                 name={'occupationId'}
                                 optionName={'primaryOccupation'}
-                                options={this.props.occupations}
+                                options={activeOccupations}
                                 value={occupationId}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}

@@ -21,7 +21,7 @@ const ContactDetailsFormOccupationsDelete = props => {
                     Verwijder verbinding:{' '}
                     <strong>
                         {' '}
-                        {`${props.occupation.contact.fullName} met rol: ${props.occupation.occupation.secondaryOccupation}`}{' '}
+                        {`${props.occupation.contact.fullName} met verbindingsrol: ${props.occupation.occupation.secondaryOccupation}`}{' '}
                     </strong>
                 </p>
             ) : (
@@ -29,7 +29,7 @@ const ContactDetailsFormOccupationsDelete = props => {
                     Verwijder verbinding:{' '}
                     <strong>
                         {' '}
-                        {`${props.occupation.primaryContact.fullName} met rol: ${props.occupation.occupation.primaryOccupation}`}{' '}
+                        {`${props.occupation.primaryContact.fullName} met verbindingsrol: ${props.occupation.occupation.primaryOccupation}`}{' '}
                     </strong>
                 </p>
             )}

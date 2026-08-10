@@ -183,7 +183,7 @@ class ContactDetailsFormOccupationsNew extends Component {
                                 error={this.state.errors.contactId}
                             />
                             <InputSelect
-                                label={'Rol'}
+                                label={'Verbindingsrol'}
                                 size={'col-sm-6'}
                                 name={'occupationId'}
                                 optionName={'primaryOccupation'}

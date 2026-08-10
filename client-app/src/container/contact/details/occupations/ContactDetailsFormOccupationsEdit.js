@@ -54,7 +54,7 @@ const ContactDetailsFormOccupationsEdit = props => {
                                 />
                             )}
                             <InputSelect
-                                label={'Rol'}
+                                label={'Verbindingsrol'}
                                 size={'col-sm-6'}
                                 name={'occupationId'}
                                 optionName={'primaryOccupation'}

@@ -18,6 +18,9 @@ const ContactDetailsFormOccupationsView = props => {
             onMouseLeave={() => props.onLineLeave()}
         >
             <div onClick={props.openEdit}>
+                <div className={`col-sm-2 ${!occupation.isActive ? 'text-danger' : ''}`}>
+                    {props.primaryOccupation ? occupation.primaryOccupation : occupation.secondaryOccupation}
+                </div>
                 <div className="col-sm-3">
                     {props.primaryOccupation ? (
                         <Link to={`/contact/${contact.id}`} className="link-underline">
@@ -28,9 +31,6 @@ const ContactDetailsFormOccupationsView = props => {
                             {primaryContact.fullName}
                         </Link>
                     )}
-                </div>
-                <div className={`col-sm-2 ${!occupation.isActive ? 'text-danger' : ''}`}>
-                    {props.primaryOccupation ? occupation.primaryOccupation : occupation.secondaryOccupation}
                 </div>
                 <div className="col-sm-2">{startDate ? moment(startDate).format('DD-MM-Y') : ''}</div>
                 <div className="col-sm-2">{endDate ? moment(endDate).format('DD-MM-Y') : ''}</div>

@@ -60,10 +60,11 @@ class DeleteMail implements DeleteInterface
             || $this->mail->participation_project_id !== null
             || $this->mail->intake_id !== null
             || $this->mail->opportunity_id !== null
+            || $this->mail->quotation_request_id !== null
         ) {
             $this->errorMessage[] =
                 "E-mail {$this->mail->id} is nog gekoppeld aan een order, "
-                . "nota, deelname, intake of kans en mag daarom niet "
+                . "nota, deelname, intake, kans of kansactie en mag daarom niet "
                 . "opgeschoond worden.";
 
             return false;

@@ -447,7 +447,7 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                     <PanelBody>
                         <div className="row">
                             <InputToggle
-                                label="Wil je de e-mailcorrespondentie van contacten die geen order, nota, deelname, intake of kans hebben naar de e-mailarchief map verplaatsen?"
+                                label="Wil je de e-mailcorrespondentie van contacten die geen order, nota, deelname, intake, kans of kansactie hebben naar de e-mailarchief map verplaatsen?"
                                 name={'cleanupEmail'}
                                 value={values.cleanupEmail}
                                 onChangeAction={e => setFieldValue('cleanupEmail', e.target.checked)}

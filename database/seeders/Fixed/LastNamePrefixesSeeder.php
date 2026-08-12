@@ -42,6 +42,8 @@ class LastNamePrefixesSeeder extends Seeder
             ['name' => 'op der'],
             ['name' => 'in den'],
             ['name' => 'aan den'],
+            ['name' => 'voor de'],
+            ['name' => 'op het'],
         ];
 
         foreach ($lastNamePrefixes as $lastNamePrefix) {

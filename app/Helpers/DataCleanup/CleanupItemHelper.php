@@ -166,9 +166,14 @@ class CleanupItemHelper
         ];
 
         $cutoff = $this->cutoffDate();
+        $excludedContactIds = $this->getExcludedContactIds();
+
         return Invoice::with('order')
             ->whereNotIn('status_id', $processingStatuses)
-            ->whereDate('date_sent', '<', $cutoff);
+            ->whereDate('date_sent', '<', $cutoff)
+            ->whereDoesntHave('order', function ($query) use ($excludedContactIds) {
+                $query->whereIn('contact_id', $excludedContactIds);
+            });
     }
     /**
      * @return mixed
@@ -176,9 +181,12 @@ class CleanupItemHelper
     public function getOrdersOneoffToDelete(): mixed
     {
         $ordersOneoffCleanupYears = $this->cleanupItem->years_for_delete;
-        $ordersOneoffCleanupOlderThen = $this->cleanupDate->copy()->subYears($ordersOneoffCleanupYears);
+        $ordersOneoffCleanupOlderThen = $this->cleanupDate
+            ->copy()
+            ->subYears($ordersOneoffCleanupYears);
 
         $exceptionProductIds = Product::where('cleanup_exception', 1)->pluck('id');
+        $excludedContactIds = $this->getExcludedContactIds();
 
         $ordersOneoffToDelete = Order::where('collection_frequency_id', 'once')
             ->where(function ($query) use ($ordersOneoffCleanupOlderThen) {
@@ -190,7 +198,8 @@ class CleanupItemHelper
             })
             ->whereDoesntHave('orderProducts', function ($query) use ($exceptionProductIds) {
                 $query->whereIn('id', $exceptionProductIds);
-            });
+            })
+            ->whereNotIn('contact_id', $excludedContactIds);
 
         return $ordersOneoffToDelete;
     }
@@ -201,9 +210,12 @@ class CleanupItemHelper
     public function getOrdersPeriodicToDelete(): mixed
     {
         $ordersPeriodicCleanupYears = $this->cleanupItem->years_for_delete;
-        $ordersPeriodicCleanupOlderThen = $this->cleanupDate->copy()->subYears($ordersPeriodicCleanupYears);
+        $ordersPeriodicCleanupOlderThen = $this->cleanupDate
+            ->copy()
+            ->subYears($ordersPeriodicCleanupYears);
 
         $exceptionProductIds = Product::where('cleanup_exception', 1)->pluck('id');
+        $excludedContactIds = $this->getExcludedContactIds();
 
         $ordersPeriodicToDelete = Order::whereNot('collection_frequency_id', 'once')
             ->where('status_id', 'closed')
@@ -216,7 +228,8 @@ class CleanupItemHelper
             })
             ->whereDoesntHave('orderProducts', function ($query) use ($exceptionProductIds) {
                 $query->whereIn('id', $exceptionProductIds);
-            });
+            })
+            ->whereNotIn('contact_id', $excludedContactIds);
 
         return $ordersPeriodicToDelete;
     }
@@ -244,22 +257,60 @@ class CleanupItemHelper
         ];
 
         $cutoffYear = $this->cutoffYear();
+        $excludedContactIds = $this->getExcludedContactIds();
+
         return FinancialOverviewContact::whereNotIn('status_id', $processingStatuses)
             ->whereHas('financialOverview', function ($query) use ($cutoffYear) {
                 $query->where('year', '<', $cutoffYear);
-            });
+            })
+            ->whereNotIn('contact_id', $excludedContactIds);
     }
-
     /**
      * @return mixed
      */
     public function getTasksToDelete(): mixed
     {
         $tasksCleanupYears = $this->cleanupItem->years_for_delete;
-        $tasksCleanupOlderThen = $this->cleanupDate->copy()->subYears($tasksCleanupYears);
+        $tasksCleanupOlderThen = $this->cleanupDate
+            ->copy()
+            ->subYears($tasksCleanupYears);
 
-        $tasksToDelete = Task::whereDate('updated_at', '<', $tasksCleanupOlderThen);
-        return $tasksToDelete;
+        $excludedContactIds = $this->getExcludedContactIds();
+
+        return Task::whereDate('updated_at', '<', $tasksCleanupOlderThen)
+
+            // directe contactkoppeling
+            ->whereNotIn('contact_id', $excludedContactIds)
+
+            // via intake
+            ->whereDoesntHave('intake', function ($query) use ($excludedContactIds) {
+                $query->whereIn('contact_id', $excludedContactIds);
+            })
+
+            // via order
+            ->whereDoesntHave('order', function ($query) use ($excludedContactIds) {
+                $query->whereIn('contact_id', $excludedContactIds);
+            })
+
+            // via invoice -> order
+            ->whereDoesntHave('invoice.order', function ($query) use ($excludedContactIds) {
+                $query->whereIn('contact_id', $excludedContactIds);
+            })
+
+            // via opportunity -> intake
+            ->whereDoesntHave('opportunity.intake', function ($query) use ($excludedContactIds) {
+                $query->whereIn('contact_id', $excludedContactIds);
+            })
+
+            // via deelname
+            ->whereDoesntHave('participant', function ($query) use ($excludedContactIds) {
+                $query->whereIn('contact_id', $excludedContactIds);
+            })
+
+            // via woningdossier -> adres
+            ->whereDoesntHave('housingFile.address', function ($query) use ($excludedContactIds) {
+                $query->whereIn('contact_id', $excludedContactIds);
+            });
     }
 
     /**
@@ -268,10 +319,14 @@ class CleanupItemHelper
     public function getQuotationRequestsToDelete(): mixed
     {
         $quotationRequestsCleanupYears = $this->cleanupItem->years_for_delete;
-        $quotationRequestsCleanupOlderThen = $this->cleanupDate->copy()->subYears($quotationRequestsCleanupYears);
+        $quotationRequestsCleanupOlderThen = $this->cleanupDate
+            ->copy()
+            ->subYears($quotationRequestsCleanupYears);
 
-        $quotationRequestsToDelete = QuotationRequest::whereDate('updated_at', '<', $quotationRequestsCleanupOlderThen);
-        return $quotationRequestsToDelete;
+        $excludedContactIds = $this->getExcludedContactIds();
+
+        return QuotationRequest::whereDate('updated_at', '<', $quotationRequestsCleanupOlderThen)
+            ->whereNotIn('contact_id', $excludedContactIds);
     }
 
     /**
@@ -280,10 +335,16 @@ class CleanupItemHelper
     public function getOpportunitiesToDelete(): mixed
     {
         $opportunitiesCleanupYears = $this->cleanupItem->years_for_delete;
-        $opportunitiesCleanupOlderThen = $this->cleanupDate->copy()->subYears($opportunitiesCleanupYears);
+        $opportunitiesCleanupOlderThen = $this->cleanupDate
+            ->copy()
+            ->subYears($opportunitiesCleanupYears);
 
-        $opportunitiesToDelete = Opportunity::whereDate('updated_at', '<', $opportunitiesCleanupOlderThen);
-        return $opportunitiesToDelete;
+        $excludedContactIds = $this->getExcludedContactIds();
+
+        return Opportunity::whereDate( 'updated_at', '<', $opportunitiesCleanupOlderThen)
+            ->whereDoesntHave('intake', function ($query) use ($excludedContactIds) {
+                $query->whereIn('contact_id', $excludedContactIds);
+            });
     }
 
     /**
@@ -292,10 +353,14 @@ class CleanupItemHelper
     public function getIntakesToDelete(): mixed
     {
         $intakesCleanupYears = $this->cleanupItem->years_for_delete;
-        $intakesCleanupOlderThen = $this->cleanupDate->copy()->subYears($intakesCleanupYears);
+        $intakesCleanupOlderThen = $this->cleanupDate
+            ->copy()
+            ->subYears($intakesCleanupYears);
 
-        $intakesToDelete = Intake::whereDate('updated_at', '<', $intakesCleanupOlderThen);
-        return $intakesToDelete;
+        $excludedContactIds = $this->getExcludedContactIds();
+
+        return Intake::whereDate('updated_at', '<', $intakesCleanupOlderThen)
+            ->whereNotIn('contact_id', $excludedContactIds);
     }
 
     /**
@@ -304,9 +369,16 @@ class CleanupItemHelper
     public function getHousingFilesToDelete(): mixed
     {
         $housingFilesCleanupYears = $this->cleanupItem->years_for_delete;
-        $housingFilesCleanupOlderThen = $this->cleanupDate->copy()->subYears($housingFilesCleanupYears);
-        $housingFilesToDelete = HousingFile::whereDate('updated_at', '<', $housingFilesCleanupOlderThen);
-        return $housingFilesToDelete;
+        $housingFilesCleanupOlderThen = $this->cleanupDate
+            ->copy()
+            ->subYears($housingFilesCleanupYears);
+
+        $excludedContactIds = $this->getExcludedContactIds();
+
+        return HousingFile::whereDate( 'updated_at', '<', $housingFilesCleanupOlderThen)
+            ->whereDoesntHave('address', function ($query) use ($excludedContactIds) {
+                $query->whereIn('contact_id', $excludedContactIds);
+            });
     }
 
     /**
@@ -315,10 +387,14 @@ class CleanupItemHelper
     public function getPaymentInvoicesToDelete(): mixed
     {
         $cutoff = $this->cutoffDate();
-        return PaymentInvoice::with('revenueDistribution')
-            ->whereDate('date_paid', '<', $cutoff);
-    }
+        $excludedContactIds = $this->getExcludedContactIds();
 
+        return PaymentInvoice::with('revenueDistribution')
+            ->whereDate('date_paid', '<', $cutoff)
+            ->whereDoesntHave('revenueDistribution', function ($query) use ($excludedContactIds) {
+                $query->whereIn('contact_id', $excludedContactIds);
+            });
+    }
 
     /**
      * @return mixed
@@ -326,10 +402,17 @@ class CleanupItemHelper
     public function getRevenuesToDelete(): mixed
     {
         $revenuesCleanupYears = $this->cleanupItem->years_for_delete;
-        $revenuesCleanupOlderThen = $this->cleanupDate->copy()->subYears($revenuesCleanupYears);
-        $revenuesToDelete = ProjectRevenue::whereDate('date_end', '<', $revenuesCleanupOlderThen)
-        ->where('status', 'processed');
-        return $revenuesToDelete;
+        $revenuesCleanupOlderThen = $this->cleanupDate
+            ->copy()
+            ->subYears($revenuesCleanupYears);
+
+        $excludedContactIds = $this->getExcludedContactIds();
+
+        return ProjectRevenue::whereDate( 'date_end', '<', $revenuesCleanupOlderThen)
+            ->where('status', 'processed')
+            ->whereDoesntHave('distribution', function ($query) use ($excludedContactIds) {
+                $query->whereIn('contact_id', $excludedContactIds);
+            });
     }
 
     /**
@@ -338,10 +421,17 @@ class CleanupItemHelper
     public function getRevenuesKwhToDelete(): mixed
     {
         $revenuesKwhCleanupYears = $this->cleanupItem->years_for_delete;
-        $revenuesKwhCleanupOlderThen = $this->cleanupDate->copy()->subYears($revenuesKwhCleanupYears);
-        $revenuesKwhToDelete = RevenuesKwh::whereDate('date_end', '<', $revenuesKwhCleanupOlderThen)
-        ->where('status', 'processed');
-        return $revenuesKwhToDelete;
+        $revenuesKwhCleanupOlderThen = $this->cleanupDate
+            ->copy()
+            ->subYears($revenuesKwhCleanupYears);
+
+        $excludedContactIds = $this->getExcludedContactIds();
+
+        return RevenuesKwh::whereDate( 'date_end', '<', $revenuesKwhCleanupOlderThen)
+            ->where('status', 'processed')
+            ->whereDoesntHave('distributionKwh', function ($query) use ($excludedContactIds) {
+                $query->whereIn('contact_id', $excludedContactIds);
+            });
     }
 
     /**
@@ -350,9 +440,15 @@ class CleanupItemHelper
     public function getParticipationsWithoutStatusDefinitiveToDelete(): mixed
     {
         $participationsWithoutStatusDefinitiveCleanupYears = $this->cleanupItem->years_for_delete;
-        $participationsWithoutStatusDefinitiveCleanupOlderThen = $this->cleanupDate->copy()->subYears($participationsWithoutStatusDefinitiveCleanupYears);
+        $participationsWithoutStatusDefinitiveCleanupOlderThen = $this->cleanupDate
+            ->copy()
+            ->subYears($participationsWithoutStatusDefinitiveCleanupYears);
 
-        $mutationStatusFinal = ParticipantMutationStatus::where('code_ref', 'final')->first()->id;
+        $mutationStatusFinal = ParticipantMutationStatus::where('code_ref', 'final')
+            ->first()
+            ->id;
+
+        $excludedContactIds = $this->getExcludedContactIds();
 
         $participationsWithoutStatusDefinitiveToDelete = ParticipantProject::whereNull('date_terminated')
             // géén mutatie met status 'final'
@@ -362,7 +458,9 @@ class CleanupItemHelper
             // wel mutaties, maar allemaal ouder dan 1 jaar
             ->whereHas('mutations', function ($query) use ($participationsWithoutStatusDefinitiveCleanupOlderThen) {
                 $query->where('updated_at', '<', $participationsWithoutStatusDefinitiveCleanupOlderThen);
-            });
+            })
+            ->whereNotIn('contact_id', $excludedContactIds);
+
         return $participationsWithoutStatusDefinitiveToDelete;
     }
 
@@ -372,7 +470,11 @@ class CleanupItemHelper
     public function getParticipationsFinishedToDelete(): mixed
     {
         $participationsFinishedCleanupYears = $this->cleanupItem->years_for_delete;
-        $participationsFinishedCleanupOlderThen = $this->cleanupDate->copy()->subYears($participationsFinishedCleanupYears);
+        $participationsFinishedCleanupOlderThen = $this->cleanupDate
+            ->copy()
+            ->subYears($participationsFinishedCleanupYears);
+
+        $excludedContactIds = $this->getExcludedContactIds();
 
         $participationsFinishedToDelete = ParticipantProject::whereNotNull('date_terminated')
             ->whereDate('date_terminated', '<', $participationsFinishedCleanupOlderThen)
@@ -383,7 +485,9 @@ class CleanupItemHelper
             // participation mag niet voorkomen in revenuesKwh die nog geen status processed heeft.
             ->whereDoesntHave('revenuesKwh', function ($query) {
                 $query->where('revenues_kwh.status', '!=', 'processed');
-            });
+            })
+            ->whereNotIn('contact_id', $excludedContactIds);
+
         return $participationsFinishedToDelete;
     }
 
@@ -393,10 +497,21 @@ class CleanupItemHelper
     public function getIncomingEmailsToDelete(): mixed
     {
         $incomingMailsCleanupYears = $this->cleanupItem->years_for_delete;
-        $incomingMailsCleanupOlderThen = $this->cleanupDate->copy()->subYears($incomingMailsCleanupYears);
+        $incomingMailsCleanupOlderThen = $this->cleanupDate
+            ->copy()
+            ->subYears($incomingMailsCleanupYears);
 
-        $incomingEmailsToDelete = Email::whereNull('date_removed')->where('folder', 'inbox')->whereDate('created_at', '<', $incomingMailsCleanupOlderThen);
-        return $incomingEmailsToDelete;
+        $excludedContactIds = $this->getExcludedContactIds();
+
+        return Email::whereNull('date_removed')
+            ->where('folder', 'inbox')
+            ->whereDate('created_at', '<', $incomingMailsCleanupOlderThen)
+            ->whereDoesntHave('contacts', function ($query) use ($excludedContactIds) {
+                $query->whereIn('contacts.id', $excludedContactIds);
+            })
+            ->whereDoesntHave('manualContacts', function ($query) use ($excludedContactIds) {
+                $query->whereIn('contacts.id', $excludedContactIds);
+            });
     }
 
     /**
@@ -405,10 +520,21 @@ class CleanupItemHelper
     public function getOutgoingEmailsToDelete(): mixed
     {
         $outgoingMailsCleanupYears = $this->cleanupItem->years_for_delete;
-        $outgoingMailsCleanupOlderThen = $this->cleanupDate->copy()->subYears($outgoingMailsCleanupYears);
+        $outgoingMailsCleanupOlderThen = $this->cleanupDate
+            ->copy()
+            ->subYears($outgoingMailsCleanupYears);
 
-        $outgoingEmailsToDelete = Email::whereNull('date_removed')->where('folder', 'sent')->whereDate('created_at', '<', $outgoingMailsCleanupOlderThen);
-        return $outgoingEmailsToDelete;
+        $excludedContactIds = $this->getExcludedContactIds();
+
+        return Email::whereNull('date_removed')
+            ->where('folder', 'sent')
+            ->whereDate('created_at', '<', $outgoingMailsCleanupOlderThen)
+            ->whereDoesntHave('contacts', function ($query) use ($excludedContactIds) {
+                $query->whereIn('contacts.id', $excludedContactIds);
+            })
+            ->whereDoesntHave('manualContacts', function ($query) use ($excludedContactIds) {
+                $query->whereIn('contacts.id', $excludedContactIds);
+            });
     }
 
     /**
@@ -417,14 +543,13 @@ class CleanupItemHelper
     public function getContactsToDelete(): mixed
     {
         $contactsToDeleteCleanupYears = $this->cleanupItem->years_for_delete;
-        $contactsToDeleteCleanupOlderThen = $this->cleanupDate->copy()->subYears($contactsToDeleteCleanupYears);
+        $contactsToDeleteCleanupOlderThen = $this->cleanupDate
+            ->copy()
+            ->subYears($contactsToDeleteCleanupYears);
 
-        $exceptionContactIds = [];
-        foreach ($this->cooperation->cleanupContactsExcludedGroups as $cleanupContactsExcludedGroup) {
-            $exceptionContactIds = array_unique(array_merge($exceptionContactIds, $cleanupContactsExcludedGroup->contactGroup->getAllContacts(true)));
-        }
+        $excludedContactIds = $this->getExcludedContactIds();
 
-        $contactsToDelete = Contact::whereDate('created_at', '<', $contactsToDeleteCleanupOlderThen)
+        return Contact::whereDate('created_at', '<', $contactsToDeleteCleanupOlderThen)
             ->whereDoesntHave('orders')
             ->whereDoesntHave('invoices')
             ->whereDoesntHave('financialOverviewContacts')
@@ -436,8 +561,7 @@ class CleanupItemHelper
             ->whereDoesntHave('participations')
             ->whereDoesntHave('projectRevenueDistributions')
             ->whereDoesntHave('revenueDistributionKwh')
-            ->whereNotIn('id', $exceptionContactIds);
-        return $contactsToDelete;
+            ->whereNotIn('id', $excludedContactIds);
     }
 
     /**
@@ -489,5 +613,24 @@ class CleanupItemHelper
         return (int) $now->year - $years;
     }
 
+    private function getExcludedContactIds(): array
+    {
+        $ids = [];
 
+        foreach (
+            $this->cooperation->cleanupContactsExcludedGroups
+            as $excludedGroup
+        ) {
+            $ids = array_merge(
+                $ids,
+                $excludedGroup->contactGroup->getAllContacts(true) ?? []
+            );
+        }
+
+        return array_values(
+            array_unique(
+                array_map('intval', $ids)
+            )
+        );
+    }
 }

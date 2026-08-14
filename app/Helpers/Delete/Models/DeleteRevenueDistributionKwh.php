@@ -11,6 +11,7 @@ namespace App\Helpers\Delete\Models;
 
 use App\Eco\Cooperation\Cooperation;
 use App\Helpers\Delete\DeleteInterface;
+use App\Helpers\Delete\Traits\ChecksExcludedCleanupContacts;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
@@ -22,6 +23,8 @@ use Illuminate\Support\Facades\Log;
  */
 class DeleteRevenueDistributionKwh implements DeleteInterface
 {
+    use ChecksExcludedCleanupContacts;
+
     private bool $force = true;
     private $errorMessage = [];
     private $revenueDistributionKwh;
@@ -46,15 +49,41 @@ class DeleteRevenueDistributionKwh implements DeleteInterface
     {
         try {
             $this->force = false;
+
+            if (! $this->canCleanup()) {
+                return $this->errorMessage;
+            }
+
             return $this->delete();
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             Log::error('Fout bij opschonen Opbrengsten Kwh deelnames', [
                 'exception' => $exception->getMessage(),
                 'errormessages' => implode(' | ', $this->errorMessage),
             ]);
-            $this->errorMessage[] = "Fout bij opschonen Opbrengsten Kwh deelnames. (meld dit bij Econobis support)";
+
+            $this->errorMessage[] =
+                "Fout bij opschonen Opbrengsten Kwh deelnames. "
+                . "(meld dit bij Econobis support)";
+
             return $this->errorMessage;
         }
+    }
+
+    public function canCleanup(): bool
+    {
+        if ($this->isContactExcludedFromCleanup(
+            $this->revenueDistributionKwh->contact_id
+        )) {
+            $this->errorMessage[] =
+                "Opbrengstverdeling Kwh deelname "
+                . "{$this->revenueDistributionKwh->id} kan niet worden "
+                . "opgeschoond: het gekoppelde contact valt in een "
+                . "uitzonderingsgroep.";
+
+            return false;
+        }
+
+        return true;
     }
 
     /** Main method for deleting this model and all it's relations

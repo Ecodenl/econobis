@@ -9,6 +9,7 @@
 namespace App\Helpers\Delete\Models;
 
 use App\Helpers\Delete\DeleteInterface;
+use App\Helpers\Delete\Traits\ChecksExcludedCleanupContacts;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 
@@ -19,6 +20,8 @@ use Illuminate\Support\Facades\Log;
  */
 class DeleteOpportunity implements DeleteInterface
 {
+    use ChecksExcludedCleanupContacts;
+
     private $errorMessage = [];
     private $opportunity;
 
@@ -38,18 +41,66 @@ class DeleteOpportunity implements DeleteInterface
      */
     public function cleanup()
     {
-        try{
+        try {
+            if (! $this->canCleanup()) {
+                return $this->errorMessage;
+            }
+
             return $this->delete();
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             Log::error('Fout bij opschonen Kansen', [
                 'exception' => $exception->getMessage(),
                 'errormessages' => implode(' | ', $this->errorMessage),
             ]);
-            array_push($this->errorMessage, "Fout bij opschonen Kansen. (meld dit bij Econobis support)");
+
+            $this->errorMessage[] =
+                "Fout bij opschonen Kansen. (meld dit bij Econobis support)";
+
             return $this->errorMessage;
         }
     }
 
+    public function canCleanup(): bool
+    {
+        $contactId = $this->opportunity->intake?->contact_id;
+
+        if ($this->isContactExcludedFromCleanup($contactId)) {
+            $this->errorMessage[] =
+                "Kans {$this->opportunity->number} ({$this->opportunity->id}) "
+                . "kan niet worden opgeschoond: het gekoppelde contact valt "
+                . "in een uitzonderingsgroep.";
+
+            return false;
+        }
+
+        foreach ($this->opportunity->tasks as $task) {
+            $deleteTask = new DeleteTask($task);
+
+            if (! $deleteTask->canCleanup()) {
+                $this->errorMessage[] =
+                    "Kans {$this->opportunity->number} ({$this->opportunity->id}) "
+                    . "kan niet worden opgeschoond: een gekoppelde taak hoort bij "
+                    . "een contact dat in een uitzonderingsgroep valt.";
+
+                return false;
+            }
+        }
+
+        foreach ($this->opportunity->notes as $note) {
+            $deleteTask = new DeleteTask($note);
+
+            if (! $deleteTask->canCleanup()) {
+                $this->errorMessage[] =
+                    "Kans {$this->opportunity->number} ({$this->opportunity->id}) "
+                    . "kan niet worden opgeschoond: een gekoppelde notitie hoort bij "
+                    . "een contact dat in een uitzonderingsgroep valt.";
+
+                return false;
+            }
+        }
+
+        return true;
+    }
     /** Main method for deleting this model and all it's relations
      *
      * @return array
@@ -74,15 +125,17 @@ class DeleteOpportunity implements DeleteInterface
     /** Checks if the model can be deleted and sets error messages
      *
      */
-    public function canDelete()
+    public function canDelete(): bool
     {
-        // 25-04-2024: Verwijderen 1 voor 1 mag ook ongeacht de status van de kans
-//        if(!($this->opportunity->status->code_ref == 'inactive' || $this->opportunity->status->code_ref == 'executed' || $this->opportunity->status->code_ref == 'executed-do-it-yourself' || $this->opportunity->status->code_ref == 'no_execution' )){
-//            array_push($this->errorMessage, "Er is nog een openstaande kans.");
-//        }
-        // 25-04-2024: Verwijderen mag niet meer als er nog kansacties onder hangen
-        if($this->opportunity->quotationRequests()->count() > 0){
-            array_push($this->errorMessage, "Onder kans " . $this->opportunity->number . " bij contact " . ($this->opportunity->intake && $this->opportunity->intake->contact ? $this->opportunity->intake->contact->full_name : '*contact onbekend*') . " met maatregel " . ($this->opportunity->measureCategory ? $this->opportunity->measureCategory->name : '*maatregel onbekend*') . " hangen nog kansacties, verwijderen kans niet mogelijk.");
+        if ($this->opportunity->quotationRequests()->exists()) {
+            $this->errorMessage[] =
+                "Onder kans " . $this->opportunity->number
+                . " bij contact "
+                . ($this->opportunity->intake?->contact?->full_name ?? '*contact onbekend*')
+                . " met maatregel "
+                . ($this->opportunity->measureCategory?->name ?? '*maatregel onbekend*')
+                . " hangen nog kansacties, verwijderen kans niet mogelijk.";
+
             return false;
         }
 

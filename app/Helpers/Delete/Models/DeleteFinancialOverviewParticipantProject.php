@@ -12,7 +12,9 @@ namespace App\Helpers\Delete\Models;
 use App\Eco\FinancialOverview\FinancialOverviewContact;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Helpers\Delete\DeleteInterface;
+use App\Helpers\Delete\Traits\ChecksExcludedCleanupContacts;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class DeleteFinancialOverviewParticipantProject
@@ -26,7 +28,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class DeleteFinancialOverviewParticipantProject implements DeleteInterface
 {
-    private bool $isCleanup = false;
+    use ChecksExcludedCleanupContacts;
+
     private bool $force = false; // default softdelete
     private $errorMessage = [];
     private $financialOverviewParticipantProject;
@@ -36,10 +39,48 @@ class DeleteFinancialOverviewParticipantProject implements DeleteInterface
      * @param Model $financialOverviewParticipantProject the model to delete
      */
 
-    public function __construct(Model $financialOverviewParticipantProject, bool $isCleanup = false)
+    public function __construct(Model $financialOverviewParticipantProject)
     {
         $this->financialOverviewParticipantProject = $financialOverviewParticipantProject;
-        $this->isCleanup = $isCleanup;
+    }
+
+    public function cleanup(): array
+    {
+        try {
+            if (! $this->canCleanup()) {
+                return $this->errorMessage;
+            }
+
+            return $this->delete();
+        } catch (\Exception $exception) {
+            Log::error('Fout bij opschonen waardestaten deelnemers', [
+                'exception' => $exception->getMessage(),
+                'errormessages' => implode(' | ', $this->errorMessage),
+            ]);
+
+            $this->errorMessage[] =
+                "Fout bij opschonen waardestaten deelnemers. "
+                . "(meld dit bij Econobis support)";
+
+            return $this->errorMessage;
+        }
+    }
+
+    public function canCleanup(): bool
+    {
+        if ($this->isContactExcludedFromCleanup(
+            $this->financialOverviewParticipantProject->contact_id
+        )) {
+            $this->errorMessage[] =
+                "Waardestaat deelnemer "
+                . "{$this->financialOverviewParticipantProject->id} kan niet "
+                . "worden opgeschoond: het gekoppelde contact valt in een "
+                . "uitzonderingsgroep.";
+
+            return false;
+        }
+
+        return true;
     }
 
     /** Main method for deleting this model and all it's relations
@@ -67,14 +108,14 @@ class DeleteFinancialOverviewParticipantProject implements DeleteInterface
 
     /** Checks if the model can be deleted and sets error messages
      */
-    public function canDelete()
+    public function canDelete(): bool
     {
         $isDraft = $this->financialOverviewParticipantProject->status_id === 'concept';
 
         if ($isDraft) {
-            if (! $this->isCleanup) {
-                $this->force = true;
-            }
+            // Conceptgegevens hebben geen bewaarplicht en mogen ook vanuit cleanup
+            // definitief worden verwijderd.
+            $this->force = true;
 
             return true;
         }

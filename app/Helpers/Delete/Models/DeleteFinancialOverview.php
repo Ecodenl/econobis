@@ -43,7 +43,7 @@ class DeleteFinancialOverview implements DeleteInterface
     {
         try {
             $this->isCleanup = true;
-            $this->force = false;     // cleanup = altijd soft
+            $this->force = false;     // de waardestaat zelf wordt vanuit cleanup softdeleted
             return $this->delete();
         } catch (\Exception $exception) {
             Log::error('Fout bij opschonen Waardestaten', [
@@ -152,23 +152,54 @@ class DeleteFinancialOverview implements DeleteInterface
         return false;
     }
 
-    public function deleteModels()
+    public function deleteModels(): void
     {
-        foreach ($this->financialOverview->financialOverviewProjects as $financialOverviewProject){
-            $deleteFinancialOverviewProject = new DeleteFinancialOverviewProject($financialOverviewProject, $this->isCleanup);
-            $this->errorMessage = array_merge($this->errorMessage, ( $deleteFinancialOverviewProject->delete() ?? [] ) );
+        foreach (
+            $this->financialOverview->financialOverviewProjects
+            as $financialOverviewProject
+        ) {
+            $deleteFinancialOverviewProject =
+                new DeleteFinancialOverviewProject($financialOverviewProject);
+
+            $result = $this->isCleanup
+                ? $deleteFinancialOverviewProject->cleanup()
+                : $deleteFinancialOverviewProject->delete();
+
+            $this->errorMessage = array_merge(
+                $this->errorMessage,
+                $result ?? []
+            );
         }
 
-        foreach ($this->financialOverview->financialOverviewContacts as $financialOverviewContact){
-            $deleteFinancialOverviewContact = new DeleteFinancialOverviewContact($financialOverviewContact, $this->isCleanup);
-            $this->errorMessage = array_merge($this->errorMessage, ( $deleteFinancialOverviewContact->delete() ?? [] ) );
+        foreach (
+            $this->financialOverview->financialOverviewContacts
+            as $financialOverviewContact
+        ) {
+            $deleteFinancialOverviewContact =
+                new DeleteFinancialOverviewContact($financialOverviewContact);
+
+            $result = $this->isCleanup
+                ? $deleteFinancialOverviewContact->cleanup()
+                : $deleteFinancialOverviewContact->delete();
+
+            $this->errorMessage = array_merge(
+                $this->errorMessage,
+                $result ?? []
+            );
         }
 
-        foreach ($this->financialOverview->financialOverviewPosts as $financialOverviewPost){
-            $deleteFinancialOverviewPost = new DeleteFinancialOverviewPost($financialOverviewPost, $this->isCleanup);
-            $this->errorMessage = array_merge($this->errorMessage, ( $deleteFinancialOverviewPost->delete() ?? [] ) );
-        }
+        foreach (
+            $this->financialOverview->financialOverviewPosts
+            as $financialOverviewPost
+        ) {
+            $deleteFinancialOverviewPost =
+                new DeleteFinancialOverviewPost($financialOverviewPost);
 
+            $this->errorMessage = array_merge(
+                $this->errorMessage,
+                $deleteFinancialOverviewPost->delete() ?? []
+            );
+        }
     }
 
     public function dissociateRelations()

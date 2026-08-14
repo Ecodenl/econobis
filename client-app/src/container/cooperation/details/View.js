@@ -178,7 +178,7 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails, refreshin
                     <div className="row">
                         <ViewText
                             label={
-                                'Wil je de e-mailcorrespondentie van contacten die geen order, nota, deelname, intake of kans hebben naar de e-mailarchief map verplaatsen?'
+                                'Wil je de e-mailcorrespondentie van contacten die geen order, nota, deelname, intake, kans of kansactie hebben naar de e-mailarchief map verplaatsen?'
                             }
                             value={formData.cleanupEmail ? 'Ja' : 'Nee'}
                         />

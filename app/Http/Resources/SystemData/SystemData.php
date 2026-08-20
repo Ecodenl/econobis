@@ -237,7 +237,12 @@ class SystemData extends JsonResource
             'orderStatuses' => FullEnumWithIdAndName::collection(OrderStatusToSelect::collection()),
             'organisationTypes' => FullOrganisationType::collection(OrganisationType::all()),
             'participantMutationStatuses' => FullParticipantMutationStatus::collection(ParticipantMutationStatus::all()),
-            'participantMutationTypes' => FullParticipantMutationType::collection(ParticipantMutationType::all()),
+//            'participantMutationTypes' => FullParticipantMutationType::collection(ParticipantMutationType::all()),
+            'participantMutationTypes' => FullParticipantMutationType::collection(
+                ParticipantMutationType::orderBy('project_type_id')
+                    ->orderBy('order_per_type')
+                    ->get()
+            ),
             'participantProjectPayoutTypes' => GenericResource::collection(ParticipantProjectPayoutType::all()),
             'paymentInvoiceStatuses' => FullEnumWithIdAndName::collection(PaymentInvoiceStatus::collection()),
             'personTypes' => FullPersonType::collection(PersonType::all()),

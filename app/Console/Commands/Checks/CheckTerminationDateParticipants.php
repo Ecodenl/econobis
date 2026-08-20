@@ -54,7 +54,7 @@ class CheckTerminationDateParticipants extends Command
 
         foreach($projects as $project) {
             $participantsProject = $project->participantsProject()->whereNotNull('date_terminated')->get();
-            $mutationTypeWithDrawalId = ParticipantMutationType::where('code_ref', 'withDrawal')->where('project_type_id',  $project->projectType->id)->first()->id;
+            $mutationTypeWithDrawalId = ParticipantMutationType::where('code_ref', 'with_drawal')->where('project_type_id',  $project->projectType->id)->first()->id;
             $mutationTypeResultDepositId = ParticipantMutationType::where('code_ref', 'result_deposit')->where('project_type_id',  $project->projectType->id)->first()->id;
 
             foreach($participantsProject as $participantProject) {

@@ -1026,7 +1026,7 @@ class RevenuePartsKwhController extends ApiController
 
     protected function createParticipantMutationForRevenueKwh($participationId, $payoutKwh, $datePayout, $deliveredTotal, $kwhReturn, $energySupplierName){
         $pcrTypeId = ProjectType::where('code_ref', 'postalcode_link_capital')->value('id');
-        $participantMutationTypeId = ParticipantMutationType::where('code_ref', 'energyTaxRefund')->where('project_type_id', $pcrTypeId)->value('id');
+        $participantMutationTypeId = ParticipantMutationType::where('code_ref', 'energy_tax_refund')->where('project_type_id', $pcrTypeId)->value('id');
 
         $participantMutation = new ParticipantMutation();
         $participantMutation->participation_id = $participationId;

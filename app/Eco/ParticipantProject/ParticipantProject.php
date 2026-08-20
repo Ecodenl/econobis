@@ -138,7 +138,7 @@ class ParticipantProject extends Model
     {
         $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
         $mutationTypeFirstDesposit = ParticipantMutationType::where('code_ref', 'first_deposit')->where('project_type_id',  $this->project->projectType->id)->first();
-        $mutationTypeWithDrawal = ParticipantMutationType::where('code_ref', 'withDrawal')->where('project_type_id',  $this->project->projectType->id)->first();
+        $mutationTypeWithDrawal = ParticipantMutationType::where('code_ref', 'with_drawal')->where('project_type_id',  $this->project->projectType->id)->first();
         $mutationTypes = [];
         if($mutationTypeFirstDesposit) {
 //            array_push($mutationTypes, $mutationTypeFirstDesposit->id);
@@ -226,7 +226,7 @@ class ParticipantProject extends Model
     {
         $projectType = $this->project->projectType;
         $depositTypes = ParticipantMutationType::whereIn('code_ref', ['first_deposit', 'deposit'])->where('project_type_id', $projectType->id)->get()->pluck('id')->toArray();
-        $lastMutationTypes = ParticipantMutationType::whereIn('code_ref', ['first_deposit', 'deposit', 'withDrawal', 'redemption', 'result_deposit'])->where('project_type_id', $projectType->id)->get()->pluck('id')->toArray();
+        $lastMutationTypes = ParticipantMutationType::whereIn('code_ref', ['first_deposit', 'deposit', 'with_drawal', 'redemption', 'result_deposit'])->where('project_type_id', $projectType->id)->get()->pluck('id')->toArray();
         $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
         $mutationDefinitiveLast =  ParticipantMutation::where('participation_id', $this->id)
             ->whereIn('type_id', $lastMutationTypes)

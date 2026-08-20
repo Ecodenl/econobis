@@ -100,7 +100,7 @@ const MutationFormEdit = ({
                             projectDateInterestBearingKwh={projectDateInterestBearingKwh}
                         />
                     ) : null}
-                    {type.codeRef === 'withDrawal' ? (
+                    {type.codeRef === 'with_drawal' ? (
                         <MutationFormEditWithDrawal
                             participationId={participationId}
                             readOnly={readOnly}
@@ -130,7 +130,7 @@ const MutationFormEdit = ({
                             cancelDetails={cancelDetails}
                         />
                     ) : null}
-                    {type.codeRef === 'energyTaxRefund' ? (
+                    {type.codeRef === 'energy_tax_refund' ? (
                         <MutationFormEditEnergyTaxRefund
                             participantMutationFromProps={participantMutationFromProps}
                             cancelDetails={cancelDetails}

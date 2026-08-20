@@ -480,7 +480,7 @@ class ParticipantExcelHelper
                         $mollieDatePaids = "";
                     }
 
-                    if($mutationType->code_ref === 'first_deposit' || $mutationType->code_ref === 'deposit' || $mutationType->code_ref === 'withDrawal' )
+                    if($mutationType->code_ref === 'first_deposit' || $mutationType->code_ref === 'deposit' || $mutationType->code_ref === 'with_drawal' )
                     {
 // [102]
                         $rowData[102] = $mutation->quantity_interest;
@@ -571,7 +571,7 @@ class ParticipantExcelHelper
                         $rowData[126] = "";
                         $rowData[127] = "";
                     }
-                    else if($mutationType->code_ref === 'energyTaxRefund')
+                    else if($mutationType->code_ref === 'energy_tax_refund')
                     {
 // [96] of [102]
                         $rowData[102] = "";

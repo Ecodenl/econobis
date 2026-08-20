@@ -19,7 +19,7 @@ export default function(
         if (orginalStatusCodeRef === 'interest') {
             if (orginalStatusId === Number(participantMutation.statusId)) {
                 if (projectTypeCodeRef === 'loan') {
-                    if (typeCodeRef === 'withDrawal') {
+                    if (typeCodeRef === 'with_drawal') {
                         if (participantMutation.amountInterest && participantMutation.amountInterest > 0) {
                             errors.amountInterest = true;
                             errorMessage.amountInterest = 'Voer een negatief bedrag of 0 in.';
@@ -33,7 +33,7 @@ export default function(
                         }
                     }
                 } else {
-                    if (typeCodeRef === 'withDrawal') {
+                    if (typeCodeRef === 'with_drawal') {
                         if (participantMutation.quantityInterest && participantMutation.quantityInterest > 0) {
                             errors.quantityInterest = true;
                             errorMessage.quantityInterest = 'Voer een negatief getal of 0 in.';
@@ -49,7 +49,7 @@ export default function(
                 }
             } else {
                 if (projectTypeCodeRef === 'loan') {
-                    if (typeCodeRef === 'withDrawal') {
+                    if (typeCodeRef === 'with_drawal') {
                         if (!participantMutation.amountOption || participantMutation.amountOption >= 0) {
                             errors.amountOption = true;
                             errorMessage.amountOption = 'Voer een negatief bedrag in.';
@@ -63,7 +63,7 @@ export default function(
                         }
                     }
                 } else {
-                    if (typeCodeRef === 'withDrawal') {
+                    if (typeCodeRef === 'with_drawal') {
                         if (!participantMutation.quantityOption || participantMutation.quantityOption >= 0) {
                             errors.quantityOption = true;
                             errorMessage.quantityOption = 'Voer een negatief aantal in.';
@@ -87,7 +87,7 @@ export default function(
         if (orginalStatusCodeRef === 'option') {
             if (orginalStatusId !== Number(participantMutation.statusId)) {
                 if (projectTypeCodeRef === 'loan') {
-                    if (typeCodeRef === 'withDrawal') {
+                    if (typeCodeRef === 'with_drawal') {
                         if (!participantMutation.amountGranted || participantMutation.amountGranted >= 0) {
                             errors.amountGranted = true;
                             errorMessage.amountGranted = 'Voer een negatief bedrag in.';
@@ -101,7 +101,7 @@ export default function(
                         }
                     }
                 } else {
-                    if (typeCodeRef === 'withDrawal') {
+                    if (typeCodeRef === 'with_drawal') {
                         if (!participantMutation.quantityGranted || participantMutation.quantityGranted >= 0) {
                             errors.quantityGranted = true;
                             errorMessage.quantityGranted = 'Voer een negatief aantal in.';
@@ -121,7 +121,7 @@ export default function(
                 }
             } else {
                 if (projectTypeCodeRef === 'loan') {
-                    if (typeCodeRef === 'withDrawal') {
+                    if (typeCodeRef === 'with_drawal') {
                         if (!participantMutation.amountOption || participantMutation.amountOption >= 0) {
                             errors.amountOption = true;
                             errorMessage.amountOption = 'Voer een negatief bedrag in.';
@@ -135,7 +135,7 @@ export default function(
                         }
                     }
                 } else {
-                    if (typeCodeRef === 'withDrawal') {
+                    if (typeCodeRef === 'with_drawal') {
                         if (!participantMutation.quantityOption || participantMutation.quantityOption >= 0) {
                             errors.quantityOption = true;
                             errorMessage.quantityOption = 'Voer een negatief aantal in.';
@@ -159,7 +159,7 @@ export default function(
         if (orginalStatusCodeRef === 'granted') {
             if (orginalStatusId !== Number(participantMutation.statusId)) {
                 if (projectTypeCodeRef === 'loan') {
-                    if (typeCodeRef === 'withDrawal') {
+                    if (typeCodeRef === 'with_drawal') {
                         if (!participantMutation.amountFinal || participantMutation.amountFinal >= 0) {
                             errors.amountFinal = true;
                             errorMessage.amountFinal = 'Voer een negatief bedrag in.';
@@ -179,7 +179,7 @@ export default function(
                         }
                     }
                 } else {
-                    if (typeCodeRef === 'withDrawal') {
+                    if (typeCodeRef === 'with_drawal') {
                         if (!participantMutation.quantityFinal || participantMutation.quantityFinal >= 0) {
                             errors.quantityFinal = true;
                             errorMessage.quantityFinal = 'Voer een negatief aantal in.';
@@ -207,7 +207,7 @@ export default function(
                 }
             } else {
                 if (projectTypeCodeRef === 'loan') {
-                    if (typeCodeRef === 'withDrawal') {
+                    if (typeCodeRef === 'with_drawal') {
                         if (!participantMutation.amountGranted || participantMutation.amountGranted >= 0) {
                             errors.amountGranted = true;
                             errorMessage.amountGranted = 'Voer een negatief bedrag in.';
@@ -221,7 +221,7 @@ export default function(
                         }
                     }
                 } else {
-                    if (typeCodeRef === 'withDrawal') {
+                    if (typeCodeRef === 'with_drawal') {
                         if (!participantMutation.quantityGranted || participantMutation.quantityGranted >= 0) {
                             errors.quantityGranted = true;
                             errorMessage.quantityGranted = 'Voer een negatief aantal in.';
@@ -244,7 +244,7 @@ export default function(
 
         if (orginalStatusCodeRef === 'final') {
             if (projectTypeCodeRef === 'loan') {
-                if (typeCodeRef === 'withDrawal') {
+                if (typeCodeRef === 'with_drawal') {
                     if (!participantMutation.amountFinal || participantMutation.amountFinal >= 0) {
                         errors.amountFinal = true;
                         errorMessage.amountFinal = 'Voer een negatief bedrag in.';
@@ -264,7 +264,7 @@ export default function(
                     }
                 }
             } else {
-                if (typeCodeRef === 'withDrawal') {
+                if (typeCodeRef === 'with_drawal') {
                     if (!participantMutation.quantityFinal || participantMutation.quantityFinal >= 0) {
                         errors.quantityFinal = true;
                         errorMessage.quantityFinal = 'Voer een negatief aantal in.';

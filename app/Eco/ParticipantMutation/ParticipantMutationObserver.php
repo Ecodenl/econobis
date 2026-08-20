@@ -96,7 +96,7 @@ class ParticipantMutationObserver
                 || $participantMutation->amount != $participantMutation->getOriginal('amount')
                 || $participantMutation->quantity != $participantMutation->getOriginal('quantity')
             ) {
-                // only check mutation of type: 'first_deposit', 'deposit', 'withDrawal'
+                // only check mutation of type: 'first_deposit', 'deposit', 'with_drawal'
                 $this->setConceptRevenuesToUpdate($participantMutation);
             }
 
@@ -126,7 +126,7 @@ class ParticipantMutationObserver
 
     public function deleted(ParticipantMutation $participantMutation)
     {
-        // only check mutation of type: 'first_deposit', 'deposit', 'withDrawal'
+        // only check mutation of type: 'first_deposit', 'deposit', 'with_drawal'
         $this->setConceptRevenuesToUpdate($participantMutation);
 
         // If mutation was deleted, than determine date_register (is earliest first deposit date entry) by participant again.
@@ -142,7 +142,7 @@ class ParticipantMutationObserver
      */
     private function setConceptRevenuesToUpdate(ParticipantMutation $participantMutation): void
     {
-        $mutationTypesToCheck = ParticipantMutationType::where('project_type_id', $participantMutation->participation->project->project_type_id)->whereIn('code_ref', ['first_deposit', 'deposit', 'withDrawal'])->get()->pluck('id')->toArray();
+        $mutationTypesToCheck = ParticipantMutationType::where('project_type_id', $participantMutation->participation->project->project_type_id)->whereIn('code_ref', ['first_deposit', 'deposit', 'with_drawal'])->get()->pluck('id')->toArray();
         if (in_array($participantMutation->type_id, $mutationTypesToCheck)) {
             $participantProject = $participantMutation->participation;
 

@@ -118,7 +118,7 @@ class ParticipantMutation extends Model
             if($mutationTypeFirstDesposit && $this->type_id === $mutationTypeFirstDesposit->id) {
                 $participationHasMutationsWithStatusDepositOrWithDrawal = $this->participation->mutations()
                     ->whereHas('type', function ($query) {
-                        $query->whereIn('code_ref', ['deposit', 'withDrawal']);
+                        $query->whereIn('code_ref', ['deposit', 'with_drawal']);
                     })->exists();
                 if($participationHasMutationsWithStatusDepositOrWithDrawal){
                     return false;

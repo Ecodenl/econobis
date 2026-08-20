@@ -704,7 +704,7 @@ class ParticipationProjectController extends ApiController
 
             // Laatste opname mutatieregel weer ongedaan maken. (niet meer verwijderen indien reeds opgenomen in definitieve waardestaat !)
             $projectType = $participantProject->project->projectType;
-            $withDrawalTypes = ParticipantMutationType::whereIn('code_ref', ['withDrawal'])->where('project_type_id', $projectType->id)->get()->pluck('id')->toArray();
+            $withDrawalTypes = ParticipantMutationType::whereIn('code_ref', ['with_drawal'])->where('project_type_id', $projectType->id)->get()->pluck('id')->toArray();
             $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
             $mutationDefinitiveLast =  ParticipantMutation::where('participation_id', $participantProject->id)
                 ->whereIn('type_id', $withDrawalTypes)
@@ -729,7 +729,7 @@ class ParticipationProjectController extends ApiController
             }
             // Laatste opname mutatieregel weer ongedaan maken. (niet meer verwijderen indien reeds opgenomen in definitieve waardestaat !)
             $projectType = $participantProject->project->projectType;
-            $withDrawalTypes = ParticipantMutationType::whereIn('code_ref', ['withDrawal'])->where('project_type_id', $projectType->id)->get()->pluck('id')->toArray();
+            $withDrawalTypes = ParticipantMutationType::whereIn('code_ref', ['with_drawal'])->where('project_type_id', $projectType->id)->get()->pluck('id')->toArray();
             $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
             $mutationDefinitiveLast =  ParticipantMutation::where('participation_id', $participantProject->id)
                 ->whereIn('type_id', $withDrawalTypes)
@@ -1388,7 +1388,7 @@ class ParticipationProjectController extends ApiController
         }
 
         $mutationStatusFinalId = ParticipantMutationStatus::where('code_ref', 'final')->value('id');
-        $mutationTypeWithDrawalId = ParticipantMutationType::where('code_ref', 'withDrawal')->where('project_type_id', $projectType->id)->value('id');
+        $mutationTypeWithDrawalId = ParticipantMutationType::where('code_ref', 'with_drawal')->where('project_type_id', $projectType->id)->value('id');
 
         if ($amountOrParticipationsDefinitive != 0) {
             $participantMutation = new ParticipantMutation();

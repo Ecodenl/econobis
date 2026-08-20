@@ -187,7 +187,7 @@ class conversionParticipationsToMutations extends Command
         $participants = ParticipantProject::where('conversion_processed', true)->where('participations_sold', '!=', 0)->where('participations_definitive', '!=', 0)->get();
 
         foreach ($participants as $participant) {
-            $mutationType = ParticipantMutationType::where('code_ref', 'withDrawal')->where('project_type_id', $participant->project->project_type_id)->first();
+            $mutationType = ParticipantMutationType::where('code_ref', 'with_drawal')->where('project_type_id', $participant->project->project_type_id)->first();
 
             $participantTransactions = DB::table('participant_transactions')->where('participation_id', $participant->id)->where('type_id', 3)->get();
 

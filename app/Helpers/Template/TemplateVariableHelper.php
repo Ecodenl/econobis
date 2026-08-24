@@ -2011,6 +2011,19 @@ class TemplateVariableHelper
             case 'externe_partij_telefoonnummer':
                 return optional(optional($model->externalParty)->primaryPhoneNumber)->number;
 
+            case 'public_id_bewoner':
+                return $contact?->public_id;
+            case 'public_id_coach':
+                return ($model->organisationOrCoach?->isCoach() ? $model->organisationOrCoach?->public_id : '');
+            case 'public_id_organisatie':
+                return ($model->organisationOrCoach?->isOrganisation() ? $model->organisationOrCoach?->public_id : '');
+            case 'public_id_organisatie_of_coach':
+                return $model->organisationOrCoach?->public_id;
+            case 'public_id_projectmanager':
+                return $model->projectManager?->public_id;
+            case 'public_id_externe_partij':
+                return $model->externalParty?->public_id;
+
             //variables safe to use in an URL
             case 'contact_voornaam_voor_URL':
                 return rawurlencode($contact?->person?->first_name);

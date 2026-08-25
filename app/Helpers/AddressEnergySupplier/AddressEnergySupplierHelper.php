@@ -84,10 +84,36 @@ class AddressEnergySupplierHelper
     {
         $messages = [];
 
+        if (!self::isMostRecentRelevantAddressEnergySupplier($addressEnergySupplier)) {
+            $esName = $addressEnergySupplier->energySupplier?->name ?? '*onbekend*';
+            $esMemberSince = $addressEnergySupplier->member_since
+                ? Carbon::parse($addressEnergySupplier->member_since)->format('d-m-Y')
+                : '';
+
+            $address = $addressEnergySupplier->address?->street
+                . ' '
+                . $addressEnergySupplier->address?->number
+                . ($addressEnergySupplier->address?->addition ?: '');
+
+            $messages[] = 'Energieleverancier '
+                . $esName
+                . ' (vanaf '
+                . $esMemberSince
+                . ') bij adres '
+                . $address
+                . ' kan niet verwijderd worden omdat alleen de meest recente periode voor hetzelfde adres en leverancierstype Elektriciteit en/of Gas verwijderd mag worden.';
+        }
+
         if (self::wouldCauseMissingEnergySupplierInRevenueDistribution($addressEnergySupplier)) {
             $esName = $addressEnergySupplier->energySupplier?->name ?? '*onbekend*';
-            $esMemberSince = $addressEnergySupplier->member_since ? (Carbon::parse($addressEnergySupplier->member_since)->format('d-m-Y') ) : '';
-            $address = $addressEnergySupplier->address?->street . ' ' . $addressEnergySupplier->address?->number . ($addressEnergySupplier->address?->addition ?: '');
+            $esMemberSince = $addressEnergySupplier->member_since
+                ? Carbon::parse($addressEnergySupplier->member_since)->format('d-m-Y')
+                : '';
+
+            $address = $addressEnergySupplier->address?->street
+                . ' '
+                . $addressEnergySupplier->address?->number
+                . ($addressEnergySupplier->address?->addition ?: '');
 
             $messages[] = 'Energieleverancier '
                 . $esName
@@ -99,6 +125,38 @@ class AddressEnergySupplierHelper
         }
 
         return $messages;
+    }
+
+    private static function isMostRecentRelevantAddressEnergySupplier(
+        AddressEnergySupplier $addressEnergySupplier
+    ): bool {
+        $types = self::getRelevantEnergySupplyTypeIds(
+            (int) $addressEnergySupplier->energy_supply_type_id
+        );
+
+        $mostRecent = AddressEnergySupplier::query()
+            ->where('address_id', $addressEnergySupplier->address_id)
+            ->whereIn('energy_supply_type_id', $types)
+            ->orderByRaw('CASE WHEN member_since IS NULL THEN 0 ELSE 1 END DESC')
+            ->orderBy('member_since', 'desc')
+            ->orderBy('id', 'desc')
+            ->first();
+
+        return $mostRecent
+            && (int) $mostRecent->id === (int) $addressEnergySupplier->id;
+    }
+
+    private static function getRelevantEnergySupplyTypeIds(int $energySupplyTypeId): array
+    {
+        if ($energySupplyTypeId === 1) {
+            return [1, 3];
+        }
+
+        if ($energySupplyTypeId === 2) {
+            return [2, 3];
+        }
+
+        return [1, 2, 3];
     }
 
     protected static function wouldCauseMissingEnergySupplierInRevenueDistribution(AddressEnergySupplier $addressEnergySupplier): bool

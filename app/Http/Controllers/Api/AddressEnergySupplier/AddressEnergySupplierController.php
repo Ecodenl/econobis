@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\AddressEnergySupplier;
 
+use App\Eco\Address\Address;
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Helpers\AddressEnergySupplier\AddressEnergySupplierHelper;
 use App\Helpers\Delete\Models\DeleteAddressEnergySupplier;
@@ -125,17 +126,29 @@ class AddressEnergySupplierController extends ApiController
 
         $this->authorize('create', $addressEnergySupplier);
 
-        // Nieuwe periode moet altijd aansluiten op vorige relevante periode
-        if ($addressEnergySupplier->member_since) {
-            $this->syncPreviousAddressEnergySupplierEndDate($addressEnergySupplier);
-        }
+        DB::transaction(function () use ($addressEnergySupplier) {
+            // Voorkom dat twee gelijktijdige requests AES-perioden
+            // voor hetzelfde adres kunnen wijzigen/toevoegen.
+            Address::query()
+                ->where('id', $addressEnergySupplier->address_id)
+                ->lockForUpdate()
+                ->firstOrFail();
 
-        if ($addressEnergySupplier->end_date) {
-            $this->validateEndDateDoesNotBreakRevenueDistributions($addressEnergySupplier);
-        }
-        $this->validateAddressEnergySupplier($addressEnergySupplier, true);
+            // Nieuwe periode moet altijd aansluiten op vorige relevante periode.
+            if ($addressEnergySupplier->member_since) {
+                $this->syncPreviousAddressEnergySupplierEndDate($addressEnergySupplier);
+            }
 
-        $addressEnergySupplier->save();
+            if ($addressEnergySupplier->end_date) {
+                $this->validateEndDateDoesNotBreakRevenueDistributions($addressEnergySupplier);
+            }
+
+            // Deze validatie moet bewust BINNEN de lock plaatsvinden.
+            // Een eventueel eerder gelijktijdig request is dan inmiddels verwerkt.
+            $this->validateAddressEnergySupplier($addressEnergySupplier, true);
+
+            $addressEnergySupplier->save();
+        });
 
         $revenuePartsKwhArray = [];
         if (Carbon::parse($addressEnergySupplier->end_date_previous)->format('Y-m-d') != '1900-01-01') {
@@ -210,25 +223,52 @@ class AddressEnergySupplierController extends ApiController
             ->boolean('isCurrentSupplier')->alias('is_current_supplier')->next()
             ->get();
 
-        $addressEnergySupplier->fill($data);
+        $aesMemberSince = null;
+        $aesMemberSinceOriginal = null;
 
-        $this->validateAllowedUpdateAddressEnergySupplier($addressEnergySupplier, $data);
+        DB::transaction(function () use (
+            $addressEnergySupplier,
+            $data,
+            &$aesMemberSince,
+            &$aesMemberSinceOriginal
+        ) {
+            // Serialiseer alle AES-mutaties voor hetzelfde adres.
+            Address::query()
+                ->where('id', $addressEnergySupplier->address_id)
+                ->lockForUpdate()
+                ->firstOrFail();
 
-        $memberSinceChanged = $this->hasDateFieldChanged($addressEnergySupplier, 'member_since');
+            // Route-model kan inmiddels verouderd zijn door een ander request.
+            $addressEnergySupplier->refresh();
+            $addressEnergySupplier->fill($data);
 
-        if ($memberSinceChanged) {
-            $this->syncPreviousAddressEnergySupplierEndDate($addressEnergySupplier);
-        }
+            $this->validateAllowedUpdateAddressEnergySupplier($addressEnergySupplier, $data);
 
-        if ($this->hasDateFieldChanged($addressEnergySupplier, 'end_date')) {
-            $this->validateEndDateDoesNotBreakRevenueDistributions($addressEnergySupplier);
-        }
-        $this->validateAddressEnergySupplier($addressEnergySupplier, true);
+            $memberSinceChanged = $this->hasDateFieldChanged(
+                $addressEnergySupplier,
+                'member_since'
+            );
 
-        $aesMemberSince = $addressEnergySupplier->member_since ? Carbon::parse($addressEnergySupplier->member_since)->format('Y-m-d') : '1900-01-01';
-        $aesMemberSinceOriginal = $addressEnergySupplier->getOriginal('member_since') ? Carbon::parse($addressEnergySupplier->getOriginal('member_since'))->format('Y-m-d') : '1900-01-01';
+            if ($memberSinceChanged) {
+                $this->syncPreviousAddressEnergySupplierEndDate($addressEnergySupplier);
+            }
 
-        $addressEnergySupplier->save();
+            if ($this->hasDateFieldChanged($addressEnergySupplier, 'end_date')) {
+                $this->validateEndDateDoesNotBreakRevenueDistributions($addressEnergySupplier);
+            }
+
+            $this->validateAddressEnergySupplier($addressEnergySupplier, true);
+
+            $aesMemberSince = $addressEnergySupplier->member_since
+                ? Carbon::parse($addressEnergySupplier->member_since)->format('Y-m-d')
+                : '1900-01-01';
+
+            $aesMemberSinceOriginal = $addressEnergySupplier->getOriginal('member_since')
+                ? Carbon::parse($addressEnergySupplier->getOriginal('member_since'))->format('Y-m-d')
+                : '1900-01-01';
+
+            $addressEnergySupplier->save();
+        });
 
         $revenuePartsKwhArray = [];
         // indien membersince gewijzigd en er was een vorige einddatum, dan check voor splitsen opbrengstverdelingen.

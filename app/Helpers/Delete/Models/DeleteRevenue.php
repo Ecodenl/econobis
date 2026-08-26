@@ -11,6 +11,7 @@ namespace App\Helpers\Delete\Models;
 
 use App\Eco\Cooperation\Cooperation;
 use App\Helpers\Delete\DeleteInterface;
+use App\Helpers\Delete\Traits\ChecksExcludedCleanupContacts;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
@@ -22,6 +23,8 @@ use Illuminate\Support\Facades\Log;
  */
 class DeleteRevenue implements DeleteInterface
 {
+    use ChecksExcludedCleanupContacts;
+
     private $errorMessage = [];
     private $projectRevenue;
     private $yearsForDelete;
@@ -48,16 +51,43 @@ class DeleteRevenue implements DeleteInterface
      */
     public function cleanup()
     {
-        try{
+        try {
+            if (! $this->canCleanup()) {
+                return $this->errorMessage;
+            }
+
             return $this->delete();
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             Log::error('Fout bij opschonen Opbrengsten Euro / Aflossing', [
                 'exception' => $exception->getMessage(),
                 'errormessages' => implode(' | ', $this->errorMessage),
             ]);
-            array_push($this->errorMessage, "Fout bij opschonen Opbrengsten Euro / Aflossing. (meld dit bij Econobis support)");
+
+            $this->errorMessage[] =
+                "Fout bij opschonen Opbrengsten Euro / Aflossing. "
+                . "(meld dit bij Econobis support)";
+
             return $this->errorMessage;
         }
+    }
+
+    public function canCleanup(): bool
+    {
+        $contactIds = $this->projectRevenue
+            ->distribution
+            ->pluck('contact_id')
+            ->all();
+
+        if ($this->containsExcludedCleanupContact($contactIds)) {
+            $this->errorMessage[] =
+                "Opbrengstverdeling {$this->projectRevenue->id} kan niet worden "
+                . "opgeschoond: minimaal één gekoppeld contact valt in een "
+                . "uitzonderingsgroep.";
+
+            return false;
+        }
+
+        return true;
     }
 
     /** Main method for deleting this model and all it's relations
@@ -83,7 +113,7 @@ class DeleteRevenue implements DeleteInterface
 
     /** Checks if the model can be deleted and sets error messages
      */
-    public function canDelete()
+    public function canDelete(): bool
     {
         // indien status processed en einddatum revenue ligt voor bewaarplicht termijn, dan ok
         if($this?->projectRevenue?->confirmed && $this?->projectRevenue?->status === 'processed' && $this?->projectRevenue?->date_end < $this->dateAllowedToDelete) {

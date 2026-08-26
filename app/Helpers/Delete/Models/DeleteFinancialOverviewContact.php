@@ -7,6 +7,7 @@ use App\Eco\DataCleanup\CleanupRegistry;
 use App\Eco\FinancialOverview\FinancialOverviewContactStatus;
 use App\Eco\FinancialOverview\FinancialOverviewParticipantProject;
 use App\Helpers\Delete\DeleteInterface;
+use App\Helpers\Delete\Traits\ChecksExcludedCleanupContacts;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
@@ -18,6 +19,8 @@ use Illuminate\Support\Facades\Log;
  */
 class DeleteFinancialOverviewContact implements DeleteInterface
 {
+    use ChecksExcludedCleanupContacts;
+
     private bool $isCleanup = false;
     private bool $force = false; // default softdelete
     private array $errorMessage = [];
@@ -26,13 +29,11 @@ class DeleteFinancialOverviewContact implements DeleteInterface
     private $yearsForDelete;
 //    private Carbon $cutoffDate;
     private $cooperation;
-    private ?array $excludedContactIds = null;
     private string $cleanupCodeRef = 'financialOverviewContacts';
 
-    public function __construct(Model $financialOverviewContact, bool $isCleanup = false)
+    public function __construct(Model $financialOverviewContact)
     {
         $this->financialOverviewContact = $financialOverviewContact;
-        $this->isCleanup = $isCleanup;
 
         $this->cooperation = Cooperation::first();
 
@@ -46,16 +47,53 @@ class DeleteFinancialOverviewContact implements DeleteInterface
     {
         try {
             $this->isCleanup = true;
-            $this->force = false;     // cleanup = altijd soft
+            $this->force = false;
+
+            if (! $this->canCleanup()) {
+                return $this->errorMessage;
+            }
+
             return $this->delete();
         } catch (\Exception $exception) {
             Log::error('Fout bij opschonen Waardestaat contacten', [
                 'exception' => $exception->getMessage(),
                 'errormessages' => implode(' | ', $this->errorMessage),
             ]);
-            $this->errorMessage[] = "Fout bij opschonen Waardestaat contacten. (meld dit bij Econobis support)";
+
+            $this->errorMessage[] =
+                "Fout bij opschonen Waardestaat contacten. "
+                . "(meld dit bij Econobis support)";
+
             return $this->errorMessage;
         }
+    }
+
+    public function canCleanup(): bool
+    {
+        $contactId = $this->financialOverviewContact->contact_id;
+
+        if ($this->isContactExcludedFromCleanup($contactId)) {
+            $foDescription =
+                $this->financialOverviewContact->financialOverview?->description
+                ?? '*onbekend*';
+
+            $focFullname =
+                $this->financialOverviewContact->contact?->full_name_fnf
+                ?? '*onbekend*';
+
+            $focId =
+                $this->financialOverviewContact->contact?->id
+                ?? '?';
+
+            $this->errorMessage[] =
+                "Waardestaat {$foDescription}, contact {$focFullname} ({$focId}) "
+                . "kan niet worden opgeschoond: het gekoppelde contact valt "
+                . "in een uitzonderingsgroep.";
+
+            return false;
+        }
+
+        return true;
     }
 
     public function delete()
@@ -90,12 +128,13 @@ class DeleteFinancialOverviewContact implements DeleteInterface
             return false;
         }
 
-        // Concept: UI mag hard delete, vanuit cleanup blijft soft
-        $isDraft = ($this->financialOverviewContact->status_id) === 'concept';
+        $isDraft = $this->financialOverviewContact->status_id === 'concept';
+
         if ($isDraft) {
-            if (! $this->isCleanup) {
-                $this->force = true; // alleen UI delete hard bij concept
-            }
+            // Conceptgegevens hebben geen bewaarplicht en mogen ook vanuit cleanup
+            // definitief worden verwijderd.
+            $this->force = true;
+
             return true;
         }
 
@@ -122,12 +161,17 @@ class DeleteFinancialOverviewContact implements DeleteInterface
             return false;
         }
 
-        // Wel definitief: fiscal-excluded check (alleen relevant als fiscal retention aan staat)
+        // Bij fiscale bewaarplicht mag een definitieve waardestaat van een contact
+        // in een uitzonderingsgroep ook niet los worden verwijderd.
         if ($this->isFiscalRetention()) {
-            $contactId = $this->financialOverviewContact->contact_id;
-            if ($contactId && in_array((int)$contactId, $this->getExcludedContactIds(), true)) {
+            if ($this->isContactExcludedFromCleanup(
+                $this->financialOverviewContact->contact_id
+            )) {
                 $this->errorMessage[] =
-                    "Waardestaat " . $foDescription . ", contact " . $focFullname . " (" . $focId . ") kan niet worden verwijderd: gekoppeld contact valt in een uitgesloten contactgroep.";
+                    "Waardestaat {$foDescription}, contact {$focFullname} ({$focId}) "
+                    . "kan niet worden verwijderd: het gekoppelde contact valt "
+                    . "in een uitzonderingsgroep.";
+
                 return false;
             }
         }
@@ -180,24 +224,6 @@ class DeleteFinancialOverviewContact implements DeleteInterface
     private function isFiscalRetention(): bool
     {
         return CleanupRegistry::retentionModeFor($this->cleanupCodeRef) === CleanupRegistry::RETENTION_FISCAL_DATE;
-    }
-    private function getExcludedContactIds(): array
-    {
-        if ($this->excludedContactIds !== null) {
-            return $this->excludedContactIds;
-        }
-
-        $ids = [];
-        $groups = $this->cooperation?->cleanupContactsExcludedGroups ?? [];
-
-        foreach ($groups as $excludedGroup) {
-            // getAllContacts(true) geeft (waarschijnlijk) IDs terug
-            $ids = array_merge($ids, $excludedGroup->contactGroup->getAllContacts(true) ?? []);
-        }
-
-        $ids = array_values(array_unique(array_map('intval', $ids)));
-
-        return $this->excludedContactIds = $ids;
     }
 
     /**

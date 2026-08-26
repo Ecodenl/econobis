@@ -9,6 +9,7 @@
 namespace App\Helpers\Delete\Models;
 
 use App\Helpers\Delete\DeleteInterface;
+use App\Helpers\Delete\Traits\ChecksExcludedCleanupContacts;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 
@@ -19,6 +20,8 @@ use Illuminate\Support\Facades\Log;
  */
 class DeleteIntake implements DeleteInterface
 {
+    use ChecksExcludedCleanupContacts;
+
     private $errorMessage = [];
     private $intake;
 
@@ -38,16 +41,62 @@ class DeleteIntake implements DeleteInterface
      */
     public function cleanup()
     {
-        try{
+        try {
+            if (! $this->canCleanup()) {
+                return $this->errorMessage;
+            }
+
             return $this->delete();
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             Log::error('Fout bij opschonen Intakes', [
                 'exception' => $exception->getMessage(),
                 'errormessages' => implode(' | ', $this->errorMessage),
             ]);
-            array_push($this->errorMessage, "Fout bij opschonen Intakes. (meld dit bij Econobis support)");
+
+            $this->errorMessage[] =
+                "Fout bij opschonen Intakes. (meld dit bij Econobis support)";
+
             return $this->errorMessage;
         }
+    }
+
+    public function canCleanup(): bool
+    {
+        if ($this->isContactExcludedFromCleanup($this->intake->contact_id)) {
+            $this->errorMessage[] =
+                "Intake {$this->intake->id} kan niet worden opgeschoond: "
+                . "het gekoppelde contact valt in een uitzonderingsgroep.";
+
+            return false;
+        }
+
+        foreach ($this->intake->tasks as $task) {
+            $deleteTask = new DeleteTask($task);
+
+            if (! $deleteTask->canCleanup()) {
+                $this->errorMessage[] =
+                    "Intake {$this->intake->id} kan niet worden opgeschoond: "
+                    . "een gekoppelde taak hoort bij een contact dat in een "
+                    . "uitzonderingsgroep valt.";
+
+                return false;
+            }
+        }
+
+        foreach ($this->intake->notes as $note) {
+            $deleteTask = new DeleteTask($note);
+
+            if (! $deleteTask->canCleanup()) {
+                $this->errorMessage[] =
+                    "Intake {$this->intake->id} kan niet worden opgeschoond: "
+                    . "een gekoppelde notitie hoort bij een contact dat in een "
+                    . "uitzonderingsgroep valt.";
+
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /** Main method for deleting this model and all it's relations
@@ -76,15 +125,14 @@ class DeleteIntake implements DeleteInterface
      */
     public function canDelete(): bool
     {
-        $intakeAddress = $this->intake->address?->fullAddress ?? '*adres onbekend*';
-        // 25-04-2024: Verwijderen 1 voor 1 mag ook ongeacht de status van de intake
-//        if(!($this->intake->intake_status_id === 2 || $this->intake->intake_status_id === 3)){
-//            array_push($this->errorMessage, "Er is nog een intake die niet gesloten is.");
-//            return false;
-//        }
-        // 25-04-2024: Verwijderen mag niet meer als er nog kansen onder hangen
-        if($this->intake->opportunities()->count() > 0){
-            array_push($this->errorMessage, "Onder intake (" . $this->intake->id . ") " . $intakeAddress . " hangen nog kansen, verwijderen intake niet mogelijk.");
+        $intakeAddress = $this->intake->address?->fullAddress
+            ?? '*adres onbekend*';
+
+        if ($this->intake->opportunities()->exists()) {
+            $this->errorMessage[] =
+                "Onder intake ({$this->intake->id}) {$intakeAddress} "
+                . "hangen nog kansen, verwijderen intake niet mogelijk.";
+
             return false;
         }
 

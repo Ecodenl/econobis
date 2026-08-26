@@ -11,6 +11,7 @@ namespace App\Helpers\Delete\Models;
 
 use App\Helpers\Delete\DeleteInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class DeleteFinancialOverviewProject
@@ -34,17 +35,59 @@ class DeleteFinancialOverviewProject implements DeleteInterface
      * @param Model $financialOverviewProject the model to delete
      */
 
-    public function __construct(Model $financialOverviewProject, bool $isCleanup = false)
+    public function __construct(Model $financialOverviewProject)
     {
         $this->financialOverviewProject = $financialOverviewProject;
-        $this->isCleanup = $isCleanup;
     }
 
-    /** Main method for deleting this model and all it's relations
-     *
-     * @return array
-     * @throws
-     */
+    public function cleanup(): array
+    {
+        try {
+            $this->isCleanup = true;
+            $this->force = false;
+
+            if (! $this->canCleanup()) {
+                return $this->errorMessage;
+            }
+
+            return $this->delete();
+        } catch (\Exception $exception) {
+            Log::error('Fout bij opschonen waardestaat projecten', [
+                'exception' => $exception->getMessage(),
+                'errormessages' => implode(' | ', $this->errorMessage),
+            ]);
+
+            $this->errorMessage[] =
+                "Fout bij opschonen waardestaat projecten. "
+                . "(meld dit bij Econobis support)";
+
+            return $this->errorMessage;
+        }
+    }
+
+    public function canCleanup(): bool
+    {
+        foreach (
+            $this->financialOverviewProject->financialOverviewParticipantProjects
+            as $financialOverviewParticipantProject
+        ) {
+            $deleteFinancialOverviewParticipantProject =
+                new DeleteFinancialOverviewParticipantProject(
+                    $financialOverviewParticipantProject
+                );
+
+            if (! $deleteFinancialOverviewParticipantProject->canCleanup()) {
+                $this->errorMessage[] =
+                    "Waardestaatproject kan niet worden opgeschoond: "
+                    . "een gekoppelde deelnemer valt in een uitzonderingsgroep.";
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public function delete()
     {
         if (! $this->canDelete()) {
@@ -93,11 +136,25 @@ class DeleteFinancialOverviewProject implements DeleteInterface
 
     /** Deletes models recursive
      */
-    public function deleteModels()
+    public function deleteModels(): void
     {
-        foreach ($this->financialOverviewProject->financialOverviewParticipantProjects as $financialOverviewParticipantProject){
-            $deleteFinancialOverviewParticipantProject = new DeleteFinancialOverviewParticipantProject($financialOverviewParticipantProject, $this->isCleanup);
-            $this->errorMessage = array_merge($this->errorMessage, ( $deleteFinancialOverviewParticipantProject->delete() ?? [] ) );
+        foreach (
+            $this->financialOverviewProject->financialOverviewParticipantProjects
+            as $financialOverviewParticipantProject
+        ) {
+            $deleteFinancialOverviewParticipantProject =
+                new DeleteFinancialOverviewParticipantProject(
+                    $financialOverviewParticipantProject
+                );
+
+            $result = $this->isCleanup
+                ? $deleteFinancialOverviewParticipantProject->cleanup()
+                : $deleteFinancialOverviewParticipantProject->delete();
+
+            $this->errorMessage = array_merge(
+                $this->errorMessage,
+                $result ?? []
+            );
         }
     }
 

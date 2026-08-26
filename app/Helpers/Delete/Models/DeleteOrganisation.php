@@ -41,20 +41,25 @@ class DeleteOrganisation implements DeleteInterface
      */
     public function delete()
     {
-        $this->canDelete();
+        if (! $this->canDelete()) {
+            return $this->errorMessage;
+        }
+
         $this->deleteModels();
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->organisation->delete();
+
+        if (count($this->errorMessage) === 0) {
+            $this->organisation->delete();
+        }
 
         return $this->errorMessage;
     }
 
-    /** Checks if the model can be deleted and sets error messages
-     */
-    public function canDelete()
+    public function canDelete(): bool
     {
+        return true;
     }
 
     /** Deletes models recursive

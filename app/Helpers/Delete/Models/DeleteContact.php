@@ -9,6 +9,7 @@
 namespace App\Helpers\Delete\Models;
 
 use App\Helpers\Delete\DeleteInterface;
+use App\Helpers\Delete\Traits\ChecksExcludedCleanupContacts;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 
@@ -19,6 +20,9 @@ use Illuminate\Support\Facades\Log;
  */
 class DeleteContact implements DeleteInterface
 {
+    use ChecksExcludedCleanupContacts;
+
+    private bool $isCleanup = false;
     private $errorMessage = [];
     private $contact;
 
@@ -39,16 +43,170 @@ class DeleteContact implements DeleteInterface
      */
     public function cleanup()
     {
-        try{
+        try {
+            $this->isCleanup = true;
+
+            if (! $this->canCleanup()) {
+                return $this->errorMessage;
+            }
+
             return $this->delete();
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             Log::error('Fout bij opschonen Contacten', [
                 'exception' => $exception->getMessage(),
                 'errormessages' => implode(' | ', $this->errorMessage),
             ]);
-            array_push($this->errorMessage, "Fout bij opschonen Contacten. (meld dit bij Econobis support)");
+
+            $this->errorMessage[] =
+                "Fout bij opschonen Contacten. "
+                . "(meld dit bij Econobis support)";
+
             return $this->errorMessage;
         }
+    }
+
+    public function canCleanup(): bool
+    {
+        $contactName = $this->contact->full_name_fnf;
+        $contactId = $this->contact->id;
+
+        if ($this->isContactExcludedFromCleanup($contactId)) {
+            $this->errorMessage[] =
+                "Contact {$contactName} ({$contactId}) kan niet worden "
+                . "opgeschoond: het contact valt in een uitzonderingsgroep.";
+
+            return false;
+        }
+
+        foreach ($this->contact->addresses as $address) {
+            $deleteAddress = new DeleteAddress($address);
+
+            if (! $deleteAddress->canDelete()) {
+                $this->errorMessage[] =
+                    "Contact {$contactName} ({$contactId}) kan niet worden "
+                    . "opgeschoond: een gekoppeld adres kan niet worden verwijderd.";
+
+                return false;
+            }
+        }
+
+        foreach ($this->contact->tasks as $task) {
+            $deleteTask = new DeleteTask($task);
+
+            if (! $deleteTask->canCleanup()) {
+                $this->errorMessage[] =
+                    "Contact {$contactName} ({$contactId}) kan niet worden "
+                    . "opgeschoond: een gekoppelde taak kan niet worden opgeschoond.";
+
+                return false;
+            }
+        }
+
+        foreach ($this->contact->notes as $note) {
+            $deleteTask = new DeleteTask($note);
+
+            if (! $deleteTask->canCleanup()) {
+                $this->errorMessage[] =
+                    "Contact {$contactName} ({$contactId}) kan niet worden "
+                    . "opgeschoond: een gekoppelde notitie kan niet worden opgeschoond.";
+
+                return false;
+            }
+        }
+
+        foreach (
+            $this->contact->projectRevenueDistributions
+            as $revenueDistribution
+        ) {
+            $deleteRevenueDistribution =
+                new DeleteRevenueDistribution($revenueDistribution);
+
+            if (! $deleteRevenueDistribution->canCleanup()) {
+                $this->errorMessage[] =
+                    "Contact {$contactName} ({$contactId}) kan niet worden "
+                    . "opgeschoond: een gekoppelde opbrengstverdeling kan "
+                    . "niet worden opgeschoond.";
+
+                return false;
+            }
+        }
+
+        foreach (
+            $this->contact->revenueDistributionKwh
+            as $revenueDistributionKwh
+        ) {
+            $deleteRevenueDistributionKwh =
+                new DeleteRevenueDistributionKwh($revenueDistributionKwh);
+
+            if (! $deleteRevenueDistributionKwh->canCleanup()) {
+                $this->errorMessage[] =
+                    "Contact {$contactName} ({$contactId}) kan niet worden "
+                    . "opgeschoond: een gekoppelde Kwh-opbrengstverdeling "
+                    . "kan niet worden opgeschoond.";
+
+                return false;
+            }
+        }
+
+        foreach ($this->contact->orders as $order) {
+            $deleteOrder = new DeleteOrder($order);
+
+            if (! $deleteOrder->canCleanup()) {
+                $this->errorMessage[] =
+                    "Contact {$contactName} ({$contactId}) kan niet worden "
+                    . "opgeschoond: een gekoppelde order kan niet worden "
+                    . "opgeschoond.";
+
+                return false;
+            }
+        }
+
+        foreach ($this->contact->participations as $participation) {
+            $deleteParticipation = new DeleteParticipation($participation);
+
+            if (! $deleteParticipation->canCleanup()) {
+                $this->errorMessage[] =
+                    "Contact {$contactName} ({$contactId}) kan niet worden "
+                    . "opgeschoond: een gekoppelde deelname kan niet worden "
+                    . "opgeschoond.";
+
+                return false;
+            }
+        }
+
+        foreach ($this->contact->intakes as $intake) {
+            $deleteIntake = new DeleteIntake($intake);
+
+            if (! $deleteIntake->canCleanup()) {
+                $this->errorMessage[] =
+                    "Contact {$contactName} ({$contactId}) kan niet worden "
+                    . "opgeschoond: een gekoppelde intake kan niet worden "
+                    . "opgeschoond.";
+
+                return false;
+            }
+        }
+
+        foreach (
+            $this->contact->financialOverviewContacts
+            as $financialOverviewContact
+        ) {
+            $deleteFinancialOverviewContact =
+                new DeleteFinancialOverviewContact(
+                    $financialOverviewContact
+                );
+
+            if (! $deleteFinancialOverviewContact->canCleanup()) {
+                $this->errorMessage[] =
+                    "Contact {$contactName} ({$contactId}) kan niet worden "
+                    . "opgeschoond: een gekoppelde financiële waardestaat "
+                    . "kan niet worden opgeschoond.";
+
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /** Main method for deleting this model and all it's relations
@@ -75,7 +233,7 @@ class DeleteContact implements DeleteInterface
     /** Checks if the model can be deleted
      *
      */
-    public function canDelete()
+    public function canDelete(): bool
     {
         $contactFullName = $this->contact->full_name_fnf;
         $contactId = $this->contact->id;
@@ -124,67 +282,95 @@ class DeleteContact implements DeleteInterface
      */
     public function deleteModels()
     {
-        foreach ($this->contact->addresses as $address){
+        foreach ($this->contact->addresses as $address) {
             $deleteAddress = new DeleteAddress($address);
-            $this->errorMessage = array_merge($this->errorMessage, ( $deleteAddress->delete() ?? [] ) );
-        }
-        foreach ($this->contact->tasks as $task){
-            $deleteTask = new DeleteTask($task);
-            $this->errorMessage = array_merge($this->errorMessage, ( $deleteTask->delete() ?? [] ) );
+
+            $this->errorMessage = array_merge(
+                $this->errorMessage,
+                $deleteAddress->delete() ?? []
+            );
         }
 
-        foreach ($this->contact->notes as $note){
-            $deleteTask = new DeleteTask($note);
-            $this->errorMessage = array_merge($this->errorMessage, ( $deleteTask->delete() ?? [] ) );
+        foreach ($this->contact->tasks as $task) {
+            $this->deleteChild(new DeleteTask($task));
         }
 
-        if($this->contact->isOrganisation()) {
-            $deleteOrganisation = new DeleteOrganisation($this->contact->organisation);
-            $this->errorMessage = array_merge($this->errorMessage, ( $deleteOrganisation->delete() ?? [] ) );
+        foreach ($this->contact->notes as $note) {
+            $this->deleteChild(new DeleteTask($note));
         }
 
-        foreach ($this->contact->projectRevenueDistributions as $revenueDistribution){
-            $deleteRevenueDistribution = new DeleteRevenueDistribution($revenueDistribution);
-            $this->errorMessage = array_merge($this->errorMessage, ( $deleteRevenueDistribution->delete() ?? [] ) );
-        }
-        foreach ($this->contact->revenueDistributionKwh as $revenueDistributionKwh){
-            $deleteRevenueDistributionKwh = new DeleteRevenueDistributionKwh($revenueDistributionKwh);
-            $this->errorMessage = array_merge($this->errorMessage, ( $deleteRevenueDistributionKwh->delete() ?? [] ) );
+        if ($this->contact->isOrganisation()) {
+            $deleteOrganisation = new DeleteOrganisation(
+                $this->contact->organisation
+            );
+
+            $this->errorMessage = array_merge(
+                $this->errorMessage,
+                $deleteOrganisation->delete() ?? []
+            );
         }
 
-        foreach ($this->contact->orders as $order){
-            $deleteOrder = new DeleteOrder($order);
-            $this->errorMessage = array_merge($this->errorMessage, ( $deleteOrder->delete() ?? [] ) );
+        foreach (
+            $this->contact->projectRevenueDistributions
+            as $revenueDistribution
+        ) {
+            $this->deleteChild(
+                new DeleteRevenueDistribution($revenueDistribution)
+            );
         }
 
-        foreach ($this->contact->participations as $participation){
-            $deleteParticipation = new DeleteParticipation($participation);
-            $this->errorMessage = array_merge($this->errorMessage, ( $deleteParticipation->delete() ?? [] ) );
+        foreach (
+            $this->contact->revenueDistributionKwh
+            as $revenueDistributionKwh
+        ) {
+            $this->deleteChild(
+                new DeleteRevenueDistributionKwh($revenueDistributionKwh)
+            );
         }
 
-        foreach ($this->contact->intakes as $intake){
-            $deleteIntake = new DeleteIntake($intake);
-            $this->errorMessage = array_merge($this->errorMessage, ( $deleteIntake->delete() ?? [] ) );
+        foreach ($this->contact->orders as $order) {
+            $this->deleteChild(new DeleteOrder($order));
         }
 
-        foreach ($this->contact->quotationRequests as $quotationRequest){
+        foreach ($this->contact->participations as $participation) {
+            $this->deleteChild(new DeleteParticipation($participation));
+        }
+
+        foreach ($this->contact->intakes as $intake) {
+            $this->deleteChild(new DeleteIntake($intake));
+        }
+
+        foreach ($this->contact->quotationRequests as $quotationRequest) {
             $quotationRequest->contact_id = null;
             $quotationRequest->save();
         }
-        foreach ($this->contact->quotationRequestsAsProjectManager as $quotationRequest){
+
+        foreach (
+            $this->contact->quotationRequestsAsProjectManager
+            as $quotationRequest
+        ) {
             $quotationRequest->project_manager_id = null;
             $quotationRequest->save();
         }
-        foreach ($this->contact->quotationRequestsAsExternalParty as $quotationRequest){
+
+        foreach (
+            $this->contact->quotationRequestsAsExternalParty
+            as $quotationRequest
+        ) {
             $quotationRequest->external_party_id = null;
             $quotationRequest->save();
         }
 
-        foreach ($this->contact->financialOverviewContacts as $financialOverviewContact){
-            $deleteFinancialOverviewContact = new DeleteFinancialOverviewContact($financialOverviewContact);
-            $this->errorMessage = array_merge($this->errorMessage, ( $deleteFinancialOverviewContact->delete() ?? [] ) );
+        foreach (
+            $this->contact->financialOverviewContacts
+            as $financialOverviewContact
+        ) {
+            $this->deleteChild(
+                new DeleteFinancialOverviewContact(
+                    $financialOverviewContact
+                )
+            );
         }
-
     }
 
     /** The relations which should be dissociated
@@ -248,5 +434,17 @@ class DeleteContact implements DeleteInterface
      */
     public function customDeleteActions()
     {
+    }
+
+    private function deleteChild($deleteHelper): void
+    {
+        $result = $this->isCleanup
+            ? $deleteHelper->cleanup()
+            : $deleteHelper->delete();
+
+        $this->errorMessage = array_merge(
+            $this->errorMessage,
+            $result ?? []
+        );
     }
 }

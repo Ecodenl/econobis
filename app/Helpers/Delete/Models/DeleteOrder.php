@@ -10,6 +10,7 @@ namespace App\Helpers\Delete\Models;
 
 
 use App\Helpers\Delete\DeleteInterface;
+use App\Helpers\Delete\Traits\ChecksExcludedCleanupContacts;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\Log;
  */
 class DeleteOrder implements DeleteInterface
 {
+    use ChecksExcludedCleanupContacts;
 
     private $errorMessage = [];
     private $order;
@@ -40,20 +42,38 @@ class DeleteOrder implements DeleteInterface
      */
     public function cleanup()
     {
-        try{
-            $this->delete();
-            if(!empty($this->errorMessage)) {
+        try {
+            if (! $this->canCleanup()) {
                 return $this->errorMessage;
             }
-        }catch (\Exception $exception){
+
+            return $this->delete();
+        } catch (\Exception $exception) {
             Log::error('Fout bij opschonen Orders', [
                 'exception' => $exception->getMessage(),
                 'errormessages' => implode(' | ', $this->errorMessage),
             ]);
-            array_push($this->errorMessage, "Fout bij opschonen Orders. (meld dit bij Econobis support)");
-            return $this->errorMessage;
 
+            $this->errorMessage[] =
+                "Fout bij opschonen Orders. (meld dit bij Econobis support)";
+
+            return $this->errorMessage;
         }
+    }
+
+    public function canCleanup(): bool
+    {
+        $contactId = $this->order->contact_id;
+
+        if ($this->isContactExcludedFromCleanup($contactId)) {
+            $this->errorMessage[] =
+                "Order {$this->order->number} ({$this->order->id}) kan niet worden opgeschoond: "
+                . "het gekoppelde contact valt in een uitzonderingsgroep.";
+
+            return false;
+        }
+
+        return true;
     }
 
     /** Main method for deleting this model and all it's relations
@@ -79,7 +99,7 @@ class DeleteOrder implements DeleteInterface
 
     /** Checks if the model can be deleted and sets error messages
      */
-    public function canDelete()
+    public function canDelete(): bool
     {
         // van hieruit altijd true
         return true;
@@ -130,6 +150,5 @@ class DeleteOrder implements DeleteInterface
     public function customDeleteActions()
     {
     }
-
 
 }

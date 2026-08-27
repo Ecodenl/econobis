@@ -17,7 +17,7 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
 import DocumentTemplateAPI from '../../../../api/document-template/DocumentTemplateAPI';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 import Modal from '../../../../components/modal/Modal';
 import ButtonText from '../../../../components/button/ButtonText';
@@ -30,6 +30,12 @@ import moment from 'moment/moment';
 import ParticipantsListExtraFilters from './ParticipantsListExtraFilters';
 import InputToggle from '../../../../components/form/InputToggle';
 
+// Functionele wrapper voor de class component
+const ParticipantsListAppWrapper = props => {
+    const navigate = useNavigate();
+    return <ParticipantsListApp {...props} navigate={navigate} />;
+};
+
 class ParticipantsListApp extends Component {
     constructor(props) {
         super(props);
@@ -41,7 +47,8 @@ class ParticipantsListApp extends Component {
             emailTemplateId: '',
             emailTemplateIdError: false,
             emailTemplates: [],
-            subject: [],
+            subject: '',
+            subjectError: false,
             documentGroup: '',
             checkedAll: false,
             showCheckboxList: false,
@@ -97,7 +104,10 @@ class ParticipantsListApp extends Component {
         setTimeout(() => {
             const extraFilters = this.state.extraFilters;
             const filters = filterHelper(this.props.participantsProjectFilters);
-            const sorts = this.props.participantsProjectSorts;
+            const sorts =
+                this.props.participantsProjectSorts.length == 0
+                    ? [{ field: 'name', order: 'ASC' }]
+                    : this.props.participantsProjectSorts;
             // todo Hier juiste records per page nog zetten (origineel 20: voor testen op 4)!
             const pagination = { limit: 20, offset: this.props.participantsProjectPagination.offset };
             const filterType = this.state.filterType;
@@ -198,11 +208,13 @@ class ParticipantsListApp extends Component {
                 participantIds: [],
             });
         } else {
-            this.setState({
-                showCheckboxList: true,
-                participantIds: this.props.participantsProject.meta.participantIdsTotal,
-                checkedAll: true,
-            });
+            if (this.props.participantsProject && this.props.participantsProject.isLoading === false) {
+                this.setState({
+                    showCheckboxList: true,
+                    participantIds: this.props.participantsProject.meta.participantIdsTotal,
+                    checkedAll: true,
+                });
+            }
         }
     };
 
@@ -279,6 +291,17 @@ class ParticipantsListApp extends Component {
             });
         }
 
+        if (validator.isEmpty(this.state.subject)) {
+            error = true;
+            this.setState({
+                subjectError: true,
+            });
+        } else {
+            this.setState({
+                subjectError: false,
+            });
+        }
+
         if (this.state.participantIds.length > 0 && !error) {
             this.props.previewParticipantReport({
                 templateId: this.state.templateId,
@@ -287,7 +310,7 @@ class ParticipantsListApp extends Component {
                 participantIds: this.state.participantIds,
                 showOnPortal: this.state.showOnPortal,
             });
-            hashHistory.push(`/project/preview-rapportage`);
+            this.props.navigate(`/project/preview-rapportage`);
         } else if (!error) {
             this.setState({
                 showModal: true,
@@ -377,7 +400,7 @@ class ParticipantsListApp extends Component {
             filterType,
             saveFromProject,
         }).then(payload => {
-            hashHistory.push(`/contact-groep/${payload.data.data.id}/edit`);
+            this.props.navigate(`/contact-groep/${payload.data.data.id}/edit`);
         });
     };
 
@@ -453,6 +476,8 @@ class ParticipantsListApp extends Component {
                                             name={'subject'}
                                             value={this.state.subject}
                                             onChangeAction={this.handleSubjectChange}
+                                            required={'required'}
+                                            error={this.state.subjectError}
                                         />
                                     </div>
                                     <div className="col-md-12">
@@ -551,4 +576,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ParticipantsListApp);
+export default connect(mapStateToProps, mapDispatchToProps)(ParticipantsListAppWrapper);

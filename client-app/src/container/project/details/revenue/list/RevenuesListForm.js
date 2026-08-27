@@ -4,7 +4,8 @@ import RevenuesListFormList from './RevenuesListFormList';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../../components/panel/PanelHeader';
-import { hashHistory, Link } from 'react-router';
+import { useNavigate } from 'react-router-dom';
+
 import { connect } from 'react-redux';
 import ButtonIcon from '../../../../../components/button/ButtonIcon';
 
@@ -19,6 +20,8 @@ const RevenuesListForm = ({
     projectRevenues,
     projectRevenueCategories,
 }) => {
+    const navigate = useNavigate();
+
     let disabled = false;
     let revenueDisabledEuro = false;
     let redemptionDisabledEuro = false;
@@ -56,13 +59,13 @@ const RevenuesListForm = ({
                 <span className="h5 text-bold">
                     {projectType.codeRef === 'postalcode_link_capital' ? 'Opbrengsten Euro' : 'Opbrengsten'}
                 </span>
-                {permissions.manageFinancial && (
+                {permissions.manageProject && (
                     <React.Fragment>
                         {projectType.codeRef === 'capital' || projectType.codeRef === 'postalcode_link_capital' ? (
                             <ButtonIcon
                                 buttonClassName={'pull-right btn btn-link'}
                                 onClickAction={() =>
-                                    hashHistory.push(`/project/opbrengst/nieuw/${projectId}/${revenueEuroCategoryId}`)
+                                    navigate(`/project/opbrengst/nieuw/${projectId}/${revenueEuroCategoryId}`)
                                 }
                                 disabled={disabled || revenueDisabledEuro}
                                 title={revenueTitleEuro}
@@ -88,7 +91,7 @@ const RevenuesListForm = ({
                                                 role={'button'}
                                                 title={revenueTitleEuro}
                                                 onClick={() =>
-                                                    hashHistory.push(
+                                                    navigate(
                                                         `/project/opbrengst/nieuw/${projectId}/${revenueEuroCategoryId}`
                                                     )
                                                 }
@@ -107,7 +110,7 @@ const RevenuesListForm = ({
                                                 role={'button'}
                                                 title={redemptionTitleEuro}
                                                 onClick={() =>
-                                                    hashHistory.push(
+                                                    navigate(
                                                         `/project/opbrengst/nieuw/${projectId}/${redemptionEuroCategoryId}`
                                                     )
                                                 }

@@ -11,7 +11,7 @@ class ButtonCollectionOrders extends Component {
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         OrdersAPI.getCollectionOrders().then(payload => {
             this.setState({
                 amountCollectionOrders: payload,

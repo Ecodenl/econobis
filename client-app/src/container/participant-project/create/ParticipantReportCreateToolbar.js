@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import ButtonText from '../../../components/button/ButtonText';
+
+// Functionele wrapper voor de class component
+const ParticipantReportCreateToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <ParticipantReportCreateToolbar {...props} navigate={navigate} />;
+};
 
 class ParticipantReportCreateToolbar extends Component {
     constructor(props) {
@@ -18,7 +24,7 @@ class ParticipantReportCreateToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => this.props.navigate(-1)} />
                         {this.props.amountOfParticipants > 0 && (
                             <ButtonText
                                 buttonText={'Rapportage versturen'}
@@ -47,4 +53,4 @@ class ParticipantReportCreateToolbar extends Component {
     }
 }
 
-export default ParticipantReportCreateToolbar;
+export default ParticipantReportCreateToolbarWrapper;

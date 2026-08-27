@@ -25,6 +25,7 @@ class Filter extends RequestFilter
         'createdAtEnd',
         'datePlanned',
         'dateRecorded',
+        'opportunityActionId',
         'statusId',
         'dateReleased',
     ];
@@ -37,6 +38,7 @@ class Filter extends RequestFilter
         'createdAt' => 'quotation_requests.created_at',
         'datePlanned' => 'quotation_requests.date_planned',
         'dateRecorded' => 'quotation_requests.date_recorded',
+        'opportunityActionId' => 'quotation_requests.opportunity_action_id',
         'statusId' => 'quotation_requests.status_id',
         'dateReleased' => 'quotation_requests.date_released',
     ];
@@ -52,6 +54,7 @@ class Filter extends RequestFilter
 
     protected $defaultTypes = [
         '*' => 'ct',
+        'opportunityActionId' => 'eq',
         'statusId' => 'eq',
     ];
 
@@ -60,26 +63,29 @@ class Filter extends RequestFilter
         $query->where('quotation_requests.created_at', '>=', Carbon::parse($data)->startOfDay());
         return false;
     }
+
     protected function applyCreatedAtEndFilter($query, $type, $data)
     {
         $query->where('quotation_requests.created_at', '<=', Carbon::parse($data)->endOfDay());
         return false;
     }
+
     protected function applyAddressFilter($query, $type, $data)
     {
-        // Elke term moet in een van de naam velden voor komen.
-        // Opbreken in array zodat 2 losse woorden ook worden gevonden als deze in 2 verschillende velden staan
-        $terms = explode(' ', $data);
+        // Elke zoekterm moet voorkomen in de straat, het huisnummer of de toevoeging.
+        $terms = array_filter(explode(' ', $data));
 
         foreach ($terms as $term){
             $query->where(function($query) use ($term) {
                 $query->where('addresses.street', 'LIKE', '%' . $term . '%');
                 $query->orWhere('addresses.number', 'LIKE', '%' . $term . '%');
+                $query->orWhere('addresses.addition', 'LIKE', '%' . $term . '%');
             });
         }
 
         return false;
     }
+
     protected function applyAreaNameFilter($query, $type, $data)
     {
         // Elke term moet in een van de naam velden voor komen.

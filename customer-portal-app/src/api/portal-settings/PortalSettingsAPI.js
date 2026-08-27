@@ -1,15 +1,20 @@
 import axiosInstance from '../default-setup/AxiosInstance';
 
-const URL_PORTAL_SETTINGS = `setting`;
+const URL_PORTAL_SETTINGS = `portal-settings`;
 
 export default {
-    fetchPortalSettings: keys => {
-        const requestUrl = `${URL_PORTAL_SETTINGS}/multiple${keys}`;
+    fetchPortalSettings: id => {
+        const requestUrl = `${URL_PORTAL_SETTINGS}/${id}`;
 
         return axiosInstance.get(requestUrl);
     },
     fetchPortalActive: () => {
         const requestUrl = `${URL_PORTAL_SETTINGS}/portal-active`;
+
+        return axiosInstance.get(requestUrl);
+    },
+    fetchPortalLoginInfoText: () => {
+        const requestUrl = `${URL_PORTAL_SETTINGS}/portal-login-info-text`;
 
         return axiosInstance.get(requestUrl);
     },

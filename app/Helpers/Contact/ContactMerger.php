@@ -4,7 +4,10 @@ namespace App\Helpers\Contact;
 
 use App\Eco\Address\Address;
 use App\Eco\Contact\Contact;
+use App\Helpers\AddressEnergySupplier\AddressEnergySupplierHelper;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ContactMerger
 {
@@ -48,6 +51,16 @@ class ContactMerger
             throw new ContactMergeException('Personen kunnen niet worden samengevoegd met organisaties.');
         }
 
+        $this->validateSameRole('isCoach', 'coach');
+        $this->validateSameRole('isProjectManager', 'projectleider');
+        $this->validateSameRole('isExternalParty', 'externe partij');
+
+        $toHoomAccountId = $this->toContact->hoom_account_id;
+        $fromHoomAccountId = $this->fromContact->hoom_account_id;
+        if ($toHoomAccountId && $fromHoomAccountId && $toHoomAccountId !== $fromHoomAccountId) {
+            throw new ContactMergeException('Contacten hebben een verschillende Hoom account id\'s, wijzig eerst één van de twee Hoom account id\'s handmatig. Vervolgens moet het contact id ook handmatig in het Hoomdossier worden aangepast.');
+        }
+
         if ($this->toContact->twinfieldNumbers()->exists() && $this->fromContact->twinfieldNumbers()->exists()) {
             throw new ContactMergeException('Contacten zijn beide gekoppeld via Twinfield, ontkoppel eerst een van de twee contacten handmatig van Twinfield.');
         }
@@ -62,6 +75,94 @@ class ContactMerger
         $fromGroupInspectionPersontype = $this->fromContact->groups()->where('inspection_person_type_id', '!=', null)->first();
         if ($toGroupInspectionPersontype && $fromGroupInspectionPersontype && $toGroupInspectionPersontype->inspection_person_type_id !== $fromGroupInspectionPersontype->inspection_person_type_id) {
             throw new ContactMergeException('Contacten hebben beide een verschillende rol in "rol in buurtaanpak", een contact mag maar één unieke rol hebben.');
+        }
+
+        $toFreeFieldsFieldRecords = $this->toContact->freeFieldsFieldRecords;
+        $fromFreeFieldsFieldRecords = $this->fromContact->freeFieldsFieldRecords;
+        foreach ($fromFreeFieldsFieldRecords as $fromRecord) {
+            // Find matching record in $toFreeFieldsFieldRecords by field_id
+            $toRecord = $toFreeFieldsFieldRecords->firstWhere('field_id', $fromRecord->field_id);
+
+            if ($toRecord) {
+                // Get the format type based on the field_id
+                $formatType = $fromRecord->freeFieldsField->freeFieldsFieldFormat->format_type;
+
+                // Determine which field to check for conflicts based on the format_type
+                $fromValue = $this->getFieldValue($fromRecord, $formatType);
+                $toValue = $this->getFieldValue($toRecord, $formatType);
+
+                // Check for conflicts if both values are set and not equal
+                if (!is_null($fromValue) && !is_null($toValue) && $fromValue !== $toValue) {
+                    throw new ContactMergeException("Contacten hebben een verschil in vrije veld waarde {$fromRecord->freeFieldsField->field_name}");
+                }
+
+            }
+        }
+
+        $this->validateAddressEnergySuppliersCanBeRemovedOnMerge();
+
+        $this->validateNoDuplicateFinancialOverviewContacts();
+    }
+
+    private function validateAddressEnergySuppliersCanBeRemovedOnMerge(): void
+    {
+        foreach ($this->fromContact->addresses as $fromAddress) {
+            $existingAddress = $this->toContact->addresses
+                ->where('postal_code', $fromAddress->postal_code)
+                ->where('number', $fromAddress->number)
+                ->where('addition', $fromAddress->addition)
+                ->first();
+
+            // Alleen relevant als dit adres bij mergeAddress() zou worden samengevoegd
+            // en de AES-records van fromAddress dus verwijderd zouden worden.
+            if (!$existingAddress) {
+                continue;
+            }
+
+            foreach ($fromAddress->addressEnergySuppliers as $addressEnergySupplier) {
+                $messages = AddressEnergySupplierHelper::getDeleteBlockingMessages($addressEnergySupplier);
+
+                if (!empty($messages)) {
+                    $esName = $addressEnergySupplier->energySupplier?->name ?? '*onbekend*';
+                    $esMemberSince = $addressEnergySupplier->member_since ? (Carbon::parse($addressEnergySupplier->member_since)->format('d-m-Y') ) : '';
+                    $address = $fromAddress->street . ' ' . $fromAddress->number . ($fromAddress->addition ?: '');
+
+                    throw new ContactMergeException(
+                        'Gegevens van adres '
+                        . $address
+                        . ' en energieleverancier '
+                        . $esName
+                        . ' (vanaf '
+                        . $esMemberSince
+                        . ') van het te verwijderen contact zijn nog nodig voor een nog niet verwerkte opbrengstverdeling.'
+                    );
+                }
+            }
+        }
+    }
+
+    private function validateSameRole(string $method, string $label): void
+    {
+        if ($this->toContact->{$method}() !== $this->fromContact->{$method}()) {
+            throw new ContactMergeException("Contacten kunnen niet worden samengevoegd omdat één van beide {$label} is en de andere niet.");
+        }
+    }
+    private function validateNoDuplicateFinancialOverviewContacts(): void
+    {
+        $toFinancialOverviewIds = $this->toContact->financialOverviewContacts()
+            ->pluck('financial_overview_id')
+            ->toArray();
+
+        $fromFinancialOverviewIds = $this->fromContact->financialOverviewContacts()
+            ->pluck('financial_overview_id')
+            ->toArray();
+
+        $duplicateFinancialOverviewIds = array_intersect($toFinancialOverviewIds, $fromFinancialOverviewIds);
+
+        if (!empty($duplicateFinancialOverviewIds)) {
+            throw new ContactMergeException(
+                'Contacten kunnen niet worden samengevoegd omdat beide contacten voorkomen in één of meer dezelfde waardestaten.'
+            );
         }
     }
 
@@ -78,10 +179,16 @@ class ContactMerger
             $this->mergeOrganisation();
         }
 
+        $this->mergeFreeFieldsContact();
         $this->mergeAddresses();
         $this->mergePhoneNumbers();
         $this->mergeGenericBelongsToManyRelation('emails');
+        $this->mergeGenericBelongsToManyRelation('manualEmails');
         $this->mergeGenericBelongsToManyRelation('groups');
+        $this->mergeGenericBelongsToManyRelation('coachCampaigns');
+        $this->mergeGenericBelongsToManyRelation('projectManagerCampaigns');
+        $this->mergeGenericBelongsToManyRelation('externalPartyCampaigns');
+        $this->mergeGenericHasManyRelation('availabilities');
         $this->mergeGenericHasManyRelation('responses');
         $this->mergeGenericHasManyRelation('documents');
         $this->mergeGenericHasManyRelation('financialOverviewContacts');
@@ -100,6 +207,8 @@ class ContactMerger
         $this->mergeGenericHasManyRelation('revenueDistributionKwh');
         $this->mergeGenericHasManyRelation('twinfieldLogs');
         $this->mergeGenericHasManyRelation('quotationRequests');
+        $this->mergeGenericHasManyRelation('quotationRequestsAsProjectManager');
+        $this->mergeGenericHasManyRelation('quotationRequestsAsExternalParty');
 
         /**
          * Totalen van obligations_current, etc herberekenen.
@@ -185,12 +294,12 @@ class ContactMerger
         }
 
         foreach ($fromOrganisation->campaigns as $campaign) {
-            $toOrganisation->campaigns()->attach($campaign);
+            $toOrganisation->campaigns()->syncWithoutDetaching($campaign);
             $fromOrganisation->campaigns()->detach($campaign);
         }
 
         foreach ($fromOrganisation->deliversMeasures as $measure) {
-            $toOrganisation->deliversMeasures()->attach($measure);
+            $toOrganisation->deliversMeasures()->syncWithoutDetaching($measure);
             $fromOrganisation->deliversMeasures()->detach($measure);
         }
 
@@ -202,6 +311,14 @@ class ContactMerger
         $fromOrganisation->delete();
     }
 
+    private function mergeFreeFieldsContact()
+    {
+        $toFreeFieldsFieldRecords = $this->toContact->freeFieldsFieldRecords;
+        $fromFreeFieldsFieldRecords = $this->fromContact->freeFieldsFieldRecords;
+
+        $this->mergeFreeFieldsRecords($fromFreeFieldsFieldRecords, $toFreeFieldsFieldRecords, 'contacts', $this->toContact->id);
+    }
+
     private function mergeAddresses()
     {
         $contactAlreadyHasPrimaryAddress = $this->toContact->primaryAddress()->exists();
@@ -209,6 +326,7 @@ class ContactMerger
         foreach ($this->fromContact->addresses as $address) {
             $existingAddress = $this->toContact->addresses->where('postal_code', $address->postal_code)
                 ->where('number', $address->number)
+                ->where('addition', $address->addition)
                 ->first();
 
             if ($existingAddress) {
@@ -238,6 +356,8 @@ class ContactMerger
          * Gegevens van ene adres overzetten naar andere, en het oude adres verwijderen.
          * (tabel housing_file_measure_taken heeft ook address_id maar lijkt niet te worden gebruikt)
          */
+
+        $this->mergeFreeFieldsAddress($toAddress, $fromAddress );
         foreach ($fromAddress->intakes as $intake) {
             $intake->address_id = $toAddress->id;
             $intake->save();
@@ -253,10 +373,23 @@ class ContactMerger
             $participation->save();
         }
 
+        /**
+         * Geen adres energieleverancier gegevens overzetten van het fromAddress, deze verwijderen.
+         * we houden bij zelfde adres alleen die van toAdress.
+         */
+
+//        foreach ($fromAddress->addressEnergySuppliers as $addressEnergySupplier) {
+//            $addressEnergySupplier->is_current_supplier = false;
+//            $addressEnergySupplier->address_id = $toAddress->id;
+//            $addressEnergySupplier->save();
+//        }
         foreach ($fromAddress->addressEnergySuppliers as $addressEnergySupplier) {
-            $addressEnergySupplier->is_current_supplier = false;
-            $addressEnergySupplier->address_id = $toAddress->id;
-            $addressEnergySupplier->save();
+            $addressEnergySupplier->delete();
+        }
+
+        foreach ($fromAddress->addressDongles as $addressDongle) {
+            $addressDongle->address_id = $toAddress->id;
+            $addressDongle->save();
         }
 
         foreach ($fromAddress->addressEnergyConsumptionGasPeriods as $addressEnergyConsumptionGasPeriod) {
@@ -270,6 +403,14 @@ class ContactMerger
         }
 
         $fromAddress->delete();
+    }
+
+    private function mergeFreeFieldsAddress(Address $toAddress, Address $fromAddress)
+    {
+        $toFreeFieldsFieldRecords = $toAddress->freeFieldsFieldRecords;
+        $fromFreeFieldsFieldRecords = $fromAddress->freeFieldsFieldRecords;
+
+        $this->mergeFreeFieldsRecords($fromFreeFieldsFieldRecords, $toFreeFieldsFieldRecords, 'addresses', $toAddress->id);
     }
 
     private function mergeGenericHasManyRelation(string $relationName)
@@ -373,6 +514,96 @@ class ContactMerger
                 // In dat geval verwijderen we het record, aangezien deze toch dubbel is.
                 $occupationContact->delete();
             }
+        }
+    }
+
+    /**
+     * @param mixed $fromFreeFieldsFieldRecords
+     * @param mixed $toFreeFieldsFieldRecords
+     * @return void
+     */
+    private function mergeFreeFieldsRecords(mixed $fromFreeFieldsFieldRecords, mixed $toFreeFieldsFieldRecords, string $tableName, int $toTableRecordId): void
+    {
+        foreach ($fromFreeFieldsFieldRecords as $fromRecord) {
+            // Find matching record in $toFreeFieldsFieldRecords by field_id
+            $toRecord = $toFreeFieldsFieldRecords->firstWhere('field_id', $fromRecord->field_id);
+
+            if ($toRecord) {
+                // Get the format type based on the field_id
+                $formatType = $fromRecord->freeFieldsField->freeFieldsFieldFormat->format_type;
+
+                // Determine which field to check for conflicts based on the format_type
+                $fromValue = $this->getFieldValue($fromRecord, $formatType);
+                $toValue = $this->getFieldValue($toRecord, $formatType);
+
+                // Check for conflicts if both values are set and not equal, if so, than keep value of toRecord.
+                if (!is_null($fromValue) && !is_null($toValue) && $fromValue !== $toValue) {
+                    Log::info("Skipping conflict in free field ({$tableName}) with from table_record_id {$fromRecord->table_record_id} and field_id {$fromRecord->field_id}. Keeping to table_record_id {$toRecord->table_record_id} value: {$toValue}");
+                    continue;
+                }
+                // Update $toRecord if it exists and the value is empty
+                if (is_null($toValue) && !is_null($fromValue)) {
+                    $this->setFieldValue($toRecord, $formatType, $fromValue);
+                    $toRecord->save();
+                }
+            } else {
+                // Add the $fromRecord to $toFreeFieldsFieldRecords if field_id doesn't exist
+                $newRecord = $fromRecord->replicate();
+                $newRecord->table_record_id = $toTableRecordId; // Link to the new contact ID or address ID
+                $newRecord->save();
+
+                // Add the new record to the collection
+                $toFreeFieldsFieldRecords->push($newRecord);
+            }
+            $fromRecord->delete();
+        }
+    }
+    private function getFieldValue($record, $formatType)
+    {
+        switch ($formatType) {
+            case 'boolean':
+                // Convert integers 0 and 1 to booleans; return null for other values
+                if ($record->field_value_boolean === 0 || $record->field_value_boolean === 1) {
+                    return (bool) $record->field_value_boolean;
+                }
+                return null; // Return null if the value is not 0 or 1
+            case 'text_short':
+            case 'text_long':
+                return $record->field_value_text ?: null;
+            case 'int':
+                return $record->field_value_int ?: null;
+            case 'double_2_dec':
+            case 'amount_euro':
+                return $record->field_value_double ?: null;
+            case 'date':
+            case 'datetime':
+                return $record->field_value_datetime ?: null;
+            default:
+                return null;
+        }
+    }
+
+    private function setFieldValue($record, $formatType, $value)
+    {
+        switch ($formatType) {
+            case 'boolean':
+                $record->field_value_boolean = $value;
+                break;
+            case 'text_short':
+            case 'text_long':
+                $record->field_value_text = $value;
+                break;
+            case 'int':
+                $record->field_value_int = $value;
+                break;
+            case 'double_2_dec':
+            case 'amount_euro':
+                $record->field_value_double = $value;
+                break;
+            case 'date':
+            case 'datetime':
+                $record->field_value_datetime = $value;
+                break;
         }
     }
 }

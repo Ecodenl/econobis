@@ -2,20 +2,17 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import DataTableHeadTitleAndSort from '../../../components/dataTable/DataTableHeadTitleAndSort';
-import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 import { setQuotationRequestsSortsFilter } from '../../../actions/quotation-request/QuotationRequestsSortsActions';
 
 const QuotationRequestsListHead = props => {
     const setSorts = (field, order) => {
         props.setQuotationRequestsSortsFilter(field, order);
-
-        setTimeout(() => {
-            props.refreshQuotationRequestsData();
-        }, 100);
     };
 
     return (
         <tr className="thead-title">
+            {props.multiSelectEnabled && <th width="5%" />}
+
             <DataTableHeadTitleAndSort
                 sortColumn={'organisationOrCoach'}
                 title={'Organisatie/Coach'}
@@ -23,7 +20,12 @@ const QuotationRequestsListHead = props => {
                 setSorts={setSorts}
             />
             <DataTableHeadTitleAndSort sortColumn={'contact'} title={'Contact'} width={'9%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'address'} title={'Adres'} width={'14%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort
+                sortColumn={'address'}
+                title={'Adres'}
+                setSorts={setSorts}
+                width={props.multiSelectEnabled ? '9%' : '14%'}
+            />
             <DataTableHeadTitleAndSort sortColumn={'areaName'} title={'Buurt'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'measure'} title={'Maatregel'} width={'9%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'7%'} setSorts={setSorts} />

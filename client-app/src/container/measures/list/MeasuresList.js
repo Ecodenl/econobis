@@ -33,9 +33,10 @@ class MeasuresList extends Component {
                     <DataTableHead>
                         <tr className="thead-title-quaternary">
                             <DataTableHeadTitle title={'Nummer'} width={'15%'} />
-                            <DataTableHeadTitle title={'Maatregel categorie'} width={'32%'} />
-                            <DataTableHeadTitle title={'Maatregel'} width={'32%'} />
-                            <DataTableHeadTitle title={'Zichtbaar'} width={'15%'} />
+                            <DataTableHeadTitle title={'Maatregel categorie'} width={'29%'} />
+                            <DataTableHeadTitle title={'Maatregel'} width={'20%'} />
+                            <DataTableHeadTitle title={'Aangepaste naam'} width={'20%'} />
+                            <DataTableHeadTitle title={'Zichtbaar'} width={'10%'} />
                             <DataTableHeadTitle title={''} width={'6%'} />
                         </tr>
                     </DataTableHead>

@@ -1,13 +1,15 @@
 import React from 'react';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Icon from 'react-icons-kit';
 import { trash } from 'react-icons-kit/fa/trash';
 
 const TeamDetailsUsersView = props => {
-    const { id, fullName } = props.user;
+    const navigate = useNavigate();
+
+    const { id, fullName, active } = props.user;
 
     return (
         <div
@@ -15,7 +17,8 @@ const TeamDetailsUsersView = props => {
             onMouseEnter={() => props.onLineEnter()}
             onMouseLeave={() => props.onLineLeave()}
         >
-            <div className="col-sm-11">{fullName}</div>
+            <div className="col-sm-9">{fullName}</div>
+            <div className="col-sm-2">{active ? 'Actief' : 'Inactief'}</div>
             <div className="col-sm-1">
                 {props.showActionButtons && props.permissions.createTeam ? (
                     <a role="button" onClick={props.toggleDelete}>

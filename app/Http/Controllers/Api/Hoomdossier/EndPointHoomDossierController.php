@@ -14,6 +14,7 @@ use App\Eco\HousingFile\HousingFile;
 use App\Eco\Team\Team;
 use App\Eco\User\User;
 use App\Eco\Webform\Webform;
+use App\Eco\Webform\WebformApiType;
 use App\Http\Controllers\Controller;
 use App\Notifications\HoomdossierRequestProcessed;
 use Carbon\Carbon;
@@ -53,6 +54,9 @@ class EndPointHoomDossierController extends Controller
             $this->webform = $webform;
             $this->log('Endpoint met id ' . $webform->id . ' gevonden bij code ' . $apiKey . '.');
         }
+
+        $this->validateApiTypeForHoomDossier($webform);
+
         $this->checkMaxRequests($webform);
 
         $this->cooperation = Cooperation::first();
@@ -98,7 +102,7 @@ class EndPointHoomDossierController extends Controller
         }
         $contact = Contact::find($contactId);
         if(!$contact) {
-            $this->error('Contact ' . $contactId . ' not found', 404);
+            $this->error('Contact ' . $contactId . ' not found or removed in Econobis', 404);
         }
         if(!$accountId){
             $this->error('Account_id missing', 404);
@@ -118,8 +122,8 @@ class EndPointHoomDossierController extends Controller
                     $housingFile->hoom_building_id = $buildingId;
                     $housingFile->number_of_residents = 0;
                     $housingFile->revenue_solar_panels = 0;
-                    $housingFile->is_house_for_sale = 0;
-                    $housingFile->is_monument = 0;
+                    $housingFile->is_house_for_sale = '2';
+                    $housingFile->is_monument = '2';
                     $housingFile->remark = '';
                     $housingFile->remark_coach = '';
                     $housingFile->save();
@@ -150,6 +154,18 @@ class EndPointHoomDossierController extends Controller
     protected function log(string $text)
     {
         $this->logs[] = $text;
+    }
+
+    private function validateApiTypeForHoomDossier(Webform $webform): void
+    {
+        if ($webform->api_type === WebformApiType::WEBFORM_API) {
+            $this->error('Endpoint not found', 404);
+        }
+
+        if ($webform->api_type === null) {
+            $webform->api_type = WebformApiType::HOOMDOSSIER_API;
+            $webform->save();
+        }
     }
 
     protected function checkMaxRequests($webform)

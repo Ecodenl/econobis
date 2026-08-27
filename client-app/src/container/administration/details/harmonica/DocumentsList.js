@@ -1,10 +1,12 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 
 function DocumentsList({ relatedDocuments }) {
+    const navigate = useNavigate();
+
     function openItem(id) {
-        hashHistory.push(`/document/${id}`);
+        navigate(`/document/${id}`);
     }
 
     if (relatedDocuments.length === 0) return <div>Geen documenten gevonden.</div>;

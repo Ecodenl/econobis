@@ -79,11 +79,113 @@ class ProjectFormEdit extends Component {
                 name: false,
                 code: false,
                 projectStatusId: false,
-                ownedById: false,
+                baseProjectCodeRef: false,
+                postalcodeLink: false,
+                addressNumberSeries: false,
+                description: false,
                 postalCode: false,
                 // countryId: false,
+                ownedById: false,
+                administrationId: false,
                 contactGroupIds: false,
                 dateEntry: false,
+                linkProjectInfo: false,
+                documentIdProjectInfo: false,
+                transactionCostsCodeRef: false,
+                textTransactionCosts: false,
+                transactionCostsAmountMin: false,
+                transactionCostsAmountMax: false,
+                transactionCostsAmount: false,
+                transactionCostsAmount2: false,
+                transactionCostsAmount3: false,
+                transactionCostsPercentage: false,
+                transactionCostsPercentage2: false,
+                transactionCostsPercentage3: false,
+                questionAboutMembershipGroupId: false,
+                textRegisterPageHeader: false,
+                textRegisterCurrentBookWorth: false,
+                textRegisterParticipationSingular: false,
+                textRegisterParticipationPlural: false,
+                textIsMember: false,
+                textIsNoMember: false,
+                textBecomeMember: false,
+                memberGroupId: false,
+                textBecomeNoMember: false,
+                noMemberGroupId: false,
+                textAgreeTerms: false,
+                linkAgreeTerms: false,
+                documentIdAgreeTerms: false,
+                textLinkAgreeTerms: false,
+                textLinkNameAgreeTerms: false,
+                linkUnderstandInfo: false,
+                documentIdUnderstandInfo: false,
+                textLinkUnderstandInfo: false,
+                textLinkNameUnderstandInfo: false,
+                textAcceptAgreement: false,
+                textAcceptAgreementQuestion: false,
+                documentTemplateAgreementId: false,
+                emailTemplateAgreementId: false,
+                allowIncreaseParticipationsInPortal: false,
+                documentTemplateIncreaseParticipationsId: false,
+                emailTemplateIncreaseParticipationsId: false,
+                textRegistrationFinished: false,
+                loanTypeId: false,
+            },
+            errorMessages: {
+                name: '',
+                code: '',
+                projectStatusId: '',
+                baseProjectCodeRef: '',
+                postalcodeLink: '',
+                addressNumberSeries: '',
+                description: '',
+                postalCode: '',
+                // countryId: '',
+                ownedById: '',
+                administrationId: '',
+                contactGroupIds: '',
+                dateEntry: '',
+                linkProjectInfo: '',
+                documentIdProjectInfo: '',
+                transactionCostsCodeRef: '',
+                textTransactionCosts: '',
+                transactionCostsAmountMin: '',
+                transactionCostsAmountMax: '',
+                transactionCostsAmount: '',
+                transactionCostsAmount2: '',
+                transactionCostsAmount3: '',
+                transactionCostsPercentage: '',
+                transactionCostsPercentage2: '',
+                transactionCostsPercentage3: '',
+                questionAboutMembershipGroupId: '',
+                textRegisterPageHeader: '',
+                textRegisterCurrentBookWorth: '',
+                textRegisterParticipationSingular: '',
+                textRegisterParticipationPlural: '',
+                textIsMember: '',
+                textIsNoMember: '',
+                textBecomeMember: '',
+                memberGroupId: '',
+                textBecomeNoMember: '',
+                noMemberGroupId: '',
+                textAgreeTerms: '',
+                linkAgreeTerms: '',
+                documentIdAgreeTerms: '',
+                textLinkAgreeTerms: '',
+                textLinkNameAgreeTerms: '',
+                linkUnderstandInfo: '',
+                documentIdUnderstandInfo: '',
+                textLinkUnderstandInfo: '',
+                textLinkNameUnderstandInfo: '',
+                textAcceptAgreement: '',
+                textAcceptAgreementQuestion: '',
+                documentTemplateAgreementId: '',
+                emailTemplateAgreementId: '',
+                allowIncreaseParticipationsInPortal: '',
+                documentTemplateIncreaseParticipationsId: '',
+                emailTemplateIncreaseParticipationsId: '',
+                textRegistrationFinished: '',
+                loanTypeId: '',
             },
             isSaving: false,
         };
@@ -96,19 +198,19 @@ class ProjectFormEdit extends Component {
         this.setDisableBeforeEntryDate();
 
         if (this.state.project && !this.state.project.showQuestionAboutMembership) {
-            const keys =
-                '?keys[]=cooperativeName' +
-                '&keys[]=defaultContactGroupMemberId' +
-                '&keys[]=defaultContactGroupNoMemberId';
-            PortalSettingsAPI.fetchPortalSettings(keys).then(payload => {
+            // todo WM: check / anders
+            //
+            const portalSettingsId = 1;
+
+            PortalSettingsAPI.fetchPortalSettingsDetails(portalSettingsId).then(payload => {
                 let defaultTextIsMember = '';
                 let defaultTextIsNoMember = '';
                 let defaultTextBecomeMember = '';
                 let defaultTextBecomeNoMember = '';
                 let defaultContactGroupMemberId = '';
                 let defaultContactGroupNoMemberId = '';
-                if (payload.data.cooperativeName) {
-                    let cooperatie_naam = payload.data.cooperativeName;
+                if (payload.data.data.cooperativeName) {
+                    let cooperatie_naam = payload.data.data.cooperativeName;
                     defaultTextIsMember = 'Ik ben lid van ' + cooperatie_naam + ' en ik betaal geen inschrijfkosten';
                     defaultTextIsNoMember = 'Ik ben geen lid van ' + cooperatie_naam;
                     defaultTextBecomeMember =
@@ -121,11 +223,11 @@ class ProjectFormEdit extends Component {
                     defaultTextBecomeMember = 'Ik wil lid worden en betaal daarom geen inschrijfkosten';
                     defaultTextBecomeNoMember = 'Ik wil geen lid wordenen betaal inschrijfkosten';
                 }
-                defaultContactGroupMemberId = payload.data.defaultContactGroupMemberId
-                    ? payload.data.defaultContactGroupMemberId
+                defaultContactGroupMemberId = payload.data.data.defaultContactGroupMemberId
+                    ? payload.data.data.defaultContactGroupMemberId
                     : null;
-                defaultContactGroupNoMemberId = payload.data.defaultContactGroupNoMemberId
-                    ? payload.data.defaultContactGroupNoMemberId
+                defaultContactGroupNoMemberId = payload.data.data.defaultContactGroupNoMemberId
+                    ? payload.data.data.defaultContactGroupNoMemberId
                     : null;
 
                 this.setState({
@@ -269,15 +371,18 @@ class ProjectFormEdit extends Component {
         const { project } = this.state;
 
         let errors = {};
+        let errorMessages = {};
         let hasErrors = false;
 
         if (validator.isEmpty(project.name)) {
             errors.name = true;
+            errorMessages.name = 'Verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty('' + project.code)) {
             errors.code = true;
+            errorMessages.code = 'Verplicht';
             hasErrors = true;
         }
 
@@ -286,21 +391,25 @@ class ProjectFormEdit extends Component {
             (project.baseProjectCodeRef == null || validator.isEmpty(project.baseProjectCodeRef))
         ) {
             errors.baseProjectCodeRef = true;
+            errorMessages.baseProjectCodeRef = 'Verplicht';
             hasErrors = true;
         }
 
         if (!project.projectStatusId) {
             errors.projectStatusId = true;
+            errorMessages.projectStatusId = 'Verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty('' + project.ownedById)) {
             errors.ownedById = true;
+            errorMessages.ownedById = 'Verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty('' + project.administrationId)) {
             errors.administrationId = true;
+            errorMessages.administrationId = 'Verplicht';
             hasErrors = true;
         }
 
@@ -319,10 +428,12 @@ class ProjectFormEdit extends Component {
 
         if (validator.isEmpty('' + project.textTransactionCosts)) {
             errors.textTransactionCosts = true;
+            errorMessages.textTransactionCosts = 'Verplicht';
             hasErrors = true;
         }
         if (validator.isEmpty('' + project.transactionCostsCodeRef)) {
             errors.transactionCostsCodeRef = true;
+            errorMessages.transactionCostsCodeRef = 'Verplicht';
             hasErrors = true;
         }
         if (project.transactionCostsCodeRef === 'amount' || project.transactionCostsCodeRef === 'percentage') {
@@ -332,9 +443,7 @@ class ProjectFormEdit extends Component {
                 project.transactionCostsAmountMin < 0
             ) {
                 errors.transactionCostsAmountMin = true;
-                // errorMessage.transactionCostsAmountMin = 'Minimaal bedrag mag niet negatief zijn.';
-                // todo WM: opschonen log
-                // console.log('Minimaal bedrag mag niet negatief zijn.');
+                errorMessages.transactionCostsAmountMin = 'Minimaal bedrag mag niet negatief zijn.';
                 hasErrors = true;
             }
             if (
@@ -343,9 +452,7 @@ class ProjectFormEdit extends Component {
                 project.transactionCostsAmountMax < 0
             ) {
                 errors.transactionCostsAmountMax = true;
-                // errorMessage.transactionCostsAmountMin = 'Maximaal bedrag mag niet negatief zijn.';
-                // todo WM: opschonen log
-                // console.log('Maximaal bedrag mag niet negatief zijn.');
+                errorMessages.transactionCostsAmountMin = 'Maximaal bedrag mag niet negatief zijn.';
                 hasErrors = true;
             }
             if (
@@ -356,9 +463,7 @@ class ProjectFormEdit extends Component {
                 Number(project.transactionCostsAmountMax) < Number(project.transactionCostsAmountMin)
             ) {
                 errors.transactionCostsAmountMax = true;
-                // errorMessage.transactionCostsAmountMax = 'Maximaal bedrag mag niet kleiner zijn dan minimaal bedrag.';
-                // todo WM: opschonen log
-                // console.log('Maximaal bedrag mag niet kleiner zijn dan minimaal bedrag.');
+                errorMessages.transactionCostsAmountMax = 'Maximaal bedrag mag niet kleiner zijn dan minimaal bedrag.';
                 hasErrors = true;
             }
         }
@@ -386,15 +491,11 @@ class ProjectFormEdit extends Component {
             project.transactionCostsPercentage3 = null;
             if (project.transactionCostsAmount === null || validator.isEmpty(project.transactionCostsAmount + '')) {
                 errors.transactionCostsAmount = true;
-                // errorMessage.transactionCostsAmount = 'Vast bedrag is niet ingevuld.';
-                // todo WM: opschonen log
-                // console.log('Vast bedrag is niet ingevuld.');
+                errorMessages.transactionCostsAmount = 'Vast bedrag is niet ingevuld.';
                 hasErrors = true;
             } else if (Number(project.transactionCostsAmount) < 0) {
                 errors.transactionCostsAmount = true;
-                // errorMessage.transactionCostsAmount = 'Vast bedrag mag niet negatief zijn.';
-                // todo WM: opschonen log
-                // console.log('Vast bedrag mag niet negatief zijn.');
+                errorMessages.transactionCostsAmount = 'Vast bedrag mag niet negatief zijn.';
                 hasErrors = true;
             }
         }
@@ -406,30 +507,22 @@ class ProjectFormEdit extends Component {
             project.transactionCostsPercentage3 = null;
             if (project.transactionCostsAmount === null || validator.isEmpty(project.transactionCostsAmount + '')) {
                 errors.transactionCostsAmount = true;
-                // errorMessage.transactionCostsAmount = 'Bedrag per inleg is niet ingevuld.';
-                // todo WM: opschonen log
-                // console.log('Bedrag per inleg is niet ingevuld.');
+                errorMessages.transactionCostsAmount = 'Bedrag per inleg is niet ingevuld.';
                 hasErrors = true;
             } else if (Number(project.transactionCostsAmount) < 0) {
                 errors.transactionCostsAmount = true;
-                // errorMessage.transactionCostsAmount = 'Bedrag per inleg mag niet negatief zijn.';
-                // todo WM: opschonen log
-                // console.log('Bedrag per inleg mag niet negatief zijn.');
+                errorMessages.transactionCostsAmount = 'Bedrag per inleg mag niet negatief zijn.';
                 hasErrors = true;
             }
         }
         if (project.transactionCostsCodeRef === 'percentage') {
             if (project.transactionCostsAmount === null || validator.isEmpty(project.transactionCostsAmount + '')) {
                 errors.transactionCostsAmount = true;
-                // errorMessage.transactionCostsAmount = 'Eerste vanaf bedrag is niet ingevuld.';
-                // todo WM: opschonen log
-                // console.log('Eerste vanaf bedrag is niet ingevuld.');
+                errorMessages.transactionCostsAmount = 'Eerste vanaf bedrag is niet ingevuld.';
                 hasErrors = true;
             } else if (Number(project.transactionCostsAmount) < 0) {
                 errors.transactionCostsAmount = true;
-                // errorMessage.transactionCostsAmount = 'Eerste vanaf bedrag mag niet negatief zijn.';
-                // todo WM: opschonen log
-                // console.log('Eerste vanaf bedrag mag niet negatief zijn.');
+                errorMessages.transactionCostsAmount = 'Eerste vanaf bedrag mag niet negatief zijn.';
                 hasErrors = true;
             }
             if (
@@ -437,21 +530,15 @@ class ProjectFormEdit extends Component {
                 validator.isEmpty(project.transactionCostsPercentage + '')
             ) {
                 errors.transactionCostsPercentage = true;
-                // errorMessage.transactionCostsPercentage = 'Eerste vanaf percentage is niet ingevuld.';
-                // todo WM: opschonen log
-                // console.log('Eerste vanaf percentage is niet ingevuld.');
+                errorMessages.transactionCostsPercentage = 'Eerste vanaf percentage is niet ingevuld.';
                 hasErrors = true;
             } else if (Number(project.transactionCostsPercentage) < 0) {
                 errors.transactionCostsPercentage = true;
-                // errorMessage.transactionCostsPercentage = 'Eerste vanaf percentage mag niet negatief zijn.';
-                // todo WM: opschonen log
-                // console.log('Eerste vanaf percentage mag niet negatief zijn.');
+                errorMessages.transactionCostsPercentage = 'Eerste vanaf percentage mag niet negatief zijn.';
                 hasErrors = true;
             } else if (Number(project.transactionCostsPercentage) > 100) {
                 errors.transactionCostsPercentage = true;
-                // errorMessage.transactionCostsPercentage = 'Eerste vanaf percentage mag niet hoger dan 100% zijn.';
-                // todo WM: opschonen log
-                // console.log('Eerste vanaf percentage mag niet hoger dan 100% zijn.');
+                errorMessages.transactionCostsPercentage = 'Eerste vanaf percentage mag niet hoger dan 100% zijn.';
                 hasErrors = true;
             }
             if (project.transactionCostsAmount !== null && !validator.isEmpty(project.transactionCostsAmount + '')) {
@@ -461,9 +548,7 @@ class ProjectFormEdit extends Component {
                     Number(project.transactionCostsAmount2) < 0
                 ) {
                     errors.transactionCostsAmount2 = true;
-                    // errorMessage.transactionCostsAmount2 = 'Tweede vanaf bedrag mag niet negatief zijn.';
-                    // todo WM: opschonen log
-                    // console.log('Tweede vanaf bedrag mag niet negatief zijn.');
+                    errorMessages.transactionCostsAmount2 = 'Tweede vanaf bedrag mag niet negatief zijn.';
                     hasErrors = true;
                 }
                 if (
@@ -472,9 +557,8 @@ class ProjectFormEdit extends Component {
                     Number(project.transactionCostsAmount2) < Number(project.transactionCostsAmount)
                 ) {
                     errors.transactionCostsAmount2 = true;
-                    // errorMessage.transactionCostsAmount2 = 'Tweede vanaf bedrag mag niet kleiner zijn dan eerste vanaf bedrag.';
-                    // todo WM: opschonen log
-                    // console.log('Tweede vanaf bedrag mag niet kleiner zijn dan eerste vanaf bedrag.');
+                    errorMessages.transactionCostsAmount2 =
+                        'Tweede vanaf bedrag mag niet kleiner zijn dan eerste vanaf bedrag.';
                     hasErrors = true;
                 }
                 if (
@@ -484,21 +568,15 @@ class ProjectFormEdit extends Component {
                         validator.isEmpty(project.transactionCostsPercentage2 + ''))
                 ) {
                     errors.transactionCostsPercentage2 = true;
-                    // errorMessage.transactionCostsPercentage2 = 'Tweede vanaf percentage is niet ingevuld.';
-                    // todo WM: opschonen log
-                    // console.log('Tweede vanaf percentage is niet ingevuld.');
+                    errorMessages.transactionCostsPercentage2 = 'Tweede vanaf percentage is niet ingevuld.';
                     hasErrors = true;
                 } else if (Number(project.transactionCostsPercentage2) < 0) {
                     errors.transactionCostsPercentage2 = true;
-                    // errorMessage.transactionCostsPercentage2 = 'Tweede vanaf percentage mag niet negatief zijn.';
-                    // todo WM: opschonen log
-                    // console.log('Tweede vanaf percentage mag niet negatief zijn.');
+                    errorMessages.transactionCostsPercentage2 = 'Tweede vanaf percentage mag niet negatief zijn.';
                     hasErrors = true;
                 } else if (Number(project.transactionCostsPercentage2) > 100) {
                     errors.transactionCostsPercentage2 = true;
-                    // errorMessage.transactionCostsPercentage2 = 'Tweede vanaf percentage mag niet hoger dan 100% zijn.';
-                    // todo WM: opschonen log
-                    // console.log('Tweede vanaf percentage mag niet hoger dan 100% zijn.');
+                    errorMessages.transactionCostsPercentage2 = 'Tweede vanaf percentage mag niet hoger dan 100% zijn.';
                     hasErrors = true;
                 }
             }
@@ -509,9 +587,7 @@ class ProjectFormEdit extends Component {
                     Number(project.transactionCostsAmount3) < 0
                 ) {
                     errors.transactionCostsAmount3 = true;
-                    // errorMessage.transactionCostsAmount3 = 'Derde vanaf bedrag mag niet negatief zijn.';
-                    // todo WM: opschonen log
-                    // console.log('Derde vanaf bedrag mag niet negatief zijn.');
+                    errorMessages.transactionCostsAmount3 = 'Derde vanaf bedrag mag niet negatief zijn.';
                     hasErrors = true;
                 }
                 if (
@@ -520,9 +596,8 @@ class ProjectFormEdit extends Component {
                     Number(project.transactionCostsAmount3) < Number(project.transactionCostsAmount2)
                 ) {
                     errors.transactionCostsAmount3 = true;
-                    // errorMessage.transactionCostsAmount3 = 'Derde vanaf bedrag mag niet kleiner zijn dan tweede vanaf bedrag.';
-                    // todo WM: opschonen log
-                    // console.log('Derde vanaf bedrag mag niet kleiner zijn dan tweede vanaf bedrag.');
+                    errorMessages.transactionCostsAmount3 =
+                        'Derde vanaf bedrag mag niet kleiner zijn dan tweede vanaf bedrag.';
                     hasErrors = true;
                 }
                 if (
@@ -532,21 +607,15 @@ class ProjectFormEdit extends Component {
                         validator.isEmpty(project.transactionCostsPercentage3 + ''))
                 ) {
                     errors.transactionCostsPercentage3 = true;
-                    // errorMessage.transactionCostsPercentage3 = 'Derde vanaf percentage is niet ingevuld.';
-                    // todo WM: opschonen log
-                    // console.log('Derde vanaf percentage is niet ingevuld.');
+                    errorMessages.transactionCostsPercentage3 = 'Derde vanaf percentage is niet ingevuld.';
                     hasErrors = true;
                 } else if (Number(project.transactionCostsPercentage3) < 0) {
                     errors.transactionCostsPercentage3 = true;
-                    // errorMessage.transactionCostsPercentage3 = 'Derde vanaf percentage mag niet negatief zijn.';
-                    // todo WM: opschonen log
-                    // console.log('Derde vanaf percentage mag niet negatief zijn.');
+                    errorMessages.transactionCostsPercentage3 = 'Derde vanaf percentage mag niet negatief zijn.';
                     hasErrors = true;
                 } else if (Number(project.transactionCostsPercentage3) > 100) {
                     errors.transactionCostsPercentage3 = true;
-                    // errorMessage.transactionCostsPercentage3 = 'Derde vanaf percentage mag niet hoger dan 100% zijn.';
-                    // todo WM: opschonen log
-                    // console.log('Derde vanaf percentage mag niet hoger dan 100% zijn.');
+                    errorMessages.transactionCostsPercentage3 = 'Derde vanaf percentage mag niet hoger dan 100% zijn.';
                     hasErrors = true;
                 }
             }
@@ -584,54 +653,97 @@ class ProjectFormEdit extends Component {
             project.transactionCostsPercentage3 = null;
         }
 
+        if (validator.isEmpty('' + project.textRegisterPageHeader)) {
+            errors.textRegisterPageHeader = true;
+            errorMessages.textRegisterPageHeader = 'Verplicht';
+            hasErrors = true;
+        }
+        if (validator.isEmpty('' + project.textRegisterCurrentBookWorth)) {
+            errors.textRegisterCurrentBookWorth = true;
+            errorMessages.textRegisterCurrentBookWorth = 'Verplicht';
+            hasErrors = true;
+        }
+        if (validator.isEmpty('' + project.textRegisterParticipationSingular)) {
+            errors.textRegisterParticipationSingular = true;
+            errorMessages.textRegisterParticipationSingular = 'Verplicht';
+            hasErrors = true;
+        }
+        if (validator.isEmpty('' + project.textRegisterParticipationPlural)) {
+            errors.textRegisterParticipationPlural = true;
+            errorMessages.textRegisterParticipationPlural = 'Verplicht';
+            hasErrors = true;
+        }
+
         if (project.showQuestionAboutMembership) {
             if (!project.questionAboutMembershipGroupId) {
                 errors.questionAboutMembershipGroupId = true;
+                errorMessages.questionAboutMembershipGroupId = 'Verplicht';
                 hasErrors = true;
             }
             if (validator.isEmpty('' + project.textIsMember)) {
                 errors.textIsMember = true;
+                errorMessages.textIsMember = 'Verplicht';
                 hasErrors = true;
             }
             if (validator.isEmpty('' + project.textIsNoMember)) {
                 errors.textIsNoMember = true;
+                errorMessages.textIsNoMember = 'Verplicht';
                 hasErrors = true;
             }
             if (validator.isEmpty('' + project.textBecomeMember)) {
                 errors.textBecomeMember = true;
+                errorMessages.textBecomeMember = 'Verplicht';
                 hasErrors = true;
             }
             if (!project.memberGroupId) {
                 errors.memberGroupId = true;
+                errorMessages.memberGroupId = 'Verplicht';
                 hasErrors = true;
             }
             if (validator.isEmpty('' + project.textBecomeNoMember)) {
                 errors.textBecomeNoMember = true;
+                errorMessages.textBecomeNoMember = 'Verplicht';
                 hasErrors = true;
             }
             if (!project.noMemberGroupId) {
                 errors.noMemberGroupId = true;
+                errorMessages.noMemberGroupId = 'Verplicht';
                 hasErrors = true;
             }
         }
         if (validator.isEmpty('' + project.textAgreeTerms)) {
             errors.textAgreeTerms = true;
+            errorMessages.textAgreeTerms = 'Verplicht';
             hasErrors = true;
         }
         if (validator.isEmpty('' + project.textLinkAgreeTerms)) {
             errors.textLinkAgreeTerms = true;
+            errorMessages.textLinkAgreeTerms = 'Verplicht';
+            hasErrors = true;
+        }
+        if (validator.isEmpty('' + project.textLinkNameAgreeTerms)) {
+            errors.textLinkNameAgreeTerms = true;
+            errorMessages.textLinkNameAgreeTerms = 'Verplicht';
             hasErrors = true;
         }
         if (validator.isEmpty('' + project.textLinkUnderstandInfo)) {
             errors.textLinkUnderstandInfo = true;
+            errorMessages.textLinkUnderstandInfo = 'Verplicht';
+            hasErrors = true;
+        }
+        if (validator.isEmpty('' + project.textLinkNameUnderstandInfo)) {
+            errors.textLinkNameUnderstandInfo = true;
+            errorMessages.textLinkNameUnderstandInfo = 'Verplicht';
             hasErrors = true;
         }
         if (validator.isEmpty('' + project.textAcceptAgreement)) {
             errors.textAcceptAgreement = true;
+            errorMessages.textAcceptAgreement = 'Verplicht';
             hasErrors = true;
         }
         if (validator.isEmpty('' + project.textAcceptAgreementQuestion)) {
             errors.textAcceptAgreementQuestion = true;
+            errorMessages.textAcceptAgreementQuestion = 'Verplicht';
             hasErrors = true;
         }
 
@@ -651,16 +763,20 @@ class ProjectFormEdit extends Component {
         //     if (!postalCodeValid) {
         //         errors.postalCode = true;
         //         errors.countryId = true;
+        //         errorMessages.postalCode = 'Ongeldige postcode voor dit land';
+        //         errorMessages.countryId = 'Ongeldige postcode voor dit land';
         //         hasErrors = true;
         //     }
         // }
         if (!validator.isEmpty('' + project.postalCode) && !validator.isPostalCode(project.postalCode, 'any')) {
             errors.postalCode = true;
+            errorMessages.postalCode = 'Ongeldige postcode';
             hasErrors = true;
         }
 
         if (project.isMembershipRequired && validator.isEmpty(project.contactGroupIds)) {
             errors.contactGroupIds = true;
+            errorMessages.contactGroupIds = 'Verplicht';
             hasErrors = true;
         }
 
@@ -670,7 +786,63 @@ class ProjectFormEdit extends Component {
             project.dateEntry < this.state.disableBeforeEntryDate
         ) {
             errors.dateEntry = true;
+            errorMessages.dateEntry =
+                'Ongeldige ingangsdatum, mag niet liggen voor ' +
+                moment(this.state.disableBeforeEntryDate).format('DD-MM-YYYY');
             hasErrors = true;
+        }
+
+        // If isSceProject is false, init related fields.
+        if (!project.isSceProject) {
+            project.baseProjectCodeRef = null;
+            project.checkDoubleAddresses = false;
+            project.addressNumberSeries = '';
+            project.hideWhenNotMatchingPostalCheck = true;
+            if (project.projectType.codeRef !== 'postalcode_link_capital') {
+                project.checkPostalcodeLink = false;
+                project.postalcodeLink = '';
+            }
+        }
+
+        // todo WM: zelfde controle postalcodeLink / addressNumberSeries zit nu ook in ProjectFormEditGeneral
+        if (
+            (project.checkPostalcodeLink || project.projectType.codeRef === 'postalcode_link_capital') &&
+            (!project.postalcodeLink || validator.isEmpty('' + project.postalcodeLink))
+        ) {
+            errors.postalcodeLink = true;
+            errorMessages.postalcodeLink = 'Verplicht als controle postcoderoosgebied aan staat.';
+            hasErrors = true;
+        } else if (project.postalcodeLink) {
+            let regExpPostalcodeLink = new RegExp('^[0-9a-zA-Z,]*$');
+            if (!regExpPostalcodeLink.exec(project.postalcodeLink)) {
+                errors.postalcodeLink = true;
+                errorMessages.postalcodeLink = 'Ongeldige invoer, klik (i) voor uitleg.';
+                hasErrors = true;
+            }
+        }
+        if (
+            project.postalcodeLink &&
+            (project.postalcodeLink.replace(/\D/g, '').length !== 4 ||
+                project.postalcodeLink.replace(/[0-9]/g, '').trim().length !== 2)
+        ) {
+            project.addressNumberSeries = '';
+        }
+        if (project.addressNumberSeries) {
+            let regExpAddressNumberSeries = new RegExp('^[0-9a-zA-Z,:-]*$');
+            if (!regExpAddressNumberSeries.exec(project.addressNumberSeries)) {
+                errors.addressNumberSeries = true;
+                errorMessages.addressNumberSeries = 'Ongeldige invoer, klik (i) voor uitleg.';
+                hasErrors = true;
+            }
+        }
+
+        // If loan then loanTypeId required.
+        if (project.projectType.codeRef === 'loan') {
+            if (project.loanTypeId === null || validator.isEmpty('' + project.loanTypeId)) {
+                errors.loanTypeId = true;
+                errorMessages.loanTypeId = 'Type lening is verplicht bij Type project Lening.';
+                hasErrors = true;
+            }
         }
 
         // If isMemberShipRequired is false, set contactGroupIds to empty string, visibleForAllContacts to false
@@ -684,18 +856,6 @@ class ProjectFormEdit extends Component {
             project.textInfoProjectOnlyMembers = defaultTextInfoProjectOnlyMembers;
         }
 
-        // If isSceProject is false, init related fields.
-        if (!project.isSceProject) {
-            project.baseProjectCodeRef = null;
-            project.checkDoubleAddresses = false;
-            project.addressNumberSeries = null;
-            project.hideWhenNotMatchingPostalCheck = true;
-            if (project.projectType.codeRef !== 'postalcode_link_capital') {
-                project.checkPostalcodeLink = false;
-                project.postalcodeLink = null;
-            }
-        }
-
         if (isNaN(project.amountOfLoanNeeded)) {
             project.amountOfLoanNeeded = project.amountOfLoanNeeded.replace(/,/g, '.');
         }
@@ -706,7 +866,31 @@ class ProjectFormEdit extends Component {
             project.maxAmountLoan = project.maxAmountLoan.replace(/,/g, '.');
         }
 
-        this.setState({ ...this.state, errors: errors });
+        if (
+            project.allowIncreaseParticipationsInPortal &&
+            (project.documentTemplateIncreaseParticipationsId === null ||
+                validator.isEmpty('' + project.documentTemplateIncreaseParticipationsId))
+        ) {
+            errors.documentTemplateIncreaseParticipationsId = true;
+            errorMessages.documentTemplateIncreaseParticipationsId = 'Verplicht';
+            hasErrors = true;
+        }
+        if (
+            project.allowIncreaseParticipationsInPortal &&
+            (project.emailTemplateIncreaseParticipationsId === null ||
+                validator.isEmpty('' + project.emailTemplateIncreaseParticipationsId))
+        ) {
+            errors.emailTemplateIncreaseParticipationsId = true;
+            errorMessages.emailTemplateIncreaseParticipationsId = 'Verplicht';
+            hasErrors = true;
+        }
+        // If allowIncreaseParticipationsInPortal is false, set documentTemplateIncreaseParticipationsId and emailTemplateIncreaseParticipationsId to null
+        if (!project.allowIncreaseParticipationsInPortal) {
+            project.documentTemplateIncreaseParticipationsId = null;
+            project.emailTemplateIncreaseParticipationsId = null;
+        }
+
+        this.setState({ ...this.state, errors: errors, errorMessages: errorMessages });
 
         if (!hasErrors) {
             this.setState({ isSaving: true });
@@ -792,6 +976,7 @@ class ProjectFormEdit extends Component {
             contactGroupIdsSelected,
             visibleForAllContacts,
             textInfoProjectOnlyMembers,
+            loanTypeId,
             amountOfLoanNeeded,
             minAmountLoan,
             maxAmountLoan,
@@ -810,6 +995,9 @@ class ProjectFormEdit extends Component {
             addressNumberSeries,
             documentTemplateAgreementId,
             emailTemplateAgreementId,
+            allowIncreaseParticipationsInPortal,
+            documentTemplateIncreaseParticipationsId,
+            emailTemplateIncreaseParticipationsId,
             linkAgreeTerms,
             linkUnderstandInfo,
             linkProjectInfo,
@@ -819,6 +1007,10 @@ class ProjectFormEdit extends Component {
             showQuestionAboutMembership,
             useTransactionCostsWithMembership,
             questionAboutMembershipGroupId,
+            textRegisterPageHeader,
+            textRegisterCurrentBookWorth,
+            textRegisterParticipationSingular,
+            textRegisterParticipationPlural,
             textIsMember,
             textIsNoMember,
             textBecomeMember,
@@ -827,7 +1019,9 @@ class ProjectFormEdit extends Component {
             noMemberGroupId,
             textAgreeTerms,
             textLinkAgreeTerms,
+            textLinkNameAgreeTerms,
             textLinkUnderstandInfo,
+            textLinkNameUnderstandInfo,
             textAcceptAgreement,
             textAcceptAgreementQuestion,
             textRegistrationFinished,
@@ -853,6 +1047,7 @@ class ProjectFormEdit extends Component {
             amountInteressed,
             administration,
             hasPaymentInvoices,
+            hasConfirmedLoanRedemptionRevenue,
             valueCourses,
             amountOfParticipants,
             relatedDocumentsOnPortal,
@@ -923,13 +1118,17 @@ class ProjectFormEdit extends Component {
                     handleContactGroupIds={this.handleContactGroupIds}
                     handleReactSelectChange={this.handleReactSelectChange}
                     errors={this.state.errors}
+                    errorMessages={this.state.errorMessages}
                     contactGroups={this.state.contactGroups}
                     staticContactGroups={this.state.staticContactGroups}
                     amountOfParticipants={amountOfParticipants}
-                    documentTemplateAgreementId={documentTemplateAgreementId}
                     documentTemplates={this.state.documentTemplates}
-                    emailTemplateAgreementId={emailTemplateAgreementId}
                     emailTemplates={this.state.emailTemplates}
+                    documentTemplateAgreementId={documentTemplateAgreementId}
+                    emailTemplateAgreementId={emailTemplateAgreementId}
+                    allowIncreaseParticipationsInPortal={allowIncreaseParticipationsInPortal}
+                    documentTemplateIncreaseParticipationsId={documentTemplateIncreaseParticipationsId}
+                    emailTemplateIncreaseParticipationsId={emailTemplateIncreaseParticipationsId}
                     linkAgreeTerms={linkAgreeTerms}
                     linkUnderstandInfo={linkUnderstandInfo}
                     linkProjectInfo={linkProjectInfo}
@@ -946,6 +1145,10 @@ class ProjectFormEdit extends Component {
                     showQuestionAboutMembership={showQuestionAboutMembership}
                     useTransactionCostsWithMembership={useTransactionCostsWithMembership}
                     questionAboutMembershipGroupId={questionAboutMembershipGroupId}
+                    textRegisterPageHeader={textRegisterPageHeader}
+                    textRegisterCurrentBookWorth={textRegisterCurrentBookWorth}
+                    textRegisterParticipationSingular={textRegisterParticipationSingular}
+                    textRegisterParticipationPlural={textRegisterParticipationPlural}
                     textIsMember={textIsMember}
                     textIsNoMember={textIsNoMember}
                     textBecomeMember={textBecomeMember}
@@ -956,7 +1159,9 @@ class ProjectFormEdit extends Component {
                     hasLastYearFinancialOverviewDefinitive={this.state.hasLastYearFinancialOverviewDefinitive}
                     textAgreeTerms={textAgreeTerms}
                     textLinkAgreeTerms={textLinkAgreeTerms}
+                    textLinkNameAgreeTerms={textLinkNameAgreeTerms}
                     textLinkUnderstandInfo={textLinkUnderstandInfo}
+                    textLinkNameUnderstandInfo={textLinkNameUnderstandInfo}
                     textAcceptAgreement={textAcceptAgreement}
                     textAcceptAgreementQuestion={textAcceptAgreementQuestion}
                     textRegistrationFinished={textRegistrationFinished}
@@ -974,6 +1179,9 @@ class ProjectFormEdit extends Component {
 
                 {projectType && projectType.codeRef === 'loan' ? (
                     <ProjectFormDefaultLoan
+                        loanTypeId={loanTypeId}
+                        projectLoanTypes={this.props.projectLoanTypes}
+                        hasConfirmedLoanRedemptionRevenue={hasConfirmedLoanRedemptionRevenue}
                         amountOfLoanNeeded={amountOfLoanNeeded}
                         minAmountLoan={minAmountLoan}
                         maxAmountLoan={maxAmountLoan}
@@ -982,6 +1190,8 @@ class ProjectFormEdit extends Component {
                         amountOptioned={amountOptioned}
                         amountInteressed={amountInteressed}
                         handleInputChange={this.handleInputChange}
+                        errors={this.state.errors}
+                        errorMessages={this.state.errorMessages}
                     />
                 ) : null}
 
@@ -1066,6 +1276,7 @@ const mapStateToProps = state => {
         project: state.projectDetails,
         projectTypes: state.systemData.projectTypes,
         administrations: state.meDetails.administrations,
+        projectLoanTypes: state.systemData.projectLoanTypes,
     };
 };
 

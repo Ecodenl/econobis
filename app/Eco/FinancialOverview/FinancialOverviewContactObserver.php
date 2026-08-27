@@ -35,7 +35,7 @@ class FinancialOverviewContactObserver
             if ($financialOverviewContact->isDirty('status_id')) {
                 // if all financial overview contacts of financial overview are sent, than set financial overview to processed
                 $numberOfFOContatcsNotSent = FinancialOverviewContact::where('financial_overview_id', $financialOverviewId)
-                    ->where('status_id', '<>', 'sent')->count();
+                    ->where('status_id', '!=', 'sent')->count();
 
                 if ($numberOfFOContatcsNotSent == 0) {
                     $financialOverview = FinancialOverview::find($financialOverviewId);

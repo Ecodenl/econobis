@@ -60,7 +60,7 @@ class ContactJoryResource extends JoryResource
         $this->relation('person');
         $this->relation('organisation');
         $this->relation('phoneNumbers');
-        $this->relation('occupations');
+        $this->relation('occupationsActive');
         $this->relation('portalUser');
 
         $this->relation('participations');

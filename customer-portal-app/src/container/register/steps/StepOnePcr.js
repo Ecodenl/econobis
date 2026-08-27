@@ -13,6 +13,8 @@ import InputText from '../../../components/form/InputText';
 import { Alert } from 'react-bootstrap';
 import { get, isEmpty } from 'lodash';
 import calculateTransactionCosts from '../../../helpers/CalculateTransactionCosts';
+import textMethodeTransactionCosts from '../../../helpers/TextMethodeTransactionCosts';
+import { capitalizeFirstLetter, lowerCaseFirstLetter } from '../../../helpers/ModifyText';
 
 function StepOnePcr({
     portalSettings,
@@ -23,6 +25,10 @@ function StepOnePcr({
     initialRegisterValues,
     handleSubmitRegisterValues,
 }) {
+    const textRegisterCurrentBookWorth = project.textRegisterCurrentBookWorth ?? 'Huidige boekwaarde';
+    const textRegisterParticipationSingular = project.textRegisterParticipationSingular ?? 'participatie';
+    const textRegisterParticipationPlural = project.textRegisterParticipationPlural ?? 'participaties';
+
     const validationSchema = Yup.object({
         participationsOptioned: Yup.number()
             .integer('Alleen gehele aantallen')
@@ -59,9 +65,8 @@ function StepOnePcr({
         ),
     });
 
-    // const PCR_POWER_KWH_CONSUMPTION_PERCENTAGE = 0.8;
     const PCR_POWER_KWH_CONSUMPTION_PERCENTAGE = portalSettings['pcrPowerKwhConsumptionPercentage'];
-    // const PCR_GENERATING_CAPACITY_ONE_SOLAR_PANEL = 250;
+    const PCR_POWER_KWH_CONSUMPTION_FACTOR = portalSettings['pcrPowerKwhConsumptionPercentage'] / 100;
     const PCR_GENERATING_CAPACITY_ONE_SOLAR_PANEL = portalSettings['pcrGeneratingCapacityOneSolorPanel'];
 
     function calculateEstimatedGeneratedNumberOfKwh(values) {
@@ -87,7 +92,7 @@ function StepOnePcr({
         let pcrAdviseMaxNumberOfParticipations =
             calculatePowerKwhConsumption(values) > 0
                 ? Math.ceil(
-                      (calculatePowerKwhConsumption(values) * PCR_POWER_KWH_CONSUMPTION_PERCENTAGE) /
+                      (calculatePowerKwhConsumption(values) * PCR_POWER_KWH_CONSUMPTION_FACTOR) /
                           PCR_GENERATING_CAPACITY_ONE_SOLAR_PANEL
                   )
                 : 0;
@@ -103,6 +108,22 @@ function StepOnePcr({
     function calculateAmount(participationsOptioned) {
         return participationsOptioned ? participationsOptioned * project.currentBookWorth : 0;
     }
+
+    function getMethodeTransactionCosts(participationsOptioned, choiceMembership) {
+        if (!project.useTransactionCostsWithMembership) {
+            if (project.showQuestionAboutMembership && contactProjectData.belongsToMembershipGroup) {
+                return [project.textTransactionCosts + ': geen'];
+            }
+            if (project.showQuestionAboutMembership && choiceMembership === 1) {
+                return [project.textTransactionCosts + ': geen'];
+            }
+        }
+        return textMethodeTransactionCosts(
+            project,
+            calculateTransactionCostsAmount(participationsOptioned, choiceMembership)
+        );
+    }
+
     function calculateTransactionCostsAmount(participationsOptioned, choiceMembership) {
         if (!project.useTransactionCostsWithMembership) {
             if (project.showQuestionAboutMembership && contactProjectData.belongsToMembershipGroup) {
@@ -145,7 +166,7 @@ function StepOnePcr({
             {({ handleSubmit, values, touched, errors, setFieldValue }) => {
                 let pcrEstimatedGeneratedNumberOfKwh = calculateEstimatedGeneratedNumberOfKwh(values);
                 let powerKwhConsumption = Math.ceil(
-                    calculatePowerKwhConsumption(values) * PCR_POWER_KWH_CONSUMPTION_PERCENTAGE
+                    calculatePowerKwhConsumption(values) * PCR_POWER_KWH_CONSUMPTION_FACTOR
                 );
                 let pcrAdviseMaxNumberOfParticipations = calculateAdviseMaxNumberOfParticipations(values);
                 return (
@@ -153,16 +174,23 @@ function StepOnePcr({
                         <Form>
                             <Row>
                                 <Col xs={12} md={6}>
-                                    <FormLabel className={'field-label'}>Minimale aantal participaties</FormLabel>
+                                    <FormLabel className={'field-label'}>
+                                        Minimale aantal {lowerCaseFirstLetter(textRegisterParticipationPlural)}
+                                    </FormLabel>
                                     <TextBlock>{project.minParticipations}</TextBlock>
                                 </Col>
                                 <Col xs={12} md={6}>
-                                    <FormLabel className={'field-label'}>Maximale aantal participaties</FormLabel>
+                                    <FormLabel className={'field-label'}>
+                                        Maximale aantal {lowerCaseFirstLetter(textRegisterParticipationPlural)}
+                                    </FormLabel>
                                     <TextBlock>{project.maxParticipations}</TextBlock>
                                 </Col>
 
                                 <Col xs={12} md={6}>
-                                    <FormLabel className={'field-label'}>Huidige boekwaarde per participatie</FormLabel>
+                                    <FormLabel className={'field-label'}>
+                                        {capitalizeFirstLetter(textRegisterCurrentBookWorth)} per{' '}
+                                        {lowerCaseFirstLetter(textRegisterParticipationSingular)}
+                                    </FormLabel>
                                     <TextBlock>{MoneyPresenter(project.currentBookWorth)}</TextBlock>
                                 </Col>
                             </Row>
@@ -353,18 +381,19 @@ function StepOnePcr({
                             <Row>
                                 <Col xs={12} md={6}>
                                     <p>
-                                        We adviseren tot {PCR_POWER_KWH_CONSUMPTION_PERCENTAGE * 100}% van je jaarlijks
+                                        We adviseren tot {PCR_POWER_KWH_CONSUMPTION_PERCENTAGE}% van je jaarlijks
                                         verbruik minus de jaarlijkse opbrengsten (in jouw geval {powerKwhConsumption}{' '}
-                                        kWh) te dekken met participaties. In het veld hier direct onder is voor je
-                                        uitgerekend hoeveel participaties dat zijn. Het is een advies, je mag er ook
-                                        meer kopen. Dit kan echter slecht zijn voor je rendement.
+                                        kWh) te dekken met {lowerCaseFirstLetter(textRegisterParticipationPlural)}. In
+                                        het veld hier direct onder is voor je uitgerekend hoeveel{' '}
+                                        {lowerCaseFirstLetter(textRegisterParticipationPlural)} dat zijn. Het is een
+                                        advies, je mag er ook meer kopen. Dit kan echter slecht zijn voor je rendement.
                                     </p>
                                 </Col>
                             </Row>
                             <Row>
                                 <Col xs={12} md={6}>
                                     <Form.Label className={'field-label'}>
-                                        Advies maximaal aantal participaties
+                                        Advies maximaal aantal {lowerCaseFirstLetter(textRegisterParticipationPlural)}
                                     </Form.Label>
                                     <TextBlock>{pcrAdviseMaxNumberOfParticipations}</TextBlock>
                                 </Col>
@@ -373,7 +402,7 @@ function StepOnePcr({
                             <Row>
                                 <Col xs={12} md={6}>
                                     <Form.Label className={'field-label required'}>
-                                        Gewenst aantal participaties
+                                        Gewenst aantal {lowerCaseFirstLetter(textRegisterParticipationPlural)}
                                     </Form.Label>
                                     <Field name="participationsOptioned">
                                         {({ field }) => (
@@ -462,7 +491,15 @@ function StepOnePcr({
                                     <Row>
                                         <Col xs={12} md={6}>
                                             <FormLabel className={'field-label'}>
-                                                {project.textTransactionCosts}
+                                                {getMethodeTransactionCosts(
+                                                    values.participationsOptioned,
+                                                    values.choiceMembership
+                                                ).map((line, index) => (
+                                                    <React.Fragment key={index}>
+                                                        {line}
+                                                        <br />
+                                                    </React.Fragment>
+                                                ))}
                                             </FormLabel>
                                             <TextBlock>
                                                 {MoneyPresenter(

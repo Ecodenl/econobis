@@ -5,10 +5,11 @@ export const fetchDocumentTemplate = id => {
     };
 };
 
-export const deleteDocumentTemplate = id => {
+export const deleteDocumentTemplate = (id, callback) => {
     return {
         type: 'DELETE_DOCUMENT_TEMPLATE',
         id,
+        callback,
     };
 };
 

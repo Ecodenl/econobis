@@ -6,6 +6,7 @@ use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Http\Controllers\Api\Document\DocumentController;
 use Illuminate\Mail\Mailable;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class ParticipantReportMail extends Mailable
@@ -37,12 +38,12 @@ class ParticipantReportMail extends Mailable
      */
     public function build()
     {
-        if($this->document){
+        if($this->document && $this->document->file_path_and_name !== null){
             $this->subject($this->email->subject)
                 ->view('emails.generic')
                 ->text('emails.genericText')
-                ->attach(Storage::disk('documents')->path($this->document->filename), [
-                    'as' => $this->document->name
+                ->attach(Storage::disk('documents')->path($this->document->file_path_and_name), [
+                    'as' => $this->document->filename
                 ]);
         } else {
             $this->subject($this->email->subject)
@@ -54,9 +55,20 @@ class ParticipantReportMail extends Mailable
             $defaultAttachmentDocument = Document::find($this->defaultAttachmentDocumentId);
             if ($defaultAttachmentDocument) {
                 $documentController = new DocumentController();
-                $this->attachData($documentController->downLoadRawDocument($defaultAttachmentDocument), $defaultAttachmentDocument->filename, [
-                    'as' => $defaultAttachmentDocument->filename
-                ]);
+
+                $attachment = $documentController->downLoadRawDocument($defaultAttachmentDocument);
+                if ($attachment && isset($attachment['content'])) {
+                    $this->attachData(
+                        $attachment['content'],
+                        $attachment['filename'],
+                        [
+                            'as' => $attachment['filename'],
+                            'mime' => $attachment['mime'] ?? 'application/octet-stream',
+                        ]
+                    );
+                } else {
+                    Log::error("Failed to retrieve raw data for attachment: {$defaultAttachmentDocument->filename}");
+                }
             }
         }
 

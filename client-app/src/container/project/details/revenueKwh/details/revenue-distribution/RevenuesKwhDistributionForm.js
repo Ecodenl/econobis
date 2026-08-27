@@ -9,7 +9,7 @@ import Modal from '../../../../../../components/modal/Modal';
 import InputSelect from '../../../../../../components/form/InputSelect';
 import DocumentTemplateAPI from '../../../../../../api/document-template/DocumentTemplateAPI';
 import validator from 'validator';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import ViewText from '../../../../../../components/form/ViewText';
 import EmailTemplateAPI from '../../../../../../api/email-template/EmailTemplateAPI';
 import InputText from '../../../../../../components/form/InputText';
@@ -25,6 +25,12 @@ import ErrorModal from '../../../../../../components/modal/ErrorModal';
 import RevenuesKwhDistributionFormList from './RevenuesKwhDistributionFormList';
 import InputToggle from '../../../../../../components/form/InputToggle';
 import RevenuesKwhAPI from '../../../../../../api/project/RevenuesKwhAPI';
+
+// Functionele wrapper voor de class component
+const RevenuesKwhDistributionFormWrapper = props => {
+    const navigate = useNavigate();
+    return <RevenuesKwhDistributionForm {...props} navigate={navigate} />;
+};
 
 class RevenuesKwhDistributionForm extends Component {
     constructor(props) {
@@ -42,7 +48,8 @@ class RevenuesKwhDistributionForm extends Component {
                 .nextBusinessDay()
                 .format('YYYY-MM-DD'),
             datePayoutError: false,
-            subject: [],
+            subject: '',
+            subjectError: false,
             documentGroup: '',
             checkedAll: false,
             showCheckboxList: false,
@@ -145,12 +152,18 @@ class RevenuesKwhDistributionForm extends Component {
                 createType: '',
             });
         } else {
-            this.setState({
-                showCheckboxList: true,
-                createType: createType,
-                distributionKwhIds: this.props.revenuesKwh.distributionKwh.meta.distributionKwhIdsTotal,
-                checkedAll: true,
-            });
+            if (
+                this.props.revenuesKwh &&
+                this.props.revenuesKwh.distributionKwh &&
+                this.props.revenuesKwh.distributionKwh.meta
+            ) {
+                this.setState({
+                    showCheckboxList: true,
+                    createType: createType,
+                    distributionKwhIds: this.props.revenuesKwh.distributionKwh.meta.distributionKwhIdsTotal,
+                    checkedAll: true,
+                });
+            }
         }
     };
 
@@ -237,6 +250,17 @@ class RevenuesKwhDistributionForm extends Component {
             });
         }
 
+        if (validator.isEmpty(this.state.subject)) {
+            error = true;
+            this.setState({
+                subjectError: true,
+            });
+        } else {
+            this.setState({
+                subjectError: false,
+            });
+        }
+
         if (validator.isEmpty(this.state.datePayout + '')) {
             error = true;
             this.setState({
@@ -256,7 +280,7 @@ class RevenuesKwhDistributionForm extends Component {
                 distributionKwhIds: this.state.distributionKwhIds,
                 showOnPortal: this.state.showOnPortal,
             });
-            hashHistory.push(`/project/opbrengst-kwh/${this.props.revenuesKwh.id}/rapportage`);
+            this.props.navigate(`/project/opbrengst-kwh/${this.props.revenuesKwh.id}/rapportage`);
         } else if (!error) {
             this.setState({
                 showModal: true,
@@ -327,7 +351,7 @@ class RevenuesKwhDistributionForm extends Component {
                             <ButtonIcon iconName={'refresh'} onClickAction={this.reloadDistributions} />
                             {/*{this.props.revenuesKwh.confirmed == 1 &&*/}
                             {administrationIds.includes(this.props.revenuesKwh.project.administrationId) &&
-                            this.props.revenuesKwh.hasConfirmedPartsKwh === true &&
+                            this.props.revenuesKwh.hasConfirmedPartsKwh &&
                             this.state.createType === '' ? (
                                 <React.Fragment>
                                     <ButtonText
@@ -392,6 +416,8 @@ class RevenuesKwhDistributionForm extends Component {
                                             name={'subject'}
                                             value={this.state.subject}
                                             onChangeAction={this.handleSubjectChange}
+                                            required={'required'}
+                                            error={this.state.subjectError}
                                         />
                                     </div>
                                     <div className="col-md-12">
@@ -503,4 +529,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(RevenuesKwhDistributionForm);
+export default connect(mapStateToProps, mapDispatchToProps)(RevenuesKwhDistributionFormWrapper);

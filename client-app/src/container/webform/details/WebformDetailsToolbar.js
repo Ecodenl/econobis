@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import WebformDetailsDelete from './WebformDetailsDelete';
+
+// Functionele wrapper voor de class component
+const WebformToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <WebformToolbar {...props} navigate={navigate} />;
+};
 
 class WebformToolbar extends Component {
     constructor(props) {
@@ -22,7 +28,7 @@ class WebformToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => this.props.navigate(-1)} />
                         <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                     </div>
                 </div>
@@ -49,4 +55,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(WebformToolbar);
+export default connect(mapStateToProps, null)(WebformToolbarWrapper);

@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import moment from 'moment';
+
+// Functionele wrapper voor de class component
+const ExternalpartyAndOccupantEmailsSentListWrapper = props => {
+    const navigate = useNavigate();
+    return <ExternalpartyAndOccupantEmailsSentList {...props} navigate={navigate} />;
+};
 
 class ExternalpartyAndOccupantEmailsSentList extends Component {
     constructor(props) {
@@ -12,7 +18,7 @@ class ExternalpartyAndOccupantEmailsSentList extends Component {
     }
 
     openItem = id => {
-        hashHistory.push(`/email/${id}`);
+        this.props.navigate(`/email/${id}`);
     };
 
     render() {
@@ -46,8 +52,9 @@ class ExternalpartyAndOccupantEmailsSentList extends Component {
 
 const mapStateToProps = state => {
     return {
-        relatedExternalpartyAndOccupantEmailsSent: state.quotationRequestDetails.relatedExternalpartyAndOccupantEmailsSent,
+        relatedExternalpartyAndOccupantEmailsSent:
+            state.quotationRequestDetails.relatedExternalpartyAndOccupantEmailsSent,
     };
 };
 
-export default connect(mapStateToProps)(ExternalpartyAndOccupantEmailsSentList);
+export default connect(mapStateToProps)(ExternalpartyAndOccupantEmailsSentListWrapper);

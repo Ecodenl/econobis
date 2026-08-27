@@ -2,10 +2,16 @@ import React, { Component } from 'react';
 
 import Modal from '../../../components/modal/Modal';
 import CampaignDetailsAPI from '../../../api/campaign/CampaignDetailsAPI';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { setError } from '../../../actions/general/ErrorActions';
 import { connect } from 'react-redux';
 import * as PropTypes from 'prop-types';
+
+// Functionele wrapper voor de class component
+const CampaignDetailsDeleteWrapper = props => {
+    const navigate = useNavigate();
+    return <CampaignDetailsDelete {...props} navigate={navigate} />;
+};
 
 class CampaignDetailsDelete extends Component {
     constructor(props) {
@@ -17,7 +23,7 @@ class CampaignDetailsDelete extends Component {
         const confirmAction = async () => {
             try {
                 await CampaignDetailsAPI.deleteCampaign(id);
-                hashHistory.push(`/campagnes`);
+                this.props.navigate(`/campagnes`);
             } catch (error) {
                 if (error.response) {
                     this.props.setError(error.response.status, error.response.data.message);
@@ -76,4 +82,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(CampaignDetailsDelete);
+export default connect(null, mapDispatchToProps)(CampaignDetailsDeleteWrapper);

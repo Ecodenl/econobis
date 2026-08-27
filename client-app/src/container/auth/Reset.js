@@ -1,8 +1,17 @@
 import React, { Component } from 'react';
+import { getApiUrl } from '../../api/utils/ApiUrl';
+
 import axios from 'axios';
-import { hashHistory } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
 import passwordValidator from '../../helpers/PasswordValidator';
 import { isEmpty } from 'lodash';
+
+// Functionele wrapper voor de class component
+const ResetWrapper = props => {
+    const navigate = useNavigate();
+    const params = useParams();
+    return <Reset {...props} navigate={navigate} params={params} />;
+};
 
 class Reset extends Component {
     constructor(props) {
@@ -20,7 +29,7 @@ class Reset extends Component {
         e.preventDefault();
         const { token, email, password, password_confirmation } = this.state;
 
-        const url = `${URL_API}/api/password/reset`;
+        const url = `${getApiUrl()}/api/password/reset`;
         if (!passwordValidator(password)) {
             this.setState({ passwordError: true, passwordError2: false });
         } else if (!passwordValidator(password_confirmation)) {
@@ -39,7 +48,7 @@ class Reset extends Component {
                     if (isEmpty(response.data)) {
                         this.setState({ err: false, errMessage: '', passwordError: false, passwordError2: false });
                         setTimeout(() => {
-                            hashHistory.push('/login');
+                            this.props.navigate('/login');
                         }, 2000);
                     } else {
                         // console.log(response.data);
@@ -189,4 +198,4 @@ class Reset extends Component {
     }
 }
 
-export default Reset;
+export default ResetWrapper;

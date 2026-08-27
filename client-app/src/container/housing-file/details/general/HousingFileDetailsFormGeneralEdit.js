@@ -11,6 +11,7 @@ import ButtonText from '../../../../components/button/ButtonText';
 import InputToggle from '../../../../components/form/InputToggle';
 import ViewText from '../../../../components/form/ViewText';
 import InputTextArea from '../../../../components/form/InputTextArea';
+import Modal from '../../../../components/modal/Modal';
 
 class HousingFileDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -41,6 +42,8 @@ class HousingFileDetailsFormGeneralEdit extends Component {
             cookType,
             heatSource,
             waterComfort,
+            revenueSolarPanels,
+            wozValue,
         } = props.housingFileDetails;
 
         this.state = {
@@ -59,13 +62,13 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                 fullAddress,
                 buildingTypeId: buildingType ? buildingType.id : '',
                 buildYear: buildYear ? buildYear : '',
-                isHouseForSale: isHouseForSale ? isHouseForSale : true,
+                isHouseForSale: isHouseForSale ? isHouseForSale : '2',
                 surface: surface ? surface : '',
                 roofTypeId: roofType ? roofType.id : '',
                 energyLabelId: energyLabel ? energyLabel.id : '',
                 floors: floors ? floors : '',
                 energyLabelStatusId: energyLabelStatus ? energyLabelStatus.id : '',
-                isMonument: isMonument ? isMonument : false,
+                isMonument: isMonument ? isMonument : '2',
                 remark,
                 remarkCoach,
                 hoomBuildingId: hoomBuildingId ? hoomBuildingId : null,
@@ -79,7 +82,26 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                 cookType: cookType ? cookType.hoomStatusValue : '',
                 heatSource: heatSource ? heatSource.hoomStatusValue : '',
                 waterComfort: waterComfort ? waterComfort.hoomStatusValue : '',
+                revenueSolarPanels: revenueSolarPanels ? revenueSolarPanels : '',
+                wozValue: wozValue !== null ? wozValue : '',
             },
+            errors: {
+                wozValue: false,
+            },
+            noYesUnknownOptions: [
+                {
+                    id: '0',
+                    name: 'Nee',
+                },
+                {
+                    id: '1',
+                    name: 'Ja',
+                },
+                {
+                    id: '2',
+                    name: 'Onbekend',
+                },
+            ],
         };
     }
 
@@ -156,10 +178,48 @@ class HousingFileDetailsFormGeneralEdit extends Component {
         });
     };
 
-    handleSubmit = event => {
+    handlePreSubmit = event => {
         event.preventDefault();
 
         const { housingFile } = this.state;
+
+        let errors = {};
+        let hasErrors = false;
+
+        // Check of waarde leeg is
+        if (housingFile.wozValue === '') {
+            housingFile.wozValue = null;
+        } else if (!isNaN(parseFloat(housingFile.wozValue)) && parseFloat(housingFile.wozValue) < 0) {
+            errors.wozValue = true;
+            hasErrors = true;
+        } else if (isNaN(parseFloat(housingFile.wozValue))) {
+            errors.wozValue = true; // Ongeldige invoer
+            hasErrors = true;
+        }
+
+        this.setState({ ...this.state, errors: errors });
+
+        //optionally show the modal for:
+        //if the woz_value changed show pop-up to ask which opportunities to re-calculate the below_woz_limit of
+        //(all, or just the ones without below_woz_limit)
+        if (!hasErrors && this.props.housingFileDetails.wozValue != housingFile.wozValue) {
+            this.setState({ showModal: true });
+        } else if (!hasErrors) {
+            this.handleSubmit();
+        }
+    };
+
+    modalConfirmActionYes = event => {
+        this.handleSubmit('yes');
+    };
+
+    modalConfirmActionNo = event => {
+        this.handleSubmit('no');
+    };
+
+    handleSubmit = updateAllOpportunityBelowWozLimit => {
+        const { housingFile } = this.state;
+        housingFile.updateAllOpportunityBelowWozLimit = updateAllOpportunityBelowWozLimit;
 
         HousingFileDetailsAPI.updateHousingFile(housingFile).then(() => {
             this.props.fetchHousingFileDetails(housingFile.id);
@@ -193,11 +253,14 @@ class HousingFileDetailsFormGeneralEdit extends Component {
             cookType,
             heatSource,
             waterComfort,
+            revenueSolarPanels,
+            wozValue,
         } = this.state.housingFile;
         const showFields = this.props.housingFileHoomLinksToShowInEconobis;
+        const importsFromHoom = this.props.housingFileHoomLinksToImportFromHoom;
 
         return (
-            <form className="form-horizontal" onSubmit={this.handleSubmit}>
+            <form className="form-horizontal" onSubmit={this.handlePreSubmit}>
                 <div className="row">
                     <InputText
                         label={'Contact'}
@@ -225,7 +288,12 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                             value={buildingTypeId}
                             options={this.state.buildingTypes}
                             onChangeAction={this.handleInputChange}
-                            readOnly={hasHoomDossierLink}
+                            readOnly={
+                                hasHoomDossierLink &&
+                                importsFromHoom.some(
+                                    importFromHoom => importFromHoom.econobisFieldName === 'building_type_id'
+                                )
+                            }
                         />
                     ) : null}
 
@@ -234,10 +302,15 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                             label={'Bouwjaar'}
                             name={'buildYear'}
                             value={buildYear}
-                            min={1500}
+                            min={1000}
                             max={3000}
                             onChangeAction={this.handleInputChange}
-                            readOnly={hasHoomDossierLink}
+                            readOnly={
+                                hasHoomDossierLink &&
+                                importsFromHoom.some(
+                                    importFromHoom => importFromHoom.econobisFieldName === 'build_year'
+                                )
+                            }
                         />
                     ) : null}
                 </div>
@@ -250,7 +323,10 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                             value={surface}
                             min={0}
                             onChangeAction={this.handleInputChange}
-                            readOnly={hasHoomDossierLink}
+                            readOnly={
+                                hasHoomDossierLink &&
+                                importsFromHoom.some(importFromHoom => importFromHoom.econobisFieldName === 'surface')
+                            }
                         />
                     ) : null}
                     {showFields.some(showField => showField.econobisFieldName === 'roof_type_id') ? (
@@ -261,7 +337,12 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                             value={roofTypeId}
                             options={this.state.roofTypes}
                             onChangeAction={this.handleInputChange}
-                            readOnly={hasHoomDossierLink}
+                            readOnly={
+                                hasHoomDossierLink &&
+                                importsFromHoom.some(
+                                    importFromHoom => importFromHoom.econobisFieldName === 'roof_type_id'
+                                )
+                            }
                         />
                     ) : null}
                 </div>
@@ -275,7 +356,12 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                             value={energyLabelId}
                             options={this.state.energyLabels}
                             onChangeAction={this.handleInputChange}
-                            readOnly={hasHoomDossierLink}
+                            readOnly={
+                                hasHoomDossierLink &&
+                                importsFromHoom.some(
+                                    importFromHoom => importFromHoom.econobisFieldName === 'energy_label_id'
+                                )
+                            }
                         />
                     ) : null}
                     {showFields.some(showField => showField.econobisFieldName === 'floors') ? (
@@ -285,7 +371,10 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                             value={floors}
                             min={0}
                             onChangeAction={this.handleInputChange}
-                            readOnly={hasHoomDossierLink}
+                            readOnly={
+                                hasHoomDossierLink &&
+                                importsFromHoom.some(importFromHoom => importFromHoom.econobisFieldName === 'floors')
+                            }
                         />
                     ) : null}
                 </div>
@@ -299,15 +388,28 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                             value={energyLabelStatusId}
                             options={this.state.energyLabelStatus}
                             onChangeAction={this.handleInputChange}
+                            readOnly={
+                                hasHoomDossierLink &&
+                                importsFromHoom.some(
+                                    importFromHoom => importFromHoom.econobisFieldName === 'energy_label_status_id'
+                                )
+                            }
                         />
                     ) : null}
                     {showFields.some(showField => showField.econobisFieldName === 'is_monument') ? (
-                        <InputToggle
+                        <InputSelect
                             label={'Monument'}
                             name={'isMonument'}
                             value={isMonument}
+                            options={this.state.noYesUnknownOptions}
+                            emptyOption={false}
                             onChangeAction={this.handleInputChange}
-                            disabled={hasHoomDossierLink}
+                            readOnly={
+                                hasHoomDossierLink &&
+                                importsFromHoom.some(
+                                    importFromHoom => importFromHoom.econobisFieldName === 'is_monument'
+                                )
+                            }
                         />
                     ) : null}
                 </div>
@@ -319,12 +421,35 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                         value={hoomBuildingId && hoomBuildingId}
                     />
                     {showFields.some(showField => showField.econobisFieldName === 'is_house_for_sale') ? (
-                        <InputToggle
+                        <InputSelect
                             label={'Koophuis'}
                             name={'isHouseForSale'}
                             value={isHouseForSale}
+                            options={this.state.noYesUnknownOptions}
+                            emptyOption={false}
                             onChangeAction={this.handleInputChange}
-                            disabled={hasHoomDossierLink}
+                            readOnly={
+                                hasHoomDossierLink &&
+                                importsFromHoom.some(
+                                    importFromHoom => importFromHoom.econobisFieldName === 'is_house_for_sale'
+                                )
+                            }
+                        />
+                    ) : null}
+                </div>
+                <div className="row">
+                    {showFields.some(showField => showField.econobisFieldName === 'woz_value') ? (
+                        <InputText
+                            label={'WOZ waarde'}
+                            name="wozValue"
+                            value={wozValue}
+                            allowZero={true}
+                            onChangeAction={this.handleInputChange}
+                            readOnly={
+                                hasHoomDossierLink &&
+                                importsFromHoom.some(importFromHoom => importFromHoom.econobisFieldName === 'woz_value')
+                            }
+                            error={this.state.errors.wozValue}
                         />
                     ) : null}
                 </div>
@@ -336,7 +461,12 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                             value={wallSurface}
                             min={0}
                             onChangeAction={this.handleInputChange}
-                            readOnly={hasHoomDossierLink}
+                            readOnly={
+                                hasHoomDossierLink &&
+                                importsFromHoom.some(
+                                    importFromHoom => importFromHoom.econobisFieldName === 'wall_surface'
+                                )
+                            }
                         />
                     ) : null}
                     {showFields.some(showField => showField.econobisFieldName === 'total_window_surface') ? (
@@ -346,23 +476,16 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                             value={totalWindowSurface}
                             min={0}
                             onChangeAction={this.handleInputChange}
-                            readOnly={hasHoomDossierLink}
+                            readOnly={
+                                hasHoomDossierLink &&
+                                importsFromHoom.some(
+                                    importFromHoom => importFromHoom.econobisFieldName === 'total_window_surface'
+                                )
+                            }
                         />
                     ) : null}
                 </div>
                 <div className="row">
-                    {showFields.some(showField => showField.econobisFieldName === 'frame_type') ? (
-                        <InputSelect
-                            label={'Kozijntype'}
-                            size={'col-sm-6'}
-                            name="frameType"
-                            value={frameType}
-                            options={this.state.frameTypeSelection}
-                            optionValue={'key'}
-                            onChangeAction={this.handleInputChange}
-                            readOnly={hasHoomDossierLink}
-                        />
-                    ) : null}
                     {showFields.some(showField => showField.econobisFieldName === 'floor_surface') ? (
                         <InputText
                             label={'Vloeroppervlakte'}
@@ -370,29 +493,27 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                             value={floorSurface}
                             min={0}
                             onChangeAction={this.handleInputChange}
-                            readOnly={hasHoomDossierLink}
+                            readOnly={
+                                hasHoomDossierLink &&
+                                importsFromHoom.some(
+                                    importFromHoom => importFromHoom.econobisFieldName === 'floor_surface'
+                                )
+                            }
                         />
                     ) : null}
-                </div>
-                <div className="row">
-                    {showFields.some(showField => showField.econobisFieldName === 'pitched_roof_surface') ? (
+                    {showFields.some(showField => showField.econobisFieldName === 'revenue_solar_panels') ? (
                         <InputText
-                            label={'Hellend dakoppervlakte'}
-                            name="pitchedRoofSurface"
-                            value={pitchedRoofSurface}
+                            label={'Opbrengst zonnepanelen'}
+                            name="revenueSolarPanels"
+                            value={revenueSolarPanels}
                             min={0}
                             onChangeAction={this.handleInputChange}
-                            readOnly={hasHoomDossierLink}
-                        />
-                    ) : null}
-                    {showFields.some(showField => showField.econobisFieldName === 'flat_roof_surface') ? (
-                        <InputText
-                            label={'Platte dakoppervlakte'}
-                            name="flatRoofSurface"
-                            value={flatRoofSurface}
-                            min={0}
-                            onChangeAction={this.handleInputChange}
-                            readOnly={hasHoomDossierLink}
+                            readOnly={
+                                hasHoomDossierLink &&
+                                importsFromHoom.some(
+                                    importFromHoom => importFromHoom.econobisFieldName === 'revenue_solar_panels'
+                                )
+                            }
                         />
                     ) : null}
                 </div>
@@ -406,7 +527,10 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                             options={this.state.cookTypeSelection}
                             optionValue={'key'}
                             onChangeAction={this.handleInputChange}
-                            readOnly={hasHoomDossierLink}
+                            readOnly={
+                                hasHoomDossierLink &&
+                                importsFromHoom.some(importFromHoom => importFromHoom.econobisFieldName === 'cook_type')
+                            }
                         />
                     ) : null}
                     {showFields.some(showField => showField.econobisFieldName === 'heat_source') ? (
@@ -418,7 +542,12 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                             options={this.state.heatSourceSelection}
                             optionValue={'key'}
                             onChangeAction={this.handleInputChange}
-                            readOnly={hasHoomDossierLink}
+                            readOnly={
+                                hasHoomDossierLink &&
+                                importsFromHoom.some(
+                                    importFromHoom => importFromHoom.econobisFieldName === 'heat_source'
+                                )
+                            }
                         />
                     ) : null}
                 </div>
@@ -432,7 +561,61 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                             options={this.state.waterComfortSelection}
                             optionValue={'key'}
                             onChangeAction={this.handleInputChange}
-                            readOnly={hasHoomDossierLink}
+                            readOnly={
+                                hasHoomDossierLink &&
+                                importsFromHoom.some(
+                                    importFromHoom => importFromHoom.econobisFieldName === 'water_comfort'
+                                )
+                            }
+                        />
+                    ) : null}
+                    {showFields.some(showField => showField.econobisFieldName === 'frame_type') ? (
+                        <InputSelect
+                            label={'Kozijntype'}
+                            size={'col-sm-6'}
+                            name="frameType"
+                            value={frameType}
+                            options={this.state.frameTypeSelection}
+                            optionValue={'key'}
+                            onChangeAction={this.handleInputChange}
+                            readOnly={
+                                hasHoomDossierLink &&
+                                importsFromHoom.some(
+                                    importFromHoom => importFromHoom.econobisFieldName === 'frame_type'
+                                )
+                            }
+                        />
+                    ) : null}
+                </div>
+                <div className="row">
+                    {showFields.some(showField => showField.econobisFieldName === 'pitched_roof_surface') ? (
+                        <InputText
+                            label={'Hellend dakoppervlakte'}
+                            name="pitchedRoofSurface"
+                            value={pitchedRoofSurface}
+                            min={0}
+                            onChangeAction={this.handleInputChange}
+                            readOnly={
+                                hasHoomDossierLink &&
+                                importsFromHoom.some(
+                                    importFromHoom => importFromHoom.econobisFieldName === 'pitched_roof_surface'
+                                )
+                            }
+                        />
+                    ) : null}
+                    {showFields.some(showField => showField.econobisFieldName === 'flat_roof_surface') ? (
+                        <InputText
+                            label={'Platte dakoppervlakte'}
+                            name="flatRoofSurface"
+                            value={flatRoofSurface}
+                            min={0}
+                            onChangeAction={this.handleInputChange}
+                            readOnly={
+                                hasHoomDossierLink &&
+                                importsFromHoom.some(
+                                    importFromHoom => importFromHoom.econobisFieldName === 'flat_roof_surface'
+                                )
+                            }
                         />
                     ) : null}
                 </div>
@@ -462,9 +645,26 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                             buttonText={'Sluiten'}
                             onClickAction={this.props.switchToView}
                         />
-                        <ButtonText buttonText={'Opslaan'} onClickAction={this.handleSubmit} />
+                        <ButtonText buttonText={'Opslaan'} onClickAction={this.handlePreSubmit} />
                     </div>
                 </div>
+
+                {this.state.showModal && (
+                    <Modal
+                        title="Herberekening 'onder de WOZ grens' voor gekoppelde kansen"
+                        closeModal={this.modalConfirmActionNo}
+                        showConfirmAction={this.state.modalShowConfirmAction}
+                        confirmAction={this.modalConfirmActionYes}
+                        buttonCancelText="Nee (alleen nog niet bepaalde herberekenen)"
+                        buttonConfirmText="Ja (alles herberekenen)"
+                    >
+                        U heeft de WOZ waarde van dit woningdossier aangepast.
+                        <br />
+                        Wilt u bij alle gekoppelde kansen de bepaling of waarde onder de WOZ grens ligt (zoals
+                        vastgelegd in campagne) herberekenen (Ja) of alleen van de kansen waar dit nog niet eerder is
+                        bepaald (Nee).
+                    </Modal>
+                )}
             </form>
         );
     }
@@ -475,6 +675,7 @@ const mapStateToProps = state => {
         housingFileDetails: state.housingFileDetails,
         contactDetails: state.contactDetails,
         housingFileHoomLinksToShowInEconobis: state.systemData.housingFileHoomLinksToShowInEconobis,
+        housingFileHoomLinksToImportFromHoom: state.systemData.housingFileHoomLinksToImportFromHoom,
     };
 };
 

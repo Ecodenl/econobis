@@ -20,6 +20,7 @@ class Sort extends RequestSort
         'address',
         'areaName',
         'measureRequestedId',
+        'intakeSourceId',
         'statusId',
         'campaign',
     ];
@@ -31,6 +32,7 @@ class Sort extends RequestSort
         'areaName' => 'addressAreaName.shared_area_name',
         'statusId' => 'intakes.intake_status_id',
         'measureRequestedId' => 'intake_measure_requested.measure_category_id',
+        'intakeSourceId' => 'intake_source.source_id',
         'campaign' => 'campaigns.name',
     ];
 
@@ -38,8 +40,9 @@ class Sort extends RequestSort
         'fullName' => 'contact',
         'address' => 'address',
         'areaName' => 'addressAreaName',
-        'sourceId' => 'source',
+//        'sourceId' => 'source',
         'measureRequestedId' => 'measureRequested',
+        'intakeSourceId' => 'intakeSource',
         'campaign' => 'campaign',
     ];
 }

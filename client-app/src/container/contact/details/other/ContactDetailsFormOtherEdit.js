@@ -62,6 +62,7 @@ class ContactDetailsFormOtherEdit extends Component {
                 collectMandateFirstRunDate: false,
             },
             showErrorModal: false,
+            modalTitleMessage: '',
             modalErrorMessage: '',
         };
     }
@@ -169,23 +170,24 @@ class ContactDetailsFormOtherEdit extends Component {
                     this.props.switchToView();
                 })
                 .catch(error => {
-                    let errorObject = JSON.parse(JSON.stringify(error));
+                    // let errorObject = JSON.parse(JSON.stringify(error));
 
                     let errorMessage = 'Er is iets misgegaan bij opslaan. Probeer het opnieuw.';
 
-                    if (errorObject.response.status !== 500) {
-                        errorMessage = errorObject.response.data.message;
+                    if (error.response.status !== 500) {
+                        errorMessage = error.response.data.message;
                     }
 
                     this.setState({
                         showErrorModal: true,
+                        modalTitleMessage: error.response.status === 412 ? 'Twinfield meldingen' : 'Fout bij opslaan',
                         modalErrorMessage: errorMessage,
                     });
                 });
     };
 
     closeErrorModal = () => {
-        this.setState({ showErrorModal: false, modalErrorMessage: '' });
+        this.setState({ showErrorModal: false, modalErrorMessage: '', modalTitleMessage: '' });
     };
 
     render() {
@@ -330,7 +332,7 @@ class ContactDetailsFormOtherEdit extends Component {
                 {this.state.showErrorModal && (
                     <ErrorModal
                         closeModal={this.closeErrorModal}
-                        title={'Fout bij opslaan'}
+                        title={this.state.modalTitleMessage}
                         errorMessage={this.state.modalErrorMessage}
                     />
                 )}

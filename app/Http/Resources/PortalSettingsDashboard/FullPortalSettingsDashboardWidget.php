@@ -18,7 +18,7 @@ class FullPortalSettingsDashboardWidget
     {
         return [
             'id' => $this->id,
-            'codeRef' => $this->welcome_title,
+            'codeRef' => $this->code_ref,
             'order' => $this->order,
             'title' => $this->title,
             'text' => $this->text,

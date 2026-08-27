@@ -1,0 +1,48 @@
+<?php
+
+namespace App\Http\Controllers\Portal\PortalSettings;
+
+use App\Eco\PortalSettings\PortalSettings;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\PortalSettings\FullPortalSettings;
+
+class PortalSettingsController extends Controller
+{
+    protected function getAllKeys(PortalSettings $portalSettings)
+    {
+        return FullPortalSettings::make($portalSettings);
+    }
+    protected function getPortalActive()
+    {
+        return PortalSettings::first()?->portal_active;
+    }
+    protected function getCooperativeName()
+    {
+        return PortalSettings::first()?->cooperative_name;
+    }
+    protected function getShowNewAtCooperativeLink()
+    {
+        return PortalSettings::first()?->show_new_at_cooperative_link ? PortalSettings::first()?->show_new_at_cooperative_link : false;
+    }
+    protected function getPortalLoginInfoText()
+    {
+        return PortalSettings::first()?->portal_login_info_text ? PortalSettings::first()?->portal_login_info_text : '';
+    }
+    protected function getNewAtCooperativeLinkText()
+    {
+        $cooperativeName = PortalSettings::first()?->cooperative_name;
+        $newAtCooperativeLinkText =  PortalSettings::first()?->new_at_cooperative_link_text ? PortalSettings::first()?->new_at_cooperative_link_text : '';
+        $newAtCooperativeLinkText = str_replace('{cooperatie_naam}', $cooperativeName, $newAtCooperativeLinkText);
+
+        return !empty($newAtCooperativeLinkText) ? $newAtCooperativeLinkText : false;
+    }
+    protected function getShowAllowRequestForDelete()
+    {
+        return PortalSettings::first()?->show_allow_request_for_delete ? PortalSettings::first()?->show_allow_request_for_delete : false;
+    }
+    protected function getAllowRequestForDeleteButtonText()
+    {
+        return  PortalSettings::first()?->allow_request_for_delete_button_text ? PortalSettings::first()?->allow_request_for_delete_button_text : '';
+    }
+
+}

@@ -17,7 +17,10 @@ function FreeFieldsListApp() {
     const [isLoading, setLoading] = useState(true);
     const [meta, setMetaData] = useState({ total: 0 });
     const [filter, setFilter] = useState([]);
-    const [sort, setSort] = useState([{ field: 'tableName', order: 'ASC' }]);
+    const [sort, setSort] = useState([
+        { field: 'tableName', order: 'ASC' },
+        { field: 'sortOrder', order: 'ASC' },
+    ]);
     const [pagination, setPagination] = useState({ offset: 0, limit: recordsPerPage });
     const pressedEnter = useKeyPress('Enter');
 

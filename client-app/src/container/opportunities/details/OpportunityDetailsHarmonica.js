@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import TaskHarmonica from './harmonica/TaskHarmonica';
 import NoteHarmonica from './harmonica/NoteHarmonica';
 import DocumentHarmonica from './harmonica/DocumentHarmonica';
 import EmailSentHarmonica from './harmonica/EmailSentHarmonica';
+
+// Functionele wrapper voor de class component
+const OpportunityDetailsHarmonicaWrapper = props => {
+    const navigate = useNavigate();
+    return <OpportunityDetailsHarmonica {...props} navigate={navigate} />;
+};
 
 class OpportunityDetailsHarmonica extends Component {
     constructor(props) {
@@ -39,7 +45,7 @@ class OpportunityDetailsHarmonica extends Component {
 
     newTask() {
         if (this.props.opportunityDetails) {
-            hashHistory.push(
+            this.props.navigate(
                 `/taak/nieuw/open/kans/${this.props.id}/intake/${this.props.opportunityDetails.intake.id}/campagne/${this.props.opportunityDetails.intake.campaign.id}/contact/${this.props.opportunityDetails.intake.contact.id}`
             );
         }
@@ -47,7 +53,7 @@ class OpportunityDetailsHarmonica extends Component {
 
     newNote() {
         if (this.props.opportunityDetails) {
-            hashHistory.push(
+            this.props.navigate(
                 `/taak/nieuw/afgehandeld/kans/${this.props.id}/intake/${this.props.opportunityDetails.intake.id}/campagne/${this.props.opportunityDetails.intake.campaign.id}/contact/${this.props.opportunityDetails.intake.contact.id}`
             );
         }
@@ -56,7 +62,7 @@ class OpportunityDetailsHarmonica extends Component {
     // todo hier bij newDocument zouden we eventueel ook campaignId meteen kunnen meegeven en vullen ??
     newDocument(type) {
         if (this.props.opportunityDetails) {
-            hashHistory.push(
+            this.props.navigate(
                 `/document/nieuw/${type}/kans/${this.props.id}/intake/${this.props.opportunityDetails.intake.id}/campagne/${this.props.opportunityDetails.intake.campaign.id}/contact/${this.props.opportunityDetails.intake.contact.id}`
             );
         }
@@ -64,7 +70,9 @@ class OpportunityDetailsHarmonica extends Component {
 
     newEmail() {
         if (this.props.opportunityDetails) {
-            hashHistory.push(`/email/nieuw/kans/${this.props.id}/${this.props.opportunityDetails.intake.contact.id}`);
+            this.props.navigate(
+                `/email/nieuw/kans/${this.props.id}/${this.props.opportunityDetails.intake.contact.id}`
+            );
         }
     }
 
@@ -110,4 +118,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(OpportunityDetailsHarmonica);
+export default connect(mapStateToProps)(OpportunityDetailsHarmonicaWrapper);

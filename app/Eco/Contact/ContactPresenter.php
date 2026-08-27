@@ -20,7 +20,7 @@ class ContactPresenter extends Presenter
 
         if(!$type) return '';
 
-        return $type->name;
+        return $type?->getName() ?? '';
     }
 
     public function status()
@@ -29,7 +29,7 @@ class ContactPresenter extends Presenter
 
         if(!$status) return '';
 
-        return $status->name;
+        return $status?->getName() ?? '';
     }
 
 }

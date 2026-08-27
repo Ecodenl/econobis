@@ -17,6 +17,7 @@ const DocumentTemplateNew = props => {
         roleIdsSelected,
         characteristic,
         htmlBody,
+        allowChangeHtmlBody,
         initialHtmlBody,
         baseTemplateId,
         headerTemplateId,
@@ -90,6 +91,17 @@ const DocumentTemplateNew = props => {
                     </div>
                 </div>
             </div>
+
+            <div className="row">
+                <InputToggle
+                    label={'Tekst wijzigbaar bij document'}
+                    name={'allowChangeHtmlBody'}
+                    value={allowChangeHtmlBody}
+                    onChangeAction={props.handleInputChange}
+                    id={'allowChangeHtmlBody'}
+                />
+            </div>
+
             {props.isGeneral && (
                 <div className="row">
                     <InputSelect

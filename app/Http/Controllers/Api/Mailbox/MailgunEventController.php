@@ -18,7 +18,9 @@ class MailgunEventController
 
         $mailgunDomains = MailgunDomain::whereHas('mailboxes.users', function($query) use ($user){
             $query->where('users.id', $user->id);
-        })->get();
+        })
+            ->where('is_system_mailgun_domain', false)
+            ->get();
 
         foreach ($mailgunDomains as $mailgunDomain) {
             /**
@@ -27,7 +29,7 @@ class MailgunEventController
              * De cronjob draait om 01:25, daarmee bouwen we nog wat overlap in om zeker te zijn dat we alles binnen halen. (eerder opgehaalde events worden niet nogmaals opgeslagen)
              * Zie: https://documentation.mailgun.com/en/latest/api-events.html#event-polling
              */
-            $minutes = Carbon::now()->diffInMinutes(Carbon::now()->startOfDay());
+            $minutes = Carbon::now()->diffInMinutes(Carbon::now()->startOfDay(), true);
 
             try {
                 FetchMailgunEvents::dispatchSync($mailgunDomain, $minutes);

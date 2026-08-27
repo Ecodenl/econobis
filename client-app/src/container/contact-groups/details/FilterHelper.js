@@ -58,6 +58,8 @@ export default (type, field) => {
                     return 'Kans campagne';
                 case 'intakeMeasureCategory':
                     return 'Intake - Interesse';
+                case 'intakeSource':
+                    return 'Intake - Aanmeldingsbron';
                 case 'intakeDateStart':
                     return 'Intake - Begin datum';
                 case 'intakeDateFinish':
@@ -74,10 +76,14 @@ export default (type, field) => {
                     return 'Woningdossier - veldnaam';
                 case 'housingFileFieldValue':
                     return 'Woningdossier - status / waarde';
-                case 'freeFieldsFieldName':
+                case 'contactFreeFieldsFieldName':
                     return 'Vrij veld contact - veldnaam';
-                case 'freeFieldsFieldValue':
+                case 'addressFreeFieldsFieldName':
+                    return 'Vrij veld adres - veldnaam';
+                case 'contactFreeFieldsFieldValue':
                     return 'Vrij veld contact - status / waarde';
+                case 'addressFreeFieldsFieldValue':
+                    return 'Vrij veld adres - status / waarde';
                 case 'housingFileExists':
                     return 'Woningdossier aanwezig';
                 case 'inspectionPersonType':
@@ -142,6 +148,22 @@ export default (type, field) => {
                     return 'Huidig bedrag obligaties';
                 case 'createdAt':
                     return 'Gemaakt op';
+                case 'hoomdossierExists':
+                    return 'Hoomdossier aangemaakt';
+                case 'hasEmailAddress':
+                    return 'Heeft emailadres';
+                case 'hasPhoneNumber':
+                    return 'Heeft telefoonnummer';
+                case 'addressDongleTypeReadOut':
+                    return 'Dongle Type uitlezing';
+                case 'addressDongleTypeDongle':
+                    return 'Dongle - Type dongel';
+                case 'addressDongleDateStart':
+                    return 'Dongle - Start datum';
+                case 'addressDongleDateEnd':
+                    return 'Dongle - Eind datum';
+                case 'addressDongleHasEnergyId':
+                    return 'Dongle - Heeft energie ID koppeling';
             }
             break;
         case 'comperator':

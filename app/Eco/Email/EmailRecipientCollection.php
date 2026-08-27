@@ -15,7 +15,7 @@ class EmailRecipientCollection extends Collection
 
         return $collection->filter(function (EmailRecipient $emailRecipient) {
             return $emailRecipient->isValid();
-        });
+        })->values(); // Make sure it's an indexed array. (an associative array will be converted to an object in json and therefore no valid javascript array)
     }
 
     public function toReactArray()

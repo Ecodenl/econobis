@@ -7,6 +7,7 @@ use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
+use App\Eco\IntakeSource\IntakeSource;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Task\Task;
@@ -53,7 +54,8 @@ class Intake extends Model
 
     public function sources()
     {
-        return $this->belongsToMany(IntakeSource::class, 'intake_source', 'intake_id', 'source_id');
+        return $this->belongsToMany(IntakeSource::class, 'intake_source', 'intake_id', 'source_id')
+            ->orderBy('id');
     }
 
     public function reasons()

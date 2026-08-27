@@ -24,7 +24,7 @@ const TaskDetailsFormPropertiesList = props => {
 
 const mapStateToProps = state => {
     return {
-        properties: state.taskDetails.properties,
+        properties: state.taskDetails.properties || [],
     };
 };
 export default connect(mapStateToProps)(TaskDetailsFormPropertiesList);

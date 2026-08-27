@@ -8,6 +8,13 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 
 import { fetchMeasure, clearMeasure } from '../../../actions/measure/MeasureDetailsActions';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const MeasureDetailsAppWrapper = props => {
+    const params = useParams();
+    return <MeasureDetailsApp {...props} params={params} />;
+};
 
 class MeasureDetailsApp extends Component {
     constructor(props) {
@@ -52,4 +59,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(MeasureDetailsApp);
+export default connect(null, mapDispatchToProps)(MeasureDetailsAppWrapper);

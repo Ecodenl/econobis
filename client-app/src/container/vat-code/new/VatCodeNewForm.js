@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 import moment from 'moment';
 
@@ -14,6 +14,12 @@ import Panel from '../../../components/panel/Panel';
 import VatCodeDetailsAPI from '../../../api/vat-code/VatCodeDetailsAPI';
 import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 import InputDate from '../../../components/form/InputDate';
+
+// Functionele wrapper voor de class component
+const VatCodeNewFormWrapper = props => {
+    const navigate = useNavigate();
+    return <VatCodeNewForm {...props} navigate={navigate} />;
+};
 
 class VatCodeNewForm extends Component {
     constructor(props) {
@@ -91,7 +97,7 @@ class VatCodeNewForm extends Component {
                 .then(payload => {
                     this.props.fetchSystemData();
 
-                    hashHistory.push(`/btw-code/${payload.data.data.id}`);
+                    this.props.navigate(`/btw-code/${payload.data.data.id}`);
                 })
                 .catch(function(error) {
                     alert('Er is iets mis gegaan met opslaan!');
@@ -168,4 +174,4 @@ class VatCodeNewForm extends Component {
 
 const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
 
-export default connect(null, mapDispatchToProps)(VatCodeNewForm);
+export default connect(null, mapDispatchToProps)(VatCodeNewFormWrapper);

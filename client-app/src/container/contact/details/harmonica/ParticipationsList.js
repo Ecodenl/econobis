@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import MoneyPresenter from '../../../../helpers/MoneyPresenter';
+
+// Functionele wrapper voor de class component
+const ParticipationslistWrapper = props => {
+    const navigate = useNavigate();
+    return <Participationslist {...props} navigate={navigate} />;
+};
 
 class Participationslist extends Component {
     constructor(props) {
@@ -13,7 +19,7 @@ class Participationslist extends Component {
     }
 
     openItem = id => {
-        hashHistory.push(`/project/deelnemer/${id}`);
+        this.props.navigate(`/project/deelnemer/${id}`);
     };
 
     render() {
@@ -54,4 +60,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(Participationslist);
+export default connect(mapStateToProps)(ParticipationslistWrapper);

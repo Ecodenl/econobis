@@ -25,6 +25,7 @@ class OccupationController extends ApiController
             ->date('startDate')->onEmpty(null)->alias('start_date')->next()
             ->date('endDate')->onEmpty(null)->alias('end_date')->next()
             ->boolean('primary')->next()
+            ->boolean('allowManageInPortal')->alias('allow_manage_in_portal')->next()
             ->get();
 
         // link primaryContact = person and contact = orginastion is not allowed.
@@ -34,7 +35,7 @@ class OccupationController extends ApiController
         $primaryContact = Contact::where('id', $data['primary_contact_id'])->first();
         $secondaryContact = Contact::where('id', $data['contact_id'])->first();
         $switchContact = false;
-        if ($primaryContact->type_id == ContactType::PERSON && $secondaryContact->type_id == ContactType::ORGANISATION) {
+        if ($primaryContact->type_id === ContactType::PERSON && $secondaryContact->type_id === ContactType::ORGANISATION) {
             $data['primary_contact_id'] = $secondaryContact->id;
             $data['contact_id'] = $primaryContact->id;
             $primaryContact = Contact::where('id', $data['primary_contact_id'])->first();
@@ -45,7 +46,7 @@ class OccupationController extends ApiController
         // an organisation can only have 1 contactperson.
         if ($data['primary'] == true) {
 
-            if ($primaryContact->type_id == 'organisation') {
+            if ($primaryContact->type_id === ContactType::ORGANISATION) {
                 $organisationOccupations
                     = OccupationContact::where('primary_contact_id',
                     $primaryContact->id)
@@ -57,7 +58,7 @@ class OccupationController extends ApiController
                 }
             }
 
-            if ($secondaryContact->type_id == 'organisation') {
+            if ($secondaryContact->type_id === ContactType::ORGANISATION) {
                 $organisationOccupations
                     = OccupationContact::where('primary_contact_id',
                     $secondaryContact->id)
@@ -101,6 +102,7 @@ class OccupationController extends ApiController
             ->date('startDate')->onEmpty(null)->alias('start_date')->next()
             ->date('endDate')->onEmpty(null)->alias('end_date')->next()
             ->boolean('primary')->next()
+            ->boolean('allowManageInPortal')->alias('allow_manage_in_portal')->next()
             ->get();
 
         // link primaryContact = person and contact = orginastion is not allowed.
@@ -110,7 +112,7 @@ class OccupationController extends ApiController
         $primaryContact = Contact::where('id', $data['primary_contact_id'])->first();
         $secondaryContact = Contact::where('id', $data['contact_id'])->first();
         $switchContact = false;
-        if ($primaryContact->type_id == ContactType::PERSON && $secondaryContact->type_id == ContactType::ORGANISATION) {
+        if ($primaryContact->type_id === ContactType::PERSON && $secondaryContact->type_id === ContactType::ORGANISATION) {
             $data['primary_contact_id'] = $secondaryContact->id;
             $data['contact_id'] = $primaryContact->id;
             $primaryContact = Contact::where('id', $data['primary_contact_id'])->first();
@@ -121,7 +123,7 @@ class OccupationController extends ApiController
         //an organisation can only have 1 contactperson.
         if ($data['primary'] == true) {
 
-            if ($primaryContact->type_id == ContactType::ORGANISATION) {
+            if ($primaryContact->type_id === ContactType::ORGANISATION) {
                 $organisationOccupations
                     = OccupationContact::where('primary_contact_id',
                     $primaryContact->id)
@@ -133,7 +135,7 @@ class OccupationController extends ApiController
                 }
             }
 
-            if ($secondaryContact->type_id == ContactType::ORGANISATION) {
+            if ($secondaryContact->type_id === ContactType::ORGANISATION) {
                 $organisationOccupations
                     = OccupationContact::where('primary_contact_id',
                     $secondaryContact->id)

@@ -14,6 +14,7 @@ class FullCooperation extends JsonResource
      */
     public function toArray($request)
     {
+        // todo WM: opschonen inspection* velden
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -26,19 +27,23 @@ class FullCooperation extends JsonResource
             'ibanAttn' => $this->iban_attn,
             'email' => $this->email,
             'website' => $this->website,
-            'logoFilename' => $this->logo_filename,
-            'logoName' => $this->logo_name,
+//            'logoFilename' => $this->logo_filename,
+//            'logoName' => $this->logo_name,
             'hoomLink' => $this->hoom_link ? $this->hoom_link : '',
             'hoomConnectCoachLink' => $this->hoom_connect_coach_link ? $this->hoom_connect_coach_link : '',
             'hoomKey' => $this->hoom_key,
             'hoomCampaigns' => FullCooperationHoomCampaign::collection($this->whenLoaded('hoomCampaigns')),
+            'cleanupContactsExcludedGroups' => FullCooperationCleanupContactsExcludedGroup::collection($this->whenLoaded('cleanupContactsExcludedGroups')),
             'sendEmail' => $this->send_email,
             'hoomEmailTemplateId' => $this->hoom_email_template_id ? $this->hoom_email_template_id : '',
             'hoomEmailTemplate' => ['name' => $this->emailTemplate ? $this->emailTemplate->name : ''],
             'hoomGroupId' => $this->hoom_group_id ? $this->hoom_group_id : '',
             'hoomGroup' => ['name' => $this->contactGroup ? $this->contactGroup->name : ''],
+            'hoomMailboxId' => $this->hoom_mailbox_id ? $this->hoom_mailbox_id : '',
+            'hoomMailbox' => ['name' => $this->hoomMailbox ? $this->hoomMailbox->name : ''],
             'useLaposta' => $this->use_laposta,
             'useExportAddressConsumption' => $this->use_export_address_consumption,
+            'useDongleRegistration' => $this->use_dongle_registration,
             'requireTwoFactorAuthentication' => $this->require_two_factor_authentication,
             'lapostaKey' => $this->laposta_key,
             'createdAt' => $this->created_at,
@@ -62,6 +67,13 @@ class FullCooperation extends JsonResource
             'fontFamilyDefault' => $this->font_family_default,
             'fontSizeDefault' => $this->font_size_default,
             'fontColorDefault' => $this->font_color_default,
+            'showExternalUrlForContacts' => $this->show_external_url_for_contacts,
+            'externalUrlContacts' => $this->external_url_contacts,
+            'externalUrlContactsButtonText' => $this->external_url_contacts_button_text,
+            'externalUrlContactsOnNewPage' => $this->external_url_contacts_on_new_page,
+            'requireTeamOnUserCreate' => $this->require_team_on_user_create,
+            'cleanupEmail' => $this->cleanup_email,
+            'cleanupItems' => FullCooperationCleanupItem::collection($this->whenLoaded('cleanupItems')),
         ];
     }
 }

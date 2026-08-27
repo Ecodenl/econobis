@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 
 import Icon from 'react-icons-kit';
@@ -10,6 +10,12 @@ import { pencil } from 'react-icons-kit/fa/pencil';
 import { check } from 'react-icons-kit/fa/check';
 
 import { setTaskFinished } from '../../../actions/task/TasksActions';
+
+// Functionele wrapper voor de class component
+const TasksListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <TasksListItem {...props} navigate={navigate} />;
+};
 
 class TasksListItem extends Component {
     constructor(props) {
@@ -39,7 +45,7 @@ class TasksListItem extends Component {
     }
 
     openItem() {
-        hashHistory.push(`/taak/${this.props.id}`);
+        this.props.navigate(`/taak/${this.props.id}`);
     }
 
     setItemFinished() {
@@ -53,7 +59,18 @@ class TasksListItem extends Component {
     }
 
     render() {
-        const { id, createdAt, typeName, noteSummary, contactFullName, datePlannedStart, responsibleName } = this.props;
+        const {
+            id,
+            createdAt,
+            typeName,
+            noteSummary,
+            contactFullName,
+            datePlannedStart,
+            responsibleName,
+            showSelectTasks,
+            toggleTaskCheck,
+            taskIds,
+        } = this.props;
 
         return (
             <tr
@@ -62,6 +79,16 @@ class TasksListItem extends Component {
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
+                {showSelectTasks && (
+                    <td>
+                        <input
+                            type="checkbox"
+                            name={id}
+                            onChange={toggleTaskCheck}
+                            checked={taskIds && taskIds.length > 0 ? taskIds.includes(id) : false}
+                        />
+                    </td>
+                )}
                 <td>{moment(createdAt).format('L')}</td>
                 <td>{typeName}</td>
                 <td>{noteSummary}</td>
@@ -77,7 +104,7 @@ class TasksListItem extends Component {
                         ''
                     )}
                     {this.state.showActionButtons && this.props.permissions.manageTask ? (
-                        <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}>
+                        <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, noteSummary)}>
                             <Icon className="mybtn-danger" size={14} icon={trash} />
                         </a>
                     ) : (
@@ -106,4 +133,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TasksListItem);
+export default connect(mapStateToProps, mapDispatchToProps)(TasksListItemWrapper);

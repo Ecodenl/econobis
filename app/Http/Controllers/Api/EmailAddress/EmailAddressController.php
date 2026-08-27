@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\EmailAddress;
 
+use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EmailAddress\EmailAddressType;
 use App\Http\Controllers\Api\ApiController;
@@ -60,6 +61,60 @@ class EmailAddressController extends ApiController
     {
         $this->authorize('delete', $emailAddress);
 
+        $conceptEmails = Email::where('folder', 'concept')->get();
+        $this->convertEmailAddressIdsToEmailAddresses($conceptEmails, 'to', $emailAddress);
+        $this->convertEmailAddressIdsToEmailAddresses($conceptEmails, 'cc', $emailAddress);
+        $this->convertEmailAddressIdsToEmailAddresses($conceptEmails, 'bcc', $emailAddress);
+
         $emailAddress->delete();
     }
+
+    private function convertEmailAddressIdsToEmailAddresses($conceptEmails, string $emailRecipientType, EmailAddress $emailAddress): void
+    {
+        foreach ($conceptEmails as $email) {
+
+            switch ($emailRecipientType) {
+                case 'to':
+                    $field = $email->to;
+                    break;
+                case 'cc':
+                    $field = $email->cc;
+                    break;
+                case 'bcc':
+                    $field = $email->bcc;
+                    break;
+                default:
+                    $field = null;
+            }
+
+            if (is_array($field)) {
+                $toBeChanged = false;
+                foreach ($field as &$recipient) {
+                    if (is_numeric($recipient)) {
+                        if ($recipient == $emailAddress->id) {
+                            $toBeChanged = true;
+                            $recipient = $emailAddress->email;
+                        }
+                    }
+                }
+
+                if($toBeChanged){
+                    switch ($emailRecipientType) {
+                        case 'to':
+                            $email->to  = $field;
+                            break;
+                        case 'cc':
+                            $email->cc  = $field;
+                            break;
+                        case 'bcc':
+                            $email->bcc  = $field;
+                            break;
+                    }
+                    $email->save();
+                }
+            }
+
+        }
+    }
+
 }

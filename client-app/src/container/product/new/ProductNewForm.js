@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 
 import InputText from '../../../components/form/InputText';
@@ -11,6 +11,13 @@ import { connect } from 'react-redux';
 import InputSelect from '../../../components/form/InputSelect';
 import AdministrationsAPI from '../../../api/administration/AdministrationsAPI';
 import InputReactSelect from '../../../components/form/InputReactSelect';
+import InputToggle from '../../../components/form/InputToggle';
+
+// Functionele wrapper voor de class component
+const ProductNewFormWrapper = props => {
+    const navigate = useNavigate();
+    return <ProductNewForm {...props} navigate={navigate} />;
+};
 
 class ProductNewForm extends Component {
     constructor(props) {
@@ -30,6 +37,7 @@ class ProductNewForm extends Component {
                 administrationId: '',
                 ledgerId: '',
                 costCenterId: '',
+                cleanupException: false,
             },
             errors: {
                 code: false,
@@ -202,7 +210,7 @@ class ProductNewForm extends Component {
         if (!hasErrors) {
             ProductDetailsAPI.newProduct(product)
                 .then(payload => {
-                    hashHistory.push(`/product/${payload.data.id}`);
+                    this.props.navigate(`/product/${payload.data.id}`);
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -221,6 +229,7 @@ class ProductNewForm extends Component {
             administrationId,
             ledgerId,
             costCenterId,
+            cleanupException,
         } = this.state.product;
 
         return (
@@ -330,6 +339,28 @@ class ProductNewForm extends Component {
                             />
                         </div>
 
+                        <div className={'row'}>
+                            {this.props.permissions.manageCleanupExceptionProducts ? (
+                                <InputToggle
+                                    label={'Uitzondering bij data opschonen'}
+                                    name={'cleanupException'}
+                                    value={cleanupException}
+                                    onChangeAction={event => {
+                                        event.persist();
+                                        this.handleInputChange(event);
+                                    }}
+                                />
+                            ) : (
+                                <InputToggle
+                                    label={'Uitzondering bij data opschonen'}
+                                    name={cleanupException}
+                                    value={cleanupException}
+                                    readOnly={true}
+                                    disabled={true}
+                                />
+                            )}
+                        </div>
+
                         {this.state.errorMessage && (
                             <div className="col-sm-10 col-md-offset-1 alert alert-danger">
                                 {this.state.errorMessage}
@@ -362,7 +393,8 @@ const mapStateToProps = state => {
         ledgers: state.systemData.ledgers,
         costCenters: state.systemData.costCenters,
         usesTwinfield: state.systemData.usesTwinfield,
+        permissions: state.meDetails.permissions,
     };
 };
 
-export default connect(mapStateToProps)(ProductNewForm);
+export default connect(mapStateToProps)(ProductNewFormWrapper);

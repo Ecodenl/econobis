@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
 import Icon from 'react-icons-kit';
 import { trash } from 'react-icons-kit/fa/trash';
 import { pencil } from 'react-icons-kit/fa/pencil';
+
+// Functionele wrapper voor de class component
+const WebformsListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <WebformsListItem {...props} navigate={navigate} />;
+};
 
 class WebformsListItem extends Component {
     constructor(props) {
@@ -32,7 +38,7 @@ class WebformsListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/webformulier/${id}`);
+        this.props.navigate(`/webformulier/${id}`);
     }
 
     render() {
@@ -77,4 +83,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(WebformsListItem);
+export default connect(mapStateToProps, null)(WebformsListItemWrapper);

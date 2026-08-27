@@ -12,9 +12,10 @@ export const updateQuotationRequest = quotationRequest => {
     };
 };
 
-export const deleteQuotationRequest = id => {
+export const deleteQuotationRequest = (id, callback) => {
     return {
         type: 'DELETE_QUOTATION_REQUEST',
         id,
+        callback,
     };
 };

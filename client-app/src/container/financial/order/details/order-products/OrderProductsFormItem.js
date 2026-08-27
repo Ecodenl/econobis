@@ -17,6 +17,7 @@ class OrderProductsFormItem extends Component {
         super(props);
 
         this.state = {
+            priceNumberOfDecimals: '2',
             showActionButtons: false,
             highlightLine: '',
             showEdit: false,
@@ -37,7 +38,7 @@ class OrderProductsFormItem extends Component {
         this.handleInputChangeStartDate = this.handleInputChangeStartDate.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (!isEqual(this.state.orderProduct, nextProps.orderProduct)) {
             this.setState({
                 ...this.state,
@@ -314,6 +315,20 @@ class OrderProductsFormItem extends Component {
         );
     };
 
+    handleBlurVariablePrice = event => {
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+
+        this.setState({
+            ...this.state,
+            orderProduct: {
+                ...this.state.orderProduct,
+                variablePrice: parseFloat(value).toFixed(this.state.priceNumberOfDecimals),
+            },
+        });
+    };
+
     render() {
         return (
             <div>
@@ -341,6 +356,7 @@ class OrderProductsFormItem extends Component {
                             handleSubmit={this.handleSubmit}
                             cancelEdit={this.cancelEdit}
                             handleInputChangeVariablePrice={this.handleInputChangeVariablePrice}
+                            handleBlurVariablePrice={this.handleBlurVariablePrice}
                         />
                     )}
                 {this.state.showEdit &&

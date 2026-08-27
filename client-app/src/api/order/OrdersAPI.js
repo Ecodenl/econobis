@@ -1,27 +1,28 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_ORDER = `${URL_API}/api/order`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
-    fetchOrders: ({ filters, sorts, pagination, administrationId, showOrdersWithoutOrderlines }) => {
+    fetchOrders: ({ filters, sorts, pagination, administrationId, showOnlyOrdersWithOrderProducts }) => {
+        const URL_ORDER = `${getApiUrl()}/api/order`;
         const requestUrl = `${URL_ORDER}/grid`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 administrationId: JSON.stringify(administrationId),
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),
                 limit: pagination.limit,
                 offset: pagination.offset,
-                showOrdersWithoutOrderlines: showOrdersWithoutOrderlines,
+                showOnlyOrdersWithOrderProducts: showOnlyOrdersWithOrderProducts,
             },
         });
     },
 
     peekOrders: () => {
+        const URL_ORDER = `${getApiUrl()}/api/order`;
         const requestUrl = `${URL_ORDER}/peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -32,9 +33,10 @@ export default {
     },
 
     peekOrdersForContacts: contactIds => {
+        const URL_ORDER = `${getApiUrl()}/api/order`;
         const requestUrl = `${URL_ORDER}/peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl, {
                 params: {
                     contactIds: JSON.stringify(contactIds),
@@ -46,9 +48,23 @@ export default {
     },
 
     getCSV: ({ filters, sorts, administrationId }) => {
+        const URL_ORDER = `${getApiUrl()}/api/order`;
         const requestUrl = `${URL_ORDER}/csv`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
+            params: {
+                administrationId: JSON.stringify(administrationId),
+                filters: JSON.stringify(filters),
+                sorts: JSON.stringify(sorts),
+            },
+        });
+    },
+
+    getCSVWithProducts: ({ filters, sorts, administrationId }) => {
+        const URL_ORDER = `${getApiUrl()}/api/order`;
+        const requestUrl = `${URL_ORDER}/csvwithproducts`;
+
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 administrationId: JSON.stringify(administrationId),
                 filters: JSON.stringify(filters),
@@ -58,9 +74,10 @@ export default {
     },
 
     getCollectionOrders: () => {
+        const URL_ORDER = `${getApiUrl()}/api/order`;
         const requestUrl = `${URL_ORDER}/amount-collection`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data)
             .catch(error => {
@@ -69,9 +86,10 @@ export default {
     },
 
     getOrdersForCreating: ids => {
+        const URL_ORDER = `${getApiUrl()}/api/order`;
         const requestUrl = `${URL_ORDER}/creating`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, { ids: ids })
             .then(response => response.data)
             .catch(error => {

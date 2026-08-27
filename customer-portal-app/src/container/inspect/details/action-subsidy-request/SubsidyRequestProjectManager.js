@@ -8,16 +8,12 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import { ClipLoader } from 'react-spinners';
 import InputTextDate from '../../../../components/form/InputTextDate';
-import moment from 'moment/moment';
+import moment from 'moment';
+import { isEmpty } from 'lodash';
 
-function SubsidyRequestProjectManager({ history, initialQuotationRequest, handleSubmit }) {
-    const [pmApproved, setPmApproved] = useState(
-        initialQuotationRequest.status?.codeRef === 'pm-approved'
-            ? true
-            : initialQuotationRequest.status?.codeRef === 'pm-not-approved'
-            ? false
-            : null
-    );
+function SubsidyRequestProjectManager({ redirectBack, initialQuotationRequest, handleSubmit }) {
+    const [pmApproved, setPmApproved] = useState(!isEmpty(initialQuotationRequest.dateApprovedProjectManager));
+    const [notPmApproved, setNotPmApproved] = useState(initialQuotationRequest.notApprovedProjectManager);
 
     const validationSchema = Yup.object().shape({});
 
@@ -34,6 +30,8 @@ function SubsidyRequestProjectManager({ history, initialQuotationRequest, handle
                         <Form>
                             <Row>
                                 <Col>
+                                    <FormLabel className={'field-label'}>Contactnummer</FormLabel>
+                                    {initialQuotationRequest.opportunity.intake.contact.number}
                                     <FormLabel className={'field-label'}>Naam</FormLabel>
                                     <input
                                         type="text"
@@ -64,6 +62,13 @@ function SubsidyRequestProjectManager({ history, initialQuotationRequest, handle
                                     />
                                     <FormLabel className={'field-label'}>Omschrijving</FormLabel>
                                     {initialQuotationRequest.quotationText}
+                                    <FormLabel className={'field-label'}>Maatregel specifiek</FormLabel>
+                                    <input
+                                        type="text"
+                                        className={`text-input w-input content`}
+                                        value={initialQuotationRequest.measureNames}
+                                        readOnly={true}
+                                    />
                                     <FormLabel className={'field-label'}>Status</FormLabel>
                                     <input
                                         type="text"
@@ -97,7 +102,7 @@ function SubsidyRequestProjectManager({ history, initialQuotationRequest, handle
                                         )}
                                     </Field>
                                     <FormLabel htmlFor="date_recorded" className={'field-label'}>
-                                        Datum opname
+                                        Afspraak afgerond
                                     </FormLabel>
                                     <Field name="dateRecorded">
                                         {({ field }) => (
@@ -105,7 +110,7 @@ function SubsidyRequestProjectManager({ history, initialQuotationRequest, handle
                                                 field={field}
                                                 type="datetime-local"
                                                 id="date_recorded"
-                                                placeholder={'Datum opname'}
+                                                placeholder={'Afspraak afgerond'}
                                                 readOnly={true}
                                             />
                                         )}
@@ -152,6 +157,7 @@ function SubsidyRequestProjectManager({ history, initialQuotationRequest, handle
                                                         touched={touched}
                                                         onChangeAction={setFieldValue}
                                                         id="date_approved_project_manager"
+                                                        readOnly={notPmApproved}
                                                         placeholder={'Datum akkoord projectleider'}
                                                     />
                                                 )}
@@ -159,7 +165,7 @@ function SubsidyRequestProjectManager({ history, initialQuotationRequest, handle
                                         </div>
                                         <div>
                                             <Button
-                                                variant={true === pmApproved ? 'dark' : 'outline-dark'}
+                                                variant={true === pmApproved ? 'success' : 'outline-dark'}
                                                 size="sm"
                                                 onClick={() => {
                                                     setPmApproved(true);
@@ -167,19 +173,25 @@ function SubsidyRequestProjectManager({ history, initialQuotationRequest, handle
                                                         'dateApprovedProjectManager',
                                                         moment().format('YYYY-MM-DD')
                                                     );
+                                                    setNotPmApproved(false);
+                                                    setFieldValue('notApprovedProjectManager', false);
                                                 }}
+                                                disabled={pmApproved}
                                             >
                                                 {true === pmApproved ? 'Goedgekeurd' : 'Goedkeuren'}
                                             </Button>
                                             <Button
-                                                variant={false === pmApproved ? 'dark' : 'outline-dark'}
+                                                variant={true === notPmApproved ? 'danger' : 'outline-dark'}
                                                 size="sm"
                                                 onClick={() => {
                                                     setPmApproved(false);
                                                     setFieldValue('dateApprovedProjectManager', '');
+                                                    setNotPmApproved(true);
+                                                    setFieldValue('notApprovedProjectManager', true);
                                                 }}
+                                                disabled={notPmApproved}
                                             >
-                                                {false === pmApproved ? 'Afgekeurd' : 'Niet goedkeuren'}
+                                                {true === notPmApproved ? 'Afgekeurd' : 'Niet goedkeuren'}
                                             </Button>
                                         </div>
                                     </div>
@@ -291,13 +303,7 @@ function SubsidyRequestProjectManager({ history, initialQuotationRequest, handle
                             <Row>
                                 <Col>
                                     <ButtonGroup className="float-right">
-                                        <Button
-                                            variant={'outline-dark'}
-                                            size="sm"
-                                            onClick={function() {
-                                                history.push(`/schouwen`);
-                                            }}
-                                        >
+                                        <Button variant={'outline-dark'} size="sm" onClick={() => redirectBack()}>
                                             Annuleren
                                         </Button>
                                         <Button

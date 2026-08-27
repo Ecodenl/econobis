@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment/moment';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 moment.locale('nl');
 
@@ -9,7 +9,7 @@ import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
 
 const ContactDetailsFormOccupationsView = props => {
-    const { primaryContact, contact, occupation, startDate, endDate, primary } = props.occupation;
+    const { primaryContact, contact, occupation, startDate, endDate, primary, allowManageInPortal } = props.occupation;
 
     return (
         <div
@@ -18,6 +18,9 @@ const ContactDetailsFormOccupationsView = props => {
             onMouseLeave={() => props.onLineLeave()}
         >
             <div onClick={props.openEdit}>
+                <div className={`col-sm-2 ${!occupation.isActive ? 'text-danger' : ''}`}>
+                    {props.primaryOccupation ? occupation.primaryOccupation : occupation.secondaryOccupation}
+                </div>
                 <div className="col-sm-3">
                     {props.primaryOccupation ? (
                         <Link to={`/contact/${contact.id}`} className="link-underline">
@@ -29,12 +32,10 @@ const ContactDetailsFormOccupationsView = props => {
                         </Link>
                     )}
                 </div>
-                <div className="col-sm-2">
-                    {props.primaryOccupation ? occupation.primaryOccupation : occupation.secondaryOccupation}
-                </div>
                 <div className="col-sm-2">{startDate ? moment(startDate).format('DD-MM-Y') : ''}</div>
                 <div className="col-sm-2">{endDate ? moment(endDate).format('DD-MM-Y') : ''}</div>
-                <div className="col-sm-2">{primary ? <span className="pull-right">Primair</span> : ''}</div>
+                <div className="col-sm-1">{primary ? 'Primair' : ''}</div>
+                <div className="col-sm-1">{allowManageInPortal ? 'Ja' : 'Nee'}</div>
             </div>
             <div className="col-sm-1">
                 {props.permissions.updateContactOccupation && props.showActionButtons ? (

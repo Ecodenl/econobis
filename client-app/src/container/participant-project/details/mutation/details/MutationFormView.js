@@ -98,7 +98,7 @@ const MutationFormView = ({
                 )}
                 {!deletedAt && (
                     <StyledColumn columnWidth={'6%'}>
-                        {showActionButtons && !financialOverviewDefinitive && permissions.manageFinancial ? (
+                        {showActionButtons && !financialOverviewDefinitive && permissions.manageParticipation ? (
                             <a role="button" onClick={openDetails}>
                                 <Icon className="mybtn-success" size={14} icon={pencil} />
                             </a>
@@ -106,7 +106,7 @@ const MutationFormView = ({
                             ''
                         )}
                         &nbsp;
-                        {allowDelete && showActionButtons && permissions.manageFinancial ? (
+                        {allowDelete && showActionButtons && permissions.manageParticipation ? (
                             <a role="button" onClick={toggleDelete}>
                                 <Icon className="mybtn-danger" size={14} icon={trash} />
                             </a>
@@ -123,7 +123,7 @@ const MutationFormView = ({
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
-        projectTypeCodeRef: state.participantProjectDetails.project?.projectType?.codeRef,
+        projectTypeCodeRef: state.participantProjectDetails.project?.typeCodeRef,
         participantProjectDateTerminated: state.participantProjectDetails.dateTerminated,
     };
 };

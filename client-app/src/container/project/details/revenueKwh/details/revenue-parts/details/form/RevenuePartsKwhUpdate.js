@@ -2,12 +2,14 @@ import React from 'react';
 
 import Modal from '../../../../../../../../components/modal/Modal';
 import DocumentDetailsAPI from '../../../../../../../../api/document/DocumentDetailsAPI';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 const RevenuePartsKwhUpdate = props => {
+    const navigate = useNavigate();
+
     const confirmAction = () => {
         DocumentDetailsAPI.deleteDocument(props.id).then(payload => {
-            hashHistory.push(`/documenten`);
+            navigate(`/documenten`);
         });
     };
 

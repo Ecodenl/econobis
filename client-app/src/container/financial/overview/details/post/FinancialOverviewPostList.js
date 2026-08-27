@@ -6,13 +6,7 @@ import DataTable from '../../../../../components/dataTable/DataTable';
 import DataTableHead from '../../../../../components/dataTable/DataTableHead';
 import DataTableBody from '../../../../../components/dataTable/DataTableBody';
 
-function FinancialOverviewPostList({
-    financialOverview,
-    financialOverviewPosts,
-    meta,
-    isLoading,
-    refreshFinancialOverviewPosts,
-}) {
+function FinancialOverviewPostList({ financialOverviewPosts, meta, isLoading, refreshFinancialOverviewPosts }) {
     return (
         <div>
             <div className="row">

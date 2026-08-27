@@ -23,6 +23,8 @@ class Sort extends RequestSort
         'measureName',
         'status',
         'measureDate',
+        'createdAt',
+        'typeBrand'
     ];
 
     protected $mapping = [
@@ -31,9 +33,10 @@ class Sort extends RequestSort
         'postalCode' => 'addresses.postal_code',
         'city' => 'addresses.city',
         'measureCategoryName' => 'measure_categories.name',
-        'measureName' => 'measures.name',
         'status' => 'housing_file_specification_statuses.name',
         'measureDate' => 'measure_date',
+        'createdAt' => 'housing_file_specifications.created_at',
+        'typeBrand' => 'type_brand'
     ];
 
     protected $joins = [
@@ -45,4 +48,18 @@ class Sort extends RequestSort
         'measureName' => 'measure',
         'status' => 'housingFileSpecificationStatus',
     ];
+
+    protected function applyMeasureNameSort($query, $data)
+    {
+        $query->orderByRaw("
+        CASE 
+            WHEN measures.name_custom IS NOT NULL AND measures.name_custom != '' 
+                THEN measures.name_custom
+            ELSE measures.name 
+        END
+    " . ($data === 'asc' ? ' ASC' : ' DESC'));
+
+        return false;
+    }
+
 }

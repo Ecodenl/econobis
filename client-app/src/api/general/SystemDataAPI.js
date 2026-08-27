@@ -1,9 +1,10 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     getSystemData() {
-        const requestUrl = `${URL_API}/api/system-data`;
+        const requestUrl = `${getApiUrl()}/api/system-data`;
 
-        return axiosInstance.get(requestUrl);
+        return getAxiosInstance().get(requestUrl);
     },
 };

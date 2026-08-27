@@ -9,6 +9,7 @@ const PortalSettingsFormGeneralView = ({
     portalName,
     cooperativeName,
     portalWebsite,
+    portalLoginInfoText,
     portalUrl,
     responsibleUser,
     checkContactTaskResponsibleUser,
@@ -18,6 +19,8 @@ const PortalSettingsFormGeneralView = ({
     linkPrivacyPolicy,
     showNewAtCooperativeLink,
     newAtCooperativeLinkText,
+    showAllowRequestForDelete,
+    allowRequestForDeleteButtonText,
     defaultContactGroupMember,
     defaultContactGroupNoMember,
     pcrPowerKwhConsumptionPercentage,
@@ -114,6 +117,24 @@ const PortalSettingsFormGeneralView = ({
                     ) : null}
                     <div className="row">
                         <ViewText
+                            label={'Verwijderen via portaal toestaan'}
+                            divSize={'col-sm-8'}
+                            value={showAllowRequestForDelete ? 'Ja' : 'Nee'}
+                            className={'col-sm-8 form-group'}
+                        />
+                    </div>
+                    {showAllowRequestForDelete ? (
+                        <div className="row">
+                            <ViewText
+                                label={'Knoptekst voor verwijderen via portaal'}
+                                divSize={'col-sm-8'}
+                                value={allowRequestForDeleteButtonText}
+                                className={'col-sm-8 form-group'}
+                            />
+                        </div>
+                    ) : null}
+                    <div className="row">
+                        <ViewText
                             label={'Standaard contact groep lid worden'}
                             divSize={'col-sm-8'}
                             value={defaultContactGroupMember ? defaultContactGroupMember.name : ''}
@@ -181,6 +202,14 @@ const PortalSettingsFormGeneralView = ({
                             label={'Coöperatie website'}
                             divSize={'col-sm-8'}
                             value={portalWebsite}
+                            className={'col-sm-8 form-group'}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Portaal login informatie tekst'}
+                            divSize={'col-sm-8'}
+                            value={portalLoginInfoText}
                             className={'col-sm-8 form-group'}
                         />
                     </div>

@@ -1,5 +1,4 @@
 import React, { useEffect, useReducer, useContext } from 'react';
-import Container from 'react-bootstrap/Container';
 import LoadingView from '../../../components/general/LoadingView';
 import ContactAPI from '../../../api/contact/ContactAPI';
 import { PortalUserContext } from '../../../context/PortalUserContext';
@@ -76,47 +75,49 @@ function FinancialOverviewDocuments() {
     }
 
     return (
-        <Container className={'content-section'}>
-            {state.isLoading ? (
-                <LoadingView />
-            ) : (
-                <>
-                    <Row>
-                        <Col>
-                            <h1 className="content-heading mt-0">Waardestaat documenten</h1>
-                        </Col>
-                    </Row>
-                    {state.result.length === 0 ? (
+        <div className={'content-section'}>
+            <div className="content-container w-container">
+                {state.isLoading ? (
+                    <LoadingView />
+                ) : (
+                    <>
                         <Row>
-                            <Col>Geen waardestaat documenten aanwezig om te tonen.</Col>
+                            <Col>
+                                <h1 className="content-heading mt-0">Waardestaat documenten</h1>
+                            </Col>
                         </Row>
-                    ) : (
-                        <Table>
-                            <thead>
-                                <tr>
-                                    <th>Naam</th>
-                                    <th>Omschrijving</th>
-                                    <th>Downloaden</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {state.result.map(item => (
-                                    <tr key={item.id}>
-                                        <td>{item.name}</td>
-                                        <td>{item.description}</td>
-                                        <td>
-                                            <a href="#" onClick={e => downloadFile(e, item.id)}>
-                                                <FaFileDownload /> downloaden
-                                            </a>
-                                        </td>
+                        {state.result.length === 0 ? (
+                            <Row>
+                                <Col>Geen waardestaat documenten aanwezig om te tonen.</Col>
+                            </Row>
+                        ) : (
+                            <Table>
+                                <thead>
+                                    <tr>
+                                        <th>Naam</th>
+                                        <th>Omschrijving</th>
+                                        <th>Downloaden</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </Table>
-                    )}
-                </>
-            )}
-        </Container>
+                                </thead>
+                                <tbody>
+                                    {state.result.map(item => (
+                                        <tr key={item.id}>
+                                            <td>{item.name}</td>
+                                            <td>{item.description}</td>
+                                            <td>
+                                                <a href="#" onClick={e => downloadFile(e, item.id)}>
+                                                    <FaFileDownload /> downloaden
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        )}
+                    </>
+                )}
+            </div>
+        </div>
     );
 }
 

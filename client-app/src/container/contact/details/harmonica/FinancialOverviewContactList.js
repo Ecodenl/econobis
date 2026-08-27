@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import moment from 'moment';
+
+// Functionele wrapper voor de class component
+const FinancialOverviewContactListWrapper = props => {
+    const navigate = useNavigate();
+    return <FinancialOverviewContactList {...props} navigate={navigate} />;
+};
 
 class FinancialOverviewContactList extends Component {
     constructor(props) {
@@ -12,7 +18,7 @@ class FinancialOverviewContactList extends Component {
     }
 
     openItem = id => {
-        hashHistory.push(`/waardestaat-contact/inzien/${id}`);
+        this.props.navigate(`/waardestaat-contact/inzien/${id}`);
     };
 
     render() {
@@ -46,4 +52,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(FinancialOverviewContactList);
+export default connect(mapStateToProps)(FinancialOverviewContactListWrapper);

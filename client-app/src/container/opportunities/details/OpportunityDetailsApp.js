@@ -8,6 +8,13 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 
 import { fetchOpportunity, clearOpportunity } from '../../../actions/opportunity/OpportunityDetailsActions';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const OpportunityDetailsAppWrapper = props => {
+    const params = useParams();
+    return <OpportunityDetailsApp {...props} params={params} />;
+};
 
 class OpportunityDetailsApp extends Component {
     constructor(props) {
@@ -52,4 +59,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(OpportunityDetailsApp);
+export default connect(null, mapDispatchToProps)(OpportunityDetailsAppWrapper);

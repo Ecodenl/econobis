@@ -3,6 +3,7 @@ import ViewText from '../../../../../components/form/ViewText';
 import MoneyPresenter from '../../../../../helpers/MoneyPresenter';
 
 const ProjectFormViewLoan = ({
+    projectLoanType,
     amountOfLoanNeeded,
     minAmountLoan,
     maxAmountLoan,
@@ -17,6 +18,9 @@ const ProjectFormViewLoan = ({
         <React.Fragment>
             <hr style={{ margin: '10px 0' }} />
             <h4>Lening</h4>
+            <div className="row">
+                <ViewText label={'Type lening'} value={projectLoanType ? projectLoanType.name : ''} />
+            </div>
             <div className="row">
                 <ViewText label={'Lening nodig'} value={MoneyPresenter(amountOfLoanNeeded)} />
                 <ViewText label={'Lening interesse'} value={MoneyPresenter(amountInteressed)} />

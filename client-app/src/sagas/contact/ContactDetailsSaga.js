@@ -5,6 +5,7 @@ import PhoneNumberAPI from '../../api/contact/PhoneNumberAPI';
 import EmailAddressAPI from '../../api/contact/EmailAddressAPI';
 import ContactNoteAPI from '../../api/contact/ContactNoteAPI';
 import AddressEnergySupplierAPI from '../../api/contact/AddressEnergySupplierAPI';
+import AddressDongleAPI from '../../api/contact/AddressDongleAPI';
 import PortalUserAPI from '../../api/contact/PortalUserAPI';
 
 export function* fetchContactDetailsSaga({ payload }) {
@@ -65,11 +66,35 @@ export function* deleteContactNoteSaga({ id }) {
     }
 }
 
-export function* deleteAddressEnergySupplierSaga({ id }) {
+export function* deleteAddressEnergySupplierSaga({ id, onSuccess }) {
     try {
         yield call(AddressEnergySupplierAPI.deleteAddressEnergySupplier, id);
+
         yield put({ type: 'DELETE_ADDRESS_ENERGY_SUPPLIER_SUCCESS', id });
+
+        if (onSuccess) {
+            yield call(onSuccess);
+        }
     } catch (error) {
-        yield put({ type: 'DELETE_ADDRESS_ENERGY_SUPPLIER_ERROR', error });
+        const httpCode = error?.response?.status || 500;
+        const message =
+            error?.response?.data?.message || 'Er is iets misgegaan bij het verwijderen van de energieleverancier.';
+
+        yield put({
+            type: 'SET_ERROR',
+            http_code: httpCode,
+            message: message,
+            title: 'Foutmelding',
+        });
+
+        yield put({ type: 'DELETE_ADDRESS_ENERGY_SUPPLIER_ERROR', error: message });
+    }
+}
+export function* deleteAddressDongleSaga({ id }) {
+    try {
+        yield call(AddressDongleAPI.deleteAddressDongle, id);
+        yield put({ type: 'DELETE_ADDRESS_DONGLE_SUCCESS', id });
+    } catch (error) {
+        yield put({ type: 'DELETE_ADDRESS_DONGLE_ERROR', error });
     }
 }

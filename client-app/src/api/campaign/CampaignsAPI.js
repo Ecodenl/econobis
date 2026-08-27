@@ -1,12 +1,12 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_CAMPAIGN = `${URL_API}/api/campaign`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchCampaigns: ({ pagination }) => {
+        const URL_CAMPAIGN = `${getApiUrl()}/api/campaign`;
         const requestUrl = `${URL_CAMPAIGN}/grid`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 limit: pagination.limit,
                 offset: pagination.offset,
@@ -15,9 +15,10 @@ export default {
     },
 
     peekCampaigns: () => {
+        const URL_CAMPAIGN = `${getApiUrl()}/api/campaign`;
         const requestUrl = `${URL_CAMPAIGN}/peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -28,9 +29,10 @@ export default {
     },
 
     peekNotFinishedCampaigns: () => {
+        const URL_CAMPAIGN = `${getApiUrl()}/api/campaign`;
         const requestUrl = `${URL_CAMPAIGN}/peeknotfinished`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;

@@ -26,6 +26,7 @@ class FinancialOverviewJoryResource extends JoryResource
         $this->field('administration_id')->filterable()->sortable();
         $this->field('year')->filterable()->sortable();
         $this->field('document_template_financial_overview_id')->filterable()->sortable();
+        $this->field('email_template_financial_overview_id')->filterable()->sortable();
         $this->field('definitive')->filterable()->sortable();
         $this->field('status_id')->filterable()->sortable();
         $this->field('date_processed')->filterable()->sortable();
@@ -36,10 +37,13 @@ class FinancialOverviewJoryResource extends JoryResource
         $this->field('total_financial_overview_projects_in_progress')->filterable()->sortable();
         $this->field('total_financial_overview_projects_concept')->filterable()->sortable();
         $this->field('total_financial_overview_projects_definitive')->filterable()->sortable();
+        $this->field('uses_interim_financial_overviews')->filterable()->sortable();
+        $this->field('has_interim_financial_overview_contacts')->filterable()->sortable();
 
         // Relations
         $this->relation('administration');
         $this->relation('documentTemplateFinancialOverview');
+        $this->relation('emailTemplateFinancialOverview');
     }
 
     protected function configureForPortal(): void

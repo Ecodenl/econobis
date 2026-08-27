@@ -6,10 +6,11 @@ use App\Eco\Email\Email;
 use App\Eco\Email\EmailRecipientCollection;
 use App\Eco\Jobs\JobsLog;
 use App\Eco\User\User;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMail;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 
 class SendSingleMail
 {
@@ -48,10 +49,12 @@ class SendSingleMail
 
     public function handle(): Email
     {
+        Auth::setUser($this->user->fresh());
+
         $email = $this->getUpdatedEmail();
 
         try {
-            Mail::fromMailbox($this->email->mailbox)
+            MailHelper::fromMailbox($this->email->mailbox)
                 ->to($this->to->getEmailAdresses()->toArray())
                 ->cc($this->cc->getEmailAdresses()->toArray())
                 ->bcc($this->bcc->getEmailAdresses()->toArray())
@@ -78,6 +81,7 @@ class SendSingleMail
         $email = $this->email->fresh(); // We don't want any side effects on the original email object
 
         $email->subject = $this->getNewSubject($email->subject);
+        $email->subject_for_filter = trim(mb_substr($email->subject ?? '', 0, 150));
         $email->html_body = $this->getNewHtmlBody($email->html_body);
 
         return $email;

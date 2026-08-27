@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
+
+// Functionele wrapper voor de class component
+const QuotationRequestsListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <QuotationRequestsListItem {...props} navigate={navigate} />;
+};
 
 class QuotationRequestsListItem extends Component {
     constructor(props) {
@@ -30,7 +36,7 @@ class QuotationRequestsListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/offerteverzoek/${id}`);
+        this.props.navigate(`/offerteverzoek/${id}`);
     }
 
     render() {
@@ -43,6 +49,9 @@ class QuotationRequestsListItem extends Component {
             status,
             datePlanned,
             dateReleased,
+            showSelectQuotationRequests,
+            toggleQuotationRequestCheck,
+            quotationRequestIds,
         } = this.props;
 
         return (
@@ -52,6 +61,20 @@ class QuotationRequestsListItem extends Component {
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
+                {showSelectQuotationRequests && (
+                    <td>
+                        <input
+                            type="checkbox"
+                            name={id}
+                            onChange={toggleQuotationRequestCheck}
+                            checked={
+                                quotationRequestIds && quotationRequestIds.length > 0
+                                    ? quotationRequestIds.includes(id)
+                                    : false
+                            }
+                        />
+                    </td>
+                )}
                 <td>{organisationOrCoach && organisationOrCoach.fullName}</td>
                 <td>{opportunity && opportunity.intake.contact.fullName}</td>
                 <td>{opportunity && opportunity.intake.fullAddress}</td>
@@ -82,4 +105,4 @@ class QuotationRequestsListItem extends Component {
     }
 }
 
-export default QuotationRequestsListItem;
+export default QuotationRequestsListItemWrapper;

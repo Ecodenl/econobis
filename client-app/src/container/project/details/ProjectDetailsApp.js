@@ -8,6 +8,13 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 
 import { fetchProject, clearProject } from '../../../actions/project/ProjectDetailsActions';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const ProjectDetailsAppWrapper = props => {
+    const params = useParams();
+    return <ProjectDetailsApp {...props} params={params} />;
+};
 
 class ProjectDetailsApp extends Component {
     constructor(props) {
@@ -53,4 +60,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(ProjectDetailsApp);
+export default connect(null, mapDispatchToProps)(ProjectDetailsAppWrapper);

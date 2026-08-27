@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import DocumentTemplateDeleteItem from './DocumentTemplateDeleteItem';
 import DocumentTemplateDetailsDuplicate from './DocumentTemplateDetailsDuplicate';
+
+// Functionele wrapper voor de class component
+const DocumentTemplateDetailsToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <DocumentTemplateDetailsToolbar {...props} navigate={navigate} />;
+};
 
 class DocumentTemplateDetailsToolbar extends Component {
     constructor(props) {
@@ -20,33 +26,37 @@ class DocumentTemplateDetailsToolbar extends Component {
         this.setState({ showDuplicate: !this.state.showDuplicate });
     };
 
-    toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
+    showDeleteModal = () => {
+        this.setState({ showDelete: true });
+    };
+
+    hideDeleteModal = () => {
+        this.setState({ showDelete: false });
     };
 
     render() {
-        const { permissions = {} } = this.props;
+        const { permissions = {}, navigate } = this.props;
 
         return (
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                         {permissions.createDocumentTemplate && (
                             <ButtonIcon iconName={'copy'} onClickAction={this.toggleDuplicate} />
                         )}
                         {permissions.createDocumentTemplate && (
-                            <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
+                            <ButtonIcon iconName={'trash'} onClickAction={this.showDeleteModal} />
                         )}
                     </div>
                 </div>
                 <div className="col-md-4">
-                    <h4 className="text-center">{'Document template: ' + this.props.templateName}</h4>
+                    <h4 className="text-center">{'Document template: ' + (this.props.templateName || '...')}</h4>
                 </div>
                 <div className="col-md-4" />
                 {this.state.showDelete && (
                     <DocumentTemplateDeleteItem
-                        closeDeleteItemModal={this.toggleDelete}
+                        closeDeleteItemModal={this.hideDeleteModal}
                         templateName={this.props.templateName}
                         templateId={this.props.templateId}
                     />
@@ -71,4 +81,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(DocumentTemplateDetailsToolbar);
+export default connect(mapStateToProps, null)(DocumentTemplateDetailsToolbarWrapper);

@@ -14,6 +14,8 @@ const UserDetailsFormGeneralView = props => {
         mobile,
         occupation,
         active,
+        failedLogins,
+        blockedUntilFormatted,
     } = props.userDetails;
 
     return (
@@ -45,6 +47,10 @@ const UserDetailsFormGeneralView = props => {
 
             <div className="row">
                 <ViewText label={'Actief'} value={active ? 'Ja' : 'Nee'} />
+            </div>
+            <div className="row">
+                <ViewText label={'Geblokkeerd tot'} value={blockedUntilFormatted} />
+                <ViewText label={'Foutieve loginpogingen'} value={failedLogins} />
             </div>
         </div>
     );

@@ -1,6 +1,5 @@
 import { put, call, all } from 'redux-saga/effects';
 import EmailTemplateAPI from '../../api/email-template/EmailTemplateAPI';
-import { hashHistory } from 'react-router';
 
 export function* fetchEmailTemplatesSaga() {
     try {
@@ -30,11 +29,11 @@ export function* fetchEmailTemplateSaga({ id }) {
     }
 }
 
-export function* deleteEmailTemplateSaga({ id }) {
+export function* deleteEmailTemplateSaga({ id, callback }) {
     try {
         yield call(EmailTemplateAPI.deleteEmailTemplate, id);
         yield put({ type: 'DELETE_EMAIL_TEMPLATE_SUCCESS', id });
-        hashHistory.push(`/email-templates`);
+        if (callback) callback(); // 👈 uitvoeren ná succesvolle delete
     } catch (error) {
         yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
         yield put({ type: 'DELETE_EMAIL_TEMPLATE_ERROR', error });

@@ -6,10 +6,28 @@ import PanelHeader from '../../../components/panel/PanelHeader';
 import moment from 'moment/moment';
 import { connect } from 'react-redux';
 import HoomCampaigns from './hoom-campaigns/HoomCampaigns';
+import CleanupContactsExcludedGroups from './cleanup-contacts-excluded-groups/CleanupContactsExcludedGroups';
+import CleanupItems from './cleanup-items/CleanupItems';
+// import Icon from 'react-icons-kit';
+// import { refresh } from 'react-icons-kit/fa/refresh';
 
-function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
+// function CooperationDetailsFormView({ formData, toggleEdit, meDetails, handleRefresh, refreshing }) {
+function CooperationDetailsFormView({ formData, toggleEdit, meDetails, refreshing }) {
+    // Disable click-to-edit while refreshing
+    const handleSectionClick = e => {
+        if (refreshing) {
+            e.stopPropagation();
+        } else {
+            toggleEdit();
+        }
+    };
+
     return (
-        <section className={'panel-hover'} onClick={toggleEdit}>
+        <section
+            className={'panel-hover'}
+            onClick={handleSectionClick}
+            style={refreshing ? { pointerEvents: 'none', opacity: 0.6 } : {}}
+        >
             {formData.createContactsForReportTableInProgress == true && (
                 <Panel>
                     <PanelHeader>
@@ -41,9 +59,6 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
                         <ViewText label={'Email'} value={formData.email} />
                         <ViewText label={'Website'} value={formData.website} />
                     </div>
-                    <div className="row">
-                        <ViewText label={'Logo'} value={formData.logoName} />
-                    </div>
                 </PanelBody>
             </Panel>
             <Panel>
@@ -57,13 +72,15 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
                     </div>
                     <div className="row">
                         <ViewText label={'Hoom bewoner/coach link'} value={formData.hoomConnectCoachLink} />
+                        <ViewText label={'Hoom groep'} value={formData.hoomGroup && formData.hoomGroup.name} />
                     </div>
                     <div className="row">
                         <ViewText
                             label={'Hoom e-mail template'}
                             value={formData.hoomEmailTemplate && formData.hoomEmailTemplate.name}
                         />
-                        <ViewText label={'Hoom groep'} value={formData.hoomGroup && formData.hoomGroup.name} />
+
+                        <ViewText label={'Hoom mailbox'} value={formData.hoomMailbox && formData.hoomMailbox.name} />
                     </div>
                     <div className="row">
                         <ViewText
@@ -104,44 +121,6 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
                     </div>
                 </PanelBody>
             </Panel>
-            <Panel>
-                <PanelHeader>
-                    <span className="h5 text-bold">Buurtaanpak</span>
-                </PanelHeader>
-                <PanelBody>
-                    <div className="row">
-                        <ViewText
-                            label={'Buurtaanpak afspraak e-mail template'}
-                            value={
-                                formData.inspectionPlannedEmailTemplate && formData.inspectionPlannedEmailTemplate.name
-                            }
-                        />
-                        <ViewText
-                            label={'Mailbox buurtaanpak e-mail bevestigingen'}
-                            value={formData.inspectionPlannedMailbox && formData.inspectionPlannedMailbox.name}
-                        />
-                    </div>
-                    <div className="row">
-                        <ViewText
-                            label={'Buurtaanpak opname e-mail template'}
-                            value={
-                                formData.inspectionRecordedEmailTemplate &&
-                                formData.inspectionRecordedEmailTemplate.name
-                            }
-                        />
-                    </div>
-                    <div className="row">
-                        <ViewText
-                            label={'Buurtaanpak uitgebracht e-mail template'}
-                            value={
-                                formData.inspectionReleasedEmailTemplate &&
-                                formData.inspectionReleasedEmailTemplate.name
-                            }
-                        />
-                    </div>
-                </PanelBody>
-            </Panel>
-
             {(meDetails.email === 'support@econobis.nl' || meDetails.email === 'software@xaris.nl') && (
                 <Panel>
                     <PanelHeader>
@@ -189,7 +168,51 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
                         <ViewText label={'Letterkleur'} value={formData.fontColorDefault} />
                     </div>
                 </PanelBody>
+            </Panel>
 
+            <Panel>
+                <PanelHeader>
+                    <span className="h5 text-bold">Opschonen</span>
+                </PanelHeader>
+                <PanelBody>
+                    <div className="row">
+                        <ViewText
+                            label={
+                                'Wil je de e-mailcorrespondentie van contacten die geen order, nota, deelname, intake, kans of kansactie hebben naar de e-mailarchief map verplaatsen?'
+                            }
+                            value={formData.cleanupEmail ? 'Ja' : 'Nee'}
+                        />
+                        {/*<span className="form-group col-sm-6">*/}
+                        {/*    <span className="form-group col-sm-12">*/}
+                        {/*        <a*/}
+                        {/*            role="button"*/}
+                        {/*            onClick={refreshing ? e => e.preventDefault() : handleRefresh}*/}
+                        {/*            title={`herbereken alle op te schonen`}*/}
+                        {/*            style={refreshing ? { pointerEvents: 'none', opacity: 0.5 } : {}}*/}
+                        {/*        >*/}
+                        {/*            Herberekenen*/}
+                        {/*            /!*<Icon size={14} icon={refresh} />*!/*/}
+                        {/*            {refreshing && <span style={{ marginLeft: 8 }}>Bezig...</span>}*/}
+                        {/*        </a>*/}
+                        {/*    </span>*/}
+                        {/*</span>*/}
+                    </div>
+
+                    <CleanupItems
+                        cooperationId={formData.id}
+                        showEditCooperation={false}
+                        cleanupItems={formData.cleanupItems}
+                    />
+
+                    <CleanupContactsExcludedGroups
+                        cooperationId={formData.id}
+                        showEditCooperation={false}
+                        cleanupContactsExcludedGroups={formData.cleanupContactsExcludedGroups}
+                    />
+                </PanelBody>
+            </Panel>
+
+            <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Overig</span>
                 </PanelHeader>
@@ -198,8 +221,8 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
                         <ViewText
                             label={'Gebruik export energieverbruik tarieven en verbruik'}
                             value={formData.useExportAddressConsumption ? 'Ja' : 'Nee'}
-                            size={'col-sm-5'}
                             name={'useExportAddressConsumption'}
+                            size={'col-sm-5'}
                             textToolTip={`Met deze knop krijg je de optie om op de Contacten pagina een download te maken van energie verbruik en tarief voorstellen.<br/>
 Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waardes:<br/>
 {verbruik_gas_begindatum}<br/>
@@ -224,6 +247,54 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
 {verbruik_electriciteit_variabele_kosten_laag}<br/>
 {verbruik_electriciteit_vaste_kosten_hoog}<br/>
 {verbruik_electriciteit_vaste_kosten_laag}`}
+                        />
+
+                        <ViewText
+                            label={'Gebruik dongel registratie functionaliteit'}
+                            value={formData.useDongleRegistration ? 'Ja' : 'Nee'}
+                            name={'useDongleRegistration'}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Gebruik URL externe contacten pagina'}
+                            value={formData.showExternalUrlForContacts ? 'Ja' : 'Nee'}
+                            name={'showExternalUrlForContacts'}
+                            size={'col-sm-5'}
+                            textToolTip={`Met deze knop krijg je de optie om op de Contacten pagina via een button naar een externe
+                             contactpagina te gaan zoals econobisbuurtaanpak.nl`}
+                        />
+                    </div>
+                    {formData.showExternalUrlForContacts ? (
+                        <>
+                            <div className="row">
+                                <ViewText
+                                    label={'Externe contacten pagina URL'}
+                                    value={formData.externalUrlContacts}
+                                    name={'externalUrlContacts'}
+                                />
+                                <ViewText
+                                    label={'Externe contacten pagina button tekst'}
+                                    value={formData.externalUrlContactsButtonText}
+                                    name={'externalUrlContactsButtonText'}
+                                />
+                            </div>
+                            <div className="row">
+                                <ViewText
+                                    label={'Externe URL openen in een nieuw venster?'}
+                                    value={formData.externalUrlContactsOnNewPage ? 'Ja' : 'Nee'}
+                                    name={'externalUrlContactsOnNewPage'}
+                                />
+                            </div>
+                        </>
+                    ) : null}
+                    <div className="row">
+                        <ViewText
+                            label={'Verplicht Team koppeling bij nieuwe Econobis gebruikers'}
+                            value={formData.requireTeamOnUserCreate ? 'Ja' : 'Nee'}
+                            name={'requireTeamOnUserCreate'}
+                            size={'col-sm-5'}
+                            textToolTip={`Met deze knop kan je afdwingen dat er verplicht een Team koppeling gemaakt moet worden bij nieuwe Econobis gebruikers`}
                         />
                     </div>
                 </PanelBody>

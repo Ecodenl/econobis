@@ -8,10 +8,16 @@ import { setError } from '../../../actions/general/ErrorActions';
 import { connect } from 'react-redux';
 import PortalDashboardWidgetOrderTable from './PortalDashboardWidgetOrderTable';
 import ButtonText from '../../../components/button/ButtonText';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Icon from 'react-icons-kit';
 import { plus } from 'react-icons-kit/fa/plus';
+
+// Functionele wrapper voor de class component
+const PortalSettingsDashboardWidgetAppWrapper = props => {
+    const navigate = useNavigate();
+    return <PortalSettingsDashboardWidgetApp {...props} navigate={navigate} />;
+};
 
 class PortalSettingsDashboardWidgetApp extends Component {
     constructor(props) {
@@ -27,7 +33,7 @@ class PortalSettingsDashboardWidgetApp extends Component {
     }
 
     newWidget = () => {
-        hashHistory.push(`/portal-instellingen-dashboard-widget/nieuw`);
+        this.props.navigate(`/portal-instellingen-dashboard-widget/nieuw`);
     };
 
     deletePortalSettingsDashboardWidget = id => {
@@ -184,4 +190,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(PortalSettingsDashboardWidgetApp);
+export default connect(mapStateToProps, mapDispatchToProps)(PortalSettingsDashboardWidgetAppWrapper);

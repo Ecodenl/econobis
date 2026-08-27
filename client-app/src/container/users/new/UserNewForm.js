@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 
 import UserAPI from '../../../api/user/UserAPI';
@@ -10,6 +10,13 @@ import ButtonText from '../../../components/button/ButtonText';
 import PanelFooter from '../../../components/panel/PanelFooter';
 import { setError } from '../../../actions/general/ErrorActions';
 import { fetchSystemData } from '../../../actions/general/SystemDataActions';
+import InputToggle from '../../../components/form/InputToggle';
+
+// Functionele wrapper voor de class component
+const UserNewFormWrapper = props => {
+    const navigate = useNavigate();
+    return <UserNewForm {...props} navigate={navigate} />;
+};
 
 class UserNewForm extends Component {
     constructor(props) {
@@ -26,11 +33,19 @@ class UserNewForm extends Component {
                 phoneNumber: '',
                 mobileNumber: '',
                 occupation: '',
+                teamId: '',
             },
             errors: {
                 email: false,
                 firstName: false,
                 lastName: false,
+                teamId: false,
+            },
+            errorsMessage: {
+                email: '',
+                firstName: '',
+                lastName: '',
+                teamId: '',
             },
         };
     }
@@ -56,44 +71,53 @@ class UserNewForm extends Component {
 
         // Validation
         let errors = {};
+        let errorsMessage = {};
         let hasErrors = false;
 
         if (!validator.isEmail(user.email)) {
             errors.email = true;
+            errorsMessage.email = 'E-mail is verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty(user.firstName)) {
             errors.firstName = true;
+            errorsMessage.firstName = 'Voornaam is verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty(user.lastName)) {
             errors.lastName = true;
+            errorsMessage.lastName = 'Achternaam is verplicht';
             hasErrors = true;
         }
 
-        this.setState({ ...this.state, errors: errors });
+        if (this.props.requireTeamOnUserCreate && validator.isEmpty(user.teamId)) {
+            errors.teamId = true;
+            errorsMessage.teamId = 'Toevoegen aan team is verplicht';
+            hasErrors = true;
+        }
+
+        this.setState({ ...this.state, errors: errors, errorsMessage: errorsMessage });
 
         // If no errors send form
         !hasErrors &&
             UserAPI.newUser(user)
                 .then(payload => {
                     this.props.fetchSystemData();
-                    if (payload.data.data.hasAlfrescoAccount) {
-                        this.props.setError(
-                            200,
-                            'Alfresco account voor deze gebruiker bestaat al. Er wordt alleen een nieuw account aangemaakt voor Econobis'
-                        );
-                    }
-                    hashHistory.push(`/gebruiker/${payload.data.data.id}`);
+                    this.props.navigate(`/gebruiker/${payload.data.data.id}`);
                 })
                 .catch(
                     function(error) {
                         if (error.response.data.errors && typeof error.response.data.errors.email !== 'undefined') {
                             errors.email = true;
                             this.setState({ ...this.state, errors: errors });
-                            this.setState({ ...this.state, backendEmailError: 'Dit email adres is al in gebruik.' });
+                            this.setState({
+                                ...this.state,
+                                errorsMessage: {
+                                    email: 'Dit email adres is al in gebruik.',
+                                },
+                            });
                         } else {
                             if (typeof error.response.data.message !== 'undefined') {
                                 this.props.setError(error.response.status, error.response.data.message);
@@ -115,7 +139,15 @@ class UserNewForm extends Component {
             phoneNumber,
             mobileNumber,
             occupation,
+            teamId,
         } = this.state.user;
+
+        const { requireTeamOnUserCreate, teams } = this.props;
+        // teams opties samenstellen
+        const teamsOptions =
+            requireTeamOnUserCreate === false
+                ? teams
+                : [{ id: 0, name: '** Niet aan een team toevoegen **' }, ...teams];
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -134,7 +166,7 @@ class UserNewForm extends Component {
                         onChangeAction={this.handleInputChange}
                         required={'required'}
                         error={this.state.errors.email}
-                        errorMessage={this.state.backendEmailError}
+                        errorMessage={this.state.errorsMessage.email}
                     />
                 </div>
 
@@ -146,6 +178,7 @@ class UserNewForm extends Component {
                         onChangeAction={this.handleInputChange}
                         required={'required'}
                         error={this.state.errors.firstName}
+                        errorMessage={this.state.errorsMessage.firstName}
                     />
                     <InputText
                         label={'Telefoonnummer'}
@@ -182,6 +215,7 @@ class UserNewForm extends Component {
                         onChangeAction={this.handleInputChange}
                         required={'required'}
                         error={this.state.errors.lastName}
+                        errorMessage={this.state.errorsMessage.lastName}
                     />
                     <InputText
                         label="Functie"
@@ -192,6 +226,18 @@ class UserNewForm extends Component {
                     />
                 </div>
 
+                <div className="row">
+                    <InputSelect
+                        label={'Toevoegen aan team'}
+                        name="teamId"
+                        options={teamsOptions}
+                        value={teamId}
+                        onChangeAction={this.handleInputChange}
+                        required={requireTeamOnUserCreate ? 'required' : ''}
+                        error={this.state.errors.teamId}
+                        errorMessage={this.state.errorsMessage.teamId}
+                    />{' '}
+                </div>
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
                         <ButtonText
@@ -211,6 +257,8 @@ const mapStateToProps = state => {
     return {
         lastNamePrefixes: state.systemData.lastNamePrefixes,
         titles: state.systemData.titles,
+        teams: state.systemData.teams,
+        requireTeamOnUserCreate: state.systemData.cooperation?.require_team_on_user_create,
     };
 };
 
@@ -223,4 +271,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserNewForm);
+export default connect(mapStateToProps, mapDispatchToProps)(UserNewFormWrapper);

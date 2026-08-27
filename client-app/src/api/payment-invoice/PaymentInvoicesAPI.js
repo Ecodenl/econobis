@@ -1,12 +1,12 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_PAYMENT_INVOICE = `${URL_API}/api/payment-invoice`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchInvoices: ({ filters, sorts, pagination, administrationId }) => {
+        const URL_PAYMENT_INVOICE = `${getApiUrl()}/api/payment-invoice`;
         const requestUrl = `${URL_PAYMENT_INVOICE}/grid`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 administrationId: JSON.stringify(administrationId),
                 filters: JSON.stringify(filters),
@@ -18,9 +18,10 @@ export default {
     },
 
     setNotPaid: invoiceId => {
+        const URL_PAYMENT_INVOICE = `${getApiUrl()}/api/payment-invoice`;
         const requestUrl = `${URL_PAYMENT_INVOICE}/${invoiceId}/not-paid`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(function(response) {
                 return response.data;

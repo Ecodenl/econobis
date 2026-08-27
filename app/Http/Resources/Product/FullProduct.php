@@ -26,7 +26,7 @@ class FullProduct extends JsonResource
                 'name' => $this->name,
                 'invoiceText' => $this->invoice_text,
                 'priceHistory' => GenericResource::collection($this->whenLoaded('priceHistory')),
-                'currentPrice' => GenericResource::make($this->current_price),
+                'currentPrice' => GenericResource::make($this->currentPrice),
                 'isOneTime' => $this->is_one_time,
 
                 'durationId' => $this->duration_id,
@@ -46,6 +46,7 @@ class FullProduct extends JsonResource
                 'createdById' => $this->created_by_id,
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
                 'active' => $this->active,
+                'cleanupException' => $this->cleanup_exception,
                 'ledger' => GenericResource::make($this->whenLoaded('ledger')),
                 'ledgerId' => $this->ledger_id,
                 'costCenter' => GenericResource::make($this->whenLoaded('costCenter')),

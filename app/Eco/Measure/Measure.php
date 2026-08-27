@@ -25,6 +25,20 @@ class Measure extends Model
         'id'
     ];
 
+    public function getNameAttribute($value)
+    {
+        if($this->name_custom) {
+            return $this->name_custom;
+        } else {
+            return $value;
+        }
+    }
+
+    public function getNameDefaultAttribute()
+    {
+        return $this->getAttributes()['name'];
+    }
+
     public function housingFileSpecifications()
     {
         return $this->belongsToMany(HousingFileSpecification::class);

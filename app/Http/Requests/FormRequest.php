@@ -28,17 +28,6 @@ abstract class FormRequest extends \Illuminate\Foundation\Http\FormRequest
         return $this->arrayKeysToSnake($this->only($keys));
     }
 
-    protected function arrayKeysToSnake(array $array): array
-    {
-        $result = [];
-
-        foreach ($array as $key => $value) {
-            $result[Str::snake($key)] = $value;
-        }
-
-        return $result;
-    }
-
     /**
      * Validate a field which is required and must hold
      * an id to a model in the database.
@@ -249,4 +238,35 @@ abstract class FormRequest extends \Illuminate\Foundation\Http\FormRequest
 
         return $rules;
     }
+
+    protected function arrayKeysToSnake(array $array): array
+    {
+        $result = [];
+
+        foreach ($array as $key => $value) {
+            $result[Str::snake($key)] = $value;
+        }
+
+        return $result;
+    }
+
+    protected function normalizeBooleans(array $fields): void
+    {
+        $data = [];
+
+        foreach ($fields as $field) {
+            if ($this->has($field)) {
+                $data[$field] = filter_var(
+                    $this->input($field),
+                    FILTER_VALIDATE_BOOLEAN,
+                    FILTER_NULL_ON_FAILURE
+                );
+            }
+        }
+
+        if (!empty($data)) {
+            $this->merge($data);
+        }
+    }
+
 }

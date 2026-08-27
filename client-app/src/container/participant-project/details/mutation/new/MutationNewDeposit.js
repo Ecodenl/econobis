@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import InputText from '../../../../../components/form/InputText';
 import InputDate from '../../../../../components/form/InputDate';
 import moment from 'moment';
+import ParticipantProjectDetailsAPI from '../../../../../api/participant-project/ParticipantProjectDetailsAPI';
 
 const MutationNewDeposit = ({
     statusCodeRef,
+    participationId,
     quantityInterest,
     amountInterest,
     dateInterest,
@@ -25,15 +27,8 @@ const MutationNewDeposit = ({
     handleInputChange,
     handleInputChangeDate,
     projectTypeCodeRef,
-    projectDateInterestBearingKwh,
+    disableBeforeEntryDate,
 }) => {
-    let disableBeforeEntryDate = '';
-    if (projectTypeCodeRef === 'postalcode_link_capital') {
-        if (projectDateInterestBearingKwh) {
-            disableBeforeEntryDate = moment(projectDateInterestBearingKwh).format('YYYY-MM-DD');
-        }
-    }
-
     return (
         <React.Fragment>
             {statusCodeRef === 'interest' ? (
@@ -211,6 +206,7 @@ const MutationNewDeposit = ({
                             disabledBefore={disableBeforeEntryDate}
                             required={'required'}
                             error={errors.dateEntry}
+                            errorMessage={errorMessage.dateEntry}
                         />
                         <InputText
                             label={'Betalingskenmerk'}

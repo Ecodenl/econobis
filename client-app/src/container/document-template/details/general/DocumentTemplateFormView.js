@@ -15,6 +15,7 @@ const DocumentTemplateFormView = props => {
         name,
         number,
         htmlBody,
+        allowChangeHtmlBody,
         characteristic,
         roles,
         documentGroup,
@@ -49,12 +50,16 @@ const DocumentTemplateFormView = props => {
                 <ViewHtmlAsText label={'Tekst'} value={htmlBody} switchToEdit={props.switchToEdit} />
             </div>
 
+            <div className="row" onClick={props.switchToEdit}>
+                <ViewText label={'Tekst wijzigbaar bij document'} value={allowChangeHtmlBody ? 'Ja' : 'Nee'} />
+            </div>
+
             {documentTemplateType.id == 'general' && (
                 <div className="row">
                     <ViewText
                         label={'Basis template'}
                         value={baseTemplate ? baseTemplate.name : ''}
-                        link={baseTemplate ? 'document-template/' + baseTemplate.id : ''}
+                        link={baseTemplate ? '/document-template/' + baseTemplate.id : ''}
                     />
                 </div>
             )}
@@ -63,7 +68,7 @@ const DocumentTemplateFormView = props => {
                     <ViewText
                         label={'Koptekst'}
                         value={headerTemplate ? headerTemplate.name : ''}
-                        link={headerTemplate ? 'document-template/' + headerTemplate.id : ''}
+                        link={headerTemplate ? '/document-template/' + headerTemplate.id : ''}
                     />
                 </div>
             )}
@@ -72,7 +77,7 @@ const DocumentTemplateFormView = props => {
                     <ViewText
                         label={'Voettekst'}
                         value={footerTemplate ? footerTemplate.name : ''}
-                        link={footerTemplate ? 'document-template/' + footerTemplate.id : ''}
+                        link={footerTemplate ? '/document-template/' + footerTemplate.id : ''}
                     />
                 </div>
             )}
@@ -85,7 +90,7 @@ const DocumentTemplateFormView = props => {
                 <ViewText
                     label={'Gemaakt door'}
                     value={createdBy ? createdBy.fullName : 'Onbekend'}
-                    link={createdBy ? 'gebruiker/' + createdBy.id : ''}
+                    link={createdBy ? '/gebruiker/' + createdBy.id : ''}
                 />
             </div>
         </div>

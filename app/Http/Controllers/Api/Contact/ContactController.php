@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Api\Contact;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactStatus;
+use App\Eco\Contact\ContactToImportSupplier;
 use App\Eco\User\User;
 use App\Helpers\Contact\ContactMergeException;
 use App\Helpers\Contact\ContactMerger;
 use App\Helpers\Delete\Models\DeleteContact;
 use App\Helpers\Hoomdossier\HoomdossierHelper;
 use App\Helpers\Import\ContactImportHelper;
+use App\Helpers\Import\ContactImportFromEnergySupplierHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Contact\ContactPeekInspectionPerson;
 use App\Http\Resources\Contact\ContactWithAddressPeek;
@@ -31,7 +33,34 @@ class ContactController extends Controller
         $this->authorize('view', $contact);
         $this->checkContactTeamAutorized($contact);
 
-        $contact->load(['addresses.addressEnergySuppliers.energySupplier', 'addresses.addressEnergySuppliers.energySupplyType', 'addresses.addressEnergySuppliers.energySupplyStatus', 'addresses.currentAddressEnergySupplierElectricity', 'addresses.currentAddressEnergySupplierElectricity.energySupplier', 'addresses.currentAddressEnergySupplierGas', 'addresses.currentAddressEnergySupplierGas.energySupplier', 'addresses.country', 'emailAddresses', 'phoneNumbers', 'createdBy', 'updatedBy', 'owner', 'portalUser', 'tasks', 'notes', 'financialOverviewContactsSend', 'documents', 'opportunities', 'participations', 'orders', 'invoices']);
+        $contact->load([
+            'emailAddresses',
+            'phoneNumbers',
+            'createdBy',
+            'updatedBy',
+            'owner',
+            'portalUser',
+            'tasks',
+            'notes',
+            'financialOverviewContactsSend',
+            'documents',
+            'opportunities',
+            'participations',
+            'orders',
+            'invoices'
+        ]);
+        $contact->addresses->load([
+            'addressDongles',
+            'addressEnergySuppliers',
+            'addressEnergySuppliers.energySupplier',
+            'addressEnergySuppliers.energySupplyType',
+            'addressEnergySuppliers.energySupplyStatus',
+            'country',
+            'currentAddressEnergySupplierElectricity',
+            'currentAddressEnergySupplierElectricity.energySupplier',
+            'currentAddressEnergySupplierGas',
+            'currentAddressEnergySupplierGas.energySupplier',
+        ]);
         $contact->contactNotes->load(['createdBy', 'updatedBy']);
         $contact->occupations->load(['occupation', 'primaryContact', 'contact']);
         $contact->primaryOccupations->load(['occupation', 'primaryContact', 'contact']);
@@ -51,6 +80,8 @@ class ContactController extends Controller
             $contact->relatedDocuments = $contact->documents()->get();
         }
 
+        $contact->allowInterimFinancialOverview = self::getAllowInterimFinancialOverview($contact);
+
         return new FullContactWithGroups($contact);
     }
 
@@ -66,6 +97,34 @@ class ContactController extends Controller
         set_time_limit(180);
         $contactImportHelper = new ContactImportHelper();
         return $contactImportHelper->import($request->file('attachment'));
+    }
+
+    public function validateImportFromEnergySupplier(Request $request){
+        $this->authorize('import', Contact::class);
+        set_time_limit(180);
+
+        $contactImportFromEnergySupplierHelper = new ContactImportFromEnergySupplierHelper();
+        return $contactImportFromEnergySupplierHelper->validateImport($request->file('attachment'), $request->input('supplierCodeRef'), $request->input('fileHeader'));
+    }
+
+    public function importFromEnergySupplier(Request $request){
+        $this->authorize('import', Contact::class);
+        set_time_limit(180);
+        $contactImportFromEnergySupplierHelper = new ContactImportFromEnergySupplierHelper();
+        return $contactImportFromEnergySupplierHelper->import($request->file('attachment'), $request->input('suppliercodeRef'), $request->input('warninglines'));
+    }
+
+    public function updateContactMatches(){
+        $this->authorize('import', Contact::class);
+        set_time_limit(300);
+        $contactImportFromEnergySupplierHelper = new ContactImportFromEnergySupplierHelper();
+        return $contactImportFromEnergySupplierHelper->updateContactMatches();
+    }
+
+    public function contactToImportsSuppliers (){
+        $this->authorize('import', Contact::class);
+        set_time_limit(180);
+        return ContactToImportSupplier::get();
     }
 
     public function destroy(Contact $contact)
@@ -143,9 +202,9 @@ class ContactController extends Controller
         $teamContactIds = Auth::user()->getTeamContactIds();
 
         if ($teamContactIds){
-            $query = Contact::select('id', 'full_name', 'number')->whereIn('contacts.id', $teamContactIds)->orderBy('full_name');
+            $query = Contact::select('id', 'full_name', 'number', 'type_id')->whereIn('contacts.id', $teamContactIds)->orderBy('full_name');
         }else{
-            $query = Contact::select('id', 'full_name', 'number')->orderBy('full_name');
+            $query = Contact::select('id', 'full_name', 'number', 'type_id')->orderBy('full_name');
         }
 
         if($inspectionPersonType !== null AND $inspectionPersonType !== "null") {
@@ -206,6 +265,19 @@ class ContactController extends Controller
         $contacts = $contacts->get();
 
         return ContactWithAddressPeek::collection($contacts);
+    }
+
+    public function getAllowInterimFinancialOverview(Contact $contact)
+    {
+        $oldestFinancialOverviewContactConcept = $contact->oldestFinancialOverviewContactConcept;
+
+        // All participations for the oldest financial overview contact (concept) must be terminated
+        return $oldestFinancialOverviewContactConcept
+            && !$oldestFinancialOverviewContactConcept->contact->participations()
+                ->whereNull('date_terminated')
+                ->exists()
+            && ($oldestFinancialOverviewContactConcept?->status_id === 'concept' ?? false)
+            && ($oldestFinancialOverviewContactConcept?->financialOverview?->administration?->uses_interim_financial_overviews ?? false);
     }
 
     public function getContactWithAddresses(Contact $contact, Request $request)
@@ -347,17 +419,31 @@ class ContactController extends Controller
         $toContact = Contact::find($request->input('toId'));
         $fromContact = Contact::find($request->input('fromId'));
 
-        if($toContact->id > $fromContact->id) {
-            /**
-             * Update 20221108; we always want to merge into the contact with the lowest id.
-             */
-            $temp = $toContact;
-            $toContact = $fromContact;
-            $fromContact = $temp;
-        }
+        /**
+         * Update 20221108; we always want to merge into the contact with the lowest id.
+         * Update 20240507; to and from are selected by user.
+         */
+//        if($toContact->id > $fromContact->id) {
+//            $temp = $toContact;
+//            $toContact = $fromContact;
+//            $fromContact = $temp;
+//        }
+
+        //we store the Hoom account id in a separate variable because later it will be updated and we can't compair anymore
+        $toContactHoomAccountId = $toContact->hoom_account_id;
+        $fromContactHoomAccountId = $fromContact->hoom_account_id;
 
         try{
+
             (new ContactMerger($toContact, $fromContact))->merge();
+
+            if (!$toContactHoomAccountId && $fromContactHoomAccountId) {
+//                Log::info('in de if:  ' . $toContactHoomAccountId . ' || ' .  $fromContactHoomAccountId);
+                return response()->json(['message' => 'Het Hoom account id van het oude contact is overgenomen naar het nieuwe contact, u moet het contact_id ook handmatig in het Hoomdossier aanpassen'], 200);
+            } else {
+//                Log::info('in de else: ' . $toContactHoomAccountId . ' || ' .  $fromContactHoomAccountId);
+                return response()->json(['message' => 'Contacten zijn succesvol samengevoegd'], 200);
+            }
         }catch (ValidationException $e){
             return response()->json([
                 'status'=> 'error',

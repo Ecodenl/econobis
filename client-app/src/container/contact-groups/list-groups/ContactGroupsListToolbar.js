@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import ButtonText from '../../../components/button/ButtonText';
@@ -8,8 +8,10 @@ import { FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
 
 const ContactGroupsListToolbar = props => {
+    const navigate = useNavigate();
+
     const newContactGroup = () => {
-        hashHistory.push('/contact-groep/nieuw');
+        navigate('/contact-groep/nieuw');
     };
 
     const { permissions = {} } = props;

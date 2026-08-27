@@ -2,6 +2,7 @@
 
 namespace App\Eco\FreeFields;
 
+use App\Eco\PortalFreeFields\PortalFreeFieldsField;
 use Illuminate\Database\Eloquent\Model;
 
 class FreeFieldsField extends Model
@@ -28,6 +29,12 @@ class FreeFieldsField extends Model
     {
         return $this->freeFieldsFieldRecords()->exists();
     }
+
+    public function portalFreeFieldsFields()
+    {
+        return $this->hasMany(PortalFreeFieldsField::class, 'field_id');
+    }
+
 }
 
 

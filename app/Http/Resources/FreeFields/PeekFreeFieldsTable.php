@@ -17,6 +17,7 @@ class PeekFreeFieldsTable extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'prefixFieldNameWebform' => $this->prefix_field_name_webform,
         ];
     }
 }

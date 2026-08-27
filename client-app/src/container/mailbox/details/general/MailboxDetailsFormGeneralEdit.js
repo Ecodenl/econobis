@@ -15,13 +15,18 @@ function MailboxDetailsFormGeneralEdit({ mailboxDetails, updateMailbox, fetchSys
                 switchToView();
             })
             .catch(error => {
-                if (error.response.status === 401 && error.response.data.message === 'ms_oauth_unauthorised') {
+                if (
+                    error.response &&
+                    error.response.status === 401 &&
+                    error.response.data &&
+                    error.response.data.message === 'ms_oauth_unauthorised'
+                ) {
                     window.location = error.response.data.authUrl;
-                } else {
-                    console.log(error);
-                    alert('Er is iets misgegaan met opslaan. Probeer het nogmaals');
+                    return;
                 }
 
+                console.log(error);
+                alert('Er is iets misgegaan met opslaan. Probeer het nogmaals');
                 setSubmitting(false);
             });
     }

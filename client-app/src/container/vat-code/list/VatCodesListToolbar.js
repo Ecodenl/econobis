@@ -1,12 +1,14 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
 const VatCodesListToolbar = ({ vatCodesCount, refreshVatCodesData, permissions }) => {
+    // const navigate = useNavigate();
+
     // const newVatCode = () => {
-    //     hashHistory.push(`/btw-code/nieuw`);
+    //     navigate(`/btw-code/nieuw`);
     // };
 
     return (

@@ -10,23 +10,25 @@ import { plus } from 'react-icons-kit/fa/plus';
 
 const IntakeHarmonica = ({ toggleShowList, showIntakesList, newIntake, intakeCount, permissions }) => {
     return (
-        <Panel className={'harmonica-button'}>
-            <PanelBody>
-                <div className="col-sm-10" onClick={toggleShowList} role="button">
-                    <span className="">
-                        INTAKES <span className="badge">{intakeCount}</span>
-                    </span>
-                </div>
-                <div className="col-sm-2">
-                    {permissions.manageIntake && (
-                        <a role="button" className="pull-right" onClick={newIntake}>
-                            <Icon className="harmonica-button" size={14} icon={plus} />
-                        </a>
-                    )}
-                </div>
-                <div className="col-sm-12">{showIntakesList && <IntakesList />}</div>
-            </PanelBody>
-        </Panel>
+        permissions.viewIntake && (
+            <Panel className={'harmonica-button'}>
+                <PanelBody>
+                    <div className="col-sm-10" onClick={toggleShowList} role="button">
+                        <span className="">
+                            INTAKES <span className="badge">{intakeCount}</span>
+                        </span>
+                    </div>
+                    <div className="col-sm-2">
+                        {permissions.manageIntake && (
+                            <a role="button" className="pull-right" onClick={newIntake}>
+                                <Icon className="harmonica-button" size={14} icon={plus} />
+                            </a>
+                        )}
+                    </div>
+                    <div className="col-sm-12">{showIntakesList && <IntakesList />}</div>
+                </PanelBody>
+            </Panel>
+        )
     );
 };
 

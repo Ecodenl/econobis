@@ -70,7 +70,6 @@ class CreateRevenuePartsKwhReport implements ShouldQueue
 
     public function handle()
     {
-        //user voor observer
         Auth::setUser(User::find($this->userId));
 
         $revenuePartsKwhController = new RevenuePartsKwhController();
@@ -109,7 +108,7 @@ class CreateRevenuePartsKwhReport implements ShouldQueue
             $emailAddress = optional(optional($distributionKwh)->contact)->primaryEmailAddress;
             if($emailAddress){
                 $this->email->contacts()->syncWithoutDetaching($emailAddress->contact_id);
-                $this->email->to = array_unique(array_merge($this->email->to, [$emailAddress->id]));
+                $this->email->to = [];
                 $this->email->save();
             }
         }

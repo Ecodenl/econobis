@@ -16,23 +16,25 @@ const ParticipationHarmonica = ({
     permissions,
 }) => {
     return (
-        <Panel className={'harmonica-button'}>
-            <PanelBody>
-                <div className="col-sm-10" onClick={toggleShowList} role="button">
-                    <span className="">
-                        DEELNAMES <span className="badge">{participationCount}</span>
-                    </span>
-                </div>
-                <div className="col-sm-2">
-                    {permissions.manageParticipation && (
-                        <a role="button" className="pull-right" onClick={newParticipation}>
-                            <Icon className="harmonica-button" size={14} icon={plus} />
-                        </a>
-                    )}
-                </div>
-                <div className="col-sm-12">{showParticipationsList && <ParticipationsList />}</div>
-            </PanelBody>
-        </Panel>
+        permissions.viewParticipation && (
+            <Panel className={'harmonica-button'}>
+                <PanelBody>
+                    <div className="col-sm-10" onClick={toggleShowList} role="button">
+                        <span className="">
+                            DEELNAMES <span className="badge">{participationCount}</span>
+                        </span>
+                    </div>
+                    <div className="col-sm-2">
+                        {permissions.manageParticipation && (
+                            <a role="button" className="pull-right" onClick={newParticipation}>
+                                <Icon className="harmonica-button" size={14} icon={plus} />
+                            </a>
+                        )}
+                    </div>
+                    <div className="col-sm-12">{showParticipationsList && <ParticipationsList />}</div>
+                </PanelBody>
+            </Panel>
+        )
     );
 };
 

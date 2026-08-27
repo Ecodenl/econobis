@@ -57,6 +57,7 @@ class ContactDetailsFormPersonalEdit extends Component {
                 name: false,
             },
             showErrorModal: false,
+            modalTitleMessage: '',
             modalErrorMessage: '',
         };
     }
@@ -138,22 +139,23 @@ class ContactDetailsFormPersonalEdit extends Component {
                     this.props.switchToView();
                 })
                 .catch(error => {
-                    let errorObject = JSON.parse(JSON.stringify(error));
+                    // let errorObject = JSON.parse(JSON.stringify(error));
 
                     let errorMessage = 'Er is iets misgegaan bij opslaan. Probeer het opnieuw.';
 
-                    if (errorObject.response.status !== 500) {
-                        errorMessage = errorObject.response.data.message;
+                    if (error.response.status !== 500) {
+                        errorMessage = error.response.data.message;
                     }
                     this.setState({
                         showErrorModal: true,
+                        modalTitleMessage: error.response.status === 412 ? 'Twinfield meldingen' : 'Fout bij opslaan',
                         modalErrorMessage: errorMessage,
                     });
                 });
     };
 
     closeErrorModal = () => {
-        this.setState({ showErrorModal: false, modalErrorMessage: '' });
+        this.setState({ showErrorModal: false, modalErrorMessage: '', modalTitleMessage: '' });
     };
 
     render() {
@@ -172,13 +174,6 @@ class ContactDetailsFormPersonalEdit extends Component {
             inspectionPersonType,
             hoomAccountId,
         } = this.state.person;
-
-        // const { isInInspectionPersonTypeGroup } = this.props.contactDetails;
-
-        let isCoach = false;
-        if (inspectionPersonType && inspectionPersonType.id === 'coach') {
-            isCoach = true;
-        }
 
         return (
             <React.Fragment>
@@ -272,37 +267,44 @@ class ContactDetailsFormPersonalEdit extends Component {
                     </div>
 
                     <div className="row">
-                        {!didAgreeAvg ? (
-                            <InputToggle
-                                label="Akkoord privacybeleid"
-                                divSize={'col-xs-12'}
-                                name="didAgreeAvg"
-                                value={didAgreeAvg}
-                                onChangeAction={this.handleInputChange}
-                            />
-                        ) : (
-                            <ViewText
-                                label="Akkoord privacybeleid"
-                                id={'didAgreeAvg'}
-                                className={'form-group col-md-12'}
-                                value={
-                                    didAgreeAvg ? (
-                                        <span>
-                                            Ja{' '}
-                                            <em>
-                                                (
-                                                {dateDidAgreeAvg
-                                                    ? moment(dateDidAgreeAvg).format('L')
-                                                    : moment().format('L')}
-                                                )
-                                            </em>
-                                        </span>
-                                    ) : (
-                                        'Nee'
-                                    )
-                                }
-                            />
-                        )}
+                        {/*{!didAgreeAvg ? (*/}
+                        <InputToggle
+                            label="Akkoord privacybeleid"
+                            divSize={'col-xs-12'}
+                            name="didAgreeAvg"
+                            value={didAgreeAvg}
+                            onChangeAction={this.handleInputChange}
+                            additionalTextValue={
+                                didAgreeAvg
+                                    ? 'Ja (' +
+                                      (dateDidAgreeAvg ? moment(dateDidAgreeAvg).format('L') : moment().format('L')) +
+                                      ')'
+                                    : 'Nee'
+                            }
+                        />
+                        {/*) : (*/}
+                        {/*    <ViewText*/}
+                        {/*        label="Akkoord privacybeleid"*/}
+                        {/*        id={'didAgreeAvg'}*/}
+                        {/*        className={'form-group col-md-12'}*/}
+                        {/*        value={*/}
+                        {/*            didAgreeAvg ? (*/}
+                        {/*                <span>*/}
+                        {/*                    Ja{' '}*/}
+                        {/*                    <em>*/}
+                        {/*                        (*/}
+                        {/*                        {dateDidAgreeAvg*/}
+                        {/*                            ? moment(dateDidAgreeAvg).format('L')*/}
+                        {/*                            : moment().format('L')}*/}
+                        {/*                        )*/}
+                        {/*                    </em>*/}
+                        {/*                </span>*/}
+                        {/*            ) : (*/}
+                        {/*                'Nee'*/}
+                        {/*            )*/}
+                        {/*        }*/}
+                        {/*    />*/}
+                        {/*)}*/}
                     </div>
 
                     <div className="row">
@@ -313,19 +315,18 @@ class ContactDetailsFormPersonalEdit extends Component {
                         />
                     </div>
 
-                    {isCoach ? (
-                        <div className="row">
-                            <InputText
-                                label={'Hoom account id'}
-                                divSize={'col-xs-12'}
-                                name="hoomAccountId"
-                                value={hoomAccountId}
-                                onChangeAction={this.handleInputChange}
-                            />
-                        </div>
-                    ) : (
-                        ' '
-                    )}
+                    <div className="row">
+                        <InputText
+                            label={'Hoom account id'}
+                            divSize={'col-xs-12'}
+                            name="hoomAccountId"
+                            value={hoomAccountId}
+                            onChangeAction={this.handleInputChange}
+                            textToolTip={
+                                'Vul hier alleen uw Hoom account id in wanneer het met de "Hoomdossier maken" knop niet lukt, wanneer u dit veld leeg maakt moet u ook nog het contact_id in het Hoomdossier verwijderen.'
+                            }
+                        />
+                    </div>
 
                     <PanelFooter>
                         <div className="pull-right btn-group" role="group">
@@ -347,7 +348,7 @@ class ContactDetailsFormPersonalEdit extends Component {
                 {this.state.showErrorModal && (
                     <ErrorModal
                         closeModal={this.closeErrorModal}
-                        title={'Fout bij opslaan'}
+                        title={this.state.modalTitleMessage}
                         errorMessage={this.state.modalErrorMessage}
                     />
                 )}

@@ -190,10 +190,10 @@ class LapostaListHelper
             return $response;
         } catch (\Exception $e) {
             if ($e->getMessage()) {
-                Log::error('Er is iets misgegaan bij het aanmaken van een Laposta lijst voor contactgroep id ' . $this->contactGroup->id . ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage());
+                Log::info('Er is iets misgegaan bij het aanmaken van een Laposta lijst voor contactgroep id ' . $this->contactGroup->id . ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage());
                 abort($e->getHttpStatus(), $e->getMessage());
             } else {
-                Log::error('Er is iets misgegaan met bij het aanmaken van een Laposta lijst voor contactgroep id ' . $this->contactGroup->id . ', melding: ' . $e->getHttpStatus());
+                Log::info('Er is iets misgegaan met bij het aanmaken van een Laposta lijst voor contactgroep id ' . $this->contactGroup->id . ', melding: ' . $e->getHttpStatus());
                 abort($e->getHttpStatus(), 'Er is iets misgegaan bij het synchroniseren naar Laposta');
             }
         }
@@ -248,10 +248,10 @@ class LapostaListHelper
             return $response;
         } catch (\Exception $e) {
             if ($e->getMessage()) {
-                Log::error('Er is iets misgegaan bij het aanmaken van een Laposta veld ' . $fieldData['name'] . ' voor contactgroep id ' . $this->contactGroup->id . ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage());
+                Log::info('Er is iets misgegaan bij het aanmaken van een Laposta veld ' . $fieldData['name'] . ' voor contactgroep id ' . $this->contactGroup->id . ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage());
                 abort($e->getHttpStatus(), $e->getMessage());
             } else {
-                Log::error('Er is iets misgegaan met bij het aanmaken van een Laposta veld ' . $fieldData['name'] . ' voor contactgroep id ' . $this->contactGroup->id . ', melding: ' . $e->getHttpStatus());
+                Log::info('Er is iets misgegaan met bij het aanmaken van een Laposta veld ' . $fieldData['name'] . ' voor contactgroep id ' . $this->contactGroup->id . ', melding: ' . $e->getHttpStatus());
                 abort($e->getHttpStatus(), 'Er is iets misgegaan bij het synchroniseren naar Laposta');
             }
         }
@@ -273,7 +273,7 @@ class LapostaListHelper
                     $this->messages[] = 'Er is iets misgegaan bij het synchroniseren naar Laposta voor contactgroep id ' . $this->contactGroup->id .  ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage();
                     return false;
                 } else {
-                    Log::error('Er is iets misgegaan bij het synchroniseren naar Laposta voor contactgroep id ' . $this->contactGroup->id .  ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage() );
+                    Log::info('Er is iets misgegaan bij het synchroniseren naar Laposta voor contactgroep id ' . $this->contactGroup->id .  ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage() );
                     abort($e->getHttpStatus(), $e->getMessage());
                 }
             } else {
@@ -281,7 +281,7 @@ class LapostaListHelper
                     $this->messages[] = 'Er is iets misgegaan met bij het synchroniseren naar Laposta voor contactgroep id ' . $this->contactGroup->id .  ', melding: ' . $e->getHttpStatus();
                     return false;
                 } else {
-                    Log::error('Er is iets misgegaan met bij het synchroniseren naar Laposta voor contactgroep id ' . $this->contactGroup->id . ', melding: ' . $e->getHttpStatus());
+                    Log::info('Er is iets misgegaan met bij het synchroniseren naar Laposta voor contactgroep id ' . $this->contactGroup->id . ', melding: ' . $e->getHttpStatus());
                     abort($e->getHttpStatus(), 'Er is iets misgegaan bij het synchroniseren naar Laposta');
                 }
             }
@@ -297,10 +297,10 @@ class LapostaListHelper
             return $response;
         } catch (\Exception $e) {
             if ($e->getMessage()) {
-                Log::error('Er is iets misgegaan bij het verwijderen van gekoppelde Laposta lijst voor contactgroep id ' . $this->contactGroup->id .  ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage() );
+                Log::info('Er is iets misgegaan bij het verwijderen van gekoppelde Laposta lijst voor contactgroep id ' . $this->contactGroup->id .  ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage() );
                 abort($e->getHttpStatus(), $e->getMessage());
             } else {
-                Log::error('Er is iets misgegaan met bij het verwijderen van gekoppelde Laposta lijst voor contactgroep id ' . $this->contactGroup->id .  ', melding: ' . $e->getHttpStatus() );
+                Log::info('Er is iets misgegaan met bij het verwijderen van gekoppelde Laposta lijst voor contactgroep id ' . $this->contactGroup->id .  ', melding: ' . $e->getHttpStatus() );
                 abort($e->getHttpStatus(), 'Er is iets misgegaan bij het synchroniseren naar Laposta');
             }
         }

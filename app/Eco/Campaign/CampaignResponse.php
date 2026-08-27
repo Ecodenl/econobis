@@ -19,10 +19,6 @@ class CampaignResponse extends Model
 
     use RevisionableTrait, HasFactory;
 
-    protected $dates = [
-//        'date_responded',
-    ];
-
     protected $guarded = [
         'id',
     ];

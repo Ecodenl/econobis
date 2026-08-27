@@ -19,7 +19,7 @@ class MailgunStoreMailRequest extends FormRequest
 
     public function getFrom()
     {
-        $from = $this->input('from');
+        $from = $this->input('From');
 
         return $this->stripEmail($from);
     }

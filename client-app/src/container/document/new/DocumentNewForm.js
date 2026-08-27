@@ -10,6 +10,8 @@ import DocumentNewFormUpload from './upload/DocumentNewFormUpload';
 
 const DocumentNewForm = ({
     document,
+    hasPreSelectedContacts,
+    preSelectedContacts,
     projects,
     participants,
     orders,
@@ -25,12 +27,15 @@ const DocumentNewForm = ({
     errors,
     errorMessage,
     handleSubmit,
-    handleInputChange,
-    handleProjectChange,
     handleDocumentGroupChange,
+    handleInputChange,
+    handleTextChange,
+    handleProjectChange,
+    handleDocumentTemplateChange,
     onDropAccepted,
     onDropRejected,
     handleInputChangeContactId,
+    handleInputChangeContactEmailId,
     searchTermContact,
     isLoadingContact,
     setSearchTermContact,
@@ -43,6 +48,8 @@ const DocumentNewForm = ({
             <Panel>
                 <PanelBody>
                     <DocumentNewFormGeneral
+                        hasPreSelectedContacts={hasPreSelectedContacts}
+                        preSelectedContacts={preSelectedContacts}
                         tasks={tasks}
                         quotationRequests={quotationRequests}
                         housingFiles={housingFiles}
@@ -60,6 +67,7 @@ const DocumentNewForm = ({
                         handleInputChange={handleInputChange}
                         handleProjectChange={handleProjectChange}
                         handleInputChangeContactId={handleInputChangeContactId}
+                        handleInputChangeContactEmailId={handleInputChangeContactEmailId}
                         searchTermContact={searchTermContact}
                         isLoadingContact={isLoadingContact}
                         setSearchTermContact={setSearchTermContact}
@@ -71,8 +79,10 @@ const DocumentNewForm = ({
                             errors={errors}
                             errorMessage={errorMessage}
                             handleInputChange={handleInputChange}
+                            handleTextChange={handleTextChange}
                             templates={templates}
                             handleDocumentGroupChange={handleDocumentGroupChange}
+                            handleDocumentTemplateChange={handleDocumentTemplateChange}
                         />
                     ) : (
                         <DocumentNewFormUpload

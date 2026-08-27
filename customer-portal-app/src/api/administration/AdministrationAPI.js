@@ -20,6 +20,7 @@ export default {
                         'btwNumber',
                         'website',
                         'email',
+                        'portalSettingsLayoutAssigned',
                     ],
                     rlt: {
                         country: { fld: ['name'] },

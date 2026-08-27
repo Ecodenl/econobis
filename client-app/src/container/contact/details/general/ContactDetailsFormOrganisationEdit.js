@@ -71,6 +71,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
                 collectMandateFirstRunDate: false,
             },
             showErrorModal: false,
+            modalTitleMessage: '',
             modalErrorMessage: '',
         };
     }
@@ -150,23 +151,23 @@ class ContactDetailsFormOrganisationEdit extends Component {
                     this.props.switchToView();
                 })
                 .catch(error => {
-                    let errorObject = JSON.parse(JSON.stringify(error));
-
+                    // let errorObject = JSON.parse(JSON.stringify(error));
                     let errorMessage = 'Er is iets misgegaan bij opslaan. Probeer het opnieuw.';
 
-                    if (errorObject.response.status !== 500) {
-                        errorMessage = errorObject.response.data.message;
+                    if (error.response.status !== 500) {
+                        errorMessage = error.response.data.message;
                     }
 
                     this.setState({
                         showErrorModal: true,
+                        modalTitleMessage: error.response.status === 412 ? 'Twinfield meldingen' : 'Fout bij opslaan',
                         modalErrorMessage: errorMessage,
                     });
                 });
     };
 
     closeErrorModal = () => {
-        this.setState({ showErrorModal: false, modalErrorMessage: '' });
+        this.setState({ showErrorModal: false, modalErrorMessage: '', modalTitleMessage: '' });
     };
 
     render() {
@@ -289,37 +290,44 @@ class ContactDetailsFormOrganisationEdit extends Component {
                     </div>
 
                     <div className="row">
-                        {!didAgreeAvg ? (
-                            <InputToggle
-                                label="Akkoord privacybeleid"
-                                divSize={'col-xs-12'}
-                                name="didAgreeAvg"
-                                value={didAgreeAvg}
-                                onChangeAction={this.handleInputChange}
-                            />
-                        ) : (
-                            <ViewText
-                                label="Akkoord privacybeleid"
-                                id={'didAgreeAvg'}
-                                className={'form-group col-md-12'}
-                                value={
-                                    didAgreeAvg ? (
-                                        <span>
-                                            Ja{' '}
-                                            <em>
-                                                (
-                                                {dateDidAgreeAvg
-                                                    ? moment(dateDidAgreeAvg).format('L')
-                                                    : moment().format('L')}
-                                                )
-                                            </em>
-                                        </span>
-                                    ) : (
-                                        'Nee'
-                                    )
-                                }
-                            />
-                        )}
+                        {/*{!didAgreeAvg ? (*/}
+                        <InputToggle
+                            label="Akkoord privacybeleid"
+                            divSize={'col-xs-12'}
+                            name="didAgreeAvg"
+                            value={didAgreeAvg}
+                            onChangeAction={this.handleInputChange}
+                            additionalTextValue={
+                                didAgreeAvg
+                                    ? 'Ja (' +
+                                      (dateDidAgreeAvg ? moment(dateDidAgreeAvg).format('L') : moment().format('L')) +
+                                      ')'
+                                    : 'Nee'
+                            }
+                        />
+                        {/*) : (*/}
+                        {/*    <ViewText*/}
+                        {/*        label="Akkoord privacybeleid"*/}
+                        {/*        id={'didAgreeAvg'}*/}
+                        {/*        className={'form-group col-md-12'}*/}
+                        {/*        value={*/}
+                        {/*            didAgreeAvg ? (*/}
+                        {/*                <span>*/}
+                        {/*                    Ja{' '}*/}
+                        {/*                    <em>*/}
+                        {/*                        (*/}
+                        {/*                        {dateDidAgreeAvg*/}
+                        {/*                            ? moment(dateDidAgreeAvg).format('L')*/}
+                        {/*                            : moment().format('L')}*/}
+                        {/*                        )*/}
+                        {/*                    </em>*/}
+                        {/*                </span>*/}
+                        {/*            ) : (*/}
+                        {/*                'Nee'*/}
+                        {/*            )*/}
+                        {/*        }*/}
+                        {/*    />*/}
+                        {/*)}*/}
                     </div>
 
                     {/* vooralsnog alleen bij persons, organisations kunnen al gekoppeld worden aan kansactie */}
@@ -405,7 +413,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
                 {this.state.showErrorModal && (
                     <ErrorModal
                         closeModal={this.closeErrorModal}
-                        title={'Fout bij opslaan'}
+                        title={this.state.modalTitleMessage}
                         errorMessage={this.state.modalErrorMessage}
                     />
                 )}

@@ -35,8 +35,6 @@ const AdministrationDetailsFormGeneralView = props => {
         logoName,
         mailboxEmail,
         usesTwinfield,
-        twinfieldConnectionType,
-        twinfieldConnectionTypeWithIdAndName,
         twinfieldHasRefreshToken,
         twinfieldRedirectUri,
         twinfieldUsername,
@@ -56,8 +54,9 @@ const AdministrationDetailsFormGeneralView = props => {
         portalSettingsLayout,
         usesMollie,
         mollieApiKey,
+        usesInterimFinancialOverviews,
     } = props.administrationDetails;
-    const { logoFilenameSrc } = props.administrationLogoDetails;
+    const logoFilenameSrc = props.administrationLogoDetails?.logoFilenameSrc ?? null;
 
     return (
         <div onClick={props.switchToEdit}>
@@ -184,6 +183,12 @@ const AdministrationDetailsFormGeneralView = props => {
                             props.meDetails.email === 'software@xaris.nl') &&
                             usesMollie && <ViewText label={'Mollie API key'} value={mollieApiKey} />}
                     </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Gebruikt tussentijdse waardestaten'}
+                            value={usesInterimFinancialOverviews ? 'Ja' : 'Nee'}
+                        />
+                    </div>
 
                     {usesTwinfield == true && (
                         <div className="row">
@@ -195,16 +200,6 @@ const AdministrationDetailsFormGeneralView = props => {
 
                     <div className="row">
                         <ViewText label={'Gebruikt Twinfield'} value={usesTwinfield ? 'Ja' : 'Nee'} />
-                        {usesTwinfield == true && (
-                            <ViewText
-                                label={'API connection type'}
-                                value={
-                                    twinfieldConnectionTypeWithIdAndName
-                                        ? twinfieldConnectionTypeWithIdAndName.name
-                                        : ''
-                                }
-                            />
-                        )}
                     </div>
 
                     {usesTwinfield == true && (
@@ -214,39 +209,37 @@ const AdministrationDetailsFormGeneralView = props => {
                                 <ViewText label={'Code'} value={twinfieldOfficeCode} />
                             </div>
 
-                            {twinfieldConnectionType === 'openid' && (
-                                <React.Fragment>
-                                    <div className="row">
-                                        <ViewText label={'Client Id'} value={twinfieldClientId} />
-                                        <ViewText label={'Client Secret'} value="**********" />
-                                    </div>
+                            <React.Fragment>
+                                <div className="row">
+                                    <ViewText label={'Client Id'} value={twinfieldClientId} />
+                                    <ViewText label={'Client Secret'} value="**********" />
+                                </div>
 
-                                    <div className="row">
-                                        <ViewText label={'Heeft refresh token?'} value={twinfieldHasRefreshToken} />
-                                        {twinfieldHasRefreshToken === 'Nee' && (
-                                            <ViewText
-                                                className={'col-sm-6 form-group'}
-                                                label="Haal nieuwe refresh token op"
-                                                name={'twinfieldRedirectUri'}
-                                                value={
-                                                    <span>
-                                                        <a
-                                                            href={
-                                                                twinfieldRedirectUri +
-                                                                '?administrationId=' +
-                                                                props.administrationDetails.id
-                                                            }
-                                                            className={'link-underline'}
-                                                        >
-                                                            {twinfieldRedirectUri}
-                                                        </a>
-                                                    </span>
-                                                }
-                                            />
-                                        )}
-                                    </div>
-                                </React.Fragment>
-                            )}
+                                <div className="row">
+                                    <ViewText label={'Heeft refresh token?'} value={twinfieldHasRefreshToken} />
+                                    {twinfieldHasRefreshToken === 'Nee' && (
+                                        <ViewText
+                                            className={'col-sm-6 form-group'}
+                                            label="Haal nieuwe refresh token op"
+                                            name={'twinfieldRedirectUri'}
+                                            value={
+                                                <span>
+                                                    <a
+                                                        href={
+                                                            twinfieldRedirectUri +
+                                                            '?administrationId=' +
+                                                            props.administrationDetails.id
+                                                        }
+                                                        className={'link-underline'}
+                                                    >
+                                                        {twinfieldRedirectUri}
+                                                    </a>
+                                                </span>
+                                            }
+                                        />
+                                    )}
+                                </div>
+                            </React.Fragment>
 
                             <div className="row">
                                 <ViewText
@@ -291,16 +284,18 @@ const AdministrationDetailsFormGeneralView = props => {
                                 />
                             </div>
                             <div className="row">
-                                <ViewText
-                                    label={'Synchroniseer betalingen vanaf'}
-                                    value={
-                                        dateSyncTwinfieldPayments ? moment(dateSyncTwinfieldPayments).format('L') : ''
-                                    }
-                                    name={'dateSyncTwinfieldPayments'}
-                                    textToolTip={`In de nacht worden betalingen gesynchroniseerd. Dit gebeurt vanaf deze datum (op
-                                        basis van nota datum). De datum kan niet liggen na de datum van de oudste nog
-                                        niet betaalde nota.`}
-                                />
+                                {/*todo WM: opschonen*/}
+                                {/*<ViewText*/}
+                                {/*    label={'Synchroniseer betalingen vanaf'}*/}
+                                {/*    value={*/}
+                                {/*        dateSyncTwinfieldPayments ? moment(dateSyncTwinfieldPayments).format('L') : ''*/}
+                                {/*    }*/}
+                                {/*    name={'dateSyncTwinfieldPayments'}*/}
+                                {/*    textToolTip={`In de nacht worden betalingen gesynchroniseerd. Dit gebeurt vanaf deze datum (op*/}
+                                {/*        basis van nota datum). De datum kan niet liggen na de datum van de oudste nog*/}
+                                {/*        niet betaalde nota.`}*/}
+                                {/*/>*/}
+                                <div className={'col-sm-6'} />
                                 <ViewText
                                     label={'Oudste nota datum met status niet betaald'}
                                     value={oldestUnpaidInvoiceDate ? moment(oldestUnpaidInvoiceDate).format('L') : ''}

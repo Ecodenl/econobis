@@ -1,22 +1,20 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_EMAIL = `${URL_API}/api/email-send`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchEmail: id => {
-        return axiosInstance
-            .get(`${URL_EMAIL}/${id}`)
+        return getAxiosInstance()
+            .get(`${getApiUrl()}/api/email-send/${id}`)
             .then(response => response.data);
     },
 
     saveConcept: (id, attributes) => {
-        return axiosInstance
-            .post(`${URL_EMAIL}/${id}/save-concept`, attributes)
+        return getAxiosInstance()
+            .post(`${getApiUrl()}/api/email-send/${id}/save-concept`, attributes)
             .then(response => response.data);
     },
 
-    send: (id) => {
-        return axiosInstance
-            .post(`${URL_EMAIL}/${id}/send`);
-    }
+    send: id => {
+        return getAxiosInstance().post(`${getApiUrl()}/api/email-send/${id}/send`);
+    },
 };

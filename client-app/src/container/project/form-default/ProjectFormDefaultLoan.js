@@ -2,8 +2,12 @@ import React from 'react';
 import InputText from '../../../components/form/InputText';
 import ViewText from '../../../components/form/ViewText';
 import MoneyPresenter from '../../../helpers/MoneyPresenter';
+import InputSelect from '../../../components/form/InputSelect';
 
 const ProjectFormEditLoan = ({
+    loanTypeId,
+    projectLoanTypes,
+    hasConfirmedLoanRedemptionRevenue,
     amountOfLoanNeeded,
     minAmountLoan,
     maxAmountLoan,
@@ -12,6 +16,8 @@ const ProjectFormEditLoan = ({
     amountOptioned,
     amountInteressed,
     handleInputChange,
+    errors,
+    errorMessages,
 }) => {
     const amountAvailable = amountOfLoanNeeded - amountDefinitive;
 
@@ -19,6 +25,21 @@ const ProjectFormEditLoan = ({
         <React.Fragment>
             <hr style={{ margin: '10px 0' }} />
             <h4>Lening</h4>
+            <div className="row">
+                <InputSelect
+                    label={'Type lening'}
+                    name={'loanTypeId'}
+                    options={projectLoanTypes}
+                    value={loanTypeId}
+                    onChangeAction={handleInputChange}
+                    required={'required'}
+                    // emptyOption={false}
+                    readOnly={hasConfirmedLoanRedemptionRevenue}
+                    error={errors.loanTypeId}
+                    errorMessage={errorMessages.loanTypeId}
+                />
+            </div>
+
             <div className="row">
                 <InputText
                     label={'Lening nodig'}

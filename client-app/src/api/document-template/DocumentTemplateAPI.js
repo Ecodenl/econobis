@@ -1,18 +1,19 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_DOCUMENT_TEMPLATE = `${URL_API}/api/document-template`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchDocumentTemplates: () => {
+        const URL_DOCUMENT_TEMPLATE = `${getApiUrl()}/api/document-template`;
         const requestUrl = `${URL_DOCUMENT_TEMPLATE}/grid`;
 
-        return axiosInstance.get(requestUrl);
+        return getAxiosInstance().get(requestUrl);
     },
 
     fetchDocumentTemplate: id => {
+        const URL_DOCUMENT_TEMPLATE = `${getApiUrl()}/api/document-template`;
         const requestUrl = `${URL_DOCUMENT_TEMPLATE}/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -21,9 +22,10 @@ export default {
     },
 
     storeDocumentTemplate: data => {
+        const URL_DOCUMENT_TEMPLATE = `${getApiUrl()}/api/document-template`;
         const requestUrl = `${URL_DOCUMENT_TEMPLATE}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, data)
             .then(response => response.data.data)
             .catch(error => {
@@ -32,9 +34,10 @@ export default {
     },
 
     updateDocumentTemplate: data => {
+        const URL_DOCUMENT_TEMPLATE = `${getApiUrl()}/api/document-template`;
         const requestUrl = `${URL_DOCUMENT_TEMPLATE}/${data.id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, data)
             .then(response => response.data.data)
             .catch(error => {
@@ -43,9 +46,10 @@ export default {
     },
 
     fetchDocumentTemplatesPeekGeneral: () => {
+        const URL_DOCUMENT_TEMPLATE = `${getApiUrl()}/api/document-template`;
         const requestUrl = `${URL_DOCUMENT_TEMPLATE}/peekGeneral`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -56,9 +60,10 @@ export default {
     },
 
     fetchDocumentTemplatesPeekNotGeneral: () => {
+        const URL_DOCUMENT_TEMPLATE = `${getApiUrl()}/api/document-template`;
         const requestUrl = `${URL_DOCUMENT_TEMPLATE}/peekNotGeneral`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -69,14 +74,16 @@ export default {
     },
 
     deleteDocumentTemplate: id => {
+        const URL_DOCUMENT_TEMPLATE = `${getApiUrl()}/api/document-template`;
         const requestUrl = `${URL_DOCUMENT_TEMPLATE}/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     duplicateTemplate: id => {
+        const URL_DOCUMENT_TEMPLATE = `${getApiUrl()}/api/document-template`;
         const requestUrl = `${URL_DOCUMENT_TEMPLATE}/${id}/duplicate`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 };

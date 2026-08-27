@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Ecodenl\LvbagPhpWrapper\Client;
 use Ecodenl\LvbagPhpWrapper\Lvbag;
+use Throwable;
 
 class AddressController extends ApiController
 {
@@ -127,7 +128,7 @@ class AddressController extends ApiController
                 abort(412, implode(';', $messages));
             }
         }
-        return new FullAddress($address->fresh()->load('addressEnergySuppliers.energySupplier', 'addressEnergySuppliers.energySupplyType', 'addressEnergySuppliers.energySupplyStatus', 'country'));
+        return new FullAddress($address->fresh()->load('addressEnergySuppliers.energySupplier', 'addressEnergySuppliers.energySupplyType', 'addressEnergySuppliers.energySupplyStatus', 'addressDongles', 'country'));
     }
 
     public function destroy(Address $address)
@@ -154,6 +155,10 @@ class AddressController extends ApiController
     }
 
     public function getLvbagAddress(Request $request){
+
+        $pc = $request->input('postalCode');
+        $huisnummer = $request->input('number');
+
         $secret = config('lvbag.lvbag_key');
 
         if(empty($secret)){
@@ -166,7 +171,7 @@ class AddressController extends ApiController
         $acceptCRS = 'epsg:28992';
 
         // Establish the connection
-        $client = Client::init($secret, $acceptCRS);
+//        $client = Client::init($secret, $acceptCRS);
 
         // Using the production environment endpoint
         $shouldUseProductionEndpoint = config('lvbag.lvbag_production');
@@ -180,33 +185,44 @@ class AddressController extends ApiController
 
         $lvbag = Lvbag::init($client);
 
-        $pc = $request->input('postalCode');
-
         if(preg_match('/^\d{4}\s[A-Za-z]{2}$/', $pc)){
             $pc = preg_replace('/\s+/', '', $pc);
         }
 
         // Only get address from Lvbag if the postalcode is default NL format: 4 times numeric, directly followed by two times alphanumeric (for example 1616AA)
         // and the housenumber is between 1 and 99999
-        if(!preg_match('/^\d{4}[A-Za-z]{2}$/', $pc) || !is_numeric($request->input('number')) || $request->input('number') <= 0 || $request->input('number') > 99999) {
+        if(!preg_match('/^\d{4}[A-Za-z]{2}$/', $pc) || !is_numeric($huisnummer) || $huisnummer <= 0 || $huisnummer > 99999) {
             return [
                 'street' => "",
                 'city' => "",
             ];
         }
 
-        $addresses = $lvbag->adresUitgebreid()
-        ->list([
-            'postcode' => $pc,
-            'huisnummer' => $request->input('number'),
-        ]);
+        try {
+// Testen van een 500 server error
+//            throw new \Exception('Test 500 simulatie');
+//            throw new \RuntimeException('HTTP 500 Internal Server Error');
+            $addresses = $lvbag->adresUitgebreid()->list([
+                'postcode' => $pc,
+                'huisnummer' => $huisnummer,
+            ]);
+        } catch (Throwable $e) {
+            // Niet laten klappen: gewoon leeg teruggeven
+            // Wel loggen/reporten (maar kort)
+            Log::warning('LvBag lookup failed', [
+                'postcode' => $pc,
+                'huisnummer' => $huisnummer,
+                'message' => $e->getMessage(),
+            ]);
 
-        $street = ($addresses && $addresses[0]) ? $addresses[0]['korteNaam'] : "";
-        $city = ($addresses && $addresses[0]) ? $addresses[0]['woonplaatsNaam'] : "";
+            return ['street' => '', 'city' => ''];
+        }
+
+        $first = $addresses[0] ?? null;
 
         return [
-            'street' => $street,
-            'city' => $city
+            'street' => $first['korteNaam'] ?? '',
+            'city'   => $first['woonplaatsNaam'] ?? '',
         ];
     }
 

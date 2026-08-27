@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Icon from 'react-icons-kit';
 import { trash } from 'react-icons-kit/fa/trash';
@@ -14,9 +14,11 @@ const CampaignDetailsProjectManagerView = ({
     showActionButtons,
     toggleDelete,
 }) => {
+    const navigate = useNavigate();
+
     return (
         <div className={`row border ${highlightLine}`} onMouseEnter={onLineEnter} onMouseLeave={onLineLeave}>
-            <div onClick={() => hashHistory.push(`/contact/${id}`)}>
+            <div onClick={() => navigate(`/contact/${id}`)}>
                 <div className="col-sm-2">{number}</div>
                 <div className="col-sm-4">{name}</div>
                 <div className="col-sm-4">{address ? address.city : ''}</div>

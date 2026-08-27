@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 import moment from 'moment';
 
@@ -14,6 +14,12 @@ import Panel from '../../../components/panel/Panel';
 import LedgerDetailsAPI from '../../../api/ledger/LedgerDetailsAPI';
 import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 import InputSelect from '../../../components/form/InputSelect';
+
+// Functionele wrapper voor de class component
+const LedgerNewFormWrapper = props => {
+    const navigate = useNavigate();
+    return <LedgerNewForm {...props} navigate={navigate} />;
+};
 
 class LedgerNewForm extends Component {
     constructor(props) {
@@ -86,7 +92,7 @@ class LedgerNewForm extends Component {
                 .then(payload => {
                     this.props.fetchSystemData();
 
-                    hashHistory.push(`/grootboekrekening/${payload.data.data.id}`);
+                    this.props.navigate(`/grootboekrekening/${payload.data.data.id}`);
                 })
                 .catch(function(error) {
                     alert('Er is iets mis gegaan met opslaan!');
@@ -156,4 +162,4 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(LedgerNewForm);
+export default connect(mapStateToProps, mapDispatchToProps)(LedgerNewFormWrapper);

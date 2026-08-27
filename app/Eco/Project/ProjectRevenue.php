@@ -6,11 +6,12 @@ use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class ProjectRevenue extends Model
 {
-    use RevisionableTrait;
+    use RevisionableTrait, SoftDeletes;
 
     protected $table = 'project_revenues';
 
@@ -23,14 +24,9 @@ class ProjectRevenue extends Model
         'id'
     ];
 
-    protected $dates = [
-//        'date_begin',
-//        'date_end',
-//        'date_reference',
-//        'date_confirmed',
-//        'date_payed',
-        'created_at',
-        'updated_at',
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     //relations
@@ -61,10 +57,6 @@ class ProjectRevenue extends Model
 
     public function distribution(){
         return $this->hasMany(ProjectRevenueDistribution::class, 'revenue_id');
-    }
-
-    public function deliveredKwhPeriod(){
-        return $this->hasMany(ProjectRevenueDeliveredKwhPeriod::class, 'revenue_id');
     }
 
     //Appended fields

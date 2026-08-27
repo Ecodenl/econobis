@@ -1,4 +1,4 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
 
 const URL_PROJECT = `project`;
 
@@ -6,7 +6,7 @@ export default {
     fetchProject: id => {
         const requestUrl = `${URL_PROJECT}/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -17,7 +17,7 @@ export default {
     updateProject: (id, data) => {
         const requestUrl = `${URL_PROJECT}/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, data)
             .then(response => response.data.data)
             .catch(error => {
@@ -28,19 +28,19 @@ export default {
     storeProject: data => {
         const requestUrl = `${URL_PROJECT}`;
 
-        return axiosInstance.post(requestUrl, data);
+        return getAxiosInstance().post(requestUrl, data);
     },
 
     deleteProject: id => {
         const requestUrl = `${URL_PROJECT}/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     fetchObligationNumbers: id => {
         const requestUrl = `${URL_PROJECT}/${id}/obligation-numbers`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data)
             .catch(error => {

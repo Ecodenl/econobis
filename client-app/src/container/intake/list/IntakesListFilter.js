@@ -12,6 +12,7 @@ import {
     setFilterIntakeAreaName,
     setFilterIntakeCampaign,
     setFilterMeasureRequested,
+    setFilterIntakeSource,
     setFilterIntakeStatus,
 } from '../../../actions/intake/IntakesFiltersActions';
 import DataTableFilterDateStartEnd from '../../../components/dataTable/DataTableFilterDateStartEnd';
@@ -56,6 +57,14 @@ const IntakesListFilter = props => {
         }, 100);
     };
 
+    const onIntakeSourceChange = e => {
+        props.setFilterIntakeSource(e.target.value);
+
+        setTimeout(() => {
+            props.onSubmitFilter();
+        }, 100);
+    };
+
     const onStatusChange = e => {
         props.setFilterIntakeStatus(e.target.value);
 
@@ -68,7 +77,8 @@ const IntakesListFilter = props => {
         <tr className="thead-filter">
             {props.showCheckbox && (
                 <td>
-                    <input type="checkbox" value={props.checkedAllCheckboxes} onChange={props.selectAllCheckboxes} />
+                    {/*<input type="checkbox" value={props.checkedAllCheckboxes} onChange={props.toggleCheckedAll} />*/}
+                    <input type="checkbox" onChange={props.toggleCheckedAll} />
                 </td>
             )}
             <DataTableFilterDateStartEnd
@@ -122,6 +132,23 @@ const IntakesListFilter = props => {
             </th>
 
             <th>
+                <select
+                    className="form-control input-sm"
+                    value={props.filters.intakeSource.data}
+                    onChange={onIntakeSourceChange}
+                >
+                    <option />
+                    {props.intakeSources.map(intakeSource => {
+                        return (
+                            <option key={intakeSource.id} value={intakeSource.id}>
+                                {intakeSource.name}
+                            </option>
+                        );
+                    })}
+                </select>
+            </th>
+
+            <th>
                 <select className="form-control input-sm" value={props.filters.statusId.data} onChange={onStatusChange}>
                     <option />
                     {props.intakeStatuses.map(intakeStatus => {
@@ -148,6 +175,7 @@ const IntakesListFilter = props => {
 
 const mapStateToProps = state => ({
     filters: state.intakes.filters,
+    intakeSources: state.systemData.intakeSources,
     intakeStatuses: state.systemData.intakeStatuses,
     measureCategories: state.systemData.measureCategories,
 });
@@ -162,6 +190,7 @@ const mapDispatchToProps = dispatch => {
             setFilterIntakeAreaName,
             setFilterIntakeCampaign,
             setFilterMeasureRequested,
+            setFilterIntakeSource,
             setFilterIntakeStatus,
         },
         dispatch

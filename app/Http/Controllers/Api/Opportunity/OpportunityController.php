@@ -20,6 +20,7 @@ use App\Http\RequestQueries\Opportunity\Grid\RequestQuery;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Opportunity\GridOpportunity;
 use App\Http\Resources\Opportunity\OpportunityPeek;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -30,19 +31,26 @@ class OpportunityController extends ApiController
 
     public function grid(RequestQuery $requestQuery)
     {
+        $this->authorize('view', Opportunity::class);
+
         $opportunities = $requestQuery->get();
 
-        $opportunities->load(['intake.contact', 'measureCategory', 'measures', 'intake.campaign', 'status', 'quotationRequests']);
+        $opportunities->load(['intake.contact', 'intake.campaign', 'intake.address', 'measureCategory', 'measures', 'status', 'quotationRequests']);
 
         return GridOpportunity::collection($opportunities)
             ->additional(['meta' => [
                 'total' => $requestQuery->total(),
+                'opportunityIdsTotal' => $requestQuery->totalIds(),
             ]
             ]);
     }
 
     public function show(Opportunity $opportunity)
     {
+        set_time_limit(60);
+
+        $this->authorize('view', Opportunity::class);
+
         $opportunity->load([
             'measureCategory',
             'quotationRequests.organisationOrCoach',
@@ -59,11 +67,13 @@ class OpportunityController extends ApiController
             'updatedBy',
             'intake.contact',
             'intake.campaign',
+            'intake.address',
+            'intake.address.housingFile',
             'intake.campaign.opportunityActions',
             'tasks',
             'notes',
             'documents',
-            'measures'
+            'measures',
         ]);
 
         $opportunity->relatedEmailsSent = $this->getRelatedEmails($opportunity->id, 'sent');
@@ -80,6 +90,8 @@ class OpportunityController extends ApiController
 
     public function csv(RequestQuery $requestQuery)
     {
+        $this->authorize('view', Opportunity::class);
+
         set_time_limit(0);
         $opportunities = $requestQuery->getQueryNoPagination()->get();
 
@@ -100,6 +112,8 @@ class OpportunityController extends ApiController
             ->string('amount')->alias('amount')->onEmpty(null)->next()
             ->string('desiredDate')->validate('date')->onEmpty(null)->alias('desired_date')->next()
             ->string('evaluationAgreedDate')->validate('date')->onEmpty(null)->alias('evaluation_agreed_date')->next()
+            ->string('belowWozLimit')->alias('below_woz_limit')->onEmpty(null)->next()
+            ->string('exceptionDebtRelief')->alias('exception_debt_relief')->onEmpty(null)->next()
             ->get();
 
         $opportunity = new Opportunity();
@@ -131,6 +145,8 @@ class OpportunityController extends ApiController
             ->string('desiredDate')->validate('date')->onEmpty(null)->alias('desired_date')->next()
             ->string('amount')->alias('amount')->onEmpty(null)->next()
             ->string('evaluationAgreedDate')->validate('date')->onEmpty(null)->alias('evaluation_agreed_date')->next()
+            ->string('belowWozLimit')->alias('below_woz_limit')->onEmpty(null)->next()
+            ->string('exceptionDebtRelief')->alias('exception_debt_relief')->onEmpty(null)->next()
             ->get();
 
         $opportunity->fill($data);
@@ -172,12 +188,76 @@ class OpportunityController extends ApiController
         }
     }
 
+    public function bulkDelete(Request $request)
+    {
+        $this->authorize('manage', Opportunity::class);
+
+        $allResult = [];
+
+        if($request->input('ids')){
+            $opportunitiesToDelete = Opportunity::whereIn('id', $request->input('ids'))->get();
+            foreach ($opportunitiesToDelete as $opportunity) {
+
+                try {
+                    DB::beginTransaction();
+
+                    $deleteOpportunity = new DeleteOpportunity($opportunity);
+                    $result = $deleteOpportunity->delete();
+                    if(count($result) > 0){
+                        $allResult[] = $result;
+                        DB::rollBack();
+                    }
+
+                    DB::commit();
+                } catch (\PDOException $e) {
+                    DB::rollBack();
+                    Log::error($e->getMessage());
+                    abort(501, 'Er is helaas een fout opgetreden.');
+                }
+
+            }
+        }
+
+        return $allResult;
+    }
+
+    public function bulkUpdate(Request $request)
+    {
+        $this->authorize('manage', Opportunity::class);
+
+        $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:opportunities,id'],
+        ]);
+
+        $opportunities = Opportunity::whereIn('id', $request->input('ids'))->get();
+
+        // todo WM: is dit nodig?
+//        foreach ($opportunities as $opportunity) {
+//            $this->authorize('manage', $opportunity);
+//        }
+
+        $data = $request->validate([
+            'statusId' => ['nullable', 'exists:opportunity_status,id'],
+            'amount' => ['nullable', 'integer'],
+            'desiredDate' => ['nullable', 'date'],
+            'evaluationAgreedDate' => ['nullable', 'date'],
+        ]);
+
+        foreach ($opportunities as $opportunity) {
+            $opportunity->update(Arr::keysToSnakeCase($data));
+        }
+
+    }
+
     public function getAmountOfActiveOpportunities(){
         return Opportunity::where('status_id', 1)->count();
     }
 
     public function peek(Request $request)
     {
+//        $this->authorize('view', Opportunity::class);
+
         $teamContactIds = Auth::user()->getTeamContactIds();
 
         $query = Opportunity::query()->orderBy('id');

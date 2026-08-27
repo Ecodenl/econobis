@@ -2,6 +2,7 @@
 
 namespace App\Helpers\CSV;
 
+use App\Eco\Contact\ContactType;
 use Carbon\Carbon;
 use League\Csv\Reader;
 
@@ -29,13 +30,15 @@ class RevenueDistributionPartsKwhCSVHelper
             ]);
 
             $this->csvExporter->beforeEach(function ($distributionPartsKwh) {
+                $distributionPartsKwh->power_kwh_consumption = $distributionPartsKwh->distributionKwh->participation->power_kwh_consumption;
+
                 $distributionPartsKwh->created_at_date = $distributionPartsKwh->distributionKwh->created_at->format('d-m-Y');
                 $distributionPartsKwh->updated_at_date = $distributionPartsKwh->distributionKwh->updated_at->format('d-m-Y');
 
                 $distributionPartsKwh->period_start = $this->formatDate($distributionPartsKwh->partsKwh->date_begin);
                 $distributionPartsKwh->period_end = $this->formatDate($distributionPartsKwh->partsKwh->date_end);
 
-                $distributionPartsKwh->type = $distributionPartsKwh->distributionKwh->contact->getType()->name;
+                $distributionPartsKwh->type = $distributionPartsKwh->distributionKwh->contact->getType()?->getName() ?? '';
 
                 $address = $distributionPartsKwh->distributionKwh->contact->primaryAddress;
 
@@ -47,7 +50,7 @@ class RevenueDistributionPartsKwhCSVHelper
                 $distributionPartsKwh->country = (($address && $address->country) ? $address->country->name : '');
 
                 // person/organisation fields
-                if ($distributionPartsKwh->distributionKwh->contact->type_id === 'person') {
+                if ($distributionPartsKwh->distributionKwh->contact->type_id === ContactType::PERSON) {
                     $distributionPartsKwh->title = $distributionPartsKwh->distributionKwh->contact->person->title;
                     $distributionPartsKwh->initials = $distributionPartsKwh->distributionKwh->contact->person->initials;
                     $distributionPartsKwh->first_name = $distributionPartsKwh->distributionKwh->contact->person->first_name;
@@ -74,6 +77,7 @@ class RevenueDistributionPartsKwhCSVHelper
                 'distributionKwh.contact.number' => 'Nummer',
                 'distributionKwh.contact.full_name' => 'Naam',
                 'participations_quantity' => 'Participaties',
+                'power_kwh_consumption' => 'Jaarlijks verbruik',
                 'payout_formatted' => 'Uit te keren bedrag',
                 'payout_type' => 'Uitkeren op',
                 'date_payout' => 'Datum uitkering',

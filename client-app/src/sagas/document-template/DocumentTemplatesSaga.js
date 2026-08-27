@@ -1,12 +1,10 @@
 import { put, call, all } from 'redux-saga/effects';
 import DocumentTemplateAPI from '../../api/document-template/DocumentTemplateAPI';
-import { hashHistory } from 'react-router';
 
 export function* fetchDocumentTemplatesSaga() {
     try {
         yield put({ type: 'IS_LOADING' });
         const documentTemplates = yield call(DocumentTemplateAPI.fetchDocumentTemplates);
-
         yield all([
             put({ type: 'FETCH_DOCUMENT_TEMPLATES_LOADING_SUCCESS' }),
             put({ type: 'FETCH_DOCUMENT_TEMPLATES_SUCCESS', documentTemplates }),
@@ -31,11 +29,11 @@ export function* fetchDocumentTemplateSaga({ id }) {
     }
 }
 
-export function* deleteDocumentTemplateSaga({ id }) {
+export function* deleteDocumentTemplateSaga({ id, callback }) {
     try {
         yield call(DocumentTemplateAPI.deleteDocumentTemplate, id);
         yield put({ type: 'DELETE_DOCUMENT_TEMPLATE_SUCCESS', id });
-        hashHistory.push(`/document-templates`);
+        if (callback) callback(); // 👈 uitvoeren ná succesvolle delete
     } catch (error) {
         yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
         yield put({ type: 'DELETE_DOCUMENT_TEMPLATE_ERROR', error });

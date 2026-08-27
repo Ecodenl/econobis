@@ -10,7 +10,13 @@ import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 import DataTableBody from '../../../components/dataTable/DataTableBody';
 import ContactImportValidationRow from './ContactImportValidationRow';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const ContactImportFormGeneralWrapper = props => {
+    const navigate = useNavigate();
+    return <ContactImportFormGeneral {...props} navigate={navigate} />;
+};
 
 class ContactImportFormGeneral extends Component {
     constructor(props) {
@@ -67,7 +73,7 @@ class ContactImportFormGeneral extends Component {
         data.append('attachment', this.state.attachment);
 
         ContactsAPI.import(data).then(payload => {
-            hashHistory.push(`/contacten`);
+            this.props.navigate(`/contacten`);
         });
     };
 
@@ -112,7 +118,7 @@ class ContactImportFormGeneral extends Component {
                                 <div className="btn-group btn-group-flex margin-small" role="group">
                                     <ButtonText
                                         loading={this.state.uploading}
-                                        buttonText={'Upload CSV'}
+                                        buttonText={'Upload CSV opnieuw'}
                                         onClickAction={this.toggleUpload}
                                     />
                                     {!this.state.hasError && (
@@ -163,4 +169,4 @@ class ContactImportFormGeneral extends Component {
     }
 }
 
-export default ContactImportFormGeneral;
+export default ContactImportFormGeneralWrapper;

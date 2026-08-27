@@ -8,6 +8,7 @@
 
 namespace App\Helpers\Excel;
 
+use App\Eco\Contact\ContactType;
 use App\Eco\Opportunity\Opportunity;
 use Carbon\Carbon;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -81,7 +82,7 @@ class IntakeExcelHelper
                 $intake->sources_string = '';
                 $sources = [];
                 foreach ($intake->sources as $source) {
-                    array_push($sources, $source->name);
+                    array_push($sources, $source->name_source);
                 }
 
                 if (count($sources) > 0) {
@@ -91,7 +92,7 @@ class IntakeExcelHelper
                 $address = $intake->address;
 
                 // person/organisation fields
-                if ($intake->contact->type_id === 'person') {
+                if ($intake->contact->type_id === ContactType::PERSON) {
                     $intake->title = $intake->contact->person->title;
                     $intake->initials = $intake->contact->person->initials;
                     $intake->first_name = $intake->contact->person->first_name;

@@ -1,4 +1,4 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
 
 // todo WM: check / opschonen
 //
@@ -9,7 +9,7 @@ export default {
     fetchPortalSettingsDashboardDetails: id => {
         const requestUrl = `jory/${URL_PORTAL_SETTINGS_DASHBOARD}/${id}`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 jory: {
                     fld: [
@@ -47,13 +47,13 @@ export default {
     updatePortalSettingsDashboard: dashboardSettings => {
         const requestUrl = `${URL_PORTAL_SETTINGS_DASHBOARD}/${dashboardSettings.id}`;
 
-        return axiosInstance.post(requestUrl, dashboardSettings);
+        return getAxiosInstance().post(requestUrl, dashboardSettings);
     },
 
     fetchPortalSettingsDashboardWidgetDetails: id => {
         const requestUrl = `jory/portal-settings-dashboard-widget/${id}`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 jory: {
                     fld: [
@@ -89,18 +89,18 @@ export default {
     addPortalSettingsDashboardWidget: widget => {
         const requestUrl = `${URL_PORTAL_SETTINGS_DASHBOARD_WIDGET}`;
 
-        return axiosInstance.post(requestUrl, widget);
+        return getAxiosInstance().post(requestUrl, widget);
     },
 
     updatePortalSettingsDashboardWidget: (widgetId, widget) => {
         const requestUrl = `${URL_PORTAL_SETTINGS_DASHBOARD_WIDGET}/${widgetId}`;
 
-        return axiosInstance.post(requestUrl, widget);
+        return getAxiosInstance().post(requestUrl, widget);
     },
 
     deletePortalSettingsDashboardWidget: id => {
         const requestUrl = `${URL_PORTAL_SETTINGS_DASHBOARD_WIDGET}/${id}/delete`;
 
-        return axiosInstance.post(requestUrl, { id: id });
+        return getAxiosInstance().post(requestUrl, { id: id });
     },
 };

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../../components/button/ButtonIcon';
 import { blockUI, unblockUI } from '../../../../actions/general/BlockUIActions';
@@ -7,6 +7,12 @@ import * as PropTypes from 'prop-types';
 import FinancialOverviewProjectAPI from '../../../../api/financial/overview/FinancialOverviewProjectAPI';
 import fileDownload from 'js-file-download';
 import moment from 'moment/moment';
+
+// Functionele wrapper voor de class component
+const FinancialOverviewProjectDetailsToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <FinancialOverviewProjectDetailsToolbar {...props} navigate={navigate} />;
+};
 
 class FinancialOverviewProjectDetailsToolbar extends Component {
     constructor(props) {
@@ -37,13 +43,13 @@ class FinancialOverviewProjectDetailsToolbar extends Component {
     };
 
     render() {
-        let { financialOverviewDescription } = this.props;
+        let { financialOverviewDescription, navigate } = this.props;
 
         return (
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                         <ButtonIcon iconName={'download'} onClickAction={this.getCSV} />
                     </div>
                 </div>
@@ -64,4 +70,4 @@ FinancialOverviewProjectDetailsToolbar.propTypes = {
 //     return bindActionCreators({ blockUI, unblockUI }, dispatch);
 // };
 
-export default FinancialOverviewProjectDetailsToolbar;
+export default FinancialOverviewProjectDetailsToolbarWrapper;

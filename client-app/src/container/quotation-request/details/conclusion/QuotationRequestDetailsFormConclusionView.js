@@ -14,12 +14,12 @@ const QuotationRequestDetailsFormConclusionView = props => {
                 <ViewText
                     label={'Gemaakt door'}
                     value={createdBy ? createdBy.fullName : 'Onbekend'}
-                    link={createdBy ? 'gebruiker/' + createdBy.id : ''}
+                    link={createdBy ? '/gebruiker/' + createdBy.id : ''}
                 />
                 <ViewText
                     label={'Laatste update door'}
                     value={updatedBy ? updatedBy.fullName : 'Onbekend'}
-                    link={updatedBy ? 'gebruiker/' + updatedBy.id : ''}
+                    link={updatedBy ? '/gebruiker/' + updatedBy.id : ''}
                 />
             </div>
             <div className="row">

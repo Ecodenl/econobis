@@ -3,12 +3,18 @@ import FreeFieldsAPI from '../../../api/free-fields/FreeFieldsAPI';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
-import { browserHistory, hashHistory } from 'react-router';
-import FreeFieldDetailsForm from '../../free-fields/details/FreeFieldDetailsForm';
+import { useNavigate, useParams } from 'react-router-dom';
+import FreeFieldDetailsFormGeneral from './general/FreeFieldDetailsFormGeneral';
 import FreeFieldsDeleteItem from '../list/FreeFieldsDeleteItem';
+import { isEmpty } from 'lodash';
 
 function FreeFieldDetailsApp(props) {
-    const [freeField, setFreeField] = useState(null);
+    const navigate = useNavigate();
+    const params = useParams();
+
+    const [freeField, setFreeField] = useState({});
+    const [isLoading, setIsLoading] = useState(true);
+    const [hasError, setHasError] = useState(false);
     const [showDeleteItem, setShowDeleteItem] = useState(false);
 
     function showDeleteItemModal() {
@@ -26,30 +32,41 @@ function FreeFieldDetailsApp(props) {
     function deleteFreeFieldsField(freeField) {
         FreeFieldsAPI.deleteFreeFieldsField(freeField)
             .then(() => {
-                hashHistory.push(`/vrije-velden`);
+                navigate(`/vrije-velden`);
             })
             .catch(error => {
-                // setLoading(false);
                 console.log(error);
                 alert('Er is iets misgegaan bij verwijderen. Probeer het opnieuw.');
             });
     }
 
     function fetchFreeField() {
-        FreeFieldsAPI.fetchFreeFieldDetails(props.params.id)
+        setIsLoading(true);
+        FreeFieldsAPI.fetchFreeFieldDetails(params.id)
             .then(data => {
                 setFreeField(data);
+                setIsLoading(false);
+                setHasError(false);
             })
             .catch(() => {
                 alert('Er is iets misgegaan met ophalen van het vrije veld.');
+                setIsLoading(false);
+                setHasError(true);
             });
     }
 
-    if (!freeField) {
-        return null;
+    let loadingText = '';
+    if (hasError) {
+        loadingText = 'Fout bij het ophalen van het vrije veld.';
+    } else if (isLoading) {
+        loadingText = 'Gegevens aan het laden.';
+    } else if (isEmpty(freeField)) {
+        loadingText = 'Geen vrij veld gevonden!';
     }
 
-    return (
+    return isLoading || hasError ? (
+        <div>{loadingText}</div>
+    ) : (
         <div className="row">
             <div className="col-md-9">
                 <div className="col-md-12 margin-10-top">
@@ -58,7 +75,7 @@ function FreeFieldDetailsApp(props) {
                             <div className="row">
                                 <div className="col-md-4">
                                     <div className="btn-group" role="group">
-                                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                         {!freeField.hasFreeFieldsFieldRecords && (
                                             <ButtonIcon iconName={'trash'} onClickAction={showDeleteItemModal} />
                                         )}
@@ -76,7 +93,7 @@ function FreeFieldDetailsApp(props) {
                 </div>
 
                 <div className="col-md-12">
-                    <FreeFieldDetailsForm freeField={freeField} fetchFreeField={fetchFreeField} />
+                    <FreeFieldDetailsFormGeneral freeField={freeField} fetchFreeField={fetchFreeField} />
                 </div>
 
                 <div className="col-md-12 margin-10-top"></div>

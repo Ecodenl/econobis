@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 
-import { deleteContact } from '../../../actions/contact/ContactDetailsActions';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import ContactDetailsDelete from './ContactDetailsDelete';
 import ButtonText from '../../../components/button/ButtonText';
 import ContactDetailsHoomdossier from './ContactDetailsHoomdossier';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
+import FinancialOverviewCreateInterimModal from '../../financial/overview/create/FinancialOverviewCreateInterimModal';
 
 function ContactDetailsToolbar({
     permissions,
@@ -24,12 +24,22 @@ function ContactDetailsToolbar({
     cooperation,
     isLoading,
     occupations,
+    allowInterimFinancialOverview,
+    oldestFinancialOverviewContactConceptId,
 }) {
+    const navigate = useNavigate();
+
     const [showDelete, setShowDelete] = useState(false);
     const [showMakeHoomdossier, setShowMakeHoomdossier] = useState(false);
 
-    function toggleDelete() {
-        setShowDelete(!showDelete);
+    const [showInterimModal, setShowInterimModal] = useState(false);
+    function showDeleteModal() {
+        setShowDelete(true);
+    }
+
+    function hideDeleteModal() {
+        setShowDelete(false);
+        navigate('/contacten');
     }
 
     function toggleShowMakeHoomdossier() {
@@ -43,15 +53,15 @@ function ContactDetailsToolbar({
                     <PanelBody className={'panel-small'}>
                         <div className="col-md-4">
                             <div className="btn-group btn-group-flex margin-small" role="group">
-                                <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                                <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                 {type &&
                                     type.id === 'organisation' &&
                                     permissions &&
                                     permissions.deleteOrganisation && (
-                                        <ButtonIcon iconName={'trash'} onClickAction={toggleDelete} />
+                                        <ButtonIcon iconName={'trash'} onClickAction={showDeleteModal} />
                                     )}
                                 {type && type.id === 'person' && permissions && permissions.deletePerson && (
-                                    <ButtonIcon iconName={'trash'} onClickAction={toggleDelete} />
+                                    <ButtonIcon iconName={'trash'} onClickAction={showDeleteModal} />
                                 )}
                                 {type &&
                                 type.id === 'person' &&
@@ -65,6 +75,14 @@ function ContactDetailsToolbar({
                                     />
                                 ) : null}
                             </div>
+                            {allowInterimFinancialOverview && !!oldestFinancialOverviewContactConceptId && (
+                                <div className="btn-group btn-group-flex margin-small" role="group">
+                                    <ButtonText
+                                        onClickAction={() => setShowInterimModal(true)}
+                                        buttonText={'Tussentijdse waardestaat'}
+                                    />
+                                </div>
+                            )}
                         </div>
                         {!isLoading && (
                             <>
@@ -80,6 +98,7 @@ function ContactDetailsToolbar({
                                         ? occupations.map(s =>
                                               s.primary ? (
                                                   <Link
+                                                      key={s.id ?? s.primaryContact.id}
                                                       to={`/contact/${s.primaryContact.id}`}
                                                       className="link-underline margin-10-right"
                                                   >
@@ -97,7 +116,7 @@ function ContactDetailsToolbar({
 
             {showDelete && (
                 <ContactDetailsDelete
-                    closeDeleteItemModal={toggleDelete}
+                    closeDeleteItemModal={hideDeleteModal}
                     type={type}
                     fullName={fullName}
                     id={id}
@@ -107,6 +126,13 @@ function ContactDetailsToolbar({
                 />
             )}
             {showMakeHoomdossier && <ContactDetailsHoomdossier closeModal={toggleShowMakeHoomdossier} />}
+
+            {showInterimModal && (
+                <FinancialOverviewCreateInterimModal
+                    financialOverviewContactId={oldestFinancialOverviewContactConceptId}
+                    onClose={() => setShowInterimModal(false)}
+                />
+            )}
         </div>
     );
 }
@@ -124,13 +150,9 @@ const mapStateToProps = state => {
         permissions: state.meDetails.permissions,
         isLoading: state.loadingData.isLoading,
         occupations: state.contactDetails.occupations,
+        allowInterimFinancialOverview: state.contactDetails.allowInterimFinancialOverview,
+        oldestFinancialOverviewContactConceptId: state.contactDetails.oldestFinancialOverviewContactConceptId,
     };
 };
 
-const mapDispatchToProps = dispatch => ({
-    deleteContact: id => {
-        dispatch(deleteContact(id));
-    },
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsToolbar);
+export default connect(mapStateToProps, null)(ContactDetailsToolbar);

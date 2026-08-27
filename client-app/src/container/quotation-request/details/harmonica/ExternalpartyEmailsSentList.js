@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import moment from 'moment';
+
+// Functionele wrapper voor de class component
+const ExternalpartyEmailsSentListWrapper = props => {
+    const navigate = useNavigate();
+    return <ExternalpartyEmailsSentList {...props} navigate={navigate} />;
+};
 
 class ExternalpartyEmailsSentList extends Component {
     constructor(props) {
@@ -12,7 +18,7 @@ class ExternalpartyEmailsSentList extends Component {
     }
 
     openItem = id => {
-        hashHistory.push(`/email/${id}`);
+        this.props.navigate(`/email/${id}`);
     };
 
     render() {
@@ -50,4 +56,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(ExternalpartyEmailsSentList);
+export default connect(mapStateToProps)(ExternalpartyEmailsSentListWrapper);

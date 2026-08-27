@@ -1,5 +1,5 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import MailboxDefaultFormGeneral from '../default/form/general';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 import { bindActionCreators } from 'redux';
@@ -8,10 +8,13 @@ import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 import { connect } from 'react-redux';
 
 function MailboxNewForm({ fetchSystemData }) {
+    const navigate = useNavigate();
+
     const initialValues = {
         id: '',
         name: '',
         email: '',
+        onlyOutgoingMailbox: false,
         username: '',
         password: '',
         smtpHost: '',
@@ -40,7 +43,7 @@ function MailboxNewForm({ fetchSystemData }) {
         MailboxAPI.newMailbox(values)
             .then(payload => {
                 fetchSystemData();
-                hashHistory.push(`/mailbox/${payload.data.data.id}`);
+                navigate(`/mailbox/${payload.data.data.id}`);
             })
             .catch(error => {
                 if (error.response.status === 401 && error.response.data.message === 'ms_oauth_unauthorised') {

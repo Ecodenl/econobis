@@ -3,6 +3,16 @@ export const setFilterOpportunityNumber = number => ({
     number,
 });
 
+export const setFilterOpportunityAddress = address => ({
+    type: 'SET_FILTER_OPPORTUNITY_ADDRESS',
+    address,
+});
+
+export const setFilterOpportunityPostalCode = postalCode => ({
+    type: 'SET_FILTER_OPPORTUNITY_POSTAL_CODE',
+    postalCode,
+});
+
 export const setFilterOpportunityCreatedAtStart = createdAtStart => ({
     type: 'SET_FILTER_OPPORTUNITY_CREATED_AT_START',
     createdAtStart,

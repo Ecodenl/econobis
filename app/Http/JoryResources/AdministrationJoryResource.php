@@ -19,6 +19,9 @@ class AdministrationJoryResource extends JoryResource
         // Fields
         $this->field('id')->filterable()->sortable();
         $this->field('name')->filterable()->sortable();
+
+        // Relations
+        $this->relation('emailTemplateFinancialOverview');
     }
 
     protected function configureForPortal(): void

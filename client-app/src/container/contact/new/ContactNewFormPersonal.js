@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import validator from 'validator';
 
@@ -22,6 +22,12 @@ import Icon from 'react-icons-kit';
 import { angleRight } from 'react-icons-kit/fa/angleRight';
 import { angleDown } from 'react-icons-kit/fa/angleDown';
 
+// Functionele wrapper voor de class component
+const ContactNewFormPersonalWrapper = props => {
+    const navigate = useNavigate();
+    return <ContactNewFormPersonal {...props} navigate={navigate} />;
+};
+
 class ContactNewFormPersonal extends Component {
     constructor(props) {
         super(props);
@@ -37,6 +43,8 @@ class ContactNewFormPersonal extends Component {
             showPhone: true,
             showConfirmDuplicate: false,
             duplicateText: '',
+            duplicateContactId: '',
+            cancelButtonText: '',
             person: {
                 id: '',
                 number: '',
@@ -108,11 +116,22 @@ class ContactNewFormPersonal extends Component {
         this.setState({ showPhone: !this.state.showPhone });
     };
 
-    toggleShowConfirmDuplicate = () => {
+    showConfirmDuplicate = () => {
         this.setState({
             showConfirmDuplicate: !this.state.showConfirmDuplicate,
             buttonLoading: false,
         });
+    };
+
+    hideConfirmDuplicate = contactId => {
+        if (this.state.duplicateContactId != '') {
+            this.props.navigate('/contact/' + this.state.duplicateContactId);
+        } else {
+            this.setState({
+                showConfirmDuplicate: false,
+                buttonLoading: false,
+            });
+        }
     };
 
     addressHandleInputLvbagChange = event => {
@@ -130,6 +149,7 @@ class ContactNewFormPersonal extends Component {
         setTimeout(() => {
             const { address } = this.state;
             if (
+                address &&
                 !validator.isEmpty(address.postalCode) &&
                 validator.isPostalCode(address.postalCode, 'NL') &&
                 !validator.isEmpty(address.number) &&
@@ -338,7 +358,7 @@ class ContactNewFormPersonal extends Component {
 
             PersonAPI.newPerson({ person, address, emailAddress, phoneNumber, checkDuplicates })
                 .then(response => {
-                    hashHistory.push(`/contact/${response.data.data.id}`);
+                    this.props.navigate(`/contact/${response.data.data.id}`);
                 })
                 .catch(error => {
                     //409 conflict
@@ -346,8 +366,10 @@ class ContactNewFormPersonal extends Component {
                         this.setState({
                             ...this.state,
                             duplicateText: error.response.data.message,
+                            duplicateContactId: error.response.data.contactId,
+                            cancelButtonText: error.response.data.cancelButtonText,
                         });
-                        this.toggleShowConfirmDuplicate();
+                        this.showConfirmDuplicate();
                     }
                 });
         }
@@ -538,9 +560,11 @@ class ContactNewFormPersonal extends Component {
 
                 {this.state.showConfirmDuplicate && (
                     <ContactNewFormPersonalDuplicateModal
-                        closeModal={this.toggleShowConfirmDuplicate}
+                        closeModal={this.hideConfirmDuplicate}
                         confirmAction={this.confirmDuplicate}
                         duplicateText={this.state.duplicateText}
+                        duplicateContactId={this.state.duplicateContactId}
+                        cancelButtonText={this.state.cancelButtonText}
                     />
                 )}
             </form>
@@ -558,4 +582,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(ContactNewFormPersonal);
+export default connect(mapStateToProps)(ContactNewFormPersonalWrapper);

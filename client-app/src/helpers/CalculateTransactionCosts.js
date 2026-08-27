@@ -8,7 +8,7 @@ export default function(project, amountMutation, participationsMutation) {
             transactionCosts = project.transactionCostsAmount;
             break;
         case 'amount':
-            if (project.projectType.codeRef === 'loan') {
+            if (project.typeCodeRef === 'loan') {
                 transactionCosts = project.transactionCostsAmount;
             } else {
                 transactionCosts = project.transactionCostsAmount * varParticipationsMutation;
@@ -16,7 +16,7 @@ export default function(project, amountMutation, participationsMutation) {
             break;
         case 'percentage':
             let amount = 0;
-            if (project.projectType.codeRef === 'loan') {
+            if (project.typeCodeRef === 'loan') {
                 amount = varAmount;
             } else {
                 amount = varParticipationsMutation * project.currentBookWorth;

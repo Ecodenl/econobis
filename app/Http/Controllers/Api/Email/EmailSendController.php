@@ -31,6 +31,7 @@ class EmailSendController extends Controller
             'subject' => $email->subject,
             'htmlBody' => $email->inlineImagesService()->getHtmlBodyWithCidsConvertedToEmbeddedImages(),
             'mailContactGroupWithSingleMail' => $email->mail_contact_group_with_single_mail,
+            'isForwardOrReply' => !!$email->old_email_id,
             'attachments' => $email->attachmentsWithoutCids->map(function (EmailAttachment $attachment) {
                 return [
                     'id' => $attachment->id,
@@ -62,6 +63,8 @@ class EmailSendController extends Controller
         $email->fill(Arr::keysToSnakeCase($data));
         $email->from = $email->mailbox->email;
         $email->manualContacts()->sync($manualContactIds);
+
+        $email->subject_for_filter = trim(mb_substr($email->subject ?? '', 0, 150));
 
         $email->inlineImagesService()->convertInlineImagesToCid();
 

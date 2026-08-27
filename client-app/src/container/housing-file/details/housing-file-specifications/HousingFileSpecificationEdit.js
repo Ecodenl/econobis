@@ -12,7 +12,14 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import MeasuresOfCategory from '../../../../selectors/MeasuresOfCategory';
 import InputTextArea from '../../../../components/form/InputTextArea';
 import InputText from '../../../../components/form/InputText';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
+import CampaignsAPI from '../../../../api/campaign/CampaignsAPI';
+
+// Functionele wrapper voor de class component
+const HousingFileSpecificationEditWrapper = props => {
+    const navigate = useNavigate();
+    return <HousingFileSpecificationEdit {...props} navigate={navigate} />;
+};
 
 class HousingFileSpecificationEdit extends Component {
     constructor(props) {
@@ -35,6 +42,7 @@ class HousingFileSpecificationEdit extends Component {
             savingsGas,
             savingsElectricity,
             co2Savings,
+            campaign,
         } = props.housingFileSpecification;
 
         this.state = {
@@ -55,9 +63,20 @@ class HousingFileSpecificationEdit extends Component {
                 savingsGas,
                 savingsElectricity,
                 co2Savings,
+                campaignId: campaign ? campaign.id : null,
             },
+            campaigns: [],
             errors: {},
         };
+    }
+
+    componentDidMount() {
+        CampaignsAPI.peekNotFinishedCampaigns().then(payload => {
+            this.setState({
+                ...this.state,
+                campaigns: payload,
+            });
+        });
     }
 
     handleInputChange = event => {
@@ -124,6 +143,7 @@ class HousingFileSpecificationEdit extends Component {
             savingsGas,
             savingsElectricity,
             co2Savings,
+            campaignId,
         } = this.state.housingFileSpecification;
         const hasHoomDossierLink = this.props.hasHoomDossierLink;
         const measuresMatchToCategory = MeasuresOfCategory(this.props.measures, measureCategoryId);
@@ -214,6 +234,14 @@ class HousingFileSpecificationEdit extends Component {
                                 value={typeBrand}
                                 onChangeAction={this.handleInputChange}
                             />
+
+                            <InputSelect
+                                label={'Campagne'}
+                                name={'campaignId'}
+                                options={this.state.campaigns}
+                                value={campaignId}
+                                onChangeAction={this.handleInputChange}
+                            />
                         </div>
 
                         <div className="row">
@@ -256,7 +284,7 @@ class HousingFileSpecificationEdit extends Component {
                             {/*<ButtonText*/}
                             {/*    buttonText={'Maak kans'}*/}
                             {/*    onClickAction={() =>*/}
-                            {/*        hashHistory.push(`/kans/nieuw/woningdossier/${housingFileId}/campagne/0`)*/}
+                            {/*        this.props.navigate(`/kans/nieuw/woningdossier/${housingFileId}/campagne/0`)*/}
                             {/*    }*/}
                             {/*/>*/}
                             <ButtonText
@@ -295,4 +323,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(HousingFileSpecificationEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(HousingFileSpecificationEditWrapper);

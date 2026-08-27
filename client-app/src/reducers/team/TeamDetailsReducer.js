@@ -25,6 +25,21 @@ export default function(state = [], action) {
                 ...state,
                 users: state.users.filter(user => user.id !== action.userId),
             };
+        case 'NEW_TEAM_DISTRICT':
+            return {
+                ...state,
+                districts: [
+                    ...state.districts,
+                    {
+                        ...action.teamDistrict,
+                    },
+                ],
+            };
+        case 'DELETE_TEAM_DISTRICT_SUCCESS':
+            return {
+                ...state,
+                districts: state.districts.filter(district => district.id !== action.districtId),
+            };
         case 'NEW_TEAM_DOCUMENT_CREATED_FROM':
             return {
                 ...state,

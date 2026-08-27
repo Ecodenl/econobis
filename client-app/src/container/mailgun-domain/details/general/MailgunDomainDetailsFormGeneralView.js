@@ -6,7 +6,8 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 
 const MailgunDomainDetailsFormGeneralView = props => {
-    const { domain, secret, isVerified } = props.mailgunDomainDetails;
+    // const { domain, secret, isVerified } = props.mailgunDomainDetails;
+    const { domain, isVerified, isSystemMailgunDomain } = props.mailgunDomainDetails;
 
     return (
         <div onClick={props.switchToEdit}>
@@ -14,11 +15,18 @@ const MailgunDomainDetailsFormGeneralView = props => {
                 <PanelBody>
                     <div className="row">
                         <ViewText label={'Domein'} value={domain} />
-                        <ViewText label={'Mailgun API Key'} value={secret} />
+                        {/*<ViewText label={'Mailgun API Key'} value={secret} />*/}
                     </div>
 
                     <div className="row">
                         <ViewText label={'Geverifieerd'} value={isVerified ? 'Ja' : 'Nee'} />
+                    </div>
+
+                    <div className="row">
+                        <ViewText
+                            label={'Markeer als systeem mailgun domain'}
+                            value={isSystemMailgunDomain ? 'Ja' : 'Nee'}
+                        />
                     </div>
                 </PanelBody>
             </Panel>

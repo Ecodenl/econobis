@@ -21,6 +21,7 @@ const FinancialForm = ({
                         <PanelBody>
                             <OrdersList
                                 administrationId={administrationDetails.id}
+                                administrationCode={administrationDetails.administrationCode ?? ''}
                                 filter={filter}
                                 fetchTotalsInfoAdministration={fetchTotalsInfoAdministration}
                                 totalsInfoAdministration={totalsInfoAdministration}
@@ -33,6 +34,7 @@ const FinancialForm = ({
                         <PanelBody>
                             <InvoicesList
                                 administrationId={administrationDetails.id}
+                                administrationCode={administrationDetails.administrationCode ?? ''}
                                 filter={filter}
                                 fetchTotalsInfoAdministration={fetchTotalsInfoAdministration}
                                 totalsInfoAdministration={totalsInfoAdministration}

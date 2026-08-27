@@ -16,6 +16,8 @@ class Filter extends RequestFilter
 {
     protected $fields = [
         'number',
+        'address',
+        'postalCode',
         'createdAtStart',
         'createdAtEnd',
         'desiredDateStart',
@@ -33,7 +35,6 @@ class Filter extends RequestFilter
         'number' => 'opportunities.number',
         'name' => 'contacts.full_name',
         'measureCategory' => 'measure_categories.name',
-        'measureName' => 'measures.name',
         'campaign' => 'campaigns.name',
         'statusId'  => 'opportunities.status_id',
     ];
@@ -44,6 +45,8 @@ class Filter extends RequestFilter
         'campaign' => 'campaigns',
         'areaName' => 'addressAreaName',
         'name' => 'contacts',
+        'address' => 'address',
+        'postalCode' => 'address',
     ];
 
     protected $defaultTypes = [
@@ -94,4 +97,53 @@ class Filter extends RequestFilter
 
         return false;
     }
+
+    protected function applyAddressFilter($query, $type, $data)
+    {
+        // Elke zoekterm moet voorkomen in de straat, het huisnummer of de toevoeging.
+        $terms = array_filter(explode(' ', $data));
+
+        foreach ($terms as $term){
+            $query->where(function($query) use ($term) {
+                $query->where('addresses.street', 'LIKE', '%' . $term . '%');
+                $query->orWhere('addresses.number', 'LIKE', '%' . $term . '%');
+                $query->orWhere('addresses.addition', 'LIKE', '%' . $term . '%');
+            });
+        }
+
+        return false;
+    }
+
+    protected function applyPostalCodeFilter($query, $type, $data) {
+        $terms = explode(' ', $data);
+
+        foreach ($terms as $term){
+            $query->where(function($query) use ($term) {
+                $query->where('addresses.postal_code', 'LIKE', '%' . $term . '%');
+            });
+        }
+
+        return false;
+    }
+
+    protected function applyMeasureNameFilter($query, $type, $data)
+    {
+        $query->where(function($query) use ($data) {
+            $query
+                ->where(function($query) use ($data) {
+                    $query->whereNotNull('measures.name_custom')
+                        ->where('measures.name_custom', '!=', '')
+                        ->where('measures.name_custom', 'LIKE', '%' . $data . '%');
+                })
+                ->orWhere(function($query) use ($data) {
+                    $query->where(function($query) {
+                        $query->whereNull('measures.name_custom')
+                            ->orWhere('measures.name_custom', '=', '');
+                    })
+                        ->where('measures.name', 'LIKE', '%' . $data . '%');
+                });
+        });
+        return false;
+    }
+
 }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
 import validator from 'validator';
 
 import DocumentNewForm from './DocumentNewForm';
@@ -7,7 +7,7 @@ import DocumentNewToolbar from './DocumentNewToolbar';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import DocumentDetailsAPI from '../../../api/document/DocumentDetailsAPI';
-import { isEqual } from 'lodash';
+import { isEmpty } from 'lodash';
 import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
 import IntakesAPI from '../../../api/intake/IntakesAPI';
 import OpportunitiesAPI from '../../../api/opportunity/OpportunitiesAPI';
@@ -28,6 +28,14 @@ import DocumentNewFormProject from './DocumentNewFormProject';
 import DocumentNewFormAdministration from './DocumentNewFormAdministration';
 import DocumentNewFormParticipant from './DocumentNewFormParticipant';
 import ContactDetailsAPI from '../../../api/contact/ContactDetailsAPI';
+import EmailAttachmentAPI from '../../../api/email/EmailAttachmentAPI';
+
+// Functionele wrapper voor de class component
+const DocumentNewAppWrapper = props => {
+    const navigate = useNavigate();
+    const params = useParams();
+    return <DocumentNewApp {...props} navigate={navigate} params={params} />;
+};
 
 class DocumentNewApp extends Component {
     constructor(props) {
@@ -71,7 +79,9 @@ class DocumentNewApp extends Component {
         });
 
         this.state = {
-            contactsGroups: [],
+            hasPreSelectedContacts: false,
+            preSelectedContacts: [],
+            contactGroups: [],
             intakes: [],
             opportunities: [],
             templates: [],
@@ -103,6 +113,9 @@ class DocumentNewApp extends Component {
                 description: '',
                 documentGroup: '',
                 templateId: '',
+                allowChangeHtmlBody: false,
+                htmlBody: '',
+                initialHtmlBody: '',
                 freeText1: '',
                 freeText2: '',
                 sentById: '',
@@ -131,16 +144,28 @@ class DocumentNewApp extends Component {
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleTextChange = this.handleTextChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.onDropAccepted = this.onDropAccepted.bind(this);
         this.onDropRejected = this.onDropRejected.bind(this);
         this.handleDocumentGroupChange = this.handleDocumentGroupChange.bind(this);
+        this.handleDocumentTemplateChange = this.handleDocumentTemplateChange.bind(this);
         this.handleProjectChange = this.handleProjectChange.bind(this);
         this.setSearchTermContact = this.setSearchTermContact.bind(this);
         this.setLoadingContact = this.setLoadingContact.bind(this);
     }
 
     componentDidMount() {
+        if (this.props.params.emailAttachmentId && this.props.params.emailAttachmentId > 0) {
+            // fetchContacts uit email waar bijlage bij hoort
+            EmailAttachmentAPI.fetchContacts(this.props.params.emailAttachmentId).then(payload => {
+                if (!isEmpty(payload.data.data)) {
+                    this.setState({ hasPreSelectedContacts: true });
+                    this.setState({ preSelectedContacts: payload.data.data });
+                }
+            });
+        }
+
         if (this.props.params.contactId) {
             ContactDetailsAPI.getContactDetails(this.props.params.contactId).then(payload => {
                 if (payload) {
@@ -244,7 +269,6 @@ class DocumentNewApp extends Component {
     }
 
     callFetchContact() {
-        // console.log(this.state.document.contactId);
         ContactDetailsAPI.getContactDetails(this.state.document.contactId).then(payload => {
             if (payload) {
                 this.setState({
@@ -290,6 +314,18 @@ class DocumentNewApp extends Component {
         }
     };
 
+    handleInputChangeContactEmailId = selectedContactId => {
+        if (selectedContactId) {
+            this.setState({
+                ...this.state,
+                document: {
+                    ...this.state.document,
+                    contactId: selectedContactId,
+                },
+            });
+        }
+    };
+
     handleProjectChange(event) {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -321,16 +357,16 @@ class DocumentNewApp extends Component {
         });
     }
 
-    handleDocumentGroupChange(event) {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
-
+    handleDocumentGroupChange(selectedOption) {
         this.setState({
             ...this.state,
             document: {
                 ...this.state.document,
-                [name]: value,
+                documentGroup: selectedOption,
+                templateId: '',
+                allowChangeHtmlBody: false,
+                htmlBody: '',
+                initialHtmlBody: '',
             },
         });
 
@@ -338,7 +374,7 @@ class DocumentNewApp extends Component {
             let templates = [];
 
             payload.forEach(function(template) {
-                if (template.group == value) {
+                if (template.group == selectedOption) {
                     templates.push({ id: template.id, name: template.name });
                 }
             });
@@ -346,6 +382,44 @@ class DocumentNewApp extends Component {
             this.setState({
                 templates: templates,
             });
+        });
+    }
+
+    handleDocumentTemplateChange(selectedOption) {
+        DocumentTemplateAPI.fetchDocumentTemplate(selectedOption)
+            .then(payload => {
+                this.setState({
+                    ...this.state,
+                    document: {
+                        ...this.state.document,
+                        templateId: selectedOption,
+                        allowChangeHtmlBody: payload.allowChangeHtmlBody,
+                        htmlBody: payload.htmlBody ? payload.htmlBody : this.state.document.htmlBody,
+                        initialHtmlBody: payload.htmlBody ? payload.htmlBody : this.state.document.htmlBody,
+                    },
+                });
+            })
+            .catch($error => {
+                this.setState({
+                    ...this.state,
+                    document: {
+                        ...this.state.document,
+                        templateId: selectedOption,
+                        allowChangeHtmlBody: false,
+                        htmlBody: '',
+                        initialHtmlBody: '',
+                    },
+                });
+            });
+    }
+
+    handleTextChange(htmlBody) {
+        this.setState({
+            ...this.state,
+            document: {
+                ...this.state.document,
+                htmlBody: htmlBody,
+            },
         });
     }
 
@@ -397,6 +471,7 @@ class DocumentNewApp extends Component {
             description,
             documentGroup,
             templateId,
+            htmlBody,
             freeText1,
             freeText2,
             filename,
@@ -479,6 +554,7 @@ class DocumentNewApp extends Component {
             data.append('description', description);
             data.append('documentGroup', documentGroup);
             data.append('templateId', templateId);
+            data.append('htmlBody', htmlBody);
             data.append('freeText1', freeText1);
             data.append('freeText2', freeText2);
             data.append('filename', filename);
@@ -497,9 +573,9 @@ class DocumentNewApp extends Component {
             DocumentDetailsAPI.newDocument(data)
                 .then(payload => {
                     if (payload.data.data.filename.toLowerCase().endsWith('.pdf')) {
-                        hashHistory.push(`/document/inzien/${payload.data.data.id}`);
+                        this.props.navigate(`/document/inzien/${payload.data.data.id}`);
                     } else {
-                        hashHistory.push(`/document/${payload.data.data.id}`);
+                        this.props.navigate(`/document/${payload.data.data.id}`);
                     }
                 })
                 .catch(error => {
@@ -533,6 +609,8 @@ class DocumentNewApp extends Component {
                                 handleSubmit={this.handleSubmit}
                                 handleDocumentGroupChange={this.handleDocumentGroupChange}
                                 handleInputChange={this.handleInputChange}
+                                handleTextChange={this.handleTextChange}
+                                handleDocumentTemplateChange={this.handleDocumentTemplateChange}
                                 onDropAccepted={this.onDropAccepted}
                                 onDropRejected={this.onDropRejected}
                             />
@@ -545,6 +623,8 @@ class DocumentNewApp extends Component {
                                 handleSubmit={this.handleSubmit}
                                 handleDocumentGroupChange={this.handleDocumentGroupChange}
                                 handleInputChange={this.handleInputChange}
+                                handleTextChange={this.handleTextChange}
+                                handleDocumentTemplateChange={this.handleDocumentTemplateChange}
                                 onDropAccepted={this.onDropAccepted}
                                 onDropRejected={this.onDropRejected}
                             />
@@ -557,15 +637,19 @@ class DocumentNewApp extends Component {
                                 errors={this.state.errors}
                                 errorMessage={this.state.errorMessage}
                                 handleSubmit={this.handleSubmit}
+                                handleProjectChange={this.handleProjectChange}
                                 handleDocumentGroupChange={this.handleDocumentGroupChange}
                                 handleInputChange={this.handleInputChange}
-                                handleProjectChange={this.handleProjectChange}
+                                handleTextChange={this.handleTextChange}
+                                handleDocumentTemplateChange={this.handleDocumentTemplateChange}
                                 onDropAccepted={this.onDropAccepted}
                                 onDropRejected={this.onDropRejected}
                             />
                         ) : (
                             <DocumentNewForm
                                 document={this.state.document}
+                                hasPreSelectedContacts={this.state.hasPreSelectedContacts}
+                                preSelectedContacts={this.state.preSelectedContacts}
                                 contactGroups={this.state.contactGroups}
                                 intakes={this.state.intakes}
                                 opportunities={this.state.opportunities}
@@ -581,12 +665,15 @@ class DocumentNewApp extends Component {
                                 errors={this.state.errors}
                                 errorMessage={this.state.errorMessage}
                                 handleSubmit={this.handleSubmit}
+                                handleProjectChange={this.handleProjectChange}
                                 handleDocumentGroupChange={this.handleDocumentGroupChange}
                                 handleInputChange={this.handleInputChange}
-                                handleProjectChange={this.handleProjectChange}
+                                handleTextChange={this.handleTextChange}
+                                handleDocumentTemplateChange={this.handleDocumentTemplateChange}
                                 onDropAccepted={this.onDropAccepted}
                                 onDropRejected={this.onDropRejected}
                                 handleInputChangeContactId={this.handleInputChangeContactId}
+                                handleInputChangeContactEmailId={this.handleInputChangeContactEmailId}
                                 searchTermContact={this.state.searchTermContact}
                                 isLoadingContact={this.state.isLoadingContact}
                                 setSearchTermContact={this.setSearchTermContact}
@@ -613,4 +700,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentNewApp);
+export default connect(mapStateToProps, mapDispatchToProps)(DocumentNewAppWrapper);

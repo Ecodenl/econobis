@@ -11,6 +11,7 @@ namespace App\Helpers\Excel;
 use App\Eco\HousingFile\HousingFileHoomHousingStatus;
 use App\Eco\HousingFile\HousingFileHoomLink;
 use App\Eco\HousingFile\HousingFileHousingStatus;
+use Carbon\Carbon;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -71,6 +72,8 @@ class HousingFileExcelHelper
         $headerData[] = 'Stooktemperatuur';
         $headerData[] = 'Verbruik gas';
         $headerData[] = 'Verbruik elektriciteit';
+        $headerData[] = 'Opbrengst zonnepanelen';
+        $headerData[] = 'Aanmaak datum';
 
         foreach($this->housingFileHoomLinksStatus as $housingFileHoomLinkStatus) {
             $headerData[] = $housingFileHoomLinkStatus->label;
@@ -98,9 +101,16 @@ class HousingFileExcelHelper
                 $rowData[10] = $housingFile->energyLabel ? $housingFile->energyLabel->name : '';
                 $rowData[11] = $housingFile->energyLabelStatus ? $housingFile->energyLabelStatus->name : '';
                 $rowData[12] = $housingFile->floors;
-                $rowData[13] = $housingFile->is_monument ? 'Ja' : 'Nee';
-                $rowData[14] = $housingFile->is_house_for_sale ? 'Ja' : 'Nee';
-
+                $rowData[13] = match ($housingFile->is_monument) {
+                    '1' => 'Ja',
+                    '0' => 'Nee',
+                    default => 'Onbekend',
+                };
+                $rowData[14] = match ($housingFile->is_house_for_sale) {
+                    '1' => 'Ja',
+                    '0' => 'Nee',
+                    default => 'Onbekend',
+                };
                 $rowData[15] = $housingFile->hoom_building_id;
                 $rowData[16] = $housingFile->wall_surface;
                 $rowData[17] = $housingFile->total_window_surface;
@@ -120,8 +130,10 @@ class HousingFileExcelHelper
                 $rowData[30] = $housingFile->boilerSettingComfortHeat ? $housingFile->boilerSettingComfortHeat->hoom_status_name : '';
                 $rowData[31] = $housingFile->amount_gas;
                 $rowData[32] = $housingFile->amount_electricity;
+                $rowData[33] = $housingFile->revenue_solar_panels;
+                $rowData[34] = Carbon::parse($housingFile->created_at)->format('d-m-Y');;
 
-                $colcounter = 33;
+                $colcounter = 35;
                 foreach($this->housingFileHoomLinksStatus as $housingFileHoomLinkStatus) {
                     $housingFileHousingStatus = HousingFileHousingStatus::where('housing_file_id', $housingFile->id)->where('housing_file_hoom_links_id', $housingFileHoomLinkStatus->id)->first();
 
@@ -132,6 +144,8 @@ class HousingFileExcelHelper
                     }
                     $colcounter = $colcounter + 1;
                 }
+
+                $rowData[$colcounter] = $housingFile->created_at;
 
                 $completeData[] = $rowData;
             }

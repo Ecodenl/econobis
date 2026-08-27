@@ -5,7 +5,6 @@ import * as Yup from 'yup';
 import ButtonText from '../../../components/button/ButtonText';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import { GoogleReCaptchaProvider, GoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 const validationSchema = Yup.object().shape({
     password: Yup.string()

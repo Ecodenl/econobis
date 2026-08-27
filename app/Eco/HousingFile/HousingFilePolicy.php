@@ -9,7 +9,12 @@ class HousingFilePolicy
 {
     use HandlesAuthorization;
 
-        public function manage(User $user)
+    public function view(User $user)
+    {
+        return $user->hasPermissionTo('view_housing_file', 'api');
+    }
+
+    public function manage(User $user)
     {
         return $user->hasPermissionTo('manage_housing_file', 'api');
     }

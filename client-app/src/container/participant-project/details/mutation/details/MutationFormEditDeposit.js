@@ -10,14 +10,16 @@ import ParticipantDetailsMutationStatusLog from './status-log';
 import ParticipantDetailsMutationConclusion from './conclusion';
 import ButtonText from '../../../../../components/button/ButtonText';
 import * as PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ParticipantDetailsMutationMolliePayments from './mollie-payments';
 import moment from 'moment';
 import calculateTransactionCosts from '../../../../../helpers/CalculateTransactionCosts';
 import { connect } from 'react-redux';
 import InputText from '../../../../../components/form/InputText';
+import ParticipantProjectDetailsAPI from '../../../../../api/participant-project/ParticipantProjectDetailsAPI';
 
 function MutationFormEditDeposit({
+    participationId,
     readOnly,
     participantMutationFromProps,
     participantMutationFromState,
@@ -38,12 +40,32 @@ function MutationFormEditDeposit({
     projectDateInterestBearingKwh,
     project,
 }) {
-    let disableBeforeEntryDate = '';
-    if (projectTypeCodeRef === 'postalcode_link_capital') {
-        if (projectDateInterestBearingKwh) {
-            disableBeforeEntryDate = moment(projectDateInterestBearingKwh).format('YYYY-MM-DD');
-        }
+    useEffect(() => {
+        getAdditionalInfoForTerminatingOrChangeEntryDate(participationId);
+    }, [participationId]);
+
+    function getAdditionalInfoForTerminatingOrChangeEntryDate(participantProjectId) {
+        ParticipantProjectDetailsAPI.getAdditionalInfoForTerminatingOrChangeEntryDate(participantProjectId).then(
+            payload => {
+                setDisableBeforeEntryDate(
+                    payload.dateTerminatedAllowedFrom
+                        ? moment(payload.dateTerminatedAllowedFrom)
+                              .add(1, 'day')
+                              .format('YYYY-MM-DD')
+                        : ''
+                );
+            }
+        );
     }
+
+    const [disableBeforeEntryDate, setDisableBeforeEntryDate] = useState('');
+
+    // let disableBeforeEntryDate = '';
+    // if (projectTypeCodeRef === 'postalcode_link_capital') {
+    //     if (projectDateInterestBearingKwh) {
+    //         disableBeforeEntryDate = moment(projectDateInterestBearingKwh).format('YYYY-MM-DD');
+    //     }
+    // }
 
     function calculateAmount() {
         let amountMutation = participantMutationFromState.amount;
@@ -195,11 +217,9 @@ function MutationFormEditDeposit({
                             className={'col-sm-6 form-group'}
                             value={MoneyPresenter(calculateTransactionCostsAmount())}
                         />
-                        {participantMutationFromState.createdWith === 'econobis' &&
-                        (participantMutationFromProps.status.codeRef === 'option' ||
-                            participantMutationFromProps.status.codeRef === 'granted') ? (
+                        {participantMutationFromState.createdWith === 'econobis' ? (
                             <InputText
-                                type={'number'}
+                                // type={'number'}
                                 label={'Transactiekosten (afwijkend)'}
                                 id={'differentTransactionCostsAmount'}
                                 name={'differentTransactionCostsAmount'}
@@ -210,8 +230,13 @@ function MutationFormEditDeposit({
                                         : ''
                                 }
                                 value={participantMutationFromState.differentTransactionCostsAmount}
+                                allowZero={true}
                                 onChangeAction={handleInputChange}
                                 required={'required'}
+                                readOnly={
+                                    participantMutationFromProps.status.codeRef === 'final' &&
+                                    !participantMutationFromProps.changeAllowed
+                                }
                                 error={errors.differentTransactionCostsAmount}
                                 errorMessage={errorMessage.differentTransactionCostsAmount}
                             />

@@ -17,6 +17,7 @@ const ProductDetailsFormGeneralView = props => {
         ledger,
         costCenter,
         active,
+        cleanupException,
     } = props.productDetails;
 
     return (
@@ -58,6 +59,7 @@ const ProductDetailsFormGeneralView = props => {
 
                     <div className="row">
                         <ViewText label={'Actief'} value={active ? 'Ja' : 'Nee'} />
+                        <ViewText label={'Uitzondering bij data opschonen'} value={cleanupException ? 'Ja' : 'Nee'} textToolTip={'Dit product is een uitzonderingsproduct bij het opschonen van data, orders met dit product zullen niet worden verwijderd'}/>
                     </div>
                 </PanelBody>
             </Panel>

@@ -17,6 +17,18 @@ use App\Http\Controllers\Api\Mailbox\MailgunMailController;
 use App\Http\Controllers\Portal\ParticipationProject\ParticipantMutationMolliePaymentController;
 use App\Http\Middleware\VerifyCsrfToken;
 
+Route::get('/client-version', function () {
+    return response()->json([
+        'version' => config('app.version_major') . '.' . config('app.version_minor') . '.' . config('app.version_fix'),
+    ]);
+});
+
+Route::get('/frontend-config', function () {
+    return response()->json([
+        'url_api' => \Config::get('app.url'),
+    ]);
+});
+
 Route::get('/twinfield', 'Api\Twinfield\TwinfieldController@twinfield');
 
 Route::get('/mollie/betalen/{invoiceCode}', [InvoiceMolliePaymentController::class, 'pay'])->name('mollie.pay');

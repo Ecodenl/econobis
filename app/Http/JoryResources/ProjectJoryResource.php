@@ -21,10 +21,10 @@ class ProjectJoryResource extends JoryResource
         $this->field('amount_definitive')->filterable()->sortable();
         $this->field('amount_granted')->filterable()->sortable();
         $this->field('amount_interessed')->filterable()->sortable();
+        $this->field('project_loan_type')->filterable()->sortable();
         $this->field('amount_of_loan_needed')->filterable()->sortable();
         $this->field('min_amount_loan')->filterable()->sortable();
         $this->field('max_amount_loan')->filterable()->sortable();
-        $this->field('amount_of_loan_needed')->filterable()->sortable();
         $this->field('amount_optioned')->filterable()->sortable();
         $this->field('code')->filterable()->sortable();
         $this->field('date_end')->filterable()->sortable();
@@ -68,7 +68,6 @@ class ProjectJoryResource extends JoryResource
         $this->field('amount_of_loan_needed')->filterable()->sortable();
         $this->field('min_amount_loan')->filterable()->sortable();
         $this->field('max_amount_loan')->filterable()->sortable();
-        $this->field('amount_of_loan_needed')->filterable()->sortable();
         $this->field('amount_optioned')->filterable()->sortable();
         $this->field('code')->filterable()->sortable();
         $this->field('date_end')->filterable()->sortable();
@@ -96,6 +95,10 @@ class ProjectJoryResource extends JoryResource
         $this->field('link_agree_terms')->filterable()->sortable();
         $this->field('link_understand_info')->filterable()->sortable();
         $this->field('link_project_info')->filterable()->sortable();
+        $this->field('text_register_page_header')->filterable()->sortable();
+        $this->field('text_register_current_book_worth')->filterable()->sortable();
+        $this->field('text_register_participation_singular')->filterable()->sortable();
+        $this->field('text_register_participation_plural')->filterable()->sortable();
         $this->field('show_question_about_membership')->filterable()->sortable();
         $this->field('use_transaction_costs_with_membership')->filterable()->sortable();
         $this->field('uses_mollie')->filterable()->sortable();

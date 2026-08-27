@@ -54,7 +54,6 @@ class CreateParticipantReport implements ShouldQueue
 
     public function handle()
     {
-        //user voor observer
         Auth::setUser(User::find($this->userId));
 
         $participationProjectController = new ParticipationProjectController();
@@ -92,7 +91,7 @@ class CreateParticipantReport implements ShouldQueue
             $emailAddress = optional(optional($participantProject)->contact)->primaryEmailAddress;
             if($emailAddress){
                 $this->email->contacts()->syncWithoutDetaching($emailAddress->contact_id);
-                $this->email->to = array_unique(array_merge($this->email->to, [$emailAddress->id]));
+                $this->email->to = [];
                 $this->email->save();
             }
         }

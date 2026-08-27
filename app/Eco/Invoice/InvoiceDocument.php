@@ -2,13 +2,13 @@
 
 namespace App\Eco\Invoice;
 
-use App\Eco\Product\Product;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class InvoiceDocument extends Model
 {
-    use RevisionableTrait;
+    use RevisionableTrait, SoftDeletes;
 
     protected $table = 'invoice_document';
     /**

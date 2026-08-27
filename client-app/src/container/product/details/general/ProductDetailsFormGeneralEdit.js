@@ -26,7 +26,9 @@ class ProductDetailsFormGeneralEdit extends Component {
             ledgerId,
             costCenterId,
             active,
+            cleanupException,
         } = props.productDetails;
+
 
         this.state = {
             //beter uit systemdata, maar sommige combinaties zijn niet mogelijk
@@ -47,6 +49,7 @@ class ProductDetailsFormGeneralEdit extends Component {
                 ledgerId: ledgerId ? ledgerId : '',
                 costCenterId: costCenterId ? costCenterId : '',
                 active: active,
+                cleanupException: cleanupException,
             },
             errors: {
                 code: false,
@@ -300,6 +303,7 @@ class ProductDetailsFormGeneralEdit extends Component {
             ledgerId,
             costCenterId,
             active,
+            cleanupException,
         } = this.state.product;
 
         let ledgerOptions = this.props.ledgers;
@@ -434,6 +438,26 @@ class ProductDetailsFormGeneralEdit extends Component {
                                     this.handleInputChange(event);
                                 }}
                             />
+
+                            {this.props.permissions.manageCleanupExceptionProducts ? (
+                                <InputToggle
+                                    label={'Uitzondering bij data opschonen'}
+                                    name={'cleanupException'}
+                                    value={cleanupException}
+                                    onChangeAction={event => {
+                                        event.persist();
+                                        this.handleInputChange(event);
+                                    }}
+                                />
+                            ) : (
+                                <InputToggle
+                                    label={'Uitzondering bij data opschonen'}
+                                    name={cleanupException}
+                                    value={cleanupException}
+                                    readOnly={true}
+                                    disabled={true}
+                                />
+                            )}
                         </div>
 
                         {this.state.errorMessage && (
@@ -482,6 +506,7 @@ const mapStateToProps = state => {
         ledgers: state.systemData.ledgers,
         costCenters: state.systemData.costCenters,
         usesTwinfield: state.systemData.usesTwinfield,
+        permissions: state.meDetails.permissions,
     };
 };
 

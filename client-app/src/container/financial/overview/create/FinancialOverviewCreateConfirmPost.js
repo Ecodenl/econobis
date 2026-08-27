@@ -1,69 +1,62 @@
-import React, { Component } from 'react';
-
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Modal from '../../../../components/modal/Modal';
 import FinancialOverviewContactAPI from '../../../../api/financial/overview/FinancialOverviewContactAPI';
-import { hashHistory } from 'react-router';
 import fileDownload from 'js-file-download';
-import InputDate from '../../../../components/form/InputDate';
-import validator from 'validator';
-import moment from 'moment/moment';
 
-class FinancialOverviewCreateConfirmPost extends Component {
-    constructor(props) {
-        super(props);
+export default function FinancialOverviewCreateConfirmPost({
+    closeModal,
+    financialOverviewId,
+    financialOverviewContactIds = [],
+    financialOverviewContactId,
+    isInterimMode,
+}) {
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
-        this.state = {
-            loading: false,
-        };
-    }
-
-    confirmAction = event => {
+    const confirmAction = event => {
         event.preventDefault();
+        setLoading(true);
 
-        this.setState({
-            loading: true,
-        });
-        FinancialOverviewContactAPI.sendAllPost(
-            this.props.financialOverviewId,
-            this.props.financialOverviewContactIds,
-            null
-        ).then(payload => {
-            if (payload && payload.headers && payload.headers['x-filename']) {
-                fileDownload(payload.data, payload.headers['x-filename']);
-            }
-        });
-
-        hashHistory.push(`/waardestaat/${this.props.financialOverviewId}`);
+        if (isInterimMode === true && financialOverviewContactId) {
+            FinancialOverviewContactAPI.sendInterimPost(financialOverviewContactId)
+                .then(payload => {
+                    if (payload && payload.headers && payload.headers['x-filename']) {
+                        fileDownload(payload.data, payload.headers['x-filename']);
+                    }
+                })
+                .finally(() => {
+                    navigate(`/waardestaat/${financialOverviewId}`);
+                });
+        } else {
+            FinancialOverviewContactAPI.sendAllPost(financialOverviewId, financialOverviewContactIds, isInterimMode)
+                .then(payload => {
+                    if (payload && payload.headers && payload.headers['x-filename']) {
+                        fileDownload(payload.data, payload.headers['x-filename']);
+                    }
+                })
+                .finally(() => {
+                    navigate(`/waardestaat/${financialOverviewId}`);
+                });
+        }
     };
 
-    handleInputChangeDate = (value, name) => {
-        this.setState({
-            ...this.state,
-            [name]: value,
-        });
-    };
-
-    render() {
-        return (
-            <Modal
-                closeModal={this.props.closeModal}
-                confirmAction={this.confirmAction}
-                title="Waardestaten downloaden"
-                buttonConfirmText={'Downloaden'}
-                loading={this.state.loading}
-            >
-                <div className="row">
-                    <div className={'col-sm-12 margin-10-bottom'}>
-                        <span>
-                            Wilt u alle geselecteerde definitieve waardestaten (
-                            {this.props.financialOverviewContactIds.length}) downloaden en doorzetten naar status
-                            verzonden?
-                        </span>
-                    </div>
+    return (
+        <Modal
+            closeModal={closeModal}
+            confirmAction={confirmAction}
+            title="Waardestaten downloaden"
+            buttonConfirmText={'Downloaden'}
+            loading={loading}
+        >
+            <div className="row">
+                <div className={'col-sm-12 margin-10-bottom'}>
+                    <span>
+                        Wilt u alle geselecteerde definitieve waardestaten ({financialOverviewContactIds.length})
+                        downloaden en doorzetten naar status verzonden?
+                    </span>
                 </div>
-            </Modal>
-        );
-    }
+            </div>
+        </Modal>
+    );
 }
-
-export default FinancialOverviewCreateConfirmPost;

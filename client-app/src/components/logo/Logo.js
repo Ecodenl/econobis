@@ -1,5 +1,5 @@
 import React from 'react';
-import ImgLogo from '../../images/logo/logo-ECO-2020.png';
+import ImgLogo from '../../images/logo/logo-ECO-2025.png';
 
 const Logo = props => {
     const style = {

@@ -1,12 +1,12 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_INTAKES = `${URL_API}/api/intake`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchIntakes: ({ filters, sorts, pagination }) => {
+        const URL_INTAKES = `${getApiUrl()}/api/intake`;
         const requestUrl = `${URL_INTAKES}/grid`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),
@@ -17,9 +17,10 @@ export default {
     },
 
     peekIntakes: () => {
+        const URL_INTAKES = `${getApiUrl()}/api/intake`;
         const requestUrl = `${URL_INTAKES}/peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -29,14 +30,15 @@ export default {
             });
     },
 
-    peekIntakesForContacts: (contactIds) => {
+    peekIntakesForContacts: contactIds => {
+        const URL_INTAKES = `${getApiUrl()}/api/intake`;
         const requestUrl = `${URL_INTAKES}/peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl, {
                 params: {
                     contactIds: JSON.stringify(contactIds),
-                }
+                },
             })
             .then(function(response) {
                 return response.data.data;
@@ -44,9 +46,9 @@ export default {
     },
 
     fetchIntakesByContact: contactId => {
-        const requestUrl = `${URL_API}/api/contact/${contactId}/intakes`;
+        const requestUrl = `${getApiUrl()}/api/contact/${contactId}/intakes`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data;
@@ -57,9 +59,10 @@ export default {
     },
 
     getAmountActive: () => {
+        const URL_INTAKES = `${getApiUrl()}/api/intake`;
         const requestUrl = `${URL_INTAKES}/amount-active`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data)
             .catch(error => {
@@ -68,8 +71,9 @@ export default {
     },
 
     getExcel: ({ filters, sorts }) => {
+        const URL_INTAKES = `${getApiUrl()}/api/intake`;
         const requestUrl = `${URL_INTAKES}/excel`;
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),
@@ -80,8 +84,9 @@ export default {
     },
 
     getExcelWithOpportunities: ({ filters, sorts }) => {
+        const URL_INTAKES = `${getApiUrl()}/api/intake`;
         const requestUrl = `${URL_INTAKES}/excel`;
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),

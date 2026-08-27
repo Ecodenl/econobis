@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 import moment from 'moment';
 
@@ -16,12 +16,18 @@ import InputReactSelect from '../../../components/form/InputReactSelect';
 import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
 import ViewText from '../../../components/form/ViewText';
 
+// Functionele wrapper voor de class component
+const ContactGroupNewFormWrapper = props => {
+    const navigate = useNavigate();
+    return <ContactGroupNewForm {...props} navigate={navigate} />;
+};
+
 class ContactGroupNewForm extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            contactsWithPermission: [],
+            contactsWithPermissionManageGroup: [],
             contactGroups: [],
             inspectionPersonTypes: [],
             emailTemplates: [],
@@ -56,15 +62,11 @@ class ContactGroupNewForm extends Component {
     }
 
     componentDidMount() {
-        const { permissions } = this.props;
+        UsersAPI.fetchUsersWithPermissionManageGroup().then(payload => {
+            this.setState({ contactsWithPermissionManageGroup: payload });
+        });
 
-        UsersAPI.fetchUsersWithPermission(permissions.find(permission => permission.name === 'manage_group').id).then(
-            payload => {
-                this.setState({ contactsWithPermission: payload });
-            }
-        );
-
-        ContactGroupAPI.peekContactGroups().then(payload => {
+        ContactGroupAPI.peekActiveContactGroups().then(payload => {
             this.setState({ contactGroups: payload });
         });
 
@@ -142,7 +144,7 @@ class ContactGroupNewForm extends Component {
         !hasErrors &&
             ContactGroupAPI.newContactGroup(contactGroup).then(payload => {
                 this.props.fetchSystemData();
-                hashHistory.push('/contact-groep/' + payload.id);
+                this.props.navigate('/contact-groep/' + payload.id);
             });
     };
 
@@ -265,7 +267,7 @@ class ContactGroupNewForm extends Component {
                                 onChange={this.handleInputChange}
                             >
                                 <option value="" />
-                                {this.state.contactsWithPermission.map(option => {
+                                {this.state.contactsWithPermissionManageGroup.map(option => {
                                     return (
                                         <option key={option.id} value={option.id}>
                                             {option.fullName}
@@ -438,9 +440,8 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => {
     return {
         meDetails: state.meDetails,
-        permissions: state.systemData.permissions,
         inspectionPersonTypes: state.systemData.inspectionPersonTypes,
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactGroupNewForm);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactGroupNewFormWrapper);

@@ -1,28 +1,17 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { Navigate, useLocation } from 'react-router-dom';
 
-export default function(ComposedComponent) {
-    class Authentication extends Component {
-        componentWillMount() {
-            if (!this.props.authenticated) {
-                hashHistory.push('/login');
-            }
-        }
+const RequireAuth = ({ children }) => {
+    const isAuthenticated = useSelector(state => state.auth.authenticated);
+    const location = useLocation();
 
-        componentWillUpdate(nextProps) {
-            if (!nextProps.authenticated) {
-                hashHistory.push('/login');
-            }
-        }
-
-        render() {
-            return <ComposedComponent {...this.props} />;
-        }
+    if (!isAuthenticated) {
+        // Bewaart huidige URL voor redirect na login
+        return <Navigate to="/login" state={{ from: location }} replace />;
     }
 
-    function mapStateToProps(state) {
-        return { authenticated: state.auth.authenticated };
-    }
-    return connect(mapStateToProps)(Authentication);
-}
+    return children;
+};
+
+export default RequireAuth;

@@ -31,4 +31,11 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
             ->select('opportunities.*');
         return $baseQuery;
     }
+
+    public function getQuery()
+    {
+        $query = parent::getQuery();
+
+        return $query->orderByDesc('opportunities.created_at');
+    }
 }

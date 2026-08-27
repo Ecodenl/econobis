@@ -35,6 +35,14 @@ const filtersReducerDefaultState = {
         field: 'measureDateEnd',
         data: '',
     },
+    createdAtStart: {
+        field: 'createdAtStart',
+        data: '',
+    },
+    createdAtEnd: {
+        field: 'createdAtEnd',
+        data: '',
+    },
     answer: {
         field: 'answer',
         data: '',
@@ -145,6 +153,22 @@ export default (state = filtersReducerDefaultState, action) => {
                 measureDateEnd: {
                     ...state.measureDateEnd,
                     data: action.measureDateEnd,
+                },
+            };
+        case 'SET_FILTER_HOUSING_FILE_SPECIFICATION_CREATED_AT_START':
+            return {
+                ...state,
+                createdAtStart: {
+                    ...state.createdAtStart,
+                    data: action.createdAtStart,
+                },
+            };
+        case 'SET_FILTER_HOUSING_FILE_SPECIFICATION_CREATED_AT_END':
+            return {
+                ...state,
+                createdAtEnd: {
+                    ...state.createdAtEnd,
+                    data: action.createdAtEnd,
                 },
             };
         case 'SET_FILTER_HOUSING_FILE_SPECIFICATION_STATUS':

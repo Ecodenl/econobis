@@ -235,6 +235,7 @@ class OrganisationController extends ApiController
             }
             if( !empty($messages) )
             {
+                // we use response status code 412 for Twinfield messages
                 abort(412, implode(';', $messages));
             }
         }

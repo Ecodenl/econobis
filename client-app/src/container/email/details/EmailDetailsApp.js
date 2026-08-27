@@ -6,7 +6,14 @@ import EmailDetailsForm from './EmailDetailsForm';
 import EmailAPI from './../../../api/email/EmailAPI';
 
 import { fetchEmail, clearEmail } from '../../../actions/email/EmailDetailsActions';
-import { browserHistory } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const EmailDetailsAppWrapper = props => {
+    const navigate = useNavigate();
+    const params = useParams();
+    return <EmailDetailsApp {...props} navigate={navigate} params={params} />;
+};
 
 class EmailDetailsApp extends Component {
     constructor(props) {
@@ -31,10 +38,20 @@ class EmailDetailsApp extends Component {
 
     restoreEmail() {
         //sent mails dont have an imapId
-        if (this.props.email.imapId === null) {
-            EmailAPI.moveToFolder(this.props.email.id, 'sent').then(() => {
-                this.refreshEmail();
-            });
+        if (
+            this.props.email.imapId === null &&
+            this.props.email.msoauthMessageId === null &&
+            this.props.email.messageId === null
+        ) {
+            if (this.props.email.dateSent === null) {
+                EmailAPI.moveToFolder(this.props.email.id, 'concept').then(() => {
+                    this.refreshEmail();
+                });
+            } else {
+                EmailAPI.moveToFolder(this.props.email.id, 'sent').then(() => {
+                    this.refreshEmail();
+                });
+            }
         } else {
             EmailAPI.moveToFolder(this.props.email.id, 'inbox').then(() => {
                 this.refreshEmail();
@@ -43,13 +60,17 @@ class EmailDetailsApp extends Component {
     }
 
     removeEmail() {
-        if (this.props.email.folder === 'inbox' || this.props.email.folder === 'sent') {
+        if (
+            this.props.email.folder === 'inbox' ||
+            this.props.email.folder === 'concept' ||
+            this.props.email.folder === 'sent'
+        ) {
             EmailAPI.moveToFolder(this.props.email.id, 'removed').then(() => {
                 this.refreshEmail();
             });
         } else if (this.props.email.folder === 'removed') {
             EmailAPI.deleteEmail(this.props.email.id).then(() => {
-                browserHistory.goBack();
+                this.props.navigate(-1);
             });
         }
     }
@@ -86,4 +107,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(EmailDetailsApp);
+export default connect(mapStateToProps, mapDispatchToProps)(EmailDetailsAppWrapper);

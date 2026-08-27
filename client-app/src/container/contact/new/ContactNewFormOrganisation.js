@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import validator from 'validator';
 
@@ -20,6 +20,12 @@ import AddressAPI from '../../../api/contact/AddressAPI';
 import Icon from 'react-icons-kit';
 import { angleRight } from 'react-icons-kit/fa/angleRight';
 import { angleDown } from 'react-icons-kit/fa/angleDown';
+
+// Functionele wrapper voor de class component
+const ContactNewFormOrganisationWrapper = props => {
+    const navigate = useNavigate();
+    return <ContactNewFormOrganisation {...props} navigate={navigate} />;
+};
 
 class ContactNewFormOrganisation extends Component {
     constructor(props) {
@@ -325,7 +331,7 @@ class ContactNewFormOrganisation extends Component {
 
             OrganisationAPI.newOrganisation({ organisation, address, emailAddress, phoneNumber })
                 .then(response => {
-                    hashHistory.push(`/contact/${response.data.data.id}`);
+                    this.props.navigate(`/contact/${response.data.data.id}`);
                 })
                 .catch(error => {
                     //409 conflict
@@ -540,4 +546,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(ContactNewFormOrganisation);
+export default connect(mapStateToProps)(ContactNewFormOrganisationWrapper);

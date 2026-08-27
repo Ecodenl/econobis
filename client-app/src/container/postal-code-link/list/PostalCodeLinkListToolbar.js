@@ -1,10 +1,12 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
 const PostalCodeLinkListToolbar = props => {
+    const navigate = useNavigate();
+
     return (
         <div className="row">
             <div className="col-md-4">

@@ -8,9 +8,9 @@
 
 namespace App\Http\RequestQueries\Project\Grid;
 
-use App\Eco\Campaign\Campaign;
 use App\Eco\Project\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
 {
@@ -26,7 +26,9 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
 
     protected function baseQuery()
     {
-        return Project::query()
-            ->select('projects.*');
+        $baseQuery =  Project::query()->select('projects.*');
+        $baseQuery->whereAdministrationIds(Auth::user());
+
+        return $baseQuery;
     }
 }

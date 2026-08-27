@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import QuotationRequestsAPI from '../../../api/quotation-request/QuotationRequestsAPI';
+
+// Functionele wrapper voor de class component
+const ButtonQuotationRequestsWrapper = props => {
+    const navigate = useNavigate();
+    return <ButtonQuotationRequests {...props} navigate={navigate} />;
+};
 
 class ButtonQuotationRequests extends Component {
     constructor(props) {
@@ -12,7 +18,7 @@ class ButtonQuotationRequests extends Component {
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         QuotationRequestsAPI.getAmountActive().then(payload => {
             this.setState({
                 amountActiveQuotationsRequests: payload,
@@ -22,7 +28,7 @@ class ButtonQuotationRequests extends Component {
 
     render() {
         return (
-            <div className={this.props.size} onClick={() => hashHistory.push(`/offerteverzoeken`)}>
+            <div className={this.props.size} onClick={() => this.props.navigate(`/offerteverzoeken`)}>
                 <div className="panel panel-default" id="dashboardbutton-5">
                     <div className="panel-body">
                         <h4 className="text-center text-bold">Kansacties</h4>
@@ -34,4 +40,4 @@ class ButtonQuotationRequests extends Component {
     }
 }
 
-export default ButtonQuotationRequests;
+export default ButtonQuotationRequestsWrapper;

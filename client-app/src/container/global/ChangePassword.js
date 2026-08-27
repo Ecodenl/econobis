@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { getApiUrl } from '../../api/utils/ApiUrl';
+
 import { connect } from 'react-redux';
 import axios from 'axios';
 
@@ -16,7 +18,7 @@ class ChangePassword extends Component {
         const email = this.props.email;
 
         axios
-            .post(`${URL_API}/api/password/email`, {
+            .post(`${getApiUrl()}/api/password/email`, {
                 email,
             })
             .then(response => {

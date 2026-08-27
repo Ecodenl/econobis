@@ -43,7 +43,7 @@ const InvoiceDetailsFormGeneralView = props => {
                         <ViewText
                             label={'Contact'}
                             value={order.contact ? order.contact.fullName : ''}
-                            link={order.contact ? 'contact/' + order.contact.id : ''}
+                            link={order.contact ? '/contact/' + order.contact.id : ''}
                         />
                         <ViewText label={'Status'} value={status ? status.name : ''} />
                     </div>
@@ -64,7 +64,7 @@ const InvoiceDetailsFormGeneralView = props => {
                         <ViewText
                             label={'Order'}
                             value={order ? order.number : ''}
-                            link={order ? 'order/' + order.id : ''}
+                            link={order ? '/order/' + order.id : ''}
                         />
                     </div>
 

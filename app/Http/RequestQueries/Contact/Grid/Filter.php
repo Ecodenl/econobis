@@ -25,6 +25,9 @@ class Filter extends RequestFilter
         'emailAddress',
         'phoneNumber',
         'createdAt',
+        'iban',
+        'vatNumber',
+        'chamberOfCommerceNumber',
     ];
 
     protected $mapping = [
@@ -37,6 +40,9 @@ class Filter extends RequestFilter
         'emailAddress' => 'email_addresses.email',
         'phoneNumber' => 'phone_numbers.number',
         'createdAt' => 'contacts.created_at',
+        'iban' => 'contacts.iban',
+        'vatNumber' => 'organisations.vat_number',
+        'chamberOfCommerceNumber' => 'organisations.chamber_of_commerce_number',
     ];
 
     protected $joins = [
@@ -45,6 +51,8 @@ class Filter extends RequestFilter
         'streetAndNumber' => 'address',
         'postalCode' => 'address',
         'city' => 'address',
+        'vatNumber' => 'organisation',
+        'chamberOfCommerceNumber' => 'organisation'
     ];
 
     protected $defaultTypes = [
@@ -54,12 +62,18 @@ class Filter extends RequestFilter
         'statusId' => 'eq',
     ];
 
-
     protected function applyStreetAndNumberFilter($query, $type, $data)
     {
-        $data = str_replace(' ', '', $data);
+        // Elke zoekterm moet voorkomen in de straat, het huisnummer of de toevoeging.
+        $terms = array_filter(explode(' ', $data));
 
-        $query->whereRaw('concat(IFNULL(addresses.street,\'\'), IFNULL(addresses.number,\'\'),  IFNULL(addresses.addition,\'\')) LIKE ' . DB::connection()->getPdo()->quote('%' . $data . '%'));
+        foreach ($terms as $term) {
+            $query->where(function ($query) use ($term) {
+                $query->where('addresses.street', 'LIKE', '%' . $term . '%');
+                $query->orWhere('addresses.number', 'LIKE', '%' . $term . '%');
+                $query->orWhere('addresses.addition', 'LIKE', '%' . $term . '%');
+            });
+        }
 
         return false;
     }

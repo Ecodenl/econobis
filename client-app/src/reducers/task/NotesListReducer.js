@@ -10,6 +10,7 @@ export default function(state = { isLoading: false }, action) {
                 data: action.notes.data.data,
                 meta: {
                     total: action.notes.data.meta.total,
+                    noteIdsTotal: action.notes.data.meta.noteIdsTotal,
                 },
                 isLoading: false,
             };

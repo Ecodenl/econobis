@@ -1,11 +1,16 @@
+import moment from 'moment';
+
 export default function(
     participantMutation,
+    disableBeforeEntryDate,
     errors,
     errorMessage,
     hasErrors,
     statusCodeRef,
     typeCodeRef,
-    projectTypeCodeRef
+    projectTypeCodeRef,
+    participationsDefinitive,
+    amountDefinitive
 ) {
     if (!participantMutation.typeId) {
         errors.typeId = true;
@@ -19,7 +24,7 @@ export default function(
         // Extra check dependable on statusCodeRef
         if (statusCodeRef === 'interest') {
             if (projectTypeCodeRef === 'loan') {
-                if (typeCodeRef === 'withDrawal' || typeCodeRef === 'sell') {
+                if (typeCodeRef === 'withDrawal') {
                     if (participantMutation.amountInterest && participantMutation.amountInterest > 0) {
                         errors.amountInterest = true;
                         errorMessage.amountInterest = 'Voer een negatief bedrag of 0 in.';
@@ -33,7 +38,7 @@ export default function(
                     }
                 }
             } else {
-                if (typeCodeRef === 'withDrawal' || typeCodeRef === 'sell') {
+                if (typeCodeRef === 'withDrawal') {
                     if (participantMutation.quantityInterest && participantMutation.quantityInterest > 0) {
                         errors.quantityInterest = true;
                         errorMessage.quantityInterest = 'Voer een negatief aantal of 0 in.';
@@ -51,7 +56,7 @@ export default function(
 
         if (statusCodeRef === 'option') {
             if (projectTypeCodeRef === 'loan') {
-                if (typeCodeRef === 'withDrawal' || typeCodeRef === 'sell') {
+                if (typeCodeRef === 'withDrawal') {
                     if (!participantMutation.amountOption || participantMutation.amountOption >= 0) {
                         errors.amountOption = true;
                         errorMessage.amountOption = 'Voer een negatief bedrag in.';
@@ -65,7 +70,7 @@ export default function(
                     }
                 }
             } else {
-                if (typeCodeRef === 'withDrawal' || typeCodeRef === 'sell') {
+                if (typeCodeRef === 'withDrawal') {
                     if (!participantMutation.quantityOption || participantMutation.quantityOption >= 0) {
                         errors.quantityOption = true;
                         errorMessage.quantityOption = 'Voer een negatief aantal in.';
@@ -87,7 +92,7 @@ export default function(
 
         if (statusCodeRef === 'granted') {
             if (projectTypeCodeRef === 'loan') {
-                if (typeCodeRef === 'withDrawal' || typeCodeRef === 'sell') {
+                if (typeCodeRef === 'withDrawal') {
                     if (!participantMutation.amountGranted || participantMutation.amountGranted >= 0) {
                         errors.amountGranted = true;
                         errorMessage.amountGranted = 'Voer een negatief bedrag in.';
@@ -101,7 +106,7 @@ export default function(
                     }
                 }
             } else {
-                if (typeCodeRef === 'withDrawal' || typeCodeRef === 'sell') {
+                if (typeCodeRef === 'withDrawal') {
                     if (!participantMutation.quantityGranted || participantMutation.quantityGranted >= 0) {
                         errors.quantityGranted = true;
                         errorMessage.quantityGranted = 'Voer een negatief aantal in.';
@@ -123,10 +128,16 @@ export default function(
 
         if (statusCodeRef === 'final') {
             if (projectTypeCodeRef === 'loan') {
-                if (typeCodeRef === 'withDrawal' || typeCodeRef === 'sell') {
+                if (typeCodeRef === 'withDrawal') {
                     if (!participantMutation.amountFinal || participantMutation.amountFinal >= 0) {
                         errors.amountFinal = true;
                         errorMessage.amountFinal = 'Voer een negatief bedrag in.';
+                        hasErrors = true;
+                    }
+                    if (participantMutation.amountFinal < amountDefinitive * -1) {
+                        errors.amountFinal = true;
+                        errorMessage.amountFinal =
+                            'Negatief bedrag mag niet lager dan Huidig saldo lening rekening zijn.';
                         hasErrors = true;
                     }
                 } else {
@@ -137,10 +148,18 @@ export default function(
                     }
                 }
             } else {
-                if (typeCodeRef === 'withDrawal' || typeCodeRef === 'sell') {
+                if (typeCodeRef === 'withDrawal') {
                     if (!participantMutation.quantityFinal || participantMutation.quantityFinal >= 0) {
                         errors.quantityFinal = true;
                         errorMessage.quantityFinal = 'Voer een negatief aantal in.';
+                        hasErrors = true;
+                    }
+                    if (participantMutation.quantityFinal < participationsDefinitive * -1) {
+                        errors.quantityFinal = true;
+                        errorMessage.quantityFinal =
+                            'Negatief aantal mag niet lager dan Huidige aantal ' +
+                            (projectTypeCodeRef === 'obligation' ? 'obligaties' : 'participaties') +
+                            '.';
                         hasErrors = true;
                     }
                 } else {
@@ -154,6 +173,27 @@ export default function(
             if (!participantMutation.dateEntry) {
                 errors.dateEntry = true;
                 hasErrors = true;
+            }
+
+            if (
+                disableBeforeEntryDate &&
+                participantMutation.dateEntry &&
+                moment(participantMutation.dateEntry).isBefore(disableBeforeEntryDate)
+            ) {
+                if (errors) errors.dateEntry = true;
+                if (errorMessage) {
+                    errorMessage.dateEntry =
+                        'De ingangsdatum moet na ' +
+                        moment(disableBeforeEntryDate)
+                            .subtract(1, 'days')
+                            .format('DD-MM-YYYY') +
+                        ' liggen.';
+                    errors.dateEntry = true;
+                    hasErrors = true;
+                }
+            } else if (errors && errors.dateEntry) {
+                errors.dateEntry = false;
+                if (errorMessage) errorMessage.dateEntry = '';
             }
         }
     }

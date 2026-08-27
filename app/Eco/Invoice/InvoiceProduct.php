@@ -4,11 +4,12 @@ namespace App\Eco\Invoice;
 
 use App\Eco\Product\Product;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class InvoiceProduct extends Model
 {
-    use RevisionableTrait;
+    use RevisionableTrait, SoftDeletes;
 
     protected $table = 'invoice_product';
     /**
@@ -143,6 +144,11 @@ class InvoiceProduct extends Model
         return floatval( number_format( ($amountExclVat + $amountReductionAmountExclVat + $amountReductionPercentageExclVat), 2, '.', ''));
     }
 
+    public function getAmountInclReductionExclVatAttribute()
+    {
+        return number_format($this->getAmountInclReductionExclVat(), 2, ',', '');
+    }
+
     public function getAmountInclReductionVat()
     {
         $inputInclVat = false;
@@ -158,6 +164,11 @@ class InvoiceProduct extends Model
             $amountInclReductionVat = $this->getAmountInclReductionExclVat() * $vatFactor;
         }
         return floatval( number_format( $amountInclReductionVat, 2, '.', ''));
+    }
+
+    public function getAmountInclReductionInclVatAttribute()
+    {
+        return number_format($this->getAmountInclReductionInclVat(), 2, ',', '');
     }
 
     public function getAmountInclReductionInclVat()

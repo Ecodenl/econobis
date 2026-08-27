@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
-import moment from 'moment';
+import { useNavigate } from 'react-router-dom';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
+
+// Functionele wrapper voor de class component
+const UsersListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <UsersListItem {...props} navigate={navigate} />;
+};
 
 class UsersListItem extends Component {
     constructor(props) {
@@ -30,11 +35,15 @@ class UsersListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/gebruiker/${id}`);
+        this.props.navigate(`/gebruiker/${id}`);
     }
 
     render() {
-        const { id, firstName, fullLastName, email, status } = this.props;
+        const { id, firstName, fullLastName, email, status, blocked, blocked_until } = this.props;
+
+        const styleBlocked = {
+            color: blocked ? 'red' : 'green',
+        };
 
         return (
             <tr
@@ -47,6 +56,9 @@ class UsersListItem extends Component {
                 <td>{fullLastName}</td>
                 <td>{email}</td>
                 <td>{status}</td>
+                <td>
+                    <span style={styleBlocked}>{blocked_until}</span>
+                </td>
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>
@@ -61,4 +73,4 @@ class UsersListItem extends Component {
     }
 }
 
-export default UsersListItem;
+export default UsersListItemWrapper;

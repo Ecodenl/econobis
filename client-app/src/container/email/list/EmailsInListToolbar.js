@@ -1,31 +1,42 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
 const EmailsInListToolbar = props => {
+    const navigate = useNavigate();
+
     const newMailbox = () => {
-        hashHistory.push(`/email/nieuw`);
+        navigate(`/email/nieuw`);
     };
 
     const { meta = {} } = props.emails;
 
     return (
         <div className="row">
+            <div className="col-xs-12">
+                <div className="alert alert-info" role="alert">
+                    Uitvoeren mappen ontvangen wordt tijdelijk alleen 's ochtends rond 8.00 automatisch gedaan en niet
+                    meer elke 10 minuten (tussen 08.00 en 20.00). Gebruik knop "Alle mappen ontvangen" op deze pagina om
+                    nieuwe e-mails te ontvangen.
+                </div>
+            </div>
             <div className="col-md-4">
                 <div className="btn-group" role="group">
                     <ButtonIcon
                         iconName={'refresh'}
                         onClickAction={props.refreshData}
-                        title={'Alle mappen verzenden/ontvangen'}
+                        title={'Alle mappen ontvangen'}
                     />
                     <ButtonIcon iconName={'plus'} onClickAction={newMailbox} title={'Nieuwe e-mail'} />
                 </div>
             </div>
             <div className="col-md-4">
                 <h3 className="text-center table-title">
-                    {props.me ? 'Eigen e-mail' : 'E-mail'} {props.folder}{' '}
+                    {/*todo WM: Eigen e-mail gaat niet meer vanuit oude mail, eigen e-mail gaat nu naar nieuwe splitview)*/}
+                    {/*{props.me ? 'Eigen e-mail' : 'E-mail'} {props.folder}{' '}*/}
+                    'E-mail' {props.folder}{' '}
                 </h3>
             </div>
             <div className="col-md-4">

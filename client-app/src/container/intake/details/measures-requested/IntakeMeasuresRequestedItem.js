@@ -22,7 +22,7 @@ class IntakeMeasuresRequestedItem extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (!isEqual(this.state.measureRequested, nextProps.measureRequested)) {
             this.setState({
                 ...this.state,

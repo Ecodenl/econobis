@@ -1,35 +1,39 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_DOCUMENT = `${URL_API}/api/document`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchDocumentDetails: id => {
+        const URL_DOCUMENT = `${getApiUrl()}/api/document`;
         const requestUrl = `${URL_DOCUMENT}/${id}`;
 
-        return axiosInstance.get(requestUrl);
+        return getAxiosInstance().get(requestUrl);
     },
 
     newDocument: data => {
+        const URL_DOCUMENT = `${getApiUrl()}/api/document`;
         const requestUrl = `${URL_DOCUMENT}`;
 
-        return axiosInstance.post(requestUrl, data);
+        return getAxiosInstance().post(requestUrl, data);
     },
 
     updateDocument: document => {
+        const URL_DOCUMENT = `${getApiUrl()}/api/document`;
         const requestUrl = `${URL_DOCUMENT}/${document.id}`;
 
-        return axiosInstance.post(requestUrl, document);
+        return getAxiosInstance().post(requestUrl, document);
     },
 
     deleteDocument: id => {
+        const URL_DOCUMENT = `${getApiUrl()}/api/document`;
         const requestUrl = `${URL_DOCUMENT}/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     download: id => {
+        const URL_DOCUMENT = `${getApiUrl()}/api/document`;
         const requestUrl = `${URL_DOCUMENT}/${id}/download`;
 
-        return axiosInstance.get(requestUrl, { responseType: 'blob' });
+        return getAxiosInstance().get(requestUrl, { responseType: 'blob' });
     },
 };

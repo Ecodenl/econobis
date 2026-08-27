@@ -1,10 +1,11 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchTasks: ({ filters, sorts, pagination }) => {
-        const requestUrl = `${URL_API}/api/task/grid/tasks`;
+        const requestUrl = `${getApiUrl()}/api/task/grid/tasks`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),
@@ -15,9 +16,9 @@ export default {
     },
 
     fetchNotes: ({ filters, sorts, pagination }) => {
-        const requestUrl = `${URL_API}/api/task/grid/notes`;
+        const requestUrl = `${getApiUrl()}/api/task/grid/notes`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),
@@ -28,9 +29,9 @@ export default {
     },
 
     getAmountActive: () => {
-        const requestUrl = `${URL_API}/api/task/amount-active`;
+        const requestUrl = `${getApiUrl()}/api/task/amount-active`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data)
             .catch(error => {
@@ -39,9 +40,9 @@ export default {
     },
 
     fetchTasksCalendarEvents: (startDate, endDate) => {
-        const requestUrl = `${URL_API}/api/task/calendar`;
+        const requestUrl = `${getApiUrl()}/api/task/calendar`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 startDate,
                 endDate,
@@ -50,9 +51,9 @@ export default {
     },
 
     peekTasks: () => {
-        const requestUrl = `${URL_API}/api/task/peek`;
+        const requestUrl = `${getApiUrl()}/api/task/peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -62,14 +63,14 @@ export default {
             });
     },
 
-    peekTasksForContacts: (contactIds) => {
-        const requestUrl = `${URL_API}/api/task/peek`;
+    peekTasksForContacts: contactIds => {
+        const requestUrl = `${getApiUrl()}/api/task/peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl, {
                 params: {
                     contactIds: JSON.stringify(contactIds),
-                }
+                },
             })
             .then(function(response) {
                 return response.data.data;

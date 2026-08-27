@@ -5,6 +5,13 @@ import QuotationRequestStatusDetailsForm from './QuotationRequestStatusDetailsFo
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import QuotationRequestStatusDetailsAPI from '../../../api/quotation-request-status/QuotationRequestStatusDetailsAPI';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const QuotationRequestStatusDetailsAppWrapper = props => {
+    const params = useParams();
+    return <QuotationRequestStatusDetailsApp {...props} params={params} />;
+};
 
 class QuotationRequestStatusDetailsApp extends Component {
     constructor(props) {
@@ -70,4 +77,4 @@ class QuotationRequestStatusDetailsApp extends Component {
     }
 }
 
-export default QuotationRequestStatusDetailsApp;
+export default QuotationRequestStatusDetailsAppWrapper;

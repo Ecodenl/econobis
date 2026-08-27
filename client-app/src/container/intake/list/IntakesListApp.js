@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { fetchIntakes, clearIntakes, setCheckedIntakeAll } from '../../../actions/intake/IntakesActions';
+import { fetchIntakes, clearIntakes } from '../../../actions/intake/IntakesActions';
 import { clearFilterIntakes } from '../../../actions/intake/IntakesFiltersActions';
 import { setIntakesPagination } from '../../../actions/intake/IntakesPaginationActions';
 import IntakesList from './IntakesList';
@@ -20,8 +20,7 @@ class IntakesListApp extends Component {
         super(props);
 
         this.state = {
-            showCheckboxList: false,
-            checkedAllCheckboxes: false,
+            multiSelectEnabled: false,
         };
 
         this.handlePageClick = this.handlePageClick.bind(this);
@@ -62,7 +61,10 @@ class IntakesListApp extends Component {
 
             IntakesAPI.getExcelWithOpportunities({ filters, sorts })
                 .then(payload => {
-                    fileDownload(payload.data, 'Intakes-met-kansen-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.xlsx');
+                    fileDownload(
+                        payload.data,
+                        'Intakes-met-kansen-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.xlsx'
+                    );
                     this.props.unblockUI();
                 })
                 .catch(error => {
@@ -109,18 +111,15 @@ class IntakesListApp extends Component {
         }, 100);
     }
 
-    toggleShowCheckboxList = () => {
+    toggleMultiSelectEnabled = () => {
         this.setState({
-            showCheckboxList: !this.state.showCheckboxList,
+            multiSelectEnabled: !this.state.multiSelectEnabled,
         });
     };
-
-    selectAllCheckboxes = () => {
+    setMultiSelectDisabled = () => {
         this.setState({
-            checkedAllCheckboxes: !this.state.checkedAllCheckboxes,
+            multiSelectEnabled: false,
         });
-
-        this.props.setCheckedIntakeAll(!this.state.checkedAllCheckboxes);
     };
 
     render() {
@@ -129,7 +128,7 @@ class IntakesListApp extends Component {
                 <PanelBody>
                     <div className="col-md-12 margin-10-top">
                         <IntakesListToolbar
-                            toggleShowCheckboxList={() => this.toggleShowCheckboxList()}
+                            toggleMultiSelectEnabled={() => this.toggleMultiSelectEnabled()}
                             resetIntakeFilters={() => this.resetIntakeFilters()}
                             getExcel={this.getExcel}
                             getExcelWithOpportunities={this.getExcelWithOpportunities}
@@ -139,13 +138,12 @@ class IntakesListApp extends Component {
                     <div className="col-md-12 margin-10-top">
                         <IntakesList
                             intakes={this.props.intakes}
+                            multiSelectEnabled={this.state.multiSelectEnabled}
+                            setMultiSelectDisabled={this.setMultiSelectDisabled}
                             intakesPagination={this.props.intakesPagination}
                             onSubmitFilter={() => this.onSubmitFilter()}
                             refreshIntakesData={() => this.fetchIntakesData()}
                             handlePageClick={this.handlePageClick}
-                            showCheckboxList={this.state.showCheckboxList}
-                            selectAllCheckboxes={() => this.selectAllCheckboxes()}
-                            checkedAllCheckboxes={this.state.checkedAllCheckboxes}
                         />
                     </div>
                 </PanelBody>
@@ -170,7 +168,6 @@ const mapDispatchToProps = dispatch => {
             clearIntakes,
             setIntakesPagination,
             clearFilterIntakes,
-            setCheckedIntakeAll,
             blockUI,
             unblockUI,
         },

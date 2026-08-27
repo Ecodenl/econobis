@@ -27,6 +27,7 @@ class ContactDetailsFormOccupationsNew extends Component {
                 startDate: '',
                 endDate: '',
                 primary: false,
+                allowManageInPortal: false,
             },
             errors: {
                 contactId: false,
@@ -62,6 +63,34 @@ class ContactDetailsFormOccupationsNew extends Component {
             occupation: {
                 ...this.state.occupation,
                 [name]: value,
+            },
+        });
+    };
+
+    handleInputChangePrimary = event => {
+        const value = event.target.checked;
+
+        let allowManageInPortal = this.state.occupation.allowManageInPortal;
+
+        if (value === true && this.state.occupation.contactId) {
+            const selectedContact =
+                this.state.contacts.find(contact => contact.id === this.state.occupation.contactId) ?? null;
+            if (selectedContact) {
+                if (
+                    (this.props.currentContactTypeId === 'organisation' && selectedContact.typeId === 'person') ||
+                    (this.props.currentContactTypeId === 'person' && selectedContact.typeId === 'organisation')
+                ) {
+                    allowManageInPortal = true;
+                }
+            }
+        }
+
+        this.setState({
+            ...this.state,
+            occupation: {
+                ...this.state.occupation,
+                primary: value,
+                allowManageInPortal: allowManageInPortal,
             },
         });
     };
@@ -134,7 +163,9 @@ class ContactDetailsFormOccupationsNew extends Component {
     }
 
     render() {
-        const { contactId, occupationId, startDate, endDate, primary } = this.state.occupation;
+        const { contactId, occupationId, startDate, endDate, primary, allowManageInPortal } = this.state.occupation;
+
+        const activeOccupations = this.props.occupations.filter(occupation => occupation.isActive);
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -152,11 +183,11 @@ class ContactDetailsFormOccupationsNew extends Component {
                                 error={this.state.errors.contactId}
                             />
                             <InputSelect
-                                label={'Rol'}
+                                label={'Verbindingsrol'}
                                 size={'col-sm-6'}
                                 name={'occupationId'}
                                 optionName={'primaryOccupation'}
-                                options={this.props.occupations}
+                                options={activeOccupations}
                                 value={occupationId}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
@@ -186,6 +217,12 @@ class ContactDetailsFormOccupationsNew extends Component {
                                 label={'Primair'}
                                 name={'primary'}
                                 value={primary}
+                                onChangeAction={this.handleInputChangePrimary}
+                            />
+                            <InputToggle
+                                label={'Beheer in portaal'}
+                                name={'allowManageInPortal'}
+                                value={allowManageInPortal}
                                 onChangeAction={this.handleInputChange}
                             />
                         </div>
@@ -214,6 +251,7 @@ const mapStateToProps = state => {
     return {
         occupations: state.systemData.occupations,
         id: state.contactDetails.id,
+        currentContactTypeId: state.contactDetails.typeId,
     };
 };
 

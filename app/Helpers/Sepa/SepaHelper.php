@@ -99,7 +99,7 @@ class SepaHelper
         $xml .= "\n\t\t\t<NbOfTxs>" . $amountOfInvoices . "</NbOfTxs>"; // Aantal opdrachten in dit bestand
         $xml .= "\n\t\t\t<CtrlSum>" . $totalOpen . "</CtrlSum>"; // Totaalbedrag van alle opdrachten (punt als decimal teken)
         $xml .= "\n\t\t\t<InitgPty>";
-        $xml .= "\n\t\t\t\t<Nm>" . $this->administration->name . "</Nm>"; // Naam van opdrachtgever
+        $xml .= "\n\t\t\t\t<Nm>" . $this->translateToValidCharacterSet($this->administration->name) . "</Nm>"; // Naam van opdrachtgever
         $xml .= "\n\t\t\t</InitgPty>";
         $xml .= "\n\t\t</GrpHdr>";
 
@@ -125,7 +125,7 @@ class SepaHelper
         $xml .= "\n\t\t\t<ReqdColltnDt>" . $dateCollection . "</ReqdColltnDt>"; // Gewenste uitvoerdatum
 
         $xml .= "\n\t\t\t<Cdtr>"; // Crediteur
-        $xml .= "\n\t\t\t\t<Nm>" . $this->administration->name . "</Nm>"; // Naam crediteur
+        $xml .= "\n\t\t\t\t<Nm>" . $this->translateToValidCharacterSet($this->administration->name) . "</Nm>"; // Naam crediteur
         $xml .= "\n\t\t\t</Cdtr>";
 
         /// Creditor Account
@@ -239,7 +239,7 @@ class SepaHelper
         $name = 'incasso-sepa-' . $sepa->id .  '-' . Carbon::now()->format('Ymdhi') . '.xml';
         $path = 'administration_' . $this->administration->id
             . DIRECTORY_SEPARATOR . 'sepas' . DIRECTORY_SEPARATOR . $name;
-        Storage::put('administrations/' . $path, $xml);
+        Storage::disk('administrations')->put($path, $xml);
 
         $sepa->filename = $path;
         $sepa->name = $name;
@@ -272,18 +272,20 @@ class SepaHelper
      */
     public function checkStorageDir(){
         //Check if storage map exists
-        $storageDir = Storage::disk('administrations')->path(DIRECTORY_SEPARATOR . 'administration_' . $this->administration->id . DIRECTORY_SEPARATOR . 'sepas');
+        $storageDir = Storage::disk('administrations')
+            ->path(DIRECTORY_SEPARATOR . 'administration_' . $this->administration->id . DIRECTORY_SEPARATOR . 'sepas');
 
         if (!is_dir($storageDir)) {
             mkdir($storageDir, 0777, true);
         }
     }
 
-    public function translateToValidCharacterSet($field){
+    protected function translateToValidCharacterSet($field){
 
-//        $field = strtr(utf8_decode($field), utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
-        $field = strtr(mb_convert_encoding($field, 'UTF-8', mb_list_encodings()), mb_convert_encoding('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ', 'UTF-8', mb_list_encodings()), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
-//        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
+        $fieldUtf8Decoded = mb_convert_encoding($field, 'ISO-8859-1', 'UTF-8');
+        $replaceFrom = mb_convert_encoding('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ', 'ISO-8859-1', 'UTF-8');
+        $replaceTo = mb_convert_encoding('AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy', 'ISO-8859-1', 'UTF-8');
+        $field = strtr( $fieldUtf8Decoded, $replaceFrom, $replaceTo );
         $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
 
         return $field;

@@ -28,11 +28,16 @@ class MailboxDetailsForm extends Component {
             loading = false;
         }
 
+        const manageSystemMailbox =
+            this.props.meDetails.email == 'support@econobis.nl' || this.props.meDetails.email == 'software@xaris.nl'
+                ? true
+                : false;
+
         return loading ? (
             <div>{loadingText}</div>
         ) : (
             <div>
-                {!this.props.mailboxDetails.valid && (
+                {!this.props.mailboxDetails.valid ? (
                     <Panel>
                         <PanelHeader>
                             <span className="h5" style={{ color: '#e64a4a' }}>
@@ -41,7 +46,17 @@ class MailboxDetailsForm extends Component {
                             </span>
                         </PanelHeader>
                     </Panel>
-                )}
+                ) : null}
+                {this.props.mailboxDetails.isSystemMailgunDomain && !manageSystemMailbox ? (
+                    <Panel>
+                        <PanelHeader>
+                            <span className="h5" style={{ color: '#e64a4a' }}>
+                                Deze mailgun mailbox is geconfigureerd met een systeem mailgun domain. Deze kan alleen
+                                door Econobis support gewijzigd worden.
+                            </span>
+                        </PanelHeader>
+                    </Panel>
+                ) : null}
                 <MailboxDetailsFormGeneral />
                 <MailboxDetailsUsers />
                 <MailboxDetailsIgnores />
@@ -55,6 +70,7 @@ const mapStateToProps = state => {
         mailboxDetails: state.mailboxDetails,
         isLoading: state.loadingData.isLoading,
         hasError: state.loadingData.hasError,
+        meDetails: state.meDetails,
     };
 };
 

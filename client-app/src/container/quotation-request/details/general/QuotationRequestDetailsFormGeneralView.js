@@ -19,9 +19,12 @@ const QuotationRequestDetailsFormGeneralView = props => {
         datePlannedAttempt2,
         datePlannedAttempt3,
         datePlanned,
+        statusApprovedExternal,
         dateApprovedExternal,
         dateUnderReview,
+        statusApprovedProjectManager,
         dateApprovedProjectManager,
+        statusApprovedClient,
         dateApprovedClient,
         dateExecuted,
         quotationText,
@@ -29,6 +32,7 @@ const QuotationRequestDetailsFormGeneralView = props => {
         costAdjustment,
         awardAmount,
         dateUnderReviewDetermination,
+        statusApprovedDetermination,
         dateApprovedDetermination,
         amountDetermination,
         opportunity,
@@ -48,19 +52,19 @@ const QuotationRequestDetailsFormGeneralView = props => {
                 <ViewText
                     label={'Organisatie/Coach'}
                     value={organisationOrCoach && organisationOrCoach.fullName}
-                    link={organisationOrCoach ? 'contact/' + organisationOrCoach.id : ''}
+                    link={organisationOrCoach ? '/contact/' + organisationOrCoach.id : ''}
                 />
                 <ViewText
                     label={'Verzoek voor bewoner'}
                     value={opportunity.intake && opportunity.intake.contact.fullName}
-                    link={'contact/' + opportunity.intake.contact.id}
+                    link={'/contact/' + opportunity.intake.contact.id}
                 />
             </div>
             <div className="row">
                 <ViewText
                     label={'Projectleider'}
                     value={projectManager && projectManager.fullName}
-                    link={projectManager ? 'contact/' + projectManager.id : ''}
+                    link={projectManager ? '/contact/' + projectManager.id : ''}
                 />
                 <ViewText label={'Adres'} value={opportunity.intake && opportunity.intake.fullAddress} />
             </div>
@@ -68,8 +72,9 @@ const QuotationRequestDetailsFormGeneralView = props => {
                 <ViewText
                     label={'Externe Partij'}
                     value={externalParty && externalParty.fullName}
-                    link={externalParty ? 'contact/' + externalParty.id : ''}
+                    link={externalParty ? '/contact/' + externalParty.id : ''}
                 />
+                <ViewText label={'Kansnummer'} value={opportunity.number} />
             </div>
             {organisationOrCoach && organisationOrCoach.typeId === 'organisation' && (
                 <div className="row">
@@ -80,7 +85,7 @@ const QuotationRequestDetailsFormGeneralView = props => {
                         }
                         link={
                             organisationOrCoach.contactPerson
-                                ? 'contact/' + organisationOrCoach.contactPerson.contact.id
+                                ? '/contact/' + organisationOrCoach.contactPerson.contact.id
                                 : ''
                         }
                     />
@@ -122,7 +127,7 @@ const QuotationRequestDetailsFormGeneralView = props => {
                 </div>
             </div>
 
-            {opportunityAction.codeRef === 'visit' ? (
+            {opportunityAction.codeRef === 'visit' || opportunityAction.codeRef === 'redirection' ? (
                 <>
                     <div className="row">
                         <ViewText
@@ -145,25 +150,33 @@ const QuotationRequestDetailsFormGeneralView = props => {
                 </>
             ) : null}
 
-            <div className="row">
-                <ViewText label={'Datum afspraak'} value={datePlanned ? moment(datePlanned).format('L') : ''} />
-                {datePlanned ? (
-                    <ViewText
-                        label={'Tijd afspraak'}
-                        value={timePlannedFormated != '00:00' ? timePlannedFormated : 'Onbekend'}
-                    />
-                ) : null}
-            </div>
-
-            <div className="row">
-                <ViewText label={'Datum opname'} value={dateRecorded ? moment(dateRecorded).format('L') : ''} />
-                {dateRecorded ? (
-                    <ViewText
-                        label={'Tijd opname'}
-                        value={timeRecordedFormated != '00:00' ? timeRecordedFormated : 'Onbekend'}
-                    />
-                ) : null}
-            </div>
+            {opportunityAction.codeRef === 'visit' ||
+            opportunityAction.codeRef === 'quotation-request' ||
+            opportunityAction.codeRef === 'subsidy-request' ? (
+                <>
+                    <div className="row">
+                        <ViewText label={'Datum afspraak'} value={datePlanned ? moment(datePlanned).format('L') : ''} />
+                        {datePlanned ? (
+                            <ViewText
+                                label={'Tijd afspraak'}
+                                value={timePlannedFormated != '00:00' ? timePlannedFormated : 'Onbekend'}
+                            />
+                        ) : null}
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Afspraak afgerond'}
+                            value={dateRecorded ? moment(dateRecorded).format('L') : ''}
+                        />
+                        {dateRecorded ? (
+                            <ViewText
+                                label={'Tijd opname'}
+                                value={timeRecordedFormated != '00:00' ? timeRecordedFormated : 'Onbekend'}
+                            />
+                        ) : null}
+                    </div>
+                </>
+            ) : null}
 
             {opportunityAction.codeRef === 'quotation-request' || opportunityAction.codeRef === 'subsidy-request' ? (
                 <>
@@ -184,12 +197,14 @@ const QuotationRequestDetailsFormGeneralView = props => {
                             label={'Datum akkoord bewoner'}
                             value={dateApprovedClient ? moment(dateApprovedClient).format('L ') : ''}
                         />
+                        <ViewText label={'Status akkoord bewoner'} value={statusApprovedClient} />
                     </div>
                     <div className="row">
                         <ViewText
                             label={'Datum akkoord projectleider'}
                             value={dateApprovedProjectManager ? moment(dateApprovedProjectManager).format('L') : ''}
                         />
+                        <ViewText label={'Status akkoord projectleider'} value={statusApprovedProjectManager} />
                     </div>
                 </>
             ) : null}
@@ -200,6 +215,7 @@ const QuotationRequestDetailsFormGeneralView = props => {
                             label={'Datum akkoord toekenning'}
                             value={dateApprovedExternal ? moment(dateApprovedExternal).format('L') : ''}
                         />
+                        <ViewText label={'Status akkoord toekenning'} value={statusApprovedExternal} />
                     </div>
                     <div className="row">
                         <ViewText
@@ -209,25 +225,25 @@ const QuotationRequestDetailsFormGeneralView = props => {
                     </div>
                 </>
             ) : null}
+            {opportunityAction.codeRef === 'quotation-request' ||
+            opportunityAction.codeRef === 'subsidy-request' ||
+            opportunityAction.codeRef === 'redirection' ? (
+                <div className="row">
+                    <ViewText
+                        label={opportunityAction.codeRef === 'redirection' ? 'Datum afgehandeld' : 'Datum uitgevoerd'}
+                        value={dateExecuted ? moment(dateExecuted).format('L') : ''}
+                    />
+                </div>
+            ) : null}
             {opportunityAction.codeRef === 'quotation-request' || opportunityAction.codeRef === 'subsidy-request' ? (
-                <>
-                    <div className="row">
-                        <ViewText
-                            label={'Datum uitgevoerd'}
-                            value={dateExecuted ? moment(dateExecuted).format('L') : ''}
-                        />
-                    </div>
-                    <div className="row">
-                        <ViewText
-                            label={
-                                opportunityAction.codeRef === 'subsidy-request'
-                                    ? 'Budgetaanvraagbedrag'
-                                    : 'Offertebedrag'
-                            }
-                            value={quotationAmount ? quotationAmount : ''}
-                        />
-                    </div>
-                </>
+                <div className="row">
+                    <ViewText
+                        label={
+                            opportunityAction.codeRef === 'subsidy-request' ? 'Budgetaanvraagbedrag' : 'Offertebedrag'
+                        }
+                        value={quotationAmount ? quotationAmount : ''}
+                    />
+                </div>
             ) : null}
 
             {opportunityAction.codeRef === 'subsidy-request' ? (
@@ -249,6 +265,7 @@ const QuotationRequestDetailsFormGeneralView = props => {
                             label={'Datum akkoord vaststelling'}
                             value={dateApprovedDetermination && moment(dateApprovedDetermination).format('L')}
                         />
+                        <ViewText label={'Status akkoord vaststelling'} value={statusApprovedDetermination} />
                     </div>
                     <div className="row">
                         <ViewText
@@ -259,50 +276,58 @@ const QuotationRequestDetailsFormGeneralView = props => {
                 </>
             ) : null}
 
-            <div className="row">
-                <div className="col-sm-3">
-                    <label htmlFor="coachOrOrganisationNote" className="col-sm-12">
-                        Opmerkingen coach of organisatie
-                    </label>
+            {opportunityAction.codeRef === 'visit' ||
+            opportunityAction.codeRef === 'quotation-request' ||
+            opportunityAction.codeRef === 'subsidy-request' ? (
+                <div className="row">
+                    <div className="col-sm-3">
+                        <label htmlFor="coachOrOrganisationNote" className="col-sm-12">
+                            Opmerkingen coach of organisatie
+                        </label>
+                    </div>
+                    <div className="col-sm-9" id="coachOrOrganisationNote">
+                        {coachOrOrganisationNote}
+                    </div>
                 </div>
-                <div className="col-sm-9" id="coachOrOrganisationNote">
-                    {coachOrOrganisationNote}
-                </div>
-            </div>
+            ) : null}
 
             {opportunityAction.codeRef === 'quotation-request' || opportunityAction.codeRef === 'subsidy-request' ? (
-                <>
-                    <div className="row">
-                        <div className="col-sm-3">
-                            <label htmlFor="projectmanagerNote" className="col-sm-12">
-                                Opmerkingen projectleider
-                            </label>
-                        </div>
-                        <div className="col-sm-9" id="projectmanagerNote">
-                            {projectmanagerNote}
-                        </div>
+                <div className="row">
+                    <div className="col-sm-3">
+                        <label htmlFor="projectmanagerNote" className="col-sm-12">
+                            Opmerkingen projectleider
+                        </label>
                     </div>
-                    <div className="row">
-                        <div className="col-sm-3">
-                            <label htmlFor="externalpartyNote" className="col-sm-12">
-                                Opmerkingen externe partij
-                            </label>
-                        </div>
-                        <div className="col-sm-9" id="externalpartyNote">
-                            {externalpartyNote}
-                        </div>
+                    <div className="col-sm-9" id="projectmanagerNote">
+                        {projectmanagerNote}
                     </div>
-                    <div className="row">
-                        <div className="col-sm-3">
-                            <label htmlFor="clientNote" className="col-sm-12">
-                                Opmerkingen bewoner
-                            </label>
-                        </div>
-                        <div className="col-sm-9" id="clientNote">
-                            {clientNote}
-                        </div>
+                </div>
+            ) : null}
+            {opportunityAction.codeRef === 'quotation-request' ||
+            opportunityAction.codeRef === 'subsidy-request' ||
+            opportunityAction.codeRef === 'redirection' ? (
+                <div className="row">
+                    <div className="col-sm-3">
+                        <label htmlFor="externalpartyNote" className="col-sm-12">
+                            Opmerkingen externe partij
+                        </label>
                     </div>
-                </>
+                    <div className="col-sm-9" id="externalpartyNote">
+                        {externalpartyNote}
+                    </div>
+                </div>
+            ) : null}
+            {opportunityAction.codeRef === 'quotation-request' || opportunityAction.codeRef === 'subsidy-request' ? (
+                <div className="row">
+                    <div className="col-sm-3">
+                        <label htmlFor="clientNote" className="col-sm-12">
+                            Opmerkingen bewoner
+                        </label>
+                    </div>
+                    <div className="col-sm-9" id="clientNote">
+                        {clientNote}
+                    </div>
+                </div>
             ) : null}
         </div>
     );

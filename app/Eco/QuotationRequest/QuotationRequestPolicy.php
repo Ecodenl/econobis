@@ -9,7 +9,12 @@ class QuotationRequestPolicy
 {
     use HandlesAuthorization;
 
-        public function manage(User $user)
+    public function view(User $user)
+    {
+        return $user->hasPermissionTo('view_quotation_request', 'api');
+    }
+
+    public function manage(User $user)
     {
         return $user->hasPermissionTo('manage_quotation_request', 'api');
     }

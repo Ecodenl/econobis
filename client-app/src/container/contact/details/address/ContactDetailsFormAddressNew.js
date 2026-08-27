@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { setError } from '../../../../actions/general/ErrorActions';
 import AddressAPI from '../../../../api/contact/AddressAPI';
@@ -14,400 +14,327 @@ import InputToggle from '../../../../components/form/InputToggle';
 import InputDate from '../../../../components/form/InputDate';
 import SharedAreaAPI from '../../../../api/shared-area/SharedAreaAPI';
 
-class ContactDetailsFormAddressNew extends Component {
-    constructor(props) {
-        super(props);
+function ContactDetailsFormAddressNew({ toggleShowNew }) {
+    const dispatch = useDispatch();
 
-        const addressesNotOld = props.addresses.filter(address => address.typeId !== 'old');
-        const numberOfAddressesNotOld = addressesNotOld.length;
+    const addresses = useSelector(state => state.contactDetails.addresses);
+    const addressTypes = useSelector(state => state.systemData.addressTypes);
+    const countries = useSelector(state => state.systemData.countries);
+    const contactId = useSelector(state => state.contactDetails.id);
 
-        this.state = {
-            numberOfAddressesNotOld: numberOfAddressesNotOld,
-            address: {
-                contactId: this.props.id,
-                street: '',
-                number: '',
-                addition: '',
-                postalCode: '',
-                city: '',
-                areaName: '',
-                districtName: '',
-                typeId: 'visit',
-                endDate: '',
-                primary: numberOfAddressesNotOld == 0 ? true : false,
-                countryId: '',
-                eanElectricity: '',
-                eanGas: '',
-            },
-            errors: {
-                typeId: false,
-                endDate: false,
-                postalCode: false,
-                number: false,
-                countryId: false,
-                eanElectricity: false,
-                eanGas: false,
-            },
-        };
-    }
+    const numberOfAddressesNotOld = addresses.filter(address => address.typeId !== 'old').length;
 
-    handleInputLvbagChange = event => {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
+    const [address, setAddress] = useState({
+        contactId,
+        street: '',
+        number: '',
+        addition: '',
+        postalCode: '',
+        city: '',
+        areaName: '',
+        districtName: '',
+        typeId: 'visit',
+        endDate: '',
+        primary: numberOfAddressesNotOld === 0,
+        countryId: '',
+        eanElectricity: '',
+        eanGas: '',
+    });
 
-        this.setState({
-            ...this.state,
-            address: {
-                ...this.state.address,
-                [name]: value,
-            },
-        });
-        setTimeout(() => {
-            const { address } = this.state;
-            if (
-                !validator.isEmpty(address.postalCode + '') &&
-                validator.isPostalCode(address.postalCode, 'NL') &&
-                !validator.isEmpty(address.number + '') &&
-                validator.isEmpty(address.city + '') &&
-                validator.isEmpty(address.street + '')
-            ) {
-                AddressAPI.getLvbagAddress(address.postalCode, address.number).then(payload => {
-                    this.setState({
-                        ...this.state,
-                        address: {
-                            ...this.state.address,
-                            street: payload.street,
-                            city: payload.city,
-                        },
-                    });
-                });
+    const [errors, setErrors] = useState({
+        typeId: false,
+        endDate: false,
+        postalCode: false,
+        number: false,
+        countryId: false,
+        eanElectricity: false,
+        eanGas: false,
+    });
 
-                SharedAreaAPI.getSharedAreaDetails(address.postalCode, address.number).then(payload => {
-                    this.setState({
-                        ...this.state,
-                        address: {
-                            ...this.state.address,
-                            areaName: payload.areaName,
-                            districtName: payload.districtName,
-                        },
-                    });
-                });
-            }
-        }, 100);
-
-        setTimeout(() => {
-            const { address } = this.state;
-            if (
-                !validator.isEmpty(address.postalCode + '') &&
-                validator.isPostalCode(address.postalCode, 'NL') &&
-                !validator.isEmpty(address.number + '')
-            ) {
-                SharedAreaAPI.getSharedAreaDetails(address.postalCode, address.number).then(payload => {
-                    this.setState({
-                        ...this.state,
-                        address: {
-                            ...this.state.address,
-                            areaName: payload.areaName,
-                            districtName: payload.districtName,
-                        },
-                    });
-                });
-            }
-        }, 100);
+    const handleInputChange = event => {
+        const { name, value, type, checked } = event.target;
+        setAddress(prev => ({
+            ...prev,
+            [name]: type === 'checkbox' ? checked : value,
+        }));
     };
 
-    handleInputChange = event => {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
-
-        this.setState({
-            ...this.state,
-            address: {
-                ...this.state.address,
-                [name]: value,
-            },
-        });
+    const handleInputChangeDate = (value, name) => {
+        setAddress(prev => ({
+            ...prev,
+            [name]: value,
+        }));
     };
 
-    handleInputChangeDate = (value, name) => {
-        this.setState({
-            ...this.state,
-            address: {
-                ...this.state.address,
-                [name]: value,
-            },
-        });
-    };
+    // 🧠 Auto-aanvullen adres via Lvbag
+    useEffect(() => {
+        const { postalCode, number, street, city } = address;
 
-    handleSubmit = event => {
+        const shouldFetch =
+            !validator.isEmpty(postalCode + '') &&
+            validator.isPostalCode(postalCode, 'NL') &&
+            !validator.isEmpty(number + '') &&
+            validator.isEmpty(city + '') &&
+            validator.isEmpty(street + '');
+
+        if (shouldFetch) {
+            const timeoutId = setTimeout(() => {
+                AddressAPI.getLvbagAddress(postalCode, number).then(payload => {
+                    setAddress(prev => ({
+                        ...prev,
+                        street: payload.street,
+                        city: payload.city,
+                    }));
+                });
+            }, 100);
+            return () => clearTimeout(timeoutId);
+        }
+    }, [address.postalCode, address.number, address.street, address.city]);
+
+    // 🧠 Auto-aanvullen buurt/wijk
+    useEffect(() => {
+        const { postalCode, number } = address;
+
+        const shouldFetch =
+            !validator.isEmpty(postalCode + '') &&
+            validator.isPostalCode(postalCode, 'NL') &&
+            !validator.isEmpty(number + '');
+
+        if (shouldFetch) {
+            const timeoutId = setTimeout(() => {
+                SharedAreaAPI.getSharedAreaDetails(postalCode, number).then(payload => {
+                    setAddress(prev => ({
+                        ...prev,
+                        areaName: payload.areaName,
+                        districtName: payload.districtName,
+                    }));
+                });
+            }, 100);
+            return () => clearTimeout(timeoutId);
+        }
+    }, [address.postalCode, address.number]);
+
+    const handleSubmit = event => {
         event.preventDefault();
 
-        const { address } = this.state;
+        const updatedAddress = { ...address, postalCode: address.postalCode.toUpperCase() };
 
-        // Postalcode always to uppercase
-        address.postalCode = address.postalCode.toUpperCase();
-
-        let errors = {};
+        let newErrors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(address.postalCode + '')) {
-            errors.postalCode = true;
+        if (validator.isEmpty(updatedAddress.postalCode + '')) {
+            newErrors.postalCode = true;
             hasErrors = true;
         }
-        let countryId = address.countryId;
-        if (validator.isEmpty(address.countryId + '')) {
+
+        let countryId = updatedAddress.countryId;
+        if (validator.isEmpty(countryId + '')) {
             countryId = 'NL';
         }
 
         let postalCodeValid = true;
-        if (!validator.isEmpty(address.postalCode + '')) {
-            if (countryId == 'NL') {
-                postalCodeValid = validator.isPostalCode(address.postalCode, 'NL');
-            } else {
-                postalCodeValid = validator.isPostalCode(address.postalCode, 'any');
-            }
+        if (!validator.isEmpty(updatedAddress.postalCode + '')) {
+            postalCodeValid = validator.isPostalCode(updatedAddress.postalCode, countryId === 'NL' ? 'NL' : 'any');
             if (!postalCodeValid) {
-                errors.postalCode = true;
-                errors.countryId = true;
+                newErrors.postalCode = true;
+                newErrors.countryId = true;
                 hasErrors = true;
             }
         }
 
-        if (validator.isEmpty(address.number + '')) {
-            errors.number = true;
+        if (validator.isEmpty(updatedAddress.number + '')) {
+            newErrors.number = true;
             hasErrors = true;
         }
 
-        if (validator.isEmpty(address.typeId + '')) {
-            errors.typeId = true;
+        if (validator.isEmpty(updatedAddress.typeId + '')) {
+            newErrors.typeId = true;
             hasErrors = true;
         }
 
-        if (address.typeId === 'old' && (address.endDate === null || validator.isEmpty(address.endDate))) {
-            errors.endDate = true;
+        if (
+            updatedAddress.typeId === 'old' &&
+            (updatedAddress.endDate === null || validator.isEmpty(updatedAddress.endDate))
+        ) {
+            newErrors.endDate = true;
             hasErrors = true;
         }
 
-        if (address.typeId === 'old' && address.primary) {
-            errors.typeId = true;
+        if (updatedAddress.typeId === 'old' && updatedAddress.primary) {
+            newErrors.typeId = true;
             hasErrors = true;
         }
 
-        this.setState({ ...this.state, errors: errors });
+        setErrors(newErrors);
 
-        // If no errors send form
-        !hasErrors &&
-            AddressAPI.newAddress(address)
+        if (!hasErrors) {
+            AddressAPI.newAddress(updatedAddress)
                 .then(payload => {
-                    if (address.primary) {
-                        this.props.unsetPrimaryAddresses();
+                    if (updatedAddress.primary) {
+                        dispatch(unsetPrimaryAddresses());
                     }
-                    this.props.newAddress(payload.data.data);
-                    this.props.toggleShowNew();
+                    dispatch(newAddress(payload.data.data));
+                    toggleShowNew();
                 })
                 .catch(error => {
-                    this.props.setError(error.response.status, error.response.data.message);
+                    dispatch(setError(error.response.status, error.response.data.message));
                 });
+        }
     };
 
-    render() {
-        const {
-            street,
-            number,
-            addition,
-            postalCode,
-            city,
-            areaName,
-            districtName,
-            typeId,
-            endDate,
-            primary,
-            countryId,
-            eanElectricity,
-            eanGas,
-        } = this.state.address;
-        const { numberOfAddressesNotOld, errors } = this.state;
-        return (
-            <form className="form-horizontal" onSubmit={this.handleSubmit}>
-                <Panel className={'panel-grey'}>
-                    <PanelBody>
-                        <div className="row">
-                            <InputText
-                                label={'Postcode'}
-                                size={'col-sm-4'}
-                                name={'postalCode'}
-                                value={postalCode}
-                                onChangeAction={this.handleInputLvbagChange}
-                                required={'required'}
-                                error={errors.postalCode}
-                            />
-                            <div className="form-group col-sm-6">
-                                <label htmlFor={'number'} className={`col-sm-6 required`}>
-                                    {'Nummer'}
-                                </label>
-                                <div className={`col-sm-4`}>
-                                    <input
-                                        type={'number'}
-                                        className={`form-control input-sm ` + (errors.number ? 'has-error' : '')}
-                                        id={'number'}
-                                        name={'number'}
-                                        value={number}
-                                        onChange={this.handleInputLvbagChange}
-                                    />
-                                </div>
-                                <div className={`col-sm-2`}>
-                                    <input
-                                        type={'text'}
-                                        className={`form-control input-sm`}
-                                        id={'addition'}
-                                        name={'addition'}
-                                        value={addition}
-                                        onChange={this.handleInputChange}
-                                    />
-                                </div>
+    return (
+        <form className="form-horizontal" onSubmit={handleSubmit}>
+            <Panel className={'panel-grey'}>
+                <PanelBody>
+                    <div className="row">
+                        <InputText
+                            label={'Postcode'}
+                            size={'col-sm-4'}
+                            name={'postalCode'}
+                            value={address.postalCode}
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.postalCode}
+                        />
+                        <div className="form-group col-sm-6">
+                            <label htmlFor={'number'} className={`col-sm-6 required`}>
+                                {'Nummer'}
+                            </label>
+                            <div className={`col-sm-4`}>
+                                <input
+                                    type={'number'}
+                                    className={`form-control input-sm ${errors.number ? 'has-error' : ''}`}
+                                    id={'number'}
+                                    name={'number'}
+                                    value={address.number}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
+                            <div className={`col-sm-2`}>
+                                <input
+                                    type={'text'}
+                                    className="form-control input-sm"
+                                    id={'addition'}
+                                    name={'addition'}
+                                    value={address.addition}
+                                    onChange={handleInputChange}
+                                />
                             </div>
                         </div>
+                    </div>
 
-                        <div className="row">
-                            <InputText
-                                label={'Adres'}
-                                id={'adres'}
-                                size={'col-sm-6'}
-                                name={'street'}
-                                value={street}
-                                onChangeAction={this.handleInputChange}
-                            />
-                            <InputText
-                                label={'Plaats'}
-                                id={'plaats'}
-                                size={'col-sm-6'}
-                                name={'city'}
-                                value={city}
-                                onChangeAction={this.handleInputChange}
-                            />
-                        </div>
+                    <div className="row">
+                        <InputText
+                            label={'Adres'}
+                            id={'adres'}
+                            size={'col-sm-6'}
+                            name={'street'}
+                            value={address.street}
+                            onChangeAction={handleInputChange}
+                        />
+                        <InputText
+                            label={'Plaats'}
+                            id={'plaats'}
+                            size={'col-sm-6'}
+                            name={'city'}
+                            value={address.city}
+                            onChangeAction={handleInputChange}
+                        />
+                    </div>
 
-                        <div className="row">
-                            <InputSelect
-                                label={'Type'}
-                                id="type"
-                                size={'col-sm-6'}
-                                name={'typeId'}
-                                options={this.props.addressTypes}
-                                value={typeId}
-                                onChangeAction={this.handleInputChange}
-                                required={'required'}
-                                error={errors.typeId}
+                    <div className="row">
+                        <InputSelect
+                            label={'Type'}
+                            id="type"
+                            size={'col-sm-6'}
+                            name={'typeId'}
+                            options={addressTypes}
+                            value={address.typeId}
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.typeId}
+                        />
+                        {address.typeId === 'old' && (
+                            <InputDate
+                                label="Eind datum"
+                                name="endDate"
+                                value={address.endDate}
+                                onChangeAction={handleInputChangeDate}
+                                error={errors.endDate}
                             />
-                            {typeId === 'old' && (
-                                <InputDate
-                                    label="Eind datum"
-                                    name="endDate"
-                                    value={endDate}
-                                    onChangeAction={this.handleInputChangeDate}
-                                    error={errors.endDate}
-                                />
-                            )}
-                        </div>
-                        <div className="row">
-                            <InputText
-                                label={'Buurt'}
-                                id={'areaName'}
-                                size={'col-sm-6'}
-                                name={'areaName'}
-                                value={areaName}
-                                disabled={true}
-                            />
-                            <InputText
-                                label={'Wijk'}
-                                id={'districtName'}
-                                size={'col-sm-6'}
-                                name={'districtName'}
-                                value={districtName}
-                                disabled={true}
-                            />
-                        </div>
+                        )}
+                    </div>
 
-                        <div className="row">
-                            <InputSelect
-                                label={'Land'}
-                                id="countryId"
-                                size={'col-sm-6'}
-                                name={'countryId'}
-                                options={this.props.countries}
-                                value={countryId}
-                                onChangeAction={this.handleInputChange}
-                                error={errors.countryId}
-                            />
-                            <InputToggle
-                                label={'Primair adres'}
-                                name={'primary'}
-                                value={primary}
-                                onChangeAction={this.handleInputChange}
-                                disabled={numberOfAddressesNotOld == 0}
-                            />
-                        </div>
+                    <div className="row">
+                        <InputText
+                            label={'Buurt'}
+                            id={'areaName'}
+                            size={'col-sm-6'}
+                            name={'areaName'}
+                            value={address.areaName}
+                            disabled={true}
+                        />
+                        <InputText
+                            label={'Wijk'}
+                            id={'districtName'}
+                            size={'col-sm-6'}
+                            name={'districtName'}
+                            value={address.districtName}
+                            disabled={true}
+                        />
+                    </div>
 
-                        <div className="row">
-                            <InputText
-                                label={'EAN elektriciteit'}
-                                id={'eanElectricity'}
-                                name={'eanElectricity'}
-                                value={eanElectricity}
-                                onChangeAction={this.handleInputChange}
-                                error={errors.eanElectricity}
-                            />
-                            <InputText
-                                label={'EAN gas'}
-                                id={'eanGas'}
-                                name={'eanGas'}
-                                value={eanGas}
-                                onChangeAction={this.handleInputChange}
-                                error={errors.eanGas}
-                            />
-                        </div>
+                    <div className="row">
+                        <InputSelect
+                            label={'Land'}
+                            id="countryId"
+                            size={'col-sm-6'}
+                            name={'countryId'}
+                            options={countries}
+                            value={address.countryId}
+                            onChangeAction={handleInputChange}
+                            error={errors.countryId}
+                        />
+                        <InputToggle
+                            label={'Primair adres'}
+                            name={'primary'}
+                            value={address.primary}
+                            onChangeAction={handleInputChange}
+                            disabled={numberOfAddressesNotOld === 0}
+                        />
+                    </div>
 
-                        <div className="pull-right btn-group" role="group">
-                            <ButtonText
-                                buttonClassName={'btn-default'}
-                                buttonText={'Annuleren'}
-                                onClickAction={this.props.toggleShowNew}
-                            />
-                            <ButtonText
-                                buttonText={'Opslaan'}
-                                onClickAction={this.handleSubmit}
-                                type={'submit'}
-                                value={'Submit'}
-                            />
-                        </div>
-                    </PanelBody>
-                </Panel>
-            </form>
-        );
-    }
+                    <div className="row">
+                        <InputText
+                            label={'EAN elektriciteit'}
+                            id={'eanElectricity'}
+                            name={'eanElectricity'}
+                            value={address.eanElectricity}
+                            onChangeAction={handleInputChange}
+                            error={errors.eanElectricity}
+                        />
+                        <InputText
+                            label={'EAN gas'}
+                            id={'eanGas'}
+                            name={'eanGas'}
+                            value={address.eanGas}
+                            onChangeAction={handleInputChange}
+                            error={errors.eanGas}
+                        />
+                    </div>
+
+                    <div className="pull-right btn-group" role="group">
+                        <ButtonText
+                            buttonClassName={'btn-default'}
+                            buttonText={'Annuleren'}
+                            onClickAction={toggleShowNew}
+                        />
+                        <ButtonText buttonText={'Opslaan'} type={'submit'} />
+                    </div>
+                </PanelBody>
+            </Panel>
+        </form>
+    );
 }
 
-const mapStateToProps = state => {
-    return {
-        addresses: state.contactDetails.addresses,
-        addressTypes: state.systemData.addressTypes,
-        countries: state.systemData.countries,
-        id: state.contactDetails.id,
-    };
-};
-
-const mapDispatchToProps = dispatch => ({
-    newAddress: id => {
-        dispatch(newAddress(id));
-    },
-    unsetPrimaryAddresses: () => {
-        dispatch(unsetPrimaryAddresses());
-    },
-    setError: (http_code, message) => {
-        dispatch(setError(http_code, message));
-    },
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsFormAddressNew);
+export default ContactDetailsFormAddressNew;

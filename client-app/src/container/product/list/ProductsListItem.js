@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
+
+// Functionele wrapper voor de class component
+const ProductsListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <ProductsListItem {...props} navigate={navigate} />;
+};
 
 class ProductsListItem extends Component {
     constructor(props) {
@@ -31,7 +37,7 @@ class ProductsListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/product/${id}`);
+        this.props.navigate(`/product/${id}`);
     }
 
     render() {
@@ -110,4 +116,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(ProductsListItem);
+export default connect(mapStateToProps, null)(ProductsListItemWrapper);

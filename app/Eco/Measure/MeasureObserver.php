@@ -18,7 +18,7 @@ class MeasureObserver
     {
         // number kolom willen we NOT NULL houden, deze wordt meteen na opslaan bepaald op basis van het ID
         // Daarom tijdelijke waarde erin zetten zodat query niet onderuit gaat.
-        $measure->number = 'temp';
+//        $measure->number = 'temp';
 
         $userId = Auth::id();
         $measure->created_by_id = $userId;
@@ -27,8 +27,8 @@ class MeasureObserver
 
     public function created(Measure $measure)
     {
-        $measure->number = 'M' . Carbon::now()->year . '-' .$measure->id;
-        $measure->save();
+//        $measure->number = 'M' . Carbon::now()->year . '-' .$measure->id;
+//        $measure->save();
     }
 
     public function updating(Measure $measure)

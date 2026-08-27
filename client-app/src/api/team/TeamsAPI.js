@@ -1,17 +1,18 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_TEAM = `${URL_API}/api/team`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchTeams: () => {
+        const URL_TEAM = `${getApiUrl()}/api/team`;
         const requestUrl = `${URL_TEAM}/grid`;
 
-        return axiosInstance.get(requestUrl);
+        return getAxiosInstance().get(requestUrl);
     },
 
     deleteTeam: id => {
+        const URL_TEAM = `${getApiUrl()}/api/team`;
         const requestUrl = `${URL_TEAM}/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 };

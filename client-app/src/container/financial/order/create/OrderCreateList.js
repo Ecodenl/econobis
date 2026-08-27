@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
 import SideNav, { Nav, NavText } from 'react-sidenav';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 class OrderCreateList extends Component {
     constructor(props) {

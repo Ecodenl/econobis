@@ -201,15 +201,59 @@ export default function(state = {}, action) {
                 ),
             };
 
-        case 'DELETE_ADDRESS_ENERGY_SUPPLIER':
+        case 'DELETE_ADDRESS_ENERGY_SUPPLIER_SUCCESS':
+            return {
+                ...state,
+                addresses: state.addresses.map(address => ({
+                    ...address,
+                    addressEnergySuppliers: address.addressEnergySuppliers.filter(
+                        addressEnergySupplier => addressEnergySupplier.id !== action.id
+                    ),
+                })),
+            };
+
+        case 'NEW_ADDRESS_DONGLE':
+            return {
+                ...state,
+                addresses: state.addresses.map(address =>
+                    address.id === action.addressDongle.addressId
+                        ? {
+                              ...address,
+                              addressDongles: [
+                                  action.addressDongle, // Nieuwe entry eerst
+                                  ...(address.addressDongles || []), // Bestaande array daarna
+                              ],
+                          }
+                        : address
+                ),
+            };
+
+        case 'UPDATE_ADDRESS_DONGLE':
+            return {
+                ...state,
+                addresses: state.addresses.map(address =>
+                    address.id === action.addressDongle.addressId
+                        ? {
+                              ...address,
+                              addressDongles: address.addressDongles.map(addressDongle =>
+                                  addressDongle.id === action.addressDongle.id
+                                      ? {
+                                            ...action.addressDongle,
+                                        }
+                                      : addressDongle
+                              ),
+                          }
+                        : address
+                ),
+            };
+
+        case 'DELETE_ADDRESS_DONGLE':
             return {
                 ...state,
                 addresses: state.addresses.map(address => {
                     return {
                         ...address,
-                        addressEnergySuppliers: address.addressEnergySuppliers.filter(
-                            addressEnergySupplier => addressEnergySupplier.id !== action.id
-                        ),
+                        addressDongles: address.addressDongles.filter(addressDongle => addressDongle.id !== action.id),
                     };
                 }),
             };

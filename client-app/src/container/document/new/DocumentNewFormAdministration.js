@@ -15,7 +15,9 @@ const DocumentNewFormAdministration = ({
     errorMessage,
     handleSubmit,
     handleInputChange,
+    handleTextChange,
     handleDocumentGroupChange,
+    handleDocumentTemplateChange,
     onDropAccepted,
     onDropRejected,
 }) => {
@@ -37,8 +39,10 @@ const DocumentNewFormAdministration = ({
                             errors={errors}
                             errorMessage={errorMessage}
                             handleInputChange={handleInputChange}
+                            handleTextChange={handleTextChange}
                             templates={templates}
                             handleDocumentGroupChange={handleDocumentGroupChange}
+                            handleDocumentTemplateChange={handleDocumentTemplateChange}
                         />
                     ) : (
                         <DocumentNewFormUpload

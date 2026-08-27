@@ -58,6 +58,20 @@ class ContactsList extends Component {
     render() {
         const { data = [], meta = {} } = this.props.contacts;
 
+        let contactKeep = null;
+        let contactRemove = null;
+        let countSelectedMerge = 0;
+        if (this.props.showCheckboxListMerge) {
+            const dataSorted = data
+                .filter(contact => contact.checked)
+                .sort((a, b) => {
+                    return a.checkedAt - b.checkedAt;
+                });
+            contactKeep = dataSorted[0] ? Number(dataSorted[0].id) : null;
+            contactRemove = dataSorted[1] ? Number(dataSorted[1].id) : null;
+            data.map(contact => contact.checked === true && countSelectedMerge++);
+        }
+
         let loadingText = '';
         let loading = true;
 
@@ -78,12 +92,16 @@ class ContactsList extends Component {
                         <DataTableHead>
                             <ContactsListHead
                                 showCheckbox={this.props.showCheckboxList}
+                                showCheckboxMerge={this.props.showCheckboxListMerge}
                                 fetchContactsData={() => this.props.fetchContactsData()}
+                                dataControleType={this.props.dataControleType}
                             />
                             <ContactsListFilter
                                 showCheckbox={this.props.showCheckboxList}
+                                showCheckboxMerge={this.props.showCheckboxListMerge}
                                 selectAllCheckboxes={() => this.props.selectAllCheckboxes()}
                                 onSubmitFilter={this.props.onSubmitFilter}
+                                dataControleType={this.props.dataControleType}
                             />
                         </DataTableHead>
                         <DataTableBody>
@@ -98,8 +116,17 @@ class ContactsList extends Component {
                                             key={contact.id}
                                             {...contact}
                                             showCheckbox={this.props.showCheckboxList}
+                                            showCheckboxMerge={this.props.showCheckboxListMerge}
                                             checkedAllCheckboxes={this.props.checkedAllCheckboxes}
+                                            dataControleType={this.props.dataControleType}
                                             showDeleteItemModal={this.showDeleteItemModal}
+                                            keepSelected={contact.id === contactKeep}
+                                            removeSelected={contact.id === contactRemove}
+                                            blockSelecting={
+                                                contact.id !== contactKeep &&
+                                                contact.id !== contactRemove &&
+                                                countSelectedMerge === 2
+                                            }
                                         />
                                     );
                                 })

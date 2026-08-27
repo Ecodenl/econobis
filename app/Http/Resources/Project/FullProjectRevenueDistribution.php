@@ -4,8 +4,6 @@ namespace App\Http\Resources\Project;
 
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
-use App\Http\Resources\GenericResource;
-use App\Http\Resources\ParticipantProject\FullParticipantProject;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class FullProjectRevenueDistribution extends JsonResource

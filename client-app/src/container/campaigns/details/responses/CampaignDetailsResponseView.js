@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Icon from 'react-icons-kit';
 import { trash } from 'react-icons-kit/fa/trash';
@@ -15,13 +15,15 @@ const CampaignDetailsResponseView = ({
     showActionButtons,
     toggleDelete,
 }) => {
+    const navigate = useNavigate();
+
     return (
         <div
             className={`row border ${highlightLine}`}
             onMouseEnter={() => onLineEnter()}
             onMouseLeave={() => onLineLeave()}
         >
-            <div onClick={() => hashHistory.push(`/contact/${contact.id}`)}>
+            <div onClick={() => navigate(`/contact/${contact.id}`)}>
                 <div className="col-sm-1">{contact?.number || ''}</div>
                 <div className="col-sm-1">{contact?.type?.name || ''}</div>
                 <div className="col-sm-2">{contact?.fullName || ''}</div>

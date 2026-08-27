@@ -7,6 +7,13 @@ import OrderDetailsForm from './OrderDetailsForm';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import OrderDetailsHarmonica from './OrderDetailsHarmonica';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const OrderDetailsAppWrapper = props => {
+    const params = useParams();
+    return <OrderDetailsApp {...props} params={params} />;
+};
 
 class OrderDetailsApp extends Component {
     constructor(props) {
@@ -55,4 +62,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrderDetailsApp);
+export default connect(mapStateToProps, mapDispatchToProps)(OrderDetailsAppWrapper);

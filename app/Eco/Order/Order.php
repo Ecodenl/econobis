@@ -217,6 +217,12 @@ class Order extends Model
         if ($this->invoices()->where('status_id', 'is-resending')->exists()) {
             return false;
         }
+        if ($this->invoices()->where('status_id', 'is-exporting')->exists()) {
+            return false;
+        }
+        if ($this->invoices()->where('status_id', 'error-exporting')->exists()) {
+            return false;
+        }
 
         if(!$this->date_next_invoice){
             return false;
@@ -226,7 +232,7 @@ class Order extends Model
     }
     
     //Adds the collection frequency to a carbon date
-    public function addDurationToDate($date){
+    public function addDurationToDate(\Carbon\Carbon $date){
         switch ($this->collection_frequency_id) {
             case 'once':
                 return $date;
@@ -238,7 +244,7 @@ class Order extends Model
                 return $date->addQuarter();
                 break;
             case 'half-year':
-                return $date->addMonth(6);
+                return $date->addMonths(6);
                 break;
             case 'yearly':
                 return $date->addYear();

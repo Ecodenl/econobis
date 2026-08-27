@@ -32,8 +32,8 @@ function HousingFileListFilter({ filter, handleChangeFilter }) {
                 <input
                     type="text"
                     className="form-control input-sm"
-                    value={filter.value}
-                    onChange={e => handleChangeFilter('value', e.target.value)}
+                    value={filter.messageText}
+                    onChange={e => handleChangeFilter('messageText', e.target.value)}
                 />
             </th>
         </tr>

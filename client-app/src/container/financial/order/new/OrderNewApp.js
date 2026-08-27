@@ -4,6 +4,13 @@ import OrderNewForm from './OrderNewForm';
 import OrderNewToolbar from './OrderNewToolbar';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const OrderNewAppWrapper = props => {
+    const params = useParams();
+    return <OrderNewApp {...props} params={params} />;
+};
 
 class OrderNewApp extends Component {
     constructor(props) {
@@ -22,7 +29,11 @@ class OrderNewApp extends Component {
                     </div>
 
                     <div className="col-md-12 margin-10-top">
-                        <OrderNewForm contactId={this.props.params.contactId} />
+                        <OrderNewForm
+                            contactId={this.props.params.contactId}
+                            participationId={this.props.params.participationId}
+                            administrationId={this.props.params.administrationId}
+                        />
                     </div>
                 </div>
                 <div className="col-md-3" />
@@ -31,4 +42,4 @@ class OrderNewApp extends Component {
     }
 }
 
-export default OrderNewApp;
+export default OrderNewAppWrapper;

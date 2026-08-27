@@ -26,8 +26,8 @@ class Filter extends RequestFilter
         'subject',
         'statusId',
         'responsibleName',
-        'me',
         'sentByUser',
+//        'me', // Eigen e-mail gaat niet meer vanuit oude mail, eigen e-mail gaat nu naar nieuwe splitview
     ];
 
     protected $mapping = [
@@ -93,25 +93,26 @@ class Filter extends RequestFilter
         return false;
     }
 
-    protected function applyMeFilter($query, $type, $data)
-    {
-        $userId = Auth::id();
-
-        $user = User::find($userId);
-
-        $teamIds = [];
-
-        foreach($user->teams as $team){
-            array_push($teamIds, $team->id);
-        }
-
-        $query->where(function($query) use ($userId, $teamIds) {
-            $query->where('emails.responsible_user_id', $userId);
-            $query->orWhereIn('emails.responsible_team_id', $teamIds);
-        });
-
-        return false;
-    }
+    // Eigen e-mail gaat niet meer vanuit oude mail, eigen e-mail gaat nu naar nieuwe splitview
+//    protected function applyMeFilter($query, $type, $data)
+//    {
+//        $userId = Auth::id();
+//
+//        $user = User::find($userId);
+//
+//        $teamIds = [];
+//
+//        foreach($user->teams as $team){
+//            array_push($teamIds, $team->id);
+//        }
+//
+//        $query->where(function($query) use ($userId, $teamIds) {
+//            $query->where('emails.responsible_user_id', $userId);
+//            $query->orWhereIn('emails.responsible_team_id', $teamIds);
+//        });
+//
+//        return false;
+//    }
 
     protected function applyUserFilter($query, $type, $data)
     {

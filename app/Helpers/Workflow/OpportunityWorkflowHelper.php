@@ -2,12 +2,17 @@
 
 namespace App\Helpers\Workflow;
 
+use App\Eco\Campaign\CampaignWorkflow;
+use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
+use App\Eco\Mailbox\Mailbox;
 use App\Eco\Opportunity\Opportunity;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
-use Illuminate\Support\Facades\Mail;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class OpportunityWorkflowHelper
 {
@@ -17,11 +22,11 @@ class OpportunityWorkflowHelper
         $this->opportunity = $opportunity;
         $this->opportunity_status = $opportunity->status;
         $this->contact = $opportunity->intake->contact;
-        $this->cooperativeName = PortalSettings::get('cooperativeName');
+        $this->cooperativeName = PortalSettings::first()?->cooperative_name;;
 
     }
 
-    public function processWorkflowEmail(){
+    public function processWorkflowEmail(CampaignWorkflow $campaignWorkflow){
         set_time_limit(0);
 
         if (!$this->opportunity_status) {
@@ -35,7 +40,11 @@ class OpportunityWorkflowHelper
             return false;
         }
 
-        $emailTemplate = EmailTemplate::find($this->opportunity_status->email_template_id_wf);
+        if (!$campaignWorkflow->is_active) {
+            return false;
+        }
+
+        $emailTemplate = EmailTemplate::find($campaignWorkflow->email_template_id_wf);
         if (!$emailTemplate) {
             return false;
         }
@@ -44,12 +53,23 @@ class OpportunityWorkflowHelper
             return false;
         }
 
-        $mail = Mail::to($this->contact->primaryEmailAddress);
-        $this->mailWorkflow($emailTemplate, $mail);
+        $campaign = $this->opportunity->intake->campaign;
+        if ($campaign->default_workflow_mailbox_id) {
+            $mailbox = Mailbox::find($campaign->default_workflow_mailbox_id);
+            if (!$mailbox) {
+                $mailbox = Mailbox::getDefault();
+            }
+        } else {
+            $mailbox = Mailbox::getDefault();
+        }
+
+        $mail = MailHelper::fromMailbox($mailbox)
+            ->to($this->contact->primaryEmailAddress?->email);
+        $this->mailWorkflow($emailTemplate, $mail, $mailbox);
         return true;
     }
 
-    public function mailWorkflow($emailTemplate, $mail)
+    public function mailWorkflow($emailTemplate, $mail, $mailbox)
     {
 //        $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Bericht van Econobis';
         $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Bericht van ' . $this->cooperativeName;
@@ -88,6 +108,29 @@ class OpportunityWorkflowHelper
 
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;
+
+        //save the mail to send
+        if($this->contact && $this->contact->primaryEmailAddress) {
+            $email = new Email();
+            $email->mailbox_id = $mailbox->id;
+            $email->from = $mailbox->email;
+            $email->to = [$this->contact->primaryEmailAddress->email];
+            $email->cc = [];
+            $email->bcc = [];
+            $email->subject = $subject;
+            $email->subject_for_filter = trim(mb_substr($email->subject ?? '', 0, 150));
+            $email->folder = 'sent';
+            if ($this->opportunity) {
+                $email->opportunity_id = $this->opportunity->id;
+            }
+            $email->date_sent = new Carbon();
+            $email->html_body = $htmlBody;
+            $email->sent_by_user_id = Auth::id();
+            $email->save();
+
+            $email->contacts()->attach([$this->contact->id]);
+        }
+        //end save the mail to send
 
         $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody, $emailTemplate->default_attachment_document_id));
     }

@@ -22,7 +22,7 @@ class HousingFileHousingStatusItem extends Component {
     }
 
     //todo wm: check of deze er niet uit kan?
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (!isEqual(this.state.housingFileHousingStatus, nextProps.housingFileHousingStatus)) {
             this.setState({
                 ...this.state,

@@ -13,6 +13,7 @@ use App\Helpers\Delete\Models\DeleteInvoice;
 use App\Helpers\Invoice\InvoiceHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Helpers\Sepa\SepaHelper;
+use App\Helpers\Twinfield\TwinfieldInvoicePaymentHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\RequestQueries\Invoice\Grid\RequestQuery;
@@ -21,6 +22,7 @@ use App\Http\Resources\Invoice\FullInvoiceProduct;
 use App\Http\Resources\Invoice\GridInvoice;
 use App\Http\Resources\Invoice\InvoicePeek;
 use App\Http\Resources\Invoice\SendInvoice;
+use App\Jobs\Invoice\CreateAllInvoicesPost;
 use App\Jobs\Invoice\SendAllInvoices;
 use App\Jobs\Invoice\SendInvoiceNotifications;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -159,6 +161,20 @@ class InvoiceController extends ApiController
         $invoiceCSVHelper = new InvoiceCSVHelper($invoices);
 
         $csv = $invoiceCSVHelper->downloadCSV();
+
+        return $csv;
+    }
+
+    public function csvWithProducts(RequestQuery $requestQuery)
+    {
+        $this->authorize('view', Invoice::class);
+
+        set_time_limit(0);
+        $invoices = $requestQuery->getQueryNoPagination()->get();
+
+        $invoiceCSVHelper = new InvoiceCSVHelper($invoices);
+
+        $csv = $invoiceCSVHelper->downloadCSVWithProducts();
 
         return $csv;
     }
@@ -324,8 +340,7 @@ class InvoiceController extends ApiController
 
         InvoiceHelper::sendNotification($invoice, Auth::id());
 
-        $filePath = Storage::disk('administrations')
-            ->path($invoice->document->filename);
+        $filePath = Storage::disk('administrations')->path($invoice->document->filename);
         header('Access-Control-Expose-Headers: X-Filename');
         header('X-Filename:' . $invoice->document->name);
 
@@ -354,9 +369,7 @@ class InvoiceController extends ApiController
             InvoiceHelper::sendNotification($invoice, Auth::id());
 
             if ($invoice->document) {
-                $filePath = Storage::disk('administrations')
-                    ->path($invoice->document->filename);
-
+                $filePath = Storage::disk('administrations')->path($invoice->document->filename);
                 $merger->addFile($filePath);
             }
         }
@@ -379,6 +392,19 @@ class InvoiceController extends ApiController
         $invoice->status_id = 'irrecoverable';
         $invoice->save();
         return $invoice;
+    }
+
+    public function syncOneInvoiceFromTwinfield(RequestInput $requestInput, Invoice $invoice){
+
+        $inputData = $requestInput
+            ->integer('administrationId')->onEmpty(null)->whenMissing(null)->next()
+            ->get();
+        $administration = Administration::find($inputData['administrationId']);
+        if(!$administration){
+            return "Administratie is niet bekend.";
+        }
+        $twinfieldInvoicePaymentHelper = new TwinfieldInvoicePaymentHelper($administration, null, $invoice->id);
+        return $twinfieldInvoicePaymentHelper->processTwinfieldInvoicePayment();
     }
 
     public function sendAll(Request $request)
@@ -440,7 +466,7 @@ class InvoiceController extends ApiController
         return $response;
     }
 
-    public function sendAllPost(Request $request)
+    public function sendAllPost(Administration $administration, Request $request)
     {
         set_time_limit(0);
         $this->authorize('manage', Invoice::class);
@@ -452,12 +478,7 @@ class InvoiceController extends ApiController
             return ($invoice->administration->uses_twinfield && $invoice->invoiceProducts()->whereNull('twinfield_ledger_code')->exists());
         });
 
-        $html
-            = '<style>
-.page-break {
-    page-break-after: always;
-}
-</style>';
+        $response = [];
 
         if ($validatedInvoices->count() > 0) {
             // Eerst hele zet in progress zetten
@@ -466,78 +487,20 @@ class InvoiceController extends ApiController
                     InvoiceHelper::invoiceInProgress($invoice);
                 }else{
                     abort(404, "Nota met ID " . $invoice->id . " heeft geen status Te verzenden");
-                }            }
-
-            $orderController = new OrderController;
-
-            foreach ($validatedInvoices as $k => $invoice) {
-
-                $invoice->date_sent = Carbon::today();
-                $invoice->date_collection = $request->input('dateCollection');
-                $invoice->save();
-
-                $emailTo = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
-                $contactPerson = $orderController->getContactInfoForOrder($invoice->order->contact)['contactPerson'];
-
-                if ($invoice->order->contact->full_name === $contactPerson) {
-                    $contactPerson = null;
                 }
+            }
 
-                $contactName = null;
-
-                if ($invoice->order->contact->type_id == 'person') {
-                    $prefix = $invoice->order->contact->person->last_name_prefix;
-                    $contactName = $prefix ? $invoice->order->contact->person->first_name . ' ' . $prefix . ' '
-                        . $invoice->order->contact->person->last_name
-                        : $invoice->order->contact->person->first_name . ' '
-                        . $invoice->order->contact->person->last_name;
-                } elseif ($invoice->order->contact->type_id == 'organisation') {
-                    $contactName = $invoice->order->contact->full_name;
-                }
-
-                if ($emailTo === 'Geen e-mail bekend') {
-                    $createdOk = InvoiceHelper::createInvoiceDocument($invoice);
-                    if ($createdOk) {
-                        InvoiceHelper::invoiceIsSending($invoice);
-                        InvoiceHelper::invoiceSend($invoice);
-
-                        $img = '';
-                        if ($invoice->administration->logo_filename) {
-                            $path = storage_path('app' . DIRECTORY_SEPARATOR
-                                . 'administrations' . DIRECTORY_SEPARATOR
-                                . $invoice->administration->logo_filename);
-                            $logo = file_get_contents($path);
-
-                            $src = 'data:' . mime_content_type($path)
-                                . ';charset=binary;base64,' . base64_encode($logo);
-                            $src = str_replace(" ", "", $src);
-                            $img = '<img src="' . $src . '" style="width:auto; height:156px;" alt="logo"/>';
-                        }
-
-                        if ($k !== 0) {
-                            $html .= '<div class="page-break"></div>';
-                        }
-                        $html .= view('invoices.generic')->with([
-                            'invoice' => $invoice,
-                            'contactPerson' => $contactPerson,
-                            'contactName' => $contactName
-                        ])
-                            ->with('logo', $img)->render();
-                    }
-                }
+            $dateCollection = $request->input('dateCollection');
+            $chunkNumber = 0;
+            $itemsPerChunk = 50;
+            $numberOfChunks = ceil($validatedInvoices->count() / $itemsPerChunk);
+            foreach ($validatedInvoices->chunk($itemsPerChunk) as $validatedInvoicesSet) {
+                $chunkNumber = $chunkNumber + 1;
+                CreateAllInvoicesPost::dispatch($chunkNumber, $numberOfChunks, $administration->id, $validatedInvoicesSet, Auth::id(), $dateCollection);
             }
         }
 
-        $name = 'Post-notas-' . Carbon::now()->format("Y-m-d-H-i-s") . '.pdf';
-
-        libxml_use_internal_errors(true);
-        $pdfOutput = PDF::loadHTML($html);
-        libxml_use_internal_errors(false);
-
-        header('X-Filename:' . $name);
-        header('Access-Control-Expose-Headers: X-Filename');
-
-        return $pdfOutput->output();
+        return $response;
     }
 
     public function download(Invoice $invoice)
@@ -545,8 +508,7 @@ class InvoiceController extends ApiController
         $this->authorize('manage', Invoice::class);
 
         if ($invoice->document) {
-            $filePath = Storage::disk('administrations')
-                ->path($invoice->document->filename);
+            $filePath = Storage::disk('administrations')->path($invoice->document->filename);
             header('Access-Control-Expose-Headers: X-Filename');
             header('X-Filename:' . $invoice->document->name);
         } else {

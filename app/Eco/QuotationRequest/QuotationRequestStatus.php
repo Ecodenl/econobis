@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class QuotationRequestStatus extends Model
 {
 
-    const STATUS_VISIT_CANCELLED_ID = 14;
+    const STATUS_VISIT_CANCELLED_CODE_REF = 'cancelled';
 
     protected $table = 'quotation_request_status';
 
@@ -25,11 +25,6 @@ class QuotationRequestStatus extends Model
     public function quotationRequests()
     {
         return $this->hasMany(QuotationRequest::class);
-    }
-
-    public function emailTemplateWorkflow()
-    {
-        return $this->belongsTo(EmailTemplate::class, 'email_template_id_wf');
     }
 
     public function opportunityAction()

@@ -30,21 +30,40 @@ class MailFetcher
     public function __construct(Mailbox $mailbox)
     {
         $this->mailbox = $mailbox;
-
-        $this->initStorageDir();
-        $this->initImapConnection();
     }
 
-    public function fetchNew()
+    public function checkMailbox(): void
     {
-        //        Log::info("Check fetchNew mailbox " . $this->mailbox->id);
-
-        if ($this->mailbox->start_fetch_mail != null) {
+        if ($this->mailbox->only_outgoing_mailbox) {
             return;
         }
 
-        $this->mailbox->start_fetch_mail = Carbon::now();
-        $this->mailbox->save();
+        if ($this->mailbox->incoming_server_type !== 'imap') {
+            return;
+        }
+
+        $this->ensureStorageDir();
+        $this->ensureImapConnection();
+    }
+
+    /**
+     * Fetches new emails and returns a structured response:
+     * - On success: ['status' => 'success', 'imapIdLastFetched' => int|null]
+     * - On error:   ['status' => 'error', 'errorMessage' => string]
+     */
+    public function fetchNew() :mixed
+    {
+        //        Log::info("Check fetchNew mailbox " . $this->mailbox->id);
+
+        if ($this->mailbox->only_outgoing_mailbox) {
+            return [
+                'status' => 'success',
+                'imapIdLastFetched' => $this->mailbox->imap_id_last_fetched ?? 0,
+            ];
+        }
+
+        $this->ensureStorageDir();
+        $this->ensureImapConnection();
 
         if ($this->mailbox->date_last_fetched) {
             $dateLastFetched = Carbon::parse($this->mailbox->date_last_fetched)->subDay()->format('Y-m-d');
@@ -64,21 +83,23 @@ class MailFetcher
             $mailIds = $this->imap->searchMailbox('SINCE "'.$dateLastFetched.'"');
 //            Log::info("Search since " . $dateLastFetched . ": " . implode(',', $mailIds));
         } catch(\PhpImap\Exceptions\ConnectionException $ex) {
-            Log::error("IMAP connection failed: " . $ex);
-//            echo "IMAP connection failed: " . $ex;
-            $this->mailbox->start_fetch_mail = null;
-            $this->mailbox->save();
-            die();
+            $errorMessage = "IMAP connection failed (mailbox: " . $this->mailbox->id . "): " . $ex->getMessage();
+//            Log::error($errorMessage);
+            return [
+                'status' => 'error',
+                'errorMessage' => $errorMessage,
+            ];
         } catch(\Exception $ex2) {
             try {
                 $mailIds = $this->imap->searchMailbox('ALL');
 //                Log::info("Search ALL : " . implode(',', $mailIds));
             } catch(\PhpImap\Exceptions\ConnectionException $ex3) {
-                Log::error("IMAP connection failed: " . $ex3);
-//                echo "IMAP connection failed: " . $ex3;
-                $this->mailbox->start_fetch_mail = null;
-                $this->mailbox->save();
-                die();
+                $errorMessage = "IMAP connection failed (mailbox: " . $this->mailbox->id . "): " . $ex3->getMessage();
+//                Log::error($errorMessage);
+                return [
+                    'status' => 'error',
+                    'errorMessage' => $errorMessage,
+                ];
             }
         }
 
@@ -109,27 +130,34 @@ class MailFetcher
 //            Log::info("Laatste imap Id achteraf: " . $imapIdLastFetched);
 
         }
-        $this->mailbox->date_last_fetched = Carbon::now();
-        $this->mailbox->imap_id_last_fetched = $imapIdLastFetched;
-        $this->mailbox->start_fetch_mail = null;
-        $this->mailbox->save();
-
+        return [
+            'status' => 'success',
+            'imapIdLastFetched' => $imapIdLastFetched,
+        ];
     }
 
-    public function getImap()
+    private function ensureStorageDir(): void
     {
-        return $this->imap;
+        $this->initStorageDir();
     }
 
+    private function ensureImapConnection(): void
+    {
+        if ($this->imap) {
+            return;
+        }
+
+        $this->initImapConnection();
+    }
     private function fetchEmail($mailId)
     {
         $emailData = $this->imap->getMail($mailId, $this->mailbox->email_mark_as_seen);
 //        dd($emailData);
 
-        // geen fromAddress, dan slaan we ook niets op.
+        // geen fromAddress, dan melding
         if(!$emailData->fromAddress){
-            Log::info("Email zonder from (mailbox: " . $this->mailbox->id . ", imap_id: " . $emailData->id . ").");
-            return;
+            Log::error("Email zonder from (mailbox: " . $this->mailbox->id . ", imap_id: " . $emailData->id . ").");
+//            return;
         }
 
         try {
@@ -151,10 +179,7 @@ class MailFetcher
                 $dateSent = Carbon::parse( $dateSentStrip );
             } catch(\Exception $ex2) {
                 Log::error("Failed to retrieve date sent (" . $emailData->date . ") from email (" . $emailData->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex2->getMessage());
-//                echo "Failed to retrieve date sent from email: " . $ex2->getMessage();
-                $this->mailbox->start_fetch_mail = null;
-                $this->mailbox->save();
-                die();
+                return;
             }
         }
 
@@ -169,7 +194,6 @@ class MailFetcher
             }
         } catch(\Exception $ex) {
             Log::error("Failed to retrieve textHtml or textPlain from email (" . $emailData->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage());
-//            echo "Failed to retrieve textHtml or textPlain from email (" . $emailData->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage();
             return;
         }
         $textHtml = $textHtml?: '';
@@ -186,6 +210,10 @@ class MailFetcher
         }
 
         $subject = $emailData->subject ?: '';
+        $currentEncodingTextSubject= mb_detect_encoding( $subject, 'UTF-8', true);
+        if(false === $currentEncodingTextSubject){
+            $subject = mb_convert_encoding($subject, 'UTF-8', mb_list_encodings());
+        }
 
         if(strlen($subject) > 250){
             $subject = substr($subject, 0, 249);
@@ -193,11 +221,12 @@ class MailFetcher
 
         $email = new Email([
             'mailbox_id' => $this->mailbox->id,
-            'from' => $emailData->fromAddress,
+            'from' => $emailData->fromAddress ?: '',
             'to' => array_keys($emailData->to),
             'cc' => array_keys($emailData->cc),
             'bcc' => array_keys($emailData->bcc),
             'subject' => $subject,
+            'subject_for_filter' => trim(mb_substr($subject ?? '', 0, 150)),
             'html_body' => $textHtml,
             'date_sent' => $dateSent,
             'folder' => 'inbox',
@@ -266,6 +295,7 @@ class MailFetcher
             }
         }
         catch(\Exception $e){
+            Log::info("Mailbox " . $this->mailbox->id . " op valid FALSE ivm error imap->checkMailbox");
             Log::error($e->getMessage());
             $mb->valid = false;
             $mb->login_tries = $mb->login_tries + 1;

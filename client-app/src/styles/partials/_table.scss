@@ -58,6 +58,13 @@ table th, table td {
   font-weight: bold !important;
 }
 
+.success-row {
+  background-color: $brand-secundairy !important;
+}
+.success-row-light {
+  background-color: #b6ffd3 !important;
+}
+
 .error-row {
   background-color: #fc554e !important;
 }
@@ -73,12 +80,18 @@ table th, table td {
 .in-progress-row {
   background-color: #fc8233 !important;
 }
+.in-progress-row-light {
+  background-color: #ffdcbe !important;
+}
 
 .warning-td {
   background-color: rgba(255,140,0,0.2) !important;
   font-weight: bold;
 }
 
+.custom-col-width-12-5 {
+  width: 12.5%;
+}
 .error-span {
   color: red;
 }

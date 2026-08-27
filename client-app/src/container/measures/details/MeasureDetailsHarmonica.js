@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import DocumentHarmonica from './harmonica/DocumentHarmonica';
+
+// Functionele wrapper voor de class component
+const MeasureDetailsHarmonicaWrapper = props => {
+    const navigate = useNavigate();
+    return <MeasureDetailsHarmonica {...props} navigate={navigate} />;
+};
 
 class MeasureDetailsHarmonica extends Component {
     constructor(props) {
@@ -29,7 +35,7 @@ class MeasureDetailsHarmonica extends Component {
     }
 
     newDocument(type) {
-        hashHistory.push(`/document/nieuw/${type}/maatregel/${this.props.measureDetails.id}`);
+        this.props.navigate(`/document/nieuw/${type}/maatregel/${this.props.measureDetails.id}`);
     }
 
     render() {
@@ -52,4 +58,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(MeasureDetailsHarmonica);
+export default connect(mapStateToProps)(MeasureDetailsHarmonicaWrapper);

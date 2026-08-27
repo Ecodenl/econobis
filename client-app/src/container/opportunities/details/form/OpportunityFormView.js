@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 
 import ViewText from '../../../../components/form/ViewText';
+import MoneyPresenter from '../../../../helpers/MoneyPresenter';
 
 const OpportunityFormView = props => {
     const {
@@ -15,6 +16,9 @@ const OpportunityFormView = props => {
         measureCategory,
         measures,
         amount,
+        opportunityCode,
+        belowWozLimit,
+        exceptionDebtRelief,
     } = props.opportunity;
 
     return (
@@ -23,19 +27,20 @@ const OpportunityFormView = props => {
                 <ViewText
                     label={'Contact'}
                     value={intake && intake.contact.fullName}
-                    link={intake ? 'contact/' + intake.contact.id : ''}
+                    link={intake ? '/contact/' + intake.contact.id : ''}
                 />
                 <ViewText label={'Adres'} value={intake && intake.fullAddress} />
             </div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Maatregel - categorie'} value={measureCategory && measureCategory.name} />
-                <ViewText label={'Campagne'} value={intake && intake.campaign ? intake.campaign.name : ''} />
+                <ViewText label={'Postcode'} value={intake && intake.address && intake.address.postalCode} />
             </div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={'Maatregel - specifiek'}
                     value={measures && measures.map(measure => measure.name).join(', ')}
                 />
+                <ViewText label={'Campagne'} value={intake && intake.campaign ? intake.campaign.name : ''} />
             </div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Status'} value={status && status.name} />
@@ -50,6 +55,12 @@ const OpportunityFormView = props => {
             </div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Aantal'} size={'col-sm-5'} value={amount} textToolTip={`aantal, m2 of Wattpiek`} />
+                <ViewText
+                    label="Kans code"
+                    size={'col-sm-5'}
+                    value={opportunityCode}
+                    textToolTip={`Deze waarde kan alleen gevuld worden via de api/webhook zie handleiding API voor details`}
+                />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
@@ -70,6 +81,30 @@ const OpportunityFormView = props => {
                     value={evaluationAgreedDate ? moment(evaluationAgreedDate).format('L') : ''}
                 />
             </div>
+
+            {intake.campaign.subsidyPossible != false ? (
+                <>
+                    <div className="row" onClick={props.switchToEdit}>
+                        <ViewText label={'Campagne WOZ grens'} value={MoneyPresenter(intake.campaign.wozLimit)} />
+                        <ViewText
+                            label={'WOZ waarde woningdossier'}
+                            value={
+                                intake?.address?.housingFile ? MoneyPresenter(intake.address.housingFile.wozValue) : ''
+                            }
+                        />
+                    </div>
+                    <div className="row" onClick={props.switchToEdit}>
+                        <ViewText
+                            label={'Onder WOZ grens'}
+                            value={belowWozLimit === 1 ? 'Ja' : belowWozLimit === 0 ? 'Nee' : 'Geen'}
+                        />
+                        <ViewText
+                            label={'Uitzondering schuldhulpsanering '}
+                            value={exceptionDebtRelief === 1 ? 'Ja' : exceptionDebtRelief === 0 ? 'Nee' : 'Geen'}
+                        />
+                    </div>
+                </>
+            ) : null}
         </div>
     );
 };

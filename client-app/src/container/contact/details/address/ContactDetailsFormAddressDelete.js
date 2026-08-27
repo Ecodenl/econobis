@@ -1,40 +1,41 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import Modal from '../../../../components/modal/Modal';
 import { deleteAddress } from '../../../../actions/contact/ContactDetailsActions';
 
-const ContactDetailsAddressDelete = props => {
+const ContactDetailsAddressDelete = ({ id, primary, numberOfAddresses, street, number, closeDeleteItemModal }) => {
+    const dispatch = useDispatch();
+
     const confirmAction = () => {
-        props.deleteAddress(props.id);
-        props.closeDeleteItemModal();
+        dispatch(deleteAddress(id));
+        closeDeleteItemModal();
     };
-    let allowDelete = false;
-    if (!props.primary || (props.numberOfAddresses && props.numberOfAddresses === 1)) {
-        allowDelete = true;
-    }
+
+    const allowDelete = !primary || (numberOfAddresses && numberOfAddresses === 1);
 
     return (
         <Modal
             buttonConfirmText="Verwijder"
             buttonClassName={'btn-danger'}
-            closeModal={props.closeDeleteItemModal}
-            confirmAction={() => confirmAction()}
+            closeModal={closeDeleteItemModal}
+            confirmAction={confirmAction}
             showConfirmAction={allowDelete}
             title="Verwijderen"
         >
             <p>
-                Verwijder adres: <strong> {`${props.street} ${props.number}`} </strong>
+                Verwijder adres: <strong>{`${street} ${number}`}</strong>
             </p>
 
-            {props.primary && props.numberOfAddresses > 1 && (
+            {primary && numberOfAddresses > 1 && (
                 <p className={'text-danger'}>
                     <strong>Fout!</strong> Dit is een primair adres en kan niet worden verwijderd.
                     <br />
                     Maak eerst een ander adres primair.
                 </p>
             )}
-            {props.primary && allowDelete && (
+
+            {primary && allowDelete && (
                 <p className={'text-danger'}>
                     <strong>Let op!</strong> Dit is een primair adres en enige adres bij contact.
                 </p>
@@ -43,10 +44,4 @@ const ContactDetailsAddressDelete = props => {
     );
 };
 
-const mapDispatchToProps = dispatch => ({
-    deleteAddress: id => {
-        dispatch(deleteAddress(id));
-    },
-});
-
-export default connect(null, mapDispatchToProps)(ContactDetailsAddressDelete);
+export default ContactDetailsAddressDelete;

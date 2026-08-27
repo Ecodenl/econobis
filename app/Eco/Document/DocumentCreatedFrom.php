@@ -9,6 +9,8 @@ class DocumentCreatedFrom extends Model
 {
     protected $table = 'document_created_froms';
 
+    public $timestamps = false;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -17,11 +19,11 @@ class DocumentCreatedFrom extends Model
     protected $guarded = [
         'id', 'code_ref'
     ];
-    protected $dates
-        = [
-            'created_at',
-            'updated_at',
-        ];
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
     public function documents()
     {

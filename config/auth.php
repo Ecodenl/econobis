@@ -1,6 +1,7 @@
 <?php
 
 use App\Eco\Portal\PortalUser;
+use App\Eco\User\User;
 
 return [
 
@@ -47,6 +48,10 @@ return [
             'driver' => 'passport',
             'provider' => 'users',
         ],
+        'portal-api' => [
+            'driver' => 'passport',
+            'provider' => 'portal',
+        ],
     ],
 
     /*
@@ -69,7 +74,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => \App\Eco\User\User::class,
+            'model' => User::class,
         ],
 
         'portal' => [

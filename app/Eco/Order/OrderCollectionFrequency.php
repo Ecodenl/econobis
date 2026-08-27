@@ -1,31 +1,27 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Beheerder
- * Date: 26-10-2017
- * Time: 11:55
- */
 
 namespace App\Eco\Order;
 
-use JosKolenberg\Enum\EnumWithIdAndName;
+use App\Support\Enum\HasLegacyEnumHelpers;
 
-class OrderCollectionFrequency extends EnumWithIdAndName
+enum OrderCollectionFrequency: string
 {
+    use HasLegacyEnumHelpers;
 
-    /**
-     * Seed the class with Enum instances
-     *
-     * @return array
-     */
-    protected static function seed()
+    case ONCE = 'once';
+    case MONTHLY = 'monthly';
+    case QUARTERLY = 'quarterly';
+    case HALF_YEAR = 'half-year';
+    case YEARLY = 'yearly';
+
+    public function getName(): string
     {
-        return [
-            new static('once', 'Eenmalig'),
-            new static('monthly', 'Maandelijks'),
-            new static('quarterly', 'Per kwartaal'),
-            new static('half-year', 'Per half jaar'),
-            new static('yearly', 'Jaarlijks'),
-        ];
+        return match ($this) {
+            self::ONCE => 'Eenmalig',
+            self::MONTHLY => 'Maandelijks',
+            self::QUARTERLY => 'Per kwartaal',
+            self::HALF_YEAR => 'Per half jaar',
+            self::YEARLY => 'Jaarlijks',
+        };
     }
 }

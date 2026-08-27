@@ -7,6 +7,7 @@ use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\Jobs\JobsLog;
 use App\Eco\User\User;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMail;
@@ -19,7 +20,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Mail;
+//use Mail;
 
 /**
  * @deprecated
@@ -85,7 +86,7 @@ class SendGroupEmailDeprecated implements ShouldQueue {
                 /**
                  * Setup
                  */
-                $mail = Mail::fromMailbox($mailbox)
+                $mail = MailHelper::fromMailbox($mailbox)
                     ->to($emailAddress->email);
                 $subjectWithContactVariables = 'Econobis';
 
@@ -220,7 +221,7 @@ class SendGroupEmailDeprecated implements ShouldQueue {
                  * Setup
                  */
                 $email = $this->email;
-                $mail = Mail::fromMailbox($email->mailbox)
+                $mail = MailHelper::fromMailbox($email->mailbox)
                     ->to($emailToEmailAddress);
                 $subjectWithVariables = 'Econobis';
 
@@ -276,8 +277,8 @@ class SendGroupEmailDeprecated implements ShouldQueue {
                  * Setup
                  */
                 $email = $this->email;
-                $mail = Mail::fromMailbox($email->mailbox)
-                    ->to($emailToContact->email);
+                $mail = MailHelper::to($emailToContact->email)
+                    ->fromMailbox($email->mailbox);
                 $subjectWithContactVariables = 'Econobis';
 
                 /**
@@ -292,14 +293,15 @@ class SendGroupEmailDeprecated implements ShouldQueue {
                     $subjectWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($subjectWithContactVariables, 'contacten_portal');
                     $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateCooperativeVariables($subjectWithContactVariables, 'cooperatie');
 
-                    if ($email->intake) {
-                        $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'intake', $email->intake);
-                    }
                     if ($email->task) {
                         $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'taak', $email->task);
                     }
-                    if ($email->quotationRequest) {
-                        $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'offerteverzoek', $email->quotationRequest);
+                    if ($email->intake) {
+                        $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'intake', $email->intake);
+                        if ($email->intake->campaign) {
+                            $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'campagne',
+                                $email->intake->campaign);
+                        }
                     }
                     if ($email->opportunity) {
                         $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'kans', $email->opportunity);
@@ -309,6 +311,21 @@ class SendGroupEmailDeprecated implements ShouldQueue {
                             if ($email->opportunity->intake->campaign) {
                                 $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'campagne',
                                     $email->opportunity->intake->campaign);
+                            }
+                        }
+                    }
+                    if ($email->quotationRequest) {
+                        $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'offerteverzoek', $email->quotationRequest);
+                        $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'kansactie', $email->quotationRequest);
+                        if ($email->quotationRequest->opportunity) {
+                            $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'kans', $email->quotationRequest->opportunity);
+                            if ($email->quotationRequest->opportunity->intake) {
+                                $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'intake',
+                                    $email->quotationRequest->opportunity->intake);
+                                if ($email->quotationRequest->opportunity->intake->campaign) {
+                                    $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'campagne',
+                                        $email->quotationRequest->opportunity->intake->campaign);
+                                }
                             }
                         }
                     }
@@ -329,14 +346,15 @@ class SendGroupEmailDeprecated implements ShouldQueue {
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBodyWithContactVariables, 'contacten_portal');
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateCooperativeVariables($htmlBodyWithContactVariables, 'cooperatie');
 
-                if ($email->intake) {
-                    $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'intake', $email->intake);
-                }
                 if ($email->task) {
                     $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'taak', $email->task);
                 }
-                if ($email->quotationRequest) {
-                    $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'offerteverzoek', $email->quotationRequest);
+                if ($email->intake) {
+                    $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'intake', $email->intake);
+                    if ($email->intake->campaign) {
+                        $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'campagne',
+                            $email->intake->campaign);
+                    }
                 }
                 if ($email->opportunity) {
                     $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'kans', $email->opportunity);
@@ -346,6 +364,21 @@ class SendGroupEmailDeprecated implements ShouldQueue {
                         if ($email->opportunity->intake->campaign) {
                             $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'campagne',
                                 $email->opportunity->intake->campaign);
+                        }
+                    }
+                }
+                if ($email->quotationRequest) {
+                    $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'offerteverzoek', $email->quotationRequest);
+                    $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'kansactie', $email->quotationRequest);
+                    if ($email->quotationRequest->opportunity) {
+                        $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'kans', $email->quotationRequest->opportunity);
+                        if ($email->quotationRequest->opportunity->intake) {
+                            $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'intake',
+                                $email->quotationRequest->opportunity->intake);
+                            if ($email->quotationRequest->opportunity->intake->campaign) {
+                                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'campagne',
+                                    $email->quotationRequest->opportunity->intake->campaign);
+                            }
                         }
                     }
                 }

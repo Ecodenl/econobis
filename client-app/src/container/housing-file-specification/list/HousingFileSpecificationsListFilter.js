@@ -5,6 +5,7 @@ import moment from 'moment';
 
 import {
     clearFilterHousingFileSpecifications,
+    setFilterHousingFileSpecificationTypeBrand,
     setFilterHousingFileSpecificationFullName,
     setFilterHousingFileSpecificationPostalCode,
     setFilterHousingFileSpecificationCity,
@@ -14,12 +15,22 @@ import {
     setFilterHousingFileSpecificationStatus,
     setFilterHousingFileSpecificationMeasureDateStart,
     setFilterHousingFileSpecificationMeasureDateEnd,
+    setFilterHousingFileSpecificationCreatedAtStart,
+    setFilterHousingFileSpecificationCreatedAtEnd,
 } from '../../../actions/housing-file-specification/HousingFileSpecificationsFiltersActions';
 import DataTableFilterDateStartEndTwoRows from '../../../components/dataTable/DataTableFilterDateStartEndTwoRows';
 
 const HousingFileSpecificationsListFilter = props => {
     const onAddressChange = e => {
         props.setFilterHousingFileSpecificationAddress(e.target.value);
+
+        setTimeout(() => {
+            props.onSubmitFilter();
+        }, 100);
+    };
+
+    const onTypeBrandChange = e => {
+        props.setFilterHousingFileSpecificationTypeBrand(e.target.value);
 
         setTimeout(() => {
             props.onSubmitFilter();
@@ -86,6 +97,21 @@ const HousingFileSpecificationsListFilter = props => {
             props.setFilterHousingFileSpecificationMeasureDateEnd('');
         } else {
             props.setFilterHousingFileSpecificationMeasureDateEnd(moment(selectedDay).format('Y-MM-DD'));
+        }
+    };
+
+    const onCreatedAtStartChange = selectedDay => {
+        if (selectedDay === undefined) {
+            props.setFilterHousingFileSpecificationCreatedAtStart('');
+        } else {
+            props.setFilterHousingFileSpecificationCreatedAtStart(moment(selectedDay).format('Y-MM-DD'));
+        }
+    };
+    const onCreatedAtEndChange = selectedDay => {
+        if (selectedDay === undefined) {
+            props.setFilterHousingFileSpecificationCreatedAtEnd('');
+        } else {
+            props.setFilterHousingFileSpecificationCreatedAtEnd(moment(selectedDay).format('Y-MM-DD'));
         }
     };
 
@@ -157,7 +183,20 @@ const HousingFileSpecificationsListFilter = props => {
                 onChangeActionStart={onMeasureDateStartChange}
                 onChangeActionEnd={onMeasureDateEndChange}
             />
-
+            <th>
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.typeBrand.data}
+                    onChange={onTypeBrandChange}
+                />
+            </th>
+            <DataTableFilterDateStartEndTwoRows
+                startDate={props.filters.createdAtStart.data && props.filters.createdAtStart.data}
+                endDate={props.filters.createdAtEnd.data && props.filters.createdAtEnd.data}
+                onChangeActionStart={onCreatedAtStartChange}
+                onChangeActionEnd={onCreatedAtEndChange}
+            />
             <th />
         </tr>
     );
@@ -172,6 +211,7 @@ const mapDispatchToProps = dispatch => {
     return bindActionCreators(
         {
             clearFilterHousingFileSpecifications,
+            setFilterHousingFileSpecificationTypeBrand,
             setFilterHousingFileSpecificationFullName,
             setFilterHousingFileSpecificationPostalCode,
             setFilterHousingFileSpecificationCity,
@@ -181,6 +221,8 @@ const mapDispatchToProps = dispatch => {
             setFilterHousingFileSpecificationStatus,
             setFilterHousingFileSpecificationMeasureDateStart,
             setFilterHousingFileSpecificationMeasureDateEnd,
+            setFilterHousingFileSpecificationCreatedAtStart,
+            setFilterHousingFileSpecificationCreatedAtEnd,
         },
         dispatch
     );

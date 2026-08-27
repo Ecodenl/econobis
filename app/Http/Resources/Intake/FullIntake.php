@@ -31,7 +31,7 @@ class FullIntake extends JsonResource
                 'fullAddress' => optional(optional($this->address)->present())->streetAndNumber(),
                 'campaign' => FullCampaign::make($this->whenLoaded('campaign')),
                 'status' => GenericResource::make($this->whenLoaded('status')),
-                'sources' => GenericResource::collection($this->whenLoaded('sources')),
+                'sources' => FullIntakeSource::collection($this->whenLoaded('sources')),
                 'reasons' => GenericResource::collection($this->whenLoaded('reasons')),
                 'note' => $this->note,
                 'measuresRequested' => GenericResource::collection($this->whenLoaded('measuresRequested')),

@@ -13,11 +13,13 @@ use App\Eco\Email\Email;
 use App\Eco\Jobs\JobsLog;
 use App\Helpers\Invoice\InvoiceHelper;
 use App\Http\Controllers\Api\Order\OrderController;
+use App\Eco\User\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class SendInvoiceNotifications implements ShouldQueue
@@ -48,6 +50,8 @@ class SendInvoiceNotifications implements ShouldQueue
 
     public function handle()
     {
+        Auth::setUser(User::find($this->userId));
+
         InvoiceHelper::sendNotification($this->invoice, $this->userId);
 
         $jobLog = new JobsLog();

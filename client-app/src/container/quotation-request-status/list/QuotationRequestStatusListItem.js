@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
+
+// Functionele wrapper voor de class component
+const QuotationRequestStatusListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <QuotationRequestStatusListItem {...props} navigate={navigate} />;
+};
 
 class QuotationRequestStatusListItem extends Component {
     constructor(props) {
@@ -30,12 +36,11 @@ class QuotationRequestStatusListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/offerte-verzoek-status/${id}`);
+        this.props.navigate(`/offerte-verzoek-status/${id}`);
     }
 
     render() {
-        const { id, name, usesWf, numberOfDaysToSendEmail, permissions } = this.props;
-
+        const { id, name, usesWf, sendEmailReminder, permissions, opportunityActionName } = this.props;
         return (
             <tr
                 className={this.state.highlightRow}
@@ -43,9 +48,11 @@ class QuotationRequestStatusListItem extends Component {
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
-                <td>{name}</td>
+                <td>
+                    {opportunityActionName} - {name}
+                </td>
                 <td>{usesWf ? 'Ja' : 'Nee'}</td>
-                <td>{usesWf ? (numberOfDaysToSendEmail === 0 ? 'Direct' : numberOfDaysToSendEmail) : ''}</td>
+                <td>{sendEmailReminder ? 'Ja' : 'Nee'}</td>
                 <td>
                     {this.state.showActionButtons && permissions.manageFinancial ? (
                         <a role="button" onClick={() => this.openItem(id)}>
@@ -66,4 +73,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(QuotationRequestStatusListItem);
+export default connect(mapStateToProps)(QuotationRequestStatusListItemWrapper);

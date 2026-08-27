@@ -8,6 +8,11 @@ import filterHelper from '../../../helpers/FilterHelper';
 import { setDocumentsPagination } from '../../../actions/document/DocumentsPaginationActions';
 import { clearFilterDocuments } from '../../../actions/document/DocumentFiltersActions';
 import { bindActionCreators } from 'redux';
+import { useParams } from 'react-router-dom';
+
+const DocumentsListAppWrapper = props => {
+    return <DocumentsListApp {...props} />;
+};
 
 class DocumentsListApp extends Component {
     constructor(props) {
@@ -99,4 +104,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentsListApp);
+export default connect(mapStateToProps, mapDispatchToProps)(DocumentsListAppWrapper);

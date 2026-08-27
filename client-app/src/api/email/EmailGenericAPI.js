@@ -1,60 +1,52 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_EMAIL = `${URL_API}/api/email-generic`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     update: (id, attributes) => {
-        return axiosInstance
-            .post(`${URL_EMAIL}/${id}`, attributes);
+        return getAxiosInstance().post(`${getApiUrl()}/api/email-generic/${id}`, attributes);
     },
 
     updateMultiple: (ids, attributes) => {
-        return axiosInstance
-            .post(`${URL_EMAIL}/update-multiple`, {
-                ids: ids,
-                ...attributes,
-            });
+        return getAxiosInstance().post(`${getApiUrl()}/api/email-generic/update-multiple`, {
+            ids: ids,
+            ...attributes,
+        });
     },
 
-    storeNew: (attributes) => {
-        return axiosInstance
-            .post(`${URL_EMAIL}`, attributes);
+    storeNew: attributes => {
+        return getAxiosInstance().post(`${getApiUrl()}/api/email-generic`, attributes);
     },
 
-    storeReply: (id) => {
-        return axiosInstance
-            .post(`${URL_EMAIL}/${id}/store-reply`);
+    storeReply: id => {
+        return getAxiosInstance().post(`${getApiUrl()}/api/email-generic/${id}/store-reply`);
     },
 
-    storeReplyAll: (id) => {
-        return axiosInstance
-            .post(`${URL_EMAIL}/${id}/store-reply-all`);
+    storeReplyAll: id => {
+        return getAxiosInstance().post(`${getApiUrl()}/api/email-generic/${id}/store-reply-all`);
     },
 
-    storeForward: (id) => {
-        return axiosInstance
-            .post(`${URL_EMAIL}/${id}/store-forward`);
+    storeForward: id => {
+        return getAxiosInstance().post(`${getApiUrl()}/api/email-generic/${id}/store-forward`);
     },
 
-    storeGroupMail: (id) => {
-        return axiosInstance
-            .post(`${URL_EMAIL}/store-group-mail/${id}`);
+    storeGroupMail: id => {
+        return getAxiosInstance().post(`${getApiUrl()}/api/email-generic/store-group-mail/${id}`);
     },
 
     deleteMultiple: emailIds => {
-        return axiosInstance.post(`${URL_EMAIL}/delete-multiple`, {
+        return getAxiosInstance().post(`${getApiUrl()}/api/email-generic/delete-multiple`, {
             ids: emailIds,
         });
     },
 
     createContact: id => {
-        return axiosInstance.post(`${URL_EMAIL}/${id}/create-contact`);
+        return getAxiosInstance().post(`${getApiUrl()}/api/email-generic/${id}/create-contact`);
     },
 
     getAmountOpen: () => {
-        const requestUrl = `${URL_EMAIL}/amount-open`;
+        const requestUrl = `${getApiUrl()}/api/email-generic/amount-open`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data);
     },

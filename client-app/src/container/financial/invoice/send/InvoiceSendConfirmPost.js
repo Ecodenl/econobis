@@ -2,11 +2,17 @@ import React, { Component } from 'react';
 
 import Modal from '../../../../components/modal/Modal';
 import InvoiceDetailsAPI from '../../../../api/invoice/InvoiceDetailsAPI';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import fileDownload from 'js-file-download';
 import InputDate from '../../../../components/form/InputDate';
 import validator from 'validator';
 import moment from 'moment/moment';
+
+// Functionele wrapper voor de class component
+const InvoiceSendConfirmPostWrapper = props => {
+    const navigate = useNavigate();
+    return <InvoiceSendConfirmPost {...props} navigate={navigate} />;
+};
 
 class InvoiceSendConfirmPost extends Component {
     constructor(props) {
@@ -48,41 +54,43 @@ class InvoiceSendConfirmPost extends Component {
                 this.setState({
                     loading: true,
                 });
-                InvoiceDetailsAPI.sendAllPost(this.props.invoiceIds, dateCollection).then(payload => {
-                    if (payload && payload.headers && payload.headers['x-filename']) {
-                        fileDownload(payload.data, payload.headers['x-filename']);
+                InvoiceDetailsAPI.sendAllPost(this.props.administrationId, this.props.invoiceIds, dateCollection).then(
+                    payload => {
+                        if (payload && payload.headers && payload.headers['x-filename']) {
+                            fileDownload(payload.data, payload.headers['x-filename']);
 
-                        InvoiceDetailsAPI.createSepaForInvoiceIds(this.props.invoiceIds).then(payload => {
-                            if (payload && payload.headers && payload.headers['x-filename']) {
-                                fileDownload(payload.data, payload.headers['x-filename']);
-                                hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
-                            } else {
-                                hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
-                            }
-                        });
-                    } else {
-                        hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
+                            InvoiceDetailsAPI.createSepaForInvoiceIds(this.props.invoiceIds).then(payload => {
+                                if (payload && payload.headers && payload.headers['x-filename']) {
+                                    fileDownload(payload.data, payload.headers['x-filename']);
+                                    this.props.navigate(`/financieel/${this.props.administrationId}/notas/verzonden`);
+                                } else {
+                                    this.props.navigate(`/financieel/${this.props.administrationId}/notas/verzonden`);
+                                }
+                            });
+                        } else {
+                            this.props.navigate(`/financieel/${this.props.administrationId}/notas/verzonden`);
+                        }
                     }
-                });
+                );
             }
         } else {
             this.setState({
                 loading: true,
             });
-            InvoiceDetailsAPI.sendAllPost(this.props.invoiceIds, null).then(payload => {
+            InvoiceDetailsAPI.sendAllPost(this.props.administrationId, this.props.invoiceIds, null).then(payload => {
                 if (payload && payload.headers && payload.headers['x-filename']) {
                     fileDownload(payload.data, payload.headers['x-filename']);
 
                     InvoiceDetailsAPI.createSepaForInvoiceIds(this.props.invoiceIds).then(payload => {
                         if (payload && payload.headers && payload.headers['x-filename']) {
                             fileDownload(payload.data, payload.headers['x-filename']);
-                            hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
+                            this.props.navigate(`/financieel/${this.props.administrationId}/notas/verzonden`);
                         } else {
-                            hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
+                            this.props.navigate(`/financieel/${this.props.administrationId}/notas/verzonden`);
                         }
                     });
                 } else {
-                    hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
+                    this.props.navigate(`/financieel/${this.props.administrationId}/notas/verzonden`);
                 }
             });
         }
@@ -102,8 +110,8 @@ class InvoiceSendConfirmPost extends Component {
             <Modal
                 closeModal={this.props.closeModal}
                 confirmAction={this.confirmAction}
-                title="Nota downloaden"
-                buttonConfirmText={'Downloaden'}
+                title="Nota's post aanmaken"
+                buttonConfirmText={'Aanmaken'}
                 loading={this.state.loading}
             >
                 {this.props.paymentType === 'incasso' && (
@@ -123,7 +131,8 @@ class InvoiceSendConfirmPost extends Component {
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
                         <span>
-                            Wilt u alle nota's definitief maken, downloaden en doorzetten naar status verzonden?
+                            Wilt u geselecteerde nota's definitief maken en doorzetten naar status verzonden? Gemaakte
+                            bestanden nota's voor post zijn naderhand te downloaden via administratie detail scherm.
                         </span>
                     </div>
                 </div>
@@ -132,4 +141,4 @@ class InvoiceSendConfirmPost extends Component {
     }
 }
 
-export default InvoiceSendConfirmPost;
+export default InvoiceSendConfirmPostWrapper;

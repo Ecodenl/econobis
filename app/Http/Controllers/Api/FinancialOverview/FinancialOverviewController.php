@@ -32,6 +32,7 @@ class FinancialOverviewController extends Controller
             ->integer('administrationId')->validate('exists:administrations,id')->alias('administration_id')->next()
             ->integer('year')->next()
             ->integer('documentTemplateFinancialOverviewId')->validate('exists:document_templates,id')->alias('document_template_financial_overview_id')->next()
+            ->integer('emailTemplateFinancialOverviewId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_financial_overview_id')->next()
             ->boolean('definitive')->onEmpty(false)->whenMissing(false)->next()
             ->string('statusId')->onEmpty('in-progress')->whenMissing('in-progress')->alias('status_id')->next()
             ->date('dateProcessed')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_processed')->next()
@@ -52,6 +53,7 @@ class FinancialOverviewController extends Controller
             ->integer('administrationId')->validate('exists:administrations,id')->alias('administration_id')->next()
             ->integer('year')->next()
             ->integer('documentTemplateFinancialOverviewId')->validate('exists:document_templates,id')->alias('document_template_financial_overview_id')->next()
+            ->integer('emailTemplateFinancialOverviewId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_financial_overview_id')->next()
             ->boolean('definitive')->onEmpty(false)->whenMissing(false)->next()
             ->string('statusId')->onEmpty('concept')->whenMissing('concept')->alias('status_id')->next()
             ->date('dateProcessed')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_processed')->next()
@@ -65,6 +67,8 @@ class FinancialOverviewController extends Controller
 
     public function destroy(FinancialOverview $financialOverview)
     {
+        set_time_limit(120);
+
         $this->authorize('manage', FinancialOverview::class);
 
         try {
@@ -88,6 +92,8 @@ class FinancialOverviewController extends Controller
 
     public function createProjectsForFinancialOverview(FinancialOverview $financialOverview)
     {
+        set_time_limit(600);
+
         $projects = $this->getNewProjectsForFinancialOverview($financialOverview);
         if(count($projects) == 0){
             $financialOverview->status_id = 'concept';

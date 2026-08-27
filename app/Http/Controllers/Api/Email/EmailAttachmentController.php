@@ -7,8 +7,8 @@ use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Contact\ContactWithAddressPeek;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class EmailAttachmentController extends Controller
@@ -16,6 +16,9 @@ class EmailAttachmentController extends Controller
     public function download(EmailAttachment $emailAttachment)
     {
         $this->authorize('manage', $emailAttachment->email);
+
+//        Log::info('test wim filepath mail_attachments');
+//        Log::info(Storage::disk('mail_attachments')->path($emailAttachment->filename));
 
         return Storage::disk('mail_attachments')->download($emailAttachment->filename, $emailAttachment->name);
 
@@ -36,6 +39,14 @@ class EmailAttachmentController extends Controller
 
 //        return response()->download($filePath, $emailAttachment->name);
     }
+
+    public function contactsFromEmail(EmailAttachment $emailAttachment)
+    {
+        $this->authorize('manage', $emailAttachment->email);
+
+        return ContactWithAddressPeek::collection($emailAttachment->email->contacts);
+    }
+
 
     public function addDocumentsAsAttachments(Email $email, Request $request)
     {

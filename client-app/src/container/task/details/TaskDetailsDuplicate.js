@@ -1,15 +1,17 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Modal from '../../../components/modal/Modal';
 import TaskDetailsAPI from '../../../api/task/TaskDetailsAPI';
 
 const TaskDetailsDuplicate = props => {
+    const navigate = useNavigate();
+
     const confirmAction = () => {
         TaskDetailsAPI.duplicateTask(props.id).then(payload => {
             const id = payload.data.data.id;
 
-            hashHistory.push(`/taak/${id}`);
+            navigate(`/taak/${id}`);
             props.closeModal();
         });
     };

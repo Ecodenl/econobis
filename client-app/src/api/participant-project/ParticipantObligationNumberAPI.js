@@ -1,12 +1,12 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_OBLIGATION_NUMBER = `${URL_API}/api/project/participant/obligation-number`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     newObligationNumber: obligationNumber => {
+        const URL_OBLIGATION_NUMBER = `${getApiUrl()}/api/project/participant/obligation-number`;
         const requestUrl = `${URL_OBLIGATION_NUMBER}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, obligationNumber)
             .then(function(response) {
                 return response.data.data;
@@ -17,9 +17,10 @@ export default {
     },
 
     updateObligationNumber: obligationNumber => {
+        const URL_OBLIGATION_NUMBER = `${getApiUrl()}/api/project/participant/obligation-number`;
         const requestUrl = `${URL_OBLIGATION_NUMBER}/${obligationNumber.id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, obligationNumber)
             .then(function(response) {
                 return response.data.data;
@@ -30,9 +31,10 @@ export default {
     },
 
     deleteObligationNumber: id => {
+        const URL_OBLIGATION_NUMBER = `${getApiUrl()}/api/project/participant/obligation-number`;
         const requestUrl = `${URL_OBLIGATION_NUMBER}/${id}/delete`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(function(response) {
                 return response.data.data;

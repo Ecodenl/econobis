@@ -1,12 +1,14 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
 function FreeFieldsListToolbar({ freeFieldsTotal, refreshFreeFieldsFields, permissions }) {
+    const navigate = useNavigate();
+
     const newFreeFieldsField = () => {
-        hashHistory.push(`/vrije-velden/nieuw`);
+        navigate(`/vrije-velden/nieuw`);
     };
 
     return (

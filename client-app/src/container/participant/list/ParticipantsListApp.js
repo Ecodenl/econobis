@@ -17,7 +17,7 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
 import DocumentTemplateAPI from '../../../api/document-template/DocumentTemplateAPI';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 import Modal from '../../../components/modal/Modal';
 import ButtonText from '../../../components/button/ButtonText';
@@ -33,6 +33,12 @@ import ProjectsAPI from '../../../api/project/ProjectsAPI';
 import ContactsAPI from '../../../api/contact/ContactsAPI';
 import InputToggle from '../../../components/form/InputToggle';
 
+// Functionele wrapper voor de class component
+const ParticipantsListAppWrapper = props => {
+    const navigate = useNavigate();
+    return <ParticipantsListApp {...props} navigate={navigate} />;
+};
+
 class ParticipantsListApp extends Component {
     constructor(props) {
         super(props);
@@ -44,7 +50,8 @@ class ParticipantsListApp extends Component {
             emailTemplateId: '',
             emailTemplateIdError: false,
             emailTemplates: [],
-            subject: [],
+            subject: '',
+            subjectError: false,
             documentGroup: '',
             checkedAll: false,
             showCheckboxList: false,
@@ -208,11 +215,12 @@ class ParticipantsListApp extends Component {
                 participantIds: [],
             });
         } else {
-            this.setState({
-                showCheckboxList: true,
-                participantIds: this.props.participantsProject.meta.participantIdsTotal,
-                checkedAll: true,
-            });
+            if (this.props.participantsProject && this.props.participantsProject.isLoading === false)
+                this.setState({
+                    showCheckboxList: true,
+                    participantIds: this.props.participantsProject.meta.participantIdsTotal,
+                    checkedAll: true,
+                });
         }
     };
 
@@ -289,6 +297,17 @@ class ParticipantsListApp extends Component {
             });
         }
 
+        if (validator.isEmpty(this.state.subject)) {
+            error = true;
+            this.setState({
+                subjectError: true,
+            });
+        } else {
+            this.setState({
+                subjectError: false,
+            });
+        }
+
         if (this.state.participantIds.length > 0 && !error) {
             this.props.previewParticipantReport({
                 templateId: this.state.templateId,
@@ -297,7 +316,7 @@ class ParticipantsListApp extends Component {
                 participantIds: this.state.participantIds,
                 showOnPortal: this.state.showOnPortal,
             });
-            hashHistory.push(`/project/preview-rapportage`);
+            this.props.navigate(`/project/preview-rapportage`);
         } else if (!error) {
             this.setState({
                 showModal: true,
@@ -307,34 +326,50 @@ class ParticipantsListApp extends Component {
         }
     };
 
-    getExcel = () => {
+    getExcel = async () => {
         this.props.blockUI();
 
-        const maxParticipants = 1000;
-        const amountFiles = Math.ceil(this.props.participantsProject.meta.total / maxParticipants);
-        const splitsExcel = this.props.participantsProject.meta.total > maxParticipants;
-        var counter = 1;
-        for (var i = 1; i <= amountFiles; i++) {
-            var offset = i * maxParticipants - maxParticipants;
-            var pagination = { limit: maxParticipants, offset: offset };
+        try {
+            const maxParticipants = 500;
+            const total = this.props.participantsProject.meta.total;
+            const amountFiles = Math.ceil(total / maxParticipants);
+            const splitsExcel = total > maxParticipants;
+
             const filters = filterHelper(this.props.participantsProjectFilters);
             const extraFilters = this.state.extraFilters;
             const sorts = this.props.participantsProjectSorts;
-            ParticipantsProjectAPI.getExcel(filters, extraFilters, sorts, pagination, false, null)
-                .then(payload => {
-                    excelFileName = `Deelnemers-${moment().format('YYYY-MM-DD HH:mm:ss')}.xlsx`;
-                    if (splitsExcel) {
-                        var excelFileName = `Deelnemers-${moment().format(
-                            'YYYY-MM-DD HH:mm:ss'
-                        )} (${counter} van ${amountFiles}).xlsx`;
-                    }
-                    fileDownload(payload.data, excelFileName);
-                    counter = counter + 1;
-                    this.props.unblockUI();
-                })
-                .catch(error => {
-                    this.props.unblockUI();
-                });
+
+            let counter = 1;
+
+            for (let i = 0; i < amountFiles; i++) {
+                const offset = i * maxParticipants;
+                const pagination = { limit: maxParticipants, offset };
+
+                const payload = await ParticipantsProjectAPI.getExcel(
+                    filters,
+                    extraFilters,
+                    sorts,
+                    pagination,
+                    false,
+                    null
+                );
+
+                let excelFileName = `Deelnemers-${moment().format('YYYY-MM-DD HH:mm:ss')}.xlsx`;
+
+                if (splitsExcel) {
+                    excelFileName = `Deelnemers-${moment().format(
+                        'YYYY-MM-DD HH:mm:ss'
+                    )} (${counter} van ${amountFiles}).xlsx`;
+                }
+
+                fileDownload(payload.data, excelFileName);
+                counter++;
+            }
+        } catch (error) {
+            // eventueel error tonen
+            console.error(error);
+        } finally {
+            this.props.unblockUI();
         }
     };
 
@@ -349,7 +384,7 @@ class ParticipantsListApp extends Component {
             filterType,
             saveFromProject,
         }).then(payload => {
-            hashHistory.push(`/contact-groep/${payload.data.data.id}/edit`);
+            this.props.navigate(`/contact-groep/${payload.data.data.id}/edit`);
         });
     };
 
@@ -440,6 +475,8 @@ class ParticipantsListApp extends Component {
                                             name={'subject'}
                                             value={this.state.subject}
                                             onChangeAction={this.handleSubjectChange}
+                                            required={'required'}
+                                            error={this.state.subjectError}
                                         />
                                     </div>
                                     <div className="col-md-12">
@@ -537,4 +574,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ParticipantsListApp);
+export default connect(mapStateToProps, mapDispatchToProps)(ParticipantsListAppWrapper);

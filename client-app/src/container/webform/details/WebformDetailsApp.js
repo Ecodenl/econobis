@@ -6,6 +6,13 @@ import WebformDetailsToolbar from './WebformDetailsToolbar';
 import WebformDetailsForm from './WebformDetailsForm';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const WebformDetailsAppWrapper = props => {
+    const params = useParams();
+    return <WebformDetailsApp {...props} params={params} />;
+};
 
 class WebformDetailsApp extends Component {
     constructor(props) {
@@ -50,4 +57,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(WebformDetailsApp);
+export default connect(mapStateToProps, mapDispatchToProps)(WebformDetailsAppWrapper);

@@ -56,6 +56,7 @@ class FinancialOverviewProjectCSVHelper
 
                 $csv = $this->csvExporter->build($chunk, [
                     'id' => '#',
+                    'participantProject.contact.number' => 'Contact nummer',
                     'participantProject.contact.full_name' => 'Naam',
                     'participantProject.project.name' => 'Project',
                     'amount_start_value' => 'Totale waarde per ' . $this->startDate->format('d-m-Y'),
@@ -74,6 +75,7 @@ class FinancialOverviewProjectCSVHelper
 
                 $csv = $this->csvExporter->build($chunk, [
                     'id' => '#',
+                    'participantProject.contact.number' => 'Contact nummer',
                     'participantProject.contact.full_name' => 'Naam',
                     'participantProject.project.name' => 'Project',
                     'quantity_start_value' => 'Aantal per ' . $this->startDate->format('d-m-Y'),

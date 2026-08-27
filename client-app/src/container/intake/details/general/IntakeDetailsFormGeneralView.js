@@ -4,15 +4,18 @@ import moment from 'moment';
 moment.locale('nl');
 
 import ViewText from '../../../../components/form/ViewText';
-import { hashHistory, Link } from 'react-router';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const IntakeDetailsFormGeneralView = props => {
+    const navigate = useNavigate();
+
     const { address, contact, status, sources, campaign, reasons, note } = props.intakeDetails;
 
     return (
         <div onClick={props.switchToEdit}>
             <div className="row">
-                <ViewText label={'Contact'} value={contact.fullName} link={contact ? 'contact/' + contact.id : ''} />
+                <ViewText label={'Contact'} value={contact.fullName} link={contact ? '/contact/' + contact.id : ''} />
                 <div className={'col-sm-6'}>
                     <label htmlFor={'address'} className="col-sm-6">
                         {'Adres'}
@@ -20,7 +23,7 @@ const IntakeDetailsFormGeneralView = props => {
                     <div className="col-sm-6" id={'address'}>
                         {address && address.housingFile ? (
                             <Link
-                                onClick={() => hashHistory.push(`/woningdossier/${address.housingFile.id}`)}
+                                onClick={() => navigate(`/woningdossier/${address.housingFile.id}`)}
                                 className='"link-underline"'
                             >
                                 {' '}
@@ -49,7 +52,7 @@ const IntakeDetailsFormGeneralView = props => {
             </div>
 
             <div className="row">
-                <ViewText label={'Aanmeldingsbron'} value={sources && sources.map(source => source.name).join(', ')} />
+                <ViewText label={'Aanmeldingsbron'} value={sources && sources.map(source => source.nameCustom ?? source.name).join(', ')} />
                 <ViewText label="Status" value={status && status.name} />
             </div>
 

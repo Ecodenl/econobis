@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 import * as ibantools from 'ibantools';
 
@@ -16,6 +16,12 @@ import InputReactSelect from '../../../../components/form/InputReactSelect';
 import InputDate from '../../../../components/form/InputDate';
 import moment from 'moment';
 
+// Functionele wrapper voor de class component
+const OrderNewFormWrapper = props => {
+    const navigate = useNavigate();
+    return <OrderNewForm {...props} navigate={navigate} />;
+};
+
 class OrderNewForm extends Component {
     constructor(props) {
         super(props);
@@ -31,10 +37,10 @@ class OrderNewForm extends Component {
             collectMandateActive: false,
             order: {
                 contactId: props.contactId || '',
-                administrationId: '',
+                administrationId: props.administrationId || '',
                 statusId: 'concept',
                 subject: '',
-                participationId: '',
+                participationId: props.participationId || '',
                 emailTemplateIdCollection: '',
                 emailTemplateIdTransfer: '',
                 emailTemplateReminderId: '',
@@ -103,6 +109,8 @@ class OrderNewForm extends Component {
                 },
             });
         });
+
+        this.handleAdministrationChange(this.state.order.administrationId);
     }
 
     handleInputChange = event => {
@@ -122,29 +130,40 @@ class OrderNewForm extends Component {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
 
-        let administration;
+        this.handleAdministrationChange(value);
+    };
 
-        administration = this.props.administrations.filter(administration => administration.id == value);
-        administration = administration[0];
+    handleAdministrationChange(administrationId) {
+        let administration = null;
+        if (administrationId) {
+            administration = this.props.administrations.filter(administration => administration.id == administrationId);
+            if (administration != null) {
+                administration = administration[0];
+            }
+        }
         this.setState({
             order: {
                 ...this.state.order,
-                administrationId: administration.id,
-                emailTemplateIdCollection: administration.emailTemplateIdCollection
-                    ? administration.emailTemplateIdCollection
-                    : '',
-                emailTemplateIdTransfer: administration.emailTemplateIdTransfer
-                    ? administration.emailTemplateIdTransfer
-                    : '',
-                emailTemplateReminderId: administration.emailTemplateReminderId
-                    ? administration.emailTemplateReminderId
-                    : '',
-                emailTemplateExhortationId: administration.emailTemplateExhortationId
-                    ? administration.emailTemplateExhortationId
-                    : '',
+                administrationId: administration != null ? administration.id : '',
+                emailTemplateIdCollection:
+                    administration && administration.emailTemplateIdCollection
+                        ? administration.emailTemplateIdCollection
+                        : '',
+                emailTemplateIdTransfer:
+                    administration && administration.emailTemplateIdTransfer
+                        ? administration.emailTemplateIdTransfer
+                        : '',
+                emailTemplateReminderId:
+                    administration && administration.emailTemplateReminderId
+                        ? administration.emailTemplateReminderId
+                        : '',
+                emailTemplateExhortationId:
+                    administration && administration.emailTemplateExhortationId
+                        ? administration.emailTemplateExhortationId
+                        : '',
             },
         });
-    };
+    }
 
     handleInputChangeParticipation = event => {
         const target = event.target;
@@ -274,7 +293,7 @@ class OrderNewForm extends Component {
         if (!hasErrors) {
             OrderDetailsAPI.newOrder(order)
                 .then(payload => {
-                    hashHistory.push(`/order/${payload.data.id}`);
+                    this.props.navigate(`/order/${payload.data.id}`);
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -539,4 +558,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(OrderNewForm);
+export default connect(mapStateToProps)(OrderNewFormWrapper);

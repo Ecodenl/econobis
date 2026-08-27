@@ -6,6 +6,7 @@ namespace App\Helpers\Laposta;
 
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
+use App\Eco\ContactGroup\ContactGroupType;
 use App\Eco\Cooperation\Cooperation;
 use App\Jobs\Laposta\CreateMemberToLaposta;
 use App\Jobs\Laposta\DeleteMemberToLaposta;
@@ -30,7 +31,7 @@ class LapostaMemberHelper
     {
         $this->contactGroup = null;
         // Dynamic of Composed groups worden met simulated group gesyncroniseerd met laposta.
-        if($contactGroup->type_id === 'dynamic' || $contactGroup->type_id === 'composed' ){
+        if($contactGroup->type_id === ContactGroupType::DYNAMIC || $contactGroup->type_id === ContactGroupType::COMPOSED ){
             $this->contactGroup = $contactGroup->simulatedGroup;
         }else{
             $this->contactGroup = $contactGroup;

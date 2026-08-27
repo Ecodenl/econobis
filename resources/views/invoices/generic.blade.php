@@ -134,17 +134,26 @@
                 <td class="align-left">{{ $invoice->administration->btw_number ? 'IBAN ' . $invoice->administration->IBAN : 'BIC ' . $invoice->administration->bic }}</td>
             </tr>
             <tr>
-                <td class="align-left">&nbsp;</td>
+                @if($invoice->order->po_number)
+                    <td class="align-left">Opdrachtnummer: {{ $invoice->order->po_number }}</td>
+                @else
+                    <td class="align-left">&nbsp;</td>
+                @endif
                 <td class="align-left">{!! ($invoice->administration->btw_number) ? 'BIC ' . $invoice->administration->bic : ( $invoice->administration->rsin_number ? 'RSIN ' . $invoice->administration->rsin_number : '&nbsp;') !!}</td>
             </tr>
             <tr>
-                <td class="align-left">&nbsp;</td>
+                @if($invoice->order->project_number)
+                    <td class="align-left">Projectnummer: {{ $invoice->order->project_number }}</td>
+                @else
+                    <td class="align-left">&nbsp;</td>
+                @endif
                 <td class="align-left">{!! ($invoice->administration->btw_number && $invoice->administration->rsin_number) ? 'RSIN ' . $invoice->administration->rsin_number : '&nbsp;' !!}</td>
             </tr>
             </tbody>
         </table>
     </div>
 
+    <br/>
     <h4 class="subject-text">Betreft: {{ $invoice->order->subject }}</h4>
     <br/>
 
@@ -226,14 +235,6 @@
     </table>
 
     <div class="conclusion-text">{!! (str_replace('€', '&euro;', $invoice->order->invoice_text)) !!}</div>
-
-    @if($invoice->order->po_number || $invoice->order->project_number)
-        <div class="conclusion-text">
-            @if($invoice->order->po_number) Opdrachtnummer: {{ $invoice->order->po_number }} @endif
-            @if($invoice->order->po_number && $invoice->order->project_number) <br> @endif
-            @if($invoice->order->project_number) Projectnummer: {{ $invoice->order->project_number }} @endif
-        </div>
-    @endif
 
     @if($invoice->payment_type_id == 'collection')
         <br/><br/>

@@ -4,10 +4,14 @@ namespace App\Eco\FinancialOverview;
 
 use App\Eco\Administration\Administration;
 use App\Eco\DocumentTemplate\DocumentTemplate;
+use App\Eco\EmailTemplate\EmailTemplate;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FinancialOverview extends Model
 {
+    use SoftDeletes;
+
     protected $guarded = ['id'];
 
     protected $casts = [
@@ -33,6 +37,10 @@ class FinancialOverview extends Model
     {
         return $this->belongsTo(DocumentTemplate::class, 'document_template_financial_overview_id');
     }
+    public function emailTemplateFinancialOverview()
+    {
+        return $this->belongsTo(EmailTemplate::class, 'email_template_financial_overview_id');
+    }
 
     public function financialOverviewPosts()
     {
@@ -41,6 +49,16 @@ class FinancialOverview extends Model
     public function getTotalFinancialOverviewProjectsAttribute()
     {
         return $this->financialOverviewProjects()->count();
+    }
+
+    public function getHasInterimFinancialOverviewContactsAttribute()
+    {
+        return $this->financialOverviewContacts()->where('status_id', 'sent')->exists();
+    }
+
+    public function getUsesInterimFinancialOverviewsAttribute()
+    {
+        return $this->administration->uses_interim_financial_overviews === 1;
     }
 
     public function getTotalFinancialOverviewProjectsInProgressAttribute()

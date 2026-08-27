@@ -43,19 +43,20 @@ class DataTableHousingFileFieldFilter extends Component {
             'has-solar-panels',
             'heat-source-warm-tap-water',
         ];
-        const arraySelectBooleanFields = ['monument', 'building-contract-type'];
+        // Laat je niet foppen:
+        // building-contract-type is hoomdossier naam voor wat in econobis is_house_for_sale heet
+        // (en monument heet in econobis is_monument)
+        const arraySelectNoYesUnknownFields = ['monument', 'building-contract-type'];
 
         this.state = {
-            // housingFileField: props.housingFileField,
-            // optionsToSelect: this.getOptionsToSelect(props.housingFileField),
             housingFileField: '',
             optionsToSelect: [],
             value: [],
             arraySelectNumberFields,
             arraySelectDropdownFields,
-            arraySelectBooleanFields,
+            arraySelectNoYesUnknownFields,
             optionKeyAsId: false,
-            yesNoOptions: [
+            noYesUnknownOptions: [
                 {
                     id: 0,
                     name: 'Nee',
@@ -63,6 +64,10 @@ class DataTableHousingFileFieldFilter extends Component {
                 {
                     id: 1,
                     name: 'Ja',
+                },
+                {
+                    id: 2,
+                    name: 'Onbekend',
                 },
             ],
         };
@@ -319,7 +324,7 @@ class DataTableHousingFileFieldFilter extends Component {
             housingFileField,
             arraySelectNumberFields,
             arraySelectDropdownFields,
-            arraySelectBooleanFields,
+            arraySelectNoYesUnknownFields,
         } = this.state;
 
         // console.log('render - value: ');
@@ -368,7 +373,7 @@ class DataTableHousingFileFieldFilter extends Component {
                                 );
                             })}
                     </select>
-                ) : arraySelectBooleanFields.includes(housingFileField) ? (
+                ) : arraySelectNoYesUnknownFields.includes(housingFileField) ? (
                     <select
                         className={`form-control input-sm`}
                         id={id}
@@ -377,7 +382,8 @@ class DataTableHousingFileFieldFilter extends Component {
                         onChange={handleInputChange}
                         disabled={readOnly}
                     >
-                        {this.state.yesNoOptions.map(option => {
+                        <option value="">--Kies een status/waarde--</option>
+                        {this.state.noYesUnknownOptions.map(option => {
                             return (
                                 <option key={option.id} value={option.id}>
                                     {option.name}

@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
-import AsyncCreatableSelect from 'react-select/async-creatable/dist/react-select.esm';
+import { FaInfoCircle } from 'react-icons/fa';
+import ReactTooltip from 'react-tooltip';
 
 const InputReactSelectMulti = props => {
     const {
@@ -22,6 +23,7 @@ const InputReactSelectMulti = props => {
         disabled,
         placeholder,
         clearable,
+        textToolTip,
     } = props;
 
     const customStyles = {
@@ -72,9 +74,29 @@ const InputReactSelectMulti = props => {
                         },
                     })}
                 />
-            </div>
+            </div>{' '}
+            {textToolTip && (
+                <div className="col-sm-1">
+                    <>
+                        <FaInfoCircle
+                            color={'blue'}
+                            size={'15px'}
+                            data-tip={textToolTip}
+                            data-for={`tooltip-${name}`}
+                        />
+                        <ReactTooltip
+                            id={`tooltip-${name ? name : id}`}
+                            effect="float"
+                            place="right"
+                            multiline={true}
+                            aria-haspopup="true"
+                        />
+                        &nbsp;
+                    </>
+                </div>
+            )}
             {error && (
-                <div className="col-sm-offset-3 col-sm-8">
+                <div className={`${size}`}>
                     <span className="has-error-message"> {errorMessage}</span>
                 </div>
             )}
@@ -95,6 +117,7 @@ InputReactSelectMulti.defaultProps = {
     isLoading: false,
     placeholder: '',
     clearable: false,
+    textToolTip: '',
 };
 
 InputReactSelectMulti.propTypes = {
@@ -116,6 +139,7 @@ InputReactSelectMulti.propTypes = {
     isLoading: PropTypes.bool,
     placeholder: PropTypes.string,
     clearable: PropTypes.bool,
+    textToolTip: PropTypes.string,
 };
 
 export default InputReactSelectMulti;

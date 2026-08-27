@@ -33,6 +33,7 @@ class FullCooperation extends JsonResource
             'hoomConnectCoachLink' => $this->hoom_connect_coach_link ? $this->hoom_connect_coach_link : '',
             'hoomKey' => $this->hoom_key,
             'hoomCampaigns' => FullCooperationHoomCampaign::collection($this->whenLoaded('hoomCampaigns')),
+            'cleanupContactsExcludedGroups' => FullCooperationCleanupContactsExcludedGroup::collection($this->whenLoaded('cleanupContactsExcludedGroups')),
             'sendEmail' => $this->send_email,
             'hoomEmailTemplateId' => $this->hoom_email_template_id ? $this->hoom_email_template_id : '',
             'hoomEmailTemplate' => ['name' => $this->emailTemplate ? $this->emailTemplate->name : ''],
@@ -71,6 +72,8 @@ class FullCooperation extends JsonResource
             'externalUrlContactsButtonText' => $this->external_url_contacts_button_text,
             'externalUrlContactsOnNewPage' => $this->external_url_contacts_on_new_page,
             'requireTeamOnUserCreate' => $this->require_team_on_user_create,
+            'cleanupEmail' => $this->cleanup_email,
+            'cleanupItems' => FullCooperationCleanupItem::collection($this->whenLoaded('cleanupItems')),
         ];
     }
 }

@@ -7,7 +7,7 @@ export default {
         return getAxiosInstance().get(requestUrl, {
             params: {
                 jory: {
-                    fld: ['id', 'domain', 'isVerified'],
+                    fld: ['id', 'domain', 'isVerified', 'isSystemMailgunDomain'],
                 },
             },
         });

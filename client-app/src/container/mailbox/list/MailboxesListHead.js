@@ -9,14 +9,15 @@ const MailboxesListHead = props => {
             <DataTableHeadTitleAndSort
                 sortColumn={'name'}
                 title={'Weergavenaam'}
-                width={'25%'}
+                width={'20%'}
                 setSorts={props.handleChangeSort}
             />
-            <DataTableHeadTitle title={'E-mail'} width={'25%'} />
+            <DataTableHeadTitle title={'E-mail'} width={'20%'} />
             <DataTableHeadTitle title={'Inkomend'} width={'20%'} />
             <DataTableHeadTitle title={'Uitgaand'} width={'20%'} />
             <DataTableHeadTitle title={'Primair'} width={'5%'} />
             <DataTableHeadTitle title={'Actief'} width={'5%'} />
+            <DataTableHeadTitle title={'Systeem'} width={'5%'} />
             <DataTableHeadTitle title={''} width={'5%'} />
         </tr>
     );

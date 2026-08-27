@@ -2,13 +2,16 @@
 
 namespace App\Helpers\FinancialOverview;
 
+use App\Eco\Contact\ContactType;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\FinancialOverview\FinancialOverviewContact;
+use App\Eco\FinancialOverview\FinancialOverviewParticipantProject;
 use App\Eco\FinancialOverview\FinancialOverviewsToSend;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\Project\Project;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewContactController;
@@ -16,7 +19,6 @@ use App\Http\Resources\FinancialOverview\Templates\FinancialOverviewContactMail;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class FinancialOverviewHelper
@@ -64,7 +66,7 @@ class FinancialOverviewHelper
         $contactPerson = $financialOverviewContactController->getContactInfoForFinancialOverview($financialOverviewContact->contact)['contactPerson'];
         $contactName = null;
 
-        if ($financialOverviewContact->contact->type_id == 'person') {
+        if ($financialOverviewContact->contact->type_id === ContactType::PERSON) {
             $titleAddress = $financialOverviewContact->contact?->person?->title?->address;
             $initials = $financialOverviewContact->contact?->person?->initials ? $financialOverviewContact->contact?->person?->initials : ($financialOverviewContact->contact?->person?->first_name ? substr($financialOverviewContact->contact?->person?->first_name, 0, 1) . "." : "");
             $prefix = $financialOverviewContact->contact?->person->last_name_prefix;
@@ -83,7 +85,7 @@ class FinancialOverviewHelper
             // Tenslotte voegen we toe: last_name
             $contactName .= $financialOverviewContact->contact?->person->last_name;
 
-        } elseif ($financialOverviewContact->contact->type_id == 'organisation') {
+        } elseif ($financialOverviewContact->contact->type_id === ContactType::ORGANISATION) {
             $contactName = optional($financialOverviewContact->contact->organisation)->statutory_name ? $financialOverviewContact->contact->organisation->statutory_name : $financialOverviewContact->contact->full_name;
         }
 
@@ -204,10 +206,10 @@ class FinancialOverviewHelper
         }
         $contactName = null;
 
-        if ($financialOverviewContact->contact->type_id == 'person') {
+        if ($financialOverviewContact->contact->type_id === ContactType::PERSON) {
             $prefix = $financialOverviewContact->contact->person->last_name_prefix;
             $contactName = $prefix ? $financialOverviewContact->contact->person->first_name . ' ' . $prefix . ' ' . $financialOverviewContact->contact->person->last_name : $financialOverviewContact->contact->person->first_name . ' ' . $financialOverviewContact->contact->person->last_name;
-        } elseif ($financialOverviewContact->contact->type_id == 'organisation') {
+        } elseif ($financialOverviewContact->contact->type_id === ContactType::ORGANISATION) {
             $contactName = optional($financialOverviewContact->contact->organisation)->statutory_name ? $financialOverviewContact->contact->organisation->statutory_name : $financialOverviewContact->contact->full_name;
         }
 
@@ -227,7 +229,7 @@ class FinancialOverviewHelper
         $htmlBody .= '<p></p>';
         $htmlBody .= $financialOverviewContact->financialOverview->administration->name;
 
-        $emailTemplate = $financialOverviewContact->financialOverview->administration->emailTemplateFinancialOverview;
+        $emailTemplate = $financialOverviewContact?->emailTemplateFinancialOverview ?: ($financialOverviewContact?->financialOverview?->administration?->emailTemplateFinancialOverview ?: null);
         $defaultAttachmentDocumentId = null;
         if ($emailTemplate) {
             $subject = $emailTemplate->subject
@@ -269,7 +271,7 @@ class FinancialOverviewHelper
             . $subject . '</title></head>'
             . $htmlBody . '</html>';
 
-        $mail = Mail::fromMailbox($mailbox)
+        $mail = MailHelper::fromMailbox($mailbox)
             ->to($contactInfo['email']);
 
         $mail->subject = $subject;
@@ -360,12 +362,22 @@ class FinancialOverviewHelper
     }
     public static function financialOverviewContactSend(FinancialOverviewContact $financialOverviewContact)
     {
-        //Waardestaat moet nog status is-sending hebben
-        if($financialOverviewContact->status_id === 'is-sending' || $financialOverviewContact->status_id === 'is-resending')
-        {
-            //Haal waardestaat uit tabel financial-overviews-to-send
+        // waardestaat moet nog status is-sending of is-resending hebben
+        if (
+            $financialOverviewContact->status_id === 'is-sending'
+            || $financialOverviewContact->status_id === 'is-resending'
+        ) {
+            // haal waardestaat uit tabel financial-overviews-to-send
             $financialOverviewContact->financialOverviewsToSend()->delete();
-            //Status sent
+
+            // alle participant-projects voor deze FO + dit contact ook op sent zetten
+            FinancialOverviewParticipantProject::where('contact_id', $financialOverviewContact->contact_id)
+                ->whereHas('financialOverviewProject', function ($q) use ($financialOverviewContact) {
+                    $q->where('financial_overview_id', $financialOverviewContact->financial_overview_id);
+                })
+                ->update(['status_id' => 'sent']);
+
+            // Status sent op het contact zelf
             $financialOverviewContact->status_id = 'sent';
             $financialOverviewContact->save();
         }
@@ -408,7 +420,7 @@ class FinancialOverviewHelper
      */
     public static function getWsAdditionalInfo(FinancialOverviewContact $financialOverviewContact, $contactPerson, \Illuminate\Contracts\Auth\Authenticatable $user): string
     {
-        $documentTemplateId = $financialOverviewContact->financialOverview ? $financialOverviewContact->financialOverview->document_template_financial_overview_id : 0;
+        $documentTemplateId = $financialOverviewContact?->document_template_financial_overview_id ?: ($financialOverviewContact?->financialOverview?->document_template_financial_overview_id ?: 0);
         $documentTemplate = DocumentTemplate::find($documentTemplateId);
 
         $contact = $financialOverviewContact->contact;

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\ContactGroup;
 
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
+use App\Eco\ContactGroup\ContactGroupType;
 use App\Eco\Cooperation\Cooperation;
 use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\CSV\ContactCSVHelper;
@@ -20,6 +21,7 @@ use App\Http\Resources\ContactGroup\ContactGroupPeek;
 use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Http\Resources\ContactGroup\GridContactGroup;
 use App\Http\Resources\Task\SidebarTask;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Carbon;
@@ -159,7 +161,11 @@ class ContactGroupController extends Controller
             ->get();
 
         //Van dynamisch een statische groep maken
-        if($contactGroup->type_id === 'dynamic' && $data['type_id'] === 'static'){
+        // type_id uit het model is een enum, de requestwaarde is nog een string (vergelijk met ContactGroupType::XXX->value).
+        if(
+            $contactGroup->type_id === ContactGroupType::DYNAMIC
+            && $data['type_id'] === ContactGroupType::STATIC->value
+        ){
             $this->makeStatic($contactGroup);
         }
 
@@ -194,6 +200,10 @@ class ContactGroupController extends Controller
                     abort(412, implode(";", array_unique($resultSimulatedGroup)));
                 }
             }
+
+            $groupContactIds = $contactGroup->contacts()?->pluck('contact_id')?->toArray() ?? [];
+            Log::info('Group ' . $contactGroup->id . ' met ' . count($groupContactIds) . ' contacten verwijderd. contact ids:' );
+            Log::info(implode(',', $groupContactIds));
 
             $deleteContactGroup = new DeleteContactGroup($contactGroup);
             $result = $deleteContactGroup->delete();
@@ -314,7 +324,7 @@ class ContactGroupController extends Controller
         $this->authorize('updateFromGroup', $contact);
 
         //Van dynamic eerst een static groep maken
-        if($contactGroup->type_id === 'dynamic' || $contactGroup->type_id === 'composed'){
+        if($contactGroup->type_id === ContactGroupType::DYNAMIC || $contactGroup->type_id === ContactGroupType::COMPOSED){
             $contactGroupUpdate = $contactGroup->simulatedGroup;
         }else{
             $contactGroupUpdate = $contactGroup;
@@ -351,7 +361,15 @@ class ContactGroupController extends Controller
     {
         set_time_limit(0);
 
-        $contactCSVHelper = new ContactCSVHelper($contactGroup->all_contacts, $contactGroup);
+        $contacts = $contactGroup->getAllContacts(false, true);
+
+        // Niks te exporteren of type/group niet van toepassing
+        if (!$contacts instanceof Collection || $contacts->isEmpty()) {
+            Log::info('No content response ');
+            return response()->noContent();
+        }
+
+        $contactCSVHelper = new ContactCSVHelper($contacts, $contactGroup);
 
         return $contactCSVHelper->downloadCSV();
     }
@@ -511,13 +529,13 @@ class ContactGroupController extends Controller
             $contactGroupNew = null;
 
             //Van static groep maken
-            if($contactGroup->type_id === 'static' ){
+            if($contactGroup->type_id === ContactGroupType::STATIC ){
                 $contactGroupNew = $contactGroup;
             // via simulategroup maken
             } else if($contactGroup->simulatedGroup){
                 $contactGroupNew = $contactGroup->simulatedGroup;
                 //Van dynamic eerst een static groep maken
-            } else if($contactGroup->type_id === 'dynamic' ){
+            } else if($contactGroup->type_id === ContactGroupType::DYNAMIC ){
                 $contactGroupNew = $contactGroup->replicate();
                 $contactGroupNew->type_id = 'simulated';
                 $contactGroupNew->composed_of = 'contacts';
@@ -533,7 +551,7 @@ class ContactGroupController extends Controller
                     $contactGroupNew->contacts()->sync($contactGroup->getDynamicContacts()->get()->pluck("contact_id"));
                 }
             //Van composed eerst een static groep maken
-            } else if($contactGroup->type_id === 'composed' ){
+            } else if($contactGroup->type_id === ContactGroupType::COMPOSED ){
                 $contactGroupNew = $contactGroup->replicate();
                 $contactGroupNew->type_id = 'simulated';
                 $contactGroupNew->composed_of = 'contacts';

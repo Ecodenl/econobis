@@ -275,7 +275,7 @@ class MutationFormListItem extends Component {
                     // let errorObject = JSON.parse(JSON.stringify(error));
                     let errorMessage = 'Er is iets misgegaan bij opslaan. Probeer het opnieuw.';
                     if (error.response.status !== 500) {
-                        errorMessage = error.response.data.message;
+                        errorMessage = error.response?.data?.message?.split(';');
                     }
                     this.setState({
                         showErrorModal: true,

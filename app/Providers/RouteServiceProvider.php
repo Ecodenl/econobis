@@ -41,6 +41,8 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapPortalRoutes();
 
+        $this->mapRestApiRoutes();
+
         //
     }
 
@@ -76,8 +78,16 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapPortalRoutes()
     {
         Route::prefix('portal')
-            ->middleware(['passport-portal', 'api'])
+            ->middleware(['api'])
             ->namespace('\App\Http\Controllers\Portal')
             ->group(base_path('routes/portal.php'));
+    }
+
+    protected function mapRestApiRoutes()
+    {
+        Route::prefix('rest-api')
+            ->middleware(['api'])
+            ->namespace('\App\Http\Controllers\RestApi')
+            ->group(base_path('routes/rest-api.php'));
     }
 }

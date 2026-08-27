@@ -2,6 +2,7 @@
 
 namespace App\Helpers\CSV;
 
+use App\Eco\Contact\ContactType;
 use Carbon\Carbon;
 use League\Csv\Reader;
 
@@ -37,7 +38,7 @@ class RevenueDistributionPartsKwhCSVHelper
                 $distributionPartsKwh->period_start = $this->formatDate($distributionPartsKwh->partsKwh->date_begin);
                 $distributionPartsKwh->period_end = $this->formatDate($distributionPartsKwh->partsKwh->date_end);
 
-                $distributionPartsKwh->type = $distributionPartsKwh->distributionKwh->contact->getType()->name;
+                $distributionPartsKwh->type = $distributionPartsKwh->distributionKwh->contact->getType()?->getName() ?? '';
 
                 $address = $distributionPartsKwh->distributionKwh->contact->primaryAddress;
 
@@ -49,7 +50,7 @@ class RevenueDistributionPartsKwhCSVHelper
                 $distributionPartsKwh->country = (($address && $address->country) ? $address->country->name : '');
 
                 // person/organisation fields
-                if ($distributionPartsKwh->distributionKwh->contact->type_id === 'person') {
+                if ($distributionPartsKwh->distributionKwh->contact->type_id === ContactType::PERSON) {
                     $distributionPartsKwh->title = $distributionPartsKwh->distributionKwh->contact->person->title;
                     $distributionPartsKwh->initials = $distributionPartsKwh->distributionKwh->contact->person->initials;
                     $distributionPartsKwh->first_name = $distributionPartsKwh->distributionKwh->contact->person->first_name;

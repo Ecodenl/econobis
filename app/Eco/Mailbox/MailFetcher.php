@@ -30,9 +30,20 @@ class MailFetcher
     public function __construct(Mailbox $mailbox)
     {
         $this->mailbox = $mailbox;
+    }
 
-        $this->initStorageDir();
-        $this->initImapConnection();
+    public function checkMailbox(): void
+    {
+        if ($this->mailbox->only_outgoing_mailbox) {
+            return;
+        }
+
+        if ($this->mailbox->incoming_server_type !== 'imap') {
+            return;
+        }
+
+        $this->ensureStorageDir();
+        $this->ensureImapConnection();
     }
 
     /**
@@ -43,6 +54,16 @@ class MailFetcher
     public function fetchNew() :mixed
     {
         //        Log::info("Check fetchNew mailbox " . $this->mailbox->id);
+
+        if ($this->mailbox->only_outgoing_mailbox) {
+            return [
+                'status' => 'success',
+                'imapIdLastFetched' => $this->mailbox->imap_id_last_fetched ?? 0,
+            ];
+        }
+
+        $this->ensureStorageDir();
+        $this->ensureImapConnection();
 
         if ($this->mailbox->date_last_fetched) {
             $dateLastFetched = Carbon::parse($this->mailbox->date_last_fetched)->subDay()->format('Y-m-d');
@@ -109,19 +130,25 @@ class MailFetcher
 //            Log::info("Laatste imap Id achteraf: " . $imapIdLastFetched);
 
         }
-//        $this->mailbox->imap_id_last_fetched = $imapIdLastFetched;
-//        $this->mailbox->save();
         return [
             'status' => 'success',
             'imapIdLastFetched' => $imapIdLastFetched,
         ];
     }
 
-    public function getImap()
+    private function ensureStorageDir(): void
     {
-        return $this->imap;
+        $this->initStorageDir();
     }
 
+    private function ensureImapConnection(): void
+    {
+        if ($this->imap) {
+            return;
+        }
+
+        $this->initImapConnection();
+    }
     private function fetchEmail($mailId)
     {
         $emailData = $this->imap->getMail($mailId, $this->mailbox->email_mark_as_seen);
@@ -268,6 +295,7 @@ class MailFetcher
             }
         }
         catch(\Exception $e){
+            Log::info("Mailbox " . $this->mailbox->id . " op valid FALSE ivm error imap->checkMailbox");
             Log::error($e->getMessage());
             $mb->valid = false;
             $mb->login_tries = $mb->login_tries + 1;

@@ -33,7 +33,7 @@ use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\Document\DocumentHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Project\RevenuesKwhHelper;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Helpers\Workflow\TaskWorkflowHelper;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
@@ -77,8 +77,16 @@ class ContactController extends ApiController
 
         // Voor aanmaak van contact gegevens wordt created by and updated by via ContactObserver altijd bepaald obv Auth::id
         // todo wellicht moeten we hier nog wat op anders verzinnen, voornu gebruiken we responisibleUserId from settings.json, verderop zetten we dat weer terug naar portal user
-        $responsibleUserId = PortalSettings::get('responsibleUserId');
+        $responsibleUserId = PortalSettings::first()?->responsible_user_id;
         if (!$responsibleUserId) {
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
+
+        // contact type person of organisation
+        if (! in_array($request->input('typeId'), [
+            ContactType::PERSON->value,
+            ContactType::ORGANISATION->value,
+        ], true)) {
             abort(501, 'Er is helaas een fout opgetreden.');
         }
 
@@ -86,7 +94,7 @@ class ContactController extends ApiController
         $updateUser->occupation = '@portal-update@';
         Auth::setUser($updateUser);
 
-        DB::transaction(function () use ($request) {
+        DB::transaction(function () use ($request, $portalUser) {
 
             $contact = Contact::find($request->id);
             $ibanOld = $contact->iban;
@@ -106,8 +114,10 @@ class ContactController extends ApiController
                 $this->createTaskIbanChange($contact, $ibanOld, $ibanAttnOld);
             }
 
+            $typeId = $request->input('typeId');
+
             // PERSON
-            if ($request->typeId == ContactType::PERSON) {
+            if ($typeId === ContactType::PERSON->value) {
 
                 $this->updatePerson($contact, $request);
                 $this->updateEmailCorrespondence($contact, $request);
@@ -119,12 +129,12 @@ class ContactController extends ApiController
                     $this->updateAddress(ContactType::PERSON, $contact, $request['primaryAddress'], $currentAddressEnergySupplierElectricity, 'visit', $request->projectId);
                 }
                 if (isset($request['freeFieldsFieldRecords'])) {
-                    $this->updateFreeFieldsContact($contact, $request['freeFieldsFieldRecords']);
+                    $this->updateFreeFieldsContact($contact, $request['freeFieldsFieldRecords'], $portalUser);
                 }
             }
 
             // ORGANISATION
-            if ($request->typeId == ContactType::ORGANISATION) {
+            if ($typeId === ContactType::ORGANISATION->value) {
 
                 $this->updateOrganisation($contact, $request);
                 $this->updateEmailCorrespondence($contact, $request);
@@ -142,7 +152,7 @@ class ContactController extends ApiController
                     $this->updateAddress(ContactType::ORGANISATION, $contact, $request['invoiceAddress'], null, 'invoice', null);
                 }
                 if (isset($request['freeFieldsFieldRecords'])) {
-                    $this->updateFreeFieldsContact($contact, $request['freeFieldsFieldRecords']);
+                    $this->updateFreeFieldsContact($contact, $request['freeFieldsFieldRecords'], $portalUser);
                 }
             }
 
@@ -168,7 +178,7 @@ class ContactController extends ApiController
 
         // Voor aanmaak van contact gegevens wordt created by and updated by via ContactObserver altijd bepaald obv Auth::id
         // todo wellicht moeten we hier nog wat op anders verzinnen, voornu gebruiken we responisibleUserId from settings.json, verderop zetten we dat weer terug naar portal user
-        $responsibleUserId = PortalSettings::get('responsibleUserId');
+        $responsibleUserId = PortalSettings::first()?->responsible_user_id;
         if (!$responsibleUserId) {
             abort(501, 'Er is helaas een fout opgetreden.');
         }
@@ -177,10 +187,10 @@ class ContactController extends ApiController
         $updateUser->occupation = '@portal-update@';
         Auth::setUser($updateUser);
 
-        DB::transaction(function () use ($contact, $request) {
+        DB::transaction(function () use ($contact, $request, $portalUser) {
 
             $contact = Contact::find($contact->id);
-            $this->updateFreeFieldsContact($contact, $request['freeFieldsFieldRecords']);
+            $this->updateFreeFieldsContact($contact, $request['freeFieldsFieldRecords'], $portalUser);
 
         });
 
@@ -460,7 +470,7 @@ class ContactController extends ApiController
             });
         })->orderBy('name')->get();
         if($administrations->count() == 0){
-            $defaultAdministrationId = PortalSettings::get('defaultAdministrationId');
+            $defaultAdministrationId = PortalSettings::first()?->default_administration_id;
             if(!empty($defaultAdministrationId)){
                 $administrations = Administration::whereId($defaultAdministrationId)->get();
             }
@@ -820,8 +830,8 @@ class ContactController extends ApiController
             $noteAddress = $noteAddress . "Nieuwe EAN gas: " . $address->ean_gas . "\n";
         }
         if(!empty($noteAddress)){
-            $checkContactTaskResponsibleUserId = PortalSettings::get('checkContactTaskResponsibleUserId');
-            $checkContactTaskResponsibleTeamId = PortalSettings::get('checkContactTaskResponsibleTeamId');
+            $checkContactTaskResponsibleUserId = PortalSettings::first()?->check_contact_task_responsible_user_id;
+            $checkContactTaskResponsibleTeamId = PortalSettings::first()?->check_contact_task_responsible_team_id;
             $taskTypeForPortal = TaskType::where('default_portal_task_type', true)->first();
 
             if($taskTypeForPortal) {
@@ -880,6 +890,25 @@ class ContactController extends ApiController
                 return;
             }
             $currentAddressEnergySupplierElectricityNew = $this->createNewAddressEnergySupplier($address, $currentAddressEnergySupplierElectricityData);
+
+//            Log::info('PORTAL AES new 1 - before sync', [
+//                'address_id' => $currentAddressEnergySupplierElectricityNew->address_id,
+//                'energy_supplier_id' => $currentAddressEnergySupplierElectricityNew->energy_supplier_id,
+//                'member_since' => $currentAddressEnergySupplierElectricityNew->member_since,
+//            ]);
+
+            $this->syncPreviousAddressEnergySupplierEndDate($currentAddressEnergySupplierElectricityNew);
+
+//            Log::info('PORTAL AES new 1 - after sync previous', [
+//                'previous_records' => AddressEnergySupplier::where('address_id', $currentAddressEnergySupplierElectricityNew->address_id)
+//                    ->orderBy('member_since')
+//                    ->get(['id', 'energy_supplier_id', 'member_since', 'end_date'])
+//                    ->toArray(),
+//            ]);
+
+            $addressEnergySupplierController = new AddressEnergySupplierController();
+            $addressEnergySupplierController->validateAddressEnergySupplier($currentAddressEnergySupplierElectricityNew, true);
+
             $currentAddressEnergySupplierElectricityNew->save();
             $this->checkSplitRevenuePart($currentAddressEnergySupplierElectricityNew);
         } else {
@@ -890,20 +919,60 @@ class ContactController extends ApiController
                 if($currentAddressEnergySupplierElectricityData['memberSince'] == null) {
                     return;
                 }
+
+//                Log::info('PORTAL AES - check', [
+//                    'address_id' => $currentAddressEnergySupplierElectricityOld->address_id,
+//                    'current energy_supplier_id data' => $currentAddressEnergySupplierElectricityData['energySupplierId'],
+//                    'current energy_supplier_id old' => $currentAddressEnergySupplierElectricityOld->energy_supplier_id,
+//                    'member_since data' => $currentAddressEnergySupplierElectricityData['memberSince'],
+//                    'member_since old' => $currentAddressEnergySupplierElectricityOld->member_since,
+//                ]);
+
                 if($currentAddressEnergySupplierElectricityData['energySupplierId'] == $currentAddressEnergySupplierElectricityOld->energy_supplier_id) {
                     // update
                     $currentAddressEnergySupplierElectricityNew = clone $currentAddressEnergySupplierElectricityOld;
                     $currentAddressEnergySupplierElectricityNew->member_since = $currentAddressEnergySupplierElectricityData['memberSince'];
                     $currentAddressEnergySupplierElectricityNew->es_number = $currentAddressEnergySupplierElectricityData['esNumber'];
 
+//                    Log::info('PORTAL AES new 2 - before sync', [
+//                        'address_id' => $currentAddressEnergySupplierElectricityNew->address_id,
+//                        'energy_supplier_id' => $currentAddressEnergySupplierElectricityNew->energy_supplier_id,
+//                        'member_since' => $currentAddressEnergySupplierElectricityNew->member_since,
+//                    ]);
+
+                    $this->syncPreviousAddressEnergySupplierEndDate($currentAddressEnergySupplierElectricityNew);
+
+//                    Log::info('PORTAL AES new 2 - after sync previous', [
+//                        'previous_records' => AddressEnergySupplier::where('address_id', $currentAddressEnergySupplierElectricityNew->address_id)
+//                            ->orderBy('member_since')
+//                            ->get(['id', 'energy_supplier_id', 'member_since', 'end_date'])
+//                            ->toArray(),
+//                    ]);
+
                     $addressEnergySupplierController = new AddressEnergySupplierController();
                     $addressEnergySupplierController->validateAddressEnergySupplier($currentAddressEnergySupplierElectricityNew, true);
 
                     $currentAddressEnergySupplierElectricityNew->save();
-                }else{
+                    $this->checkSplitRevenuePart($currentAddressEnergySupplierElectricityNew);
+                } else {
 
                     // new
                     $currentAddressEnergySupplierElectricityNew = $this->createNewAddressEnergySupplier($address, $currentAddressEnergySupplierElectricityData);
+
+//                    Log::info('PORTAL AES new 3 - before sync', [
+//                        'address_id' => $currentAddressEnergySupplierElectricityNew->address_id,
+//                        'energy_supplier_id' => $currentAddressEnergySupplierElectricityNew->energy_supplier_id,
+//                        'member_since' => $currentAddressEnergySupplierElectricityNew->member_since,
+//                    ]);
+
+                    $this->syncPreviousAddressEnergySupplierEndDate($currentAddressEnergySupplierElectricityNew);
+
+//                    Log::info('PORTAL AES new 3 - after sync previous', [
+//                        'previous_records' => AddressEnergySupplier::where('address_id', $currentAddressEnergySupplierElectricityNew->address_id)
+//                            ->orderBy('member_since')
+//                            ->get(['id', 'energy_supplier_id', 'member_since', 'end_date'])
+//                            ->toArray(),
+//                    ]);
 
                     $addressEnergySupplierController = new AddressEnergySupplierController();
                     $addressEnergySupplierController->validateAddressEnergySupplier($currentAddressEnergySupplierElectricityNew, true);
@@ -912,7 +981,6 @@ class ContactController extends ApiController
                     $this->checkSplitRevenuePart($currentAddressEnergySupplierElectricityNew);
 
                 }
-
                 $currentAddressEnergySupplierElectricityNew->save();
             }
         }
@@ -947,8 +1015,8 @@ class ContactController extends ApiController
         }
 
         if($addressEnergySupplierChanged) {
-            $checkContactTaskResponsibleUserId = PortalSettings::get('checkContactTaskResponsibleUserId');
-            $checkContactTaskResponsibleTeamId = PortalSettings::get('checkContactTaskResponsibleTeamId');
+            $checkContactTaskResponsibleUserId = PortalSettings::first()?->check_contact_task_responsible_user_id;
+            $checkContactTaskResponsibleTeamId = PortalSettings::first()?->check_contact_task_responsible_team_id;
             $taskTypeForPortal = TaskType::where('default_portal_task_type', true)->first();
 
             if ($taskTypeForPortal) {
@@ -975,7 +1043,7 @@ class ContactController extends ApiController
 
     }
 
-    protected function updateFreeFieldsContact($contact, array $freeFieldsFieldRecordsData)
+    protected function updateFreeFieldsContact($contact, array $freeFieldsFieldRecordsData, $portalUser)
     {
         // Array to hold transformed records
         $updateValues = [];
@@ -1029,7 +1097,7 @@ class ContactController extends ApiController
 
         // Call updateValues with transformed data
         $controller = new FreeFieldsFieldRecordController();
-        $controller->updateValuesFromFreeFieldsContact($contact->id, $updateValues);
+        $controller->updateValuesFromFreeFieldsContact($contact->id, $updateValues, 'portal', $portalUser->id);
     }
 
     protected function createTaskIbanChange(Contact $contact, $ibanOld, $ibanAttnOld)
@@ -1045,8 +1113,8 @@ class ContactController extends ApiController
             $note = $note . "Nieuwe IBAN t.n.v.: " . $contact->iban_attn . "\n";
         }
 
-        $checkContactTaskResponsibleUserId = PortalSettings::get('checkContactTaskResponsibleUserId');
-        $checkContactTaskResponsibleTeamId = PortalSettings::get('checkContactTaskResponsibleTeamId');
+        $checkContactTaskResponsibleUserId = PortalSettings::first()?->check_contact_task_responsible_user_id;
+        $checkContactTaskResponsibleTeamId = PortalSettings::first()?->check_contact_task_responsible_team_id;
         $taskTypeForPortal = TaskType::where('default_portal_task_type', true)->first();
 
         if($taskTypeForPortal) {
@@ -1253,38 +1321,70 @@ class ContactController extends ApiController
             'energySupplyTypeId' => new EnumExists(EnergySupplierType::class),
             'isCurrentSupplier' => 'boolean',
         ]);
+
         $currentAddressEnergySupplierElectricityData = $this->sanitizeData($currentAddressEnergySupplierElectricityData, [
             'energySupplyTypeId' => 'nullable',
             'isCurrentSupplier' => 'boolean',
         ]);
-        $currentAddressEnergySupplierElectricityNew = new AddressEnergySupplier($this->arrayKeysToSnakeCase($currentAddressEnergySupplierElectricityData));
 
-        $addressEnergySupplierController = new AddressEnergySupplierController();
-        if ($addressEnergySupplierController->validateAddressEnergySupplier($currentAddressEnergySupplierElectricityNew, false)) {
-            $addressEnergySupplierController->setEndDateAddressEnergySupplier($currentAddressEnergySupplierElectricityNew);
-        }
-        return $currentAddressEnergySupplierElectricityNew;
+        return new AddressEnergySupplier($this->arrayKeysToSnakeCase($currentAddressEnergySupplierElectricityData));
     }
-
     /**
      * @param AddressEnergySupplier $currentAddressEnergySupplierElectricityNew
      */
     protected function checkSplitRevenuePart(AddressEnergySupplier $currentAddressEnergySupplierElectricityNew): void
     {
-        $revenuePartsKwhArray = [];
         if (Carbon::parse($currentAddressEnergySupplierElectricityNew->end_date_previous)->format('Y-m-d') != '1900-01-01') {
             $participations = $currentAddressEnergySupplierElectricityNew->address->participations;
             foreach ($participations as $participation) {
                 $projectType = $participation->project->projectType;
                 if ($projectType->code_ref === 'postalcode_link_capital') {
                     $revenuesKwhHelper = new RevenuesKwhHelper();
-                    $splitRevenuePartsKwhResponse = $revenuesKwhHelper->checkAndSplitRevenuePartsKwh($participation, $currentAddressEnergySupplierElectricityNew->member_since, $currentAddressEnergySupplierElectricityNew);
-                    if ($splitRevenuePartsKwhResponse) {
-                        $revenuePartsKwhArray [] = $splitRevenuePartsKwhResponse;
-                    }
+
+                    $revenuesKwhHelper->checkAndSplitRevenuePartsKwh(
+                        $participation,
+                        $currentAddressEnergySupplierElectricityNew->member_since,
+                        $currentAddressEnergySupplierElectricityNew
+                    );
+
+                    $revenuesKwhHelper->refreshDistributionPartsKwhEnergySupplierDataForParticipation($participation);
                 }
             }
         }
     }
 
+    protected function getPreviousRelevantAddressEnergySupplier(AddressEnergySupplier $addressEnergySupplier): ?AddressEnergySupplier
+    {
+        if (!$addressEnergySupplier->member_since) {
+            return null;
+        }
+
+        return AddressEnergySupplier::query()
+            ->where('address_id', $addressEnergySupplier->address_id)
+            ->where('id', '!=', $addressEnergySupplier->id)
+            ->whereIn('energy_supply_type_id', [2, 3])
+            ->whereNotNull('member_since')
+            ->where('member_since', '<', $addressEnergySupplier->member_since)
+            ->orderBy('member_since', 'desc')
+            ->orderBy('id', 'desc')
+            ->first();
+    }
+
+    protected function syncPreviousAddressEnergySupplierEndDate(AddressEnergySupplier $addressEnergySupplier): void
+    {
+        if (!$addressEnergySupplier->member_since) {
+            return;
+        }
+
+        $previousAddressEnergySupplier = $this->getPreviousRelevantAddressEnergySupplier($addressEnergySupplier);
+
+        if (!$previousAddressEnergySupplier) {
+            return;
+        }
+
+        $newEndDate = Carbon::parse($addressEnergySupplier->member_since)->subDay()->format('Y-m-d');
+
+        $previousAddressEnergySupplier->end_date = $newEndDate;
+        $previousAddressEnergySupplier->save();
+    }
 }

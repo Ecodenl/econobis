@@ -61,6 +61,9 @@ table th, table td {
 .success-row {
   background-color: $brand-secundairy !important;
 }
+.success-row-light {
+  background-color: #b6ffd3 !important;
+}
 
 .error-row {
   background-color: #fc554e !important;
@@ -76,6 +79,9 @@ table th, table td {
 
 .in-progress-row {
   background-color: #fc8233 !important;
+}
+.in-progress-row-light {
+  background-color: #ffdcbe !important;
 }
 
 .warning-td {

@@ -2,19 +2,22 @@
 
 namespace App\Eco\Project;
 
-use JosKolenberg\Enum\EnumWithIdAndName;
+use App\Support\Enum\HasLegacyEnumHelpers;
 
-class BaseProjectCodeRef extends EnumWithIdAndName
+enum BaseProjectCodeRef: string
 {
+    use HasLegacyEnumHelpers;
 
-    static $all;
+    case SOLAR_ENERGY = 'solar-energy';
+    case WIND = 'wind';
+    case HYDROPOWER = 'hydropower';
 
-    protected static function seed()
+    public function getName(): string
     {
-        return [
-            new static('solar-energy', 'Zonne energie project'),
-            new static('wind', 'Wind project'),
-            new static('hydropower', 'Waterkracht project'),
-        ];
+        return match ($this) {
+            self::SOLAR_ENERGY => 'Zonne energie project',
+            self::WIND => 'Wind project',
+            self::HYDROPOWER => 'Wind Waterkracht project',
+        };
     }
 }

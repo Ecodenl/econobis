@@ -1,86 +1,82 @@
-import React, { Component } from 'react';
-import { isEmpty } from 'lodash';
+import React, { useEffect, useState } from 'react';
 import FinancialOverviewContactAPI from '../../../../api/financial/overview/FinancialOverviewContactAPI';
 import ViewHtmlAsText from '../../../../components/form/ViewHtmlAsText';
 
-class FinancialOverviewCreateViewEmail extends Component {
-    constructor(props) {
-        super(props);
+const FinancialOverviewCreateViewEmail = ({
+    financialOverviewContactId,
+    isLoading = false,
+    amountOfFinancialOverviewContacts = 0,
+}) => {
+    const [email, setEmail] = useState(null);
 
-        this.state = {
-            email: null,
-        };
-    }
-
-    // componentDidMount() {
-    //     this.downloadEmail(this.props.financialOverviewContactId);
-    // }
-
-    UNSAFE_componentWillReceiveProps(nextProps) {
-        if (this.props.financialOverviewContactId !== nextProps.financialOverviewContactId) {
-            if (nextProps.financialOverviewContactId) {
-                this.downloadEmail(nextProps.financialOverviewContactId);
-            }
+    useEffect(() => {
+        if (!financialOverviewContactId) {
+            setEmail(null);
+            return;
         }
-    }
 
-    downloadEmail(financialOverviewContactId) {
-        FinancialOverviewContactAPI.getEmailPreview(financialOverviewContactId).then(payload => {
-            this.setState({
-                email: payload.data,
+        FinancialOverviewContactAPI.getEmailPreview(financialOverviewContactId)
+            .then(payload => {
+                setEmail(payload.data);
+            })
+            .catch(() => {
+                setEmail(null);
             });
-        });
+    }, [financialOverviewContactId]);
+
+    if (isLoading) {
+        return <div>Gegevens aan het laden.</div>;
     }
 
-    render() {
-        return this.props.isLoading ? (
-            <div>Gegevens aan het laden.</div>
-        ) : !this.state.email ? (
-            this.props.amountOfFinancialOverviewContacts > 0 ? (
-                <div>Selecteer links in het scherm een contact om een preview te zien.</div>
-            ) : (
-                <div>Geen gegevens gevonden.</div>
-            )
-        ) : (
-            <div>
-                <div className="row margin-10-top">
-                    <div className="col-sm-12">
-                        <div className="row">
-                            <div className="col-sm-3">
-                                <label className="col-sm-12">Aan</label>
-                            </div>
-                            <div className="col-sm-9">{this.state.email.to}</div>
+    if (!email) {
+        if (amountOfFinancialOverviewContacts > 0) {
+            return <div>Selecteer links in het scherm een contact om een preview te zien.</div>;
+        }
+        return <div>Geen gegevens gevonden.</div>;
+    }
+
+    return (
+        <div>
+            <div className="row margin-10-top">
+                <div className="col-sm-12">
+                    <div className="row">
+                        <div className="col-sm-3">
+                            <label className="col-sm-12">Aan</label>
                         </div>
+                        <div className="col-sm-9">{email.to}</div>
                     </div>
-                </div>
-                {this.state.email.bcc ? (
-                    <div className="row margin-10-top">
-                        <div className="col-sm-12">
-                            <div className="row">
-                                <div className="col-sm-3">
-                                    <label className="col-sm-12">Bcc</label>
-                                </div>
-                                <div className="col-sm-9">{this.state.email.bcc}</div>
-                            </div>
-                        </div>
-                    </div>
-                ) : null}
-                <div className="row margin-10-top">
-                    <div className="col-sm-12">
-                        <div className="row">
-                            <div className="col-sm-3">
-                                <label className="col-sm-12">Onderwerp</label>
-                            </div>
-                            <div className="col-sm-9">{this.state.email.subject}</div>
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
-                    <ViewHtmlAsText label={'Tekst'} value={this.state.email.htmlBody} />
                 </div>
             </div>
-        );
-    }
-}
+
+            {email.bcc ? (
+                <div className="row margin-10-top">
+                    <div className="col-sm-12">
+                        <div className="row">
+                            <div className="col-sm-3">
+                                <label className="col-sm-12">Bcc</label>
+                            </div>
+                            <div className="col-sm-9">{email.bcc}</div>
+                        </div>
+                    </div>
+                </div>
+            ) : null}
+
+            <div className="row margin-10-top">
+                <div className="col-sm-12">
+                    <div className="row">
+                        <div className="col-sm-3">
+                            <label className="col-sm-12">Onderwerp</label>
+                        </div>
+                        <div className="col-sm-9">{email.subject}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="row">
+                <ViewHtmlAsText label={'Tekst'} value={email.htmlBody} />
+            </div>
+        </div>
+    );
+};
 
 export default FinancialOverviewCreateViewEmail;

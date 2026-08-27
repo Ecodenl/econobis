@@ -35,6 +35,10 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             this.props.meDetails.email == 'support@econobis.nl' || this.props.meDetails.email == 'software@xaris.nl'
                 ? true
                 : false;
+        this.manageUsesInterimFinancialOverviews =
+            this.props.meDetails.email == 'support@econobis.nl' || this.props.meDetails.email == 'software@xaris.nl'
+                ? true
+                : false;
 
         const {
             id,
@@ -85,6 +89,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             portalSettingsLayoutId,
             usesMollie,
             mollieApiKey,
+            usesInterimFinancialOverviews,
         } = props.administrationDetails;
 
         this.state = {
@@ -155,6 +160,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 portalSettingsLayoutId: portalSettingsLayoutId ? portalSettingsLayoutId : '',
                 usesMollie: usesMollie,
                 mollieApiKey,
+                usesInterimFinancialOverviews,
             },
             errors: {
                 name: false,
@@ -499,6 +505,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             data.append('logoName', administration.logoName);
             data.append('usesMollie', administration.usesMollie);
             data.append('mollieApiKey', administration.mollieApiKey);
+            data.append('usesInterimFinancialOverviews', administration.usesInterimFinancialOverviews);
 
             this.props.updateAdministration(data, administration.id, this.props.switchToView);
         }
@@ -554,6 +561,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             portalSettingsLayoutId,
             usesMollie,
             mollieApiKey,
+            usesInterimFinancialOverviews,
         } = this.state.administration;
         const { logoFilenameSrc } = this.props.administrationLogoDetails;
 
@@ -868,6 +876,17 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                         onChangeAction={this.handleInputChange}
                                     />
                                 )}
+                            </div>
+                        )}
+
+                        {this.manageUsesInterimFinancialOverviews == true && (
+                            <div className="row">
+                                <InputToggle
+                                    label={'Gebruikt tussentijdse waardestaten'}
+                                    name={'usesInterimFinancialOverviews'}
+                                    value={usesInterimFinancialOverviews}
+                                    onChangeAction={this.handleInputChange}
+                                />
                             </div>
                         )}
 

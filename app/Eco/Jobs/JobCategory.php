@@ -2,29 +2,42 @@
 
 namespace App\Eco\Jobs;
 
-use JosKolenberg\Enum\EnumWithIdAndName;
+use App\Support\Enum\HasLegacyEnumHelpers;
 
-class JobCategory extends EnumWithIdAndName
+enum JobCategory: string
 {
-    static $all;
+    use HasLegacyEnumHelpers;
 
-    protected static function seed()
+    case EMAIL = 'email';
+    case PARTICIPANT = 'participant';
+    case REVENUE = 'revenue';
+    case CREATE_INVOICE = 'create-invoice';
+    case CREATE_INVOICE_POST = 'create-invoice-post';
+    case CREATE_PAYMENT_INVOICE = 'create-payment-invoice';
+    case PROCESS_REVENUES_KWH = 'process-revenues-kwh';
+    case SENT_INVOICE = 'sent-invoice';
+    case SENT_INVOICE_REMINDER = 'sent-invoice-reminder';
+    case CREATE_FINANCIAL_OVERVIEW_PROJECT = 'create-financial-overview-project';
+    case SENT_FINANCIAL_OVERVIEW_CONTACT = 'sent-financial-overview-contact';
+    case CREATE_FINANCIAL_OVERVIEW_CONTACT_POST = 'create-financial-overview-contact-post';
+    case SYNC_LAPOSTA = 'sync-laposta';
+
+    public function getName(): string
     {
-        return [
-            new static('email', 'Email'),
-            new static('participant', 'Deelnemer rapportage'),
-            new static('revenue', 'Opbrengst rapportage'),
-            new static('create-invoice', "Maken nota's"),
-            new static('create-invoice-post', "Maken nota's post"),
-            new static('create-payment-invoice', 'Maken uitkeringsnota\'s'),
-            new static('process-revenues-kwh', 'Opbrengst verdelen'),
-            new static('sent-invoice', 'Versturen nota'),
-            new static('sent-invoice-reminder', 'Versturen herinnering nota'),
-            new static('create-financial-overview-project', 'Aanmaken waardestaat project'),
-            new static('sent-financial-overview-contact', 'Maken/versturen waardestaten email'),
-            new static('create-financial-overview-contact-post', 'Maken waardestaten post'),
-            new static('sync-laposta', 'Synchronisatie relatie in Laposta'),
-        ];
-
+        return match ($this) {
+            self::EMAIL => 'Email',
+            self::PARTICIPANT => 'Deelnemer rapportage',
+            self::REVENUE => 'Opbrengst rapportage',
+            self::CREATE_INVOICE => "Maken nota's",
+            self::CREATE_INVOICE_POST => "Maken nota's post",
+            self::CREATE_PAYMENT_INVOICE => 'Maken uitkeringsnota\'s',
+            self::PROCESS_REVENUES_KWH => 'Opbrengst verdelen',
+            self::SENT_INVOICE => 'Versturen nota',
+            self::SENT_INVOICE_REMINDER => 'Versturen herinnering nota',
+            self::CREATE_FINANCIAL_OVERVIEW_PROJECT => 'Aanmaken waardestaat project',
+            self::SENT_FINANCIAL_OVERVIEW_CONTACT => 'Maken/versturen waardestaten email',
+            self::CREATE_FINANCIAL_OVERVIEW_CONTACT_POST => 'Maken waardestaten post',
+            self::SYNC_LAPOSTA => 'Synchronisatie relatie in Laposta',
+        };
     }
 }

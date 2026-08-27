@@ -106,6 +106,7 @@ import { fetchNotesSaga } from './task/NotesSaga';
 import { deleteTeamSaga, fetchTeamsSaga } from './team/TeamsSaga';
 import {
     deleteTeamContactGroupSaga,
+    deleteTeamDistrictSaga,
     deleteTeamDocumentCreatedFromSaga,
     deleteTeamUserSaga,
     fetchTeamDetailsSaga,
@@ -162,7 +163,7 @@ export default function* watchSagas() {
     yield takeLatest('DELETE_EMAIL_ADDRESS', deleteEmailAddressSaga);
     yield takeLatest('DELETE_PORTAL_USER', deletePortalUserSaga);
     yield takeLatest('DELETE_CONTACT_NOTE', deleteContactNoteSaga);
-    yield takeLatest('DELETE_ADDRESS_ENERGY_SUPPLIER', deleteAddressEnergySupplierSaga);
+    yield takeLatest('DELETE_ADDRESS_ENERGY_SUPPLIER_REQUEST', deleteAddressEnergySupplierSaga);
     yield takeLatest('DELETE_ADDRESS_DONGLE', deleteAddressDongleSaga);
     // Contact group
     yield takeLatest('FETCH_CONTACT_GROUPS', fetchContactGroupsSaga);
@@ -269,6 +270,7 @@ export default function* watchSagas() {
     yield takeLatest('DELETE_TEAM', deleteTeamSaga);
     yield takeLatest('DELETE_TEAM_USER', deleteTeamUserSaga);
     yield takeLatest('DELETE_TEAM_CONTACT_GROUP', deleteTeamContactGroupSaga);
+    yield takeLatest('DELETE_TEAM_DISTRICT', deleteTeamDistrictSaga);
     yield takeLatest('DELETE_TEAM_DOCUMENT_CREATED_FROM', deleteTeamDocumentCreatedFromSaga);
     yield takeLatest('UPDATE_TEAM', updateTeamDetailsSaga);
 

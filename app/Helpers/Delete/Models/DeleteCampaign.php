@@ -66,15 +66,15 @@ class DeleteCampaign implements DeleteInterface
     {
         foreach ($this->campaign->tasks as $task) {
             $deleteTask = new DeleteTask($task);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteTask->delete() ?? [] ) );
         }
         foreach ($this->campaign->notes as $task) {
             $deleteTask = new DeleteTask($task);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteTask->delete() ?? [] ) );
         }
         foreach ($this->campaign->intakes as $intake) {
             $deletetIntake = new DeleteIntake($intake);
-            $this->errorMessage = array_merge($this->errorMessage, $deletetIntake->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deletetIntake->delete() ?? [] ) );
         }
     }
 

@@ -11,6 +11,7 @@ namespace App\Http\RequestQueries\HousingFile\Grid;
 
 use App\Eco\HousingFile\HousingFile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
 {
@@ -26,6 +27,7 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
     protected function baseQuery()
     {
         return HousingFile::query()
+            ->whereTeamContactIds(Auth::user())
             ->select('housing_files.*');
     }
 

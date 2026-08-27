@@ -1,28 +1,21 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Beheerder
- * Date: 11-10-2017
- * Time: 11:29
- */
-
 namespace App\Eco\Contact;
 
-use JosKolenberg\Enum\EnumWithIdAndName;
+use App\Support\Enum\HasLegacyEnumHelpers;
 
-class ContactType extends EnumWithIdAndName
+enum ContactType: string
 {
+    use HasLegacyEnumHelpers;
 
-    const PERSON = 'person';
-    const ORGANISATION = 'organisation';
+    case PERSON = 'person';
+    case ORGANISATION = 'organisation';
 
-    protected static function seed()
+    public function getName(): string
     {
-        return [
-            new static(static::PERSON, 'Persoon'),
-            new static(static::ORGANISATION, 'Organisatie'),
-        ];
+        return match ($this) {
+            self::PERSON => 'Persoon',
+            self::ORGANISATION => 'Organisatie',
+        };
     }
-
 }

@@ -16,9 +16,11 @@ class FullOccupation extends JsonResource
     {
         return [
             'id' => $this->id,
+            'codeRef' => $this->code_ref,
             'name' => $this->primary_occupation === $this->secondary_occupation ? $this->primary_occupation : $this->primary_occupation . ' of ' . $this->secondary_occupation ,
             'primaryOccupation' => $this->primary_occupation,
             'secondaryOccupation' => $this->secondary_occupation,
+            'isActive' => $this->is_active,
         ];
     }
 }

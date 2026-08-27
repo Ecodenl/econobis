@@ -34,6 +34,8 @@ class FinancialOverviewProjectJoryResource extends JoryResource
         $this->field('bookworth_end_value')->filterable()->sortable();
         $this->field('total_amount_start_value')->filterable()->sortable();
         $this->field('total_amount_end_value')->filterable()->sortable();
+        $this->field('number_of_financial_overview_contacts_send')->filterable()->sortable();
+        $this->field('has_interim_financial_overview_contacts')->filterable()->sortable();
 
         // Relations
         $this->relation('project');

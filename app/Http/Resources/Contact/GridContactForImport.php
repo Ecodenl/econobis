@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Contact;
 
+use App\Eco\EmailAddress\EmailAddressType;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class GridContactForImport extends JsonResource
@@ -31,7 +32,7 @@ class GridContactForImport extends JsonResource
             'postalCode' => $this->contact?->primaryAddress?->postal_code ?? '',
             'city' => $this->contact?->primaryAddress?->city ?? '',
             'emailContact' => $this->contact?->primaryEmailAddress?->email ?? '',
-            'emailContactFinancial' => $this->contact?->primaryEmailAddress?->type_id === 'invoice' ? $this->contact?->primaryEmailAddress?->email : ($this->contact?->latestEmailAddressInvoice?->email ?? ''),
+            'emailContactFinancial' => $this->contact?->primaryEmailAddress?->type_id === EmailAddressType::INVOICE ? $this->contact?->primaryEmailAddress?->email : ($this->contact?->latestEmailAddressInvoice?->email ?? ''),
             'phoneNumber' => $this->contact?->primaryphoneNumber?->number ?? '',
             'iban' => $this->contact?->iban ?? '',
             'chamberOfCommerceNumber' => $this->contact?->organisation?->chamberOfCommerceNumber ?? '',

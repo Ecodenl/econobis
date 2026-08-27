@@ -3,6 +3,7 @@ export default [
     // { id: 27, name: 'Anode Energie' },
     { id: 66, name: 'ANWB Energie' },
     { id: 79, name: 'Atlas Power and Gas' },
+    { id: 83, name: 'Audax Renewables' },
     { id: 24, name: 'Betuwe stroom' },
     { id: 2, name: 'Budget Energie' },
     { id: 58, name: 'CEN / WoonEnergie' },

@@ -1,33 +1,27 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Beheerder
- * Date: 06-10-2017
- * Time: 15:19
- */
 
 namespace App\Eco\EmailAddress;
 
+use App\Support\Enum\HasLegacyEnumHelpers;
 
-use JosKolenberg\Enum\EnumWithIdAndName;
-
-class EmailAddressType extends EnumWithIdAndName
+enum EmailAddressType: string
 {
+    use HasLegacyEnumHelpers;
 
-    const WORK = 'work';
-    const HOME = 'home';
-    const GENERAL = 'general';
-    const ADMINISTRATION = 'administration';
-    const INVOICE = 'invoice';
+    case WORK = 'work';
+    case HOME = 'home';
+    case GENERAL = 'general';
+    case ADMINISTRATION = 'administration';
+    case INVOICE = 'invoice';
 
-    protected static function seed()
+    public function getName(): string
     {
-        return [
-            new static(static::WORK, 'Werk'),
-            new static(static::HOME, 'Privé'),
-            new static(static::GENERAL, 'Algemeen'),
-            new static(static::ADMINISTRATION, 'Administratie'),
-            new static(static::INVOICE, 'Nota'),
-        ];
+        return match ($this) {
+            self::WORK => 'Werk',
+            self::HOME => 'Privé',
+            self::GENERAL => 'Algemeen',
+            self::ADMINISTRATION => 'Administratie',
+            self::INVOICE => 'Nota',
+        };
     }
 }

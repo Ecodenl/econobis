@@ -44,6 +44,8 @@ class MailboxesListItem extends Component {
             id,
             name,
             email,
+            isSystemMailgunDomain,
+            onlyOutgoingMailbox,
             incomingServerType,
             incomingServerTypeName,
             outgoingServerType,
@@ -61,6 +63,10 @@ class MailboxesListItem extends Component {
         //todo WM oauth: nog testen en opschonen !!!
         // const usesMailgun = outgoingServerType === 'mailgun';
 
+        const incomingServerData = onlyOutgoingMailbox
+            ? 'N.v.t.'
+            : `${incomingServerTypeName} ${imapHost} (${imapPort})`;
+
         return (
             <tr
                 className={`${this.state.highlightRow}  ${valid ? '' : 'has-error'}`}
@@ -74,13 +80,7 @@ class MailboxesListItem extends Component {
                 {/*<td>{imapHost}</td>*/}
                 {/*<td>{usesMailgun ? 'Ja' : 'Nee'}</td>*/}
                 {/*<td>{usesMailgun ? mailgunDomain : smtpHost}</td>*/}
-                {incomingServerType === 'imap' ? (
-                    <td>
-                        {incomingServerTypeName} {imapHost} ({imapPort})
-                    </td>
-                ) : (
-                    <td>{incomingServerTypeName}</td>
-                )}
+                {incomingServerType === 'imap' ? <td>{incomingServerData}</td> : <td>{incomingServerTypeName}</td>}
                 {outgoingServerType === 'smtp' ? (
                     <td>
                         {outgoingServerTypeName} {smtpHost} ({smtpPort})
@@ -95,6 +95,7 @@ class MailboxesListItem extends Component {
 
                 <td>{primary ? 'Primair' : ''}</td>
                 <td>{isActive ? 'Ja' : 'Nee'}</td>
+                <td>{isSystemMailgunDomain ? 'Ja' : 'Nee'}</td>
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>

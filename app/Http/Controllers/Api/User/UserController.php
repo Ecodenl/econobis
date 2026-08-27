@@ -92,7 +92,11 @@ class UserController extends Controller
             $user->teams()->attach([$teamId]);
         }
 
-        $user->assignRole(Role::findByName('Medewerker'));
+        $defaultRole = Role::where('role_code', 'employee')
+            ->where('guard_name', 'api')
+            ->firstOrFail();
+
+        $user->assignRole($defaultRole);
 
         //Send link to set password
         (new ForgotPasswordController())->sendResetLinkEmail($request);
@@ -183,9 +187,10 @@ class UserController extends Controller
         return $this->show($user);
     }
 
-    public function withPermission(Permission $permission)
+    public function withPermissionManageGroup()
     {
-        $users = User::permission($permission)->with(['lastNamePrefix', 'title'])->where('id', '!=', '1')->where('active', true)->get();
+        $permissionManageGroup = Permission::where('name', 'manage_group')->first();
+        $users = User::permission($permissionManageGroup)->with(['lastNamePrefix', 'title'])->where('id', '!=', '1')->where('active', true)->get();
         return FullUser::collection($users);
     }
 
@@ -199,6 +204,21 @@ class UserController extends Controller
     public function removeRole(User $user, Role $role)
     {
         $this->authorize('update', $user);
+
+        if ($role->role_type === 'primary') {
+            $primaryRolesCount = $user->roles()
+                ->where('guard_name', 'api')
+                ->where('role_type', 'primary')
+                ->count();
+            if ($primaryRolesCount <= 1) {
+                return response()->json([
+                    'message' => 'De laatste primaire gebruikersrol kan niet worden verwijderd.',
+                    'errors' => [
+                        'roles' => ['Een gebruiker moet minimaal één primaire gebruikersrol hebben.'],
+                    ],
+                ], 422);
+            }
+        }
 
         $user->removeRole($role);
     }

@@ -7,10 +7,11 @@ use App\Eco\Email\EmailRecipientCollection;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\Jobs\JobsLog;
 use App\Eco\User\User;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMail;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 
 class SendSingleMailToContact extends SendSingleMail
 {
@@ -25,10 +26,12 @@ class SendSingleMailToContact extends SendSingleMail
 
     public function handle(): Email
     {
+        Auth::setUser($this->user->fresh());
+
         $email = $this->getUpdatedEmail();
 
         try {
-            Mail::fromMailbox($this->email->mailbox)
+            MailHelper::fromMailbox($this->email->mailbox)
                 ->to($this->emailAddress->email)
                 ->cc($this->cc->getEmailAdresses()->toArray())
                 ->bcc($this->bcc->getEmailAdresses()->toArray())

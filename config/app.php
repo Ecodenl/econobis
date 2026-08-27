@@ -3,9 +3,9 @@
 return [
 
     //Version number displayed in the header, change this with every update
-    'version_major' => '5',
-    'version_minor' => '2',
-    'version_fix' => '3.1',
+    'version_major' => '6',
+    'version_minor' => '0',
+    'version_fix' => '0.2',
 
     //Alfresco envs
 //    'ALFRESCO_ADMIN_USERNAME' => env('ALFRESCO_ADMIN_USERNAME'),
@@ -176,6 +176,9 @@ return [
     'url_api' => env('URL_API', env('APP_URL')),
 
     'oauth_client_id' => env('OAUTH_CLIENT_ID', '2'),
+    'oauth_client_secret' => env('OAUTH_CLIENT_SECRET', ''),
+    'oauth_portal_client_id' => env('OAUTH_PORTAL_CLIENT_ID', '3'),
+    'oauth_portal_client_secret' => env('OAUTH_PORTAL_CLIENT_SECRET', ''),
 
     // //locale (linux/windows verschil)
     'LC_TIME' => env('LC_TIME', 'nl_NL.utf8'),
@@ -208,7 +211,6 @@ return [
         Illuminate\Foundation\Providers\FoundationServiceProvider::class,
         Illuminate\Hashing\HashServiceProvider::class,
 //        Illuminate\Mail\MailServiceProvider::class,
-        App\Providers\CustomMailServiceProvider::class,
         Illuminate\Notifications\NotificationServiceProvider::class,
         Illuminate\Pagination\PaginationServiceProvider::class,
         Illuminate\Pipeline\PipelineServiceProvider::class,
@@ -224,6 +226,7 @@ return [
          * Package Service Providers...
          */
         Laravel\Tinker\TinkerServiceProvider::class,
+        Laravel\Fortify\FortifyServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -231,7 +234,9 @@ return [
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
+        App\Providers\CustomMailServiceProvider::class,
         App\Providers\EventServiceProvider::class,
+        App\Providers\FortifyServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         \App\Providers\ObserverServiceProvider::class,
 

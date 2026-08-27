@@ -16,9 +16,9 @@ export default {
             });
     },
 
-    fetchUsersWithPermission: permissionId => {
+    fetchUsersWithPermissionManageGroup: () => {
         const URL_USER = `${getApiUrl()}/api/user`;
-        const requestUrl = `${URL_USER}/with-permission/${permissionId}`;
+        const requestUrl = `${URL_USER}/with-permission-manage-group`;
 
         return getAxiosInstance()
             .get(requestUrl)

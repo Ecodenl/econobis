@@ -44,10 +44,10 @@ class ContactToImportExcelHelper
         $headerData[] = 'Toevoeging';
         $headerData[] = 'Postcode';
         $headerData[] = 'Woonplaats';
+        $headerData[] = 'IBAN';
         $headerData[] = 'Email primair';
         $headerData[] = 'Email financieel';
         $headerData[] = 'Telefoon';
-        $headerData[] = 'Iban';
         $headerData[] = 'KvK nummer';
         $headerData[] = 'Energie leverancier';
         $headerData[] = 'Ean type';
@@ -75,10 +75,20 @@ class ContactToImportExcelHelper
                         break;
                 }
 
-                $ean = $contactToImport['ean'] && !empty($contactToImport['ean']) ? 'EAN: ' . $contactToImport['ean'] : '';
-                $memberSince = $contactToImport['memberSince'] && !empty($contactToImport['memberSince']) ? Carbon::parse($contactToImport['memberSince'])->format('d-m-Y') : '';
-                $endDate = $contactToImport['endDate'] && !empty($contactToImport['endDate']) ? Carbon::parse($contactToImport['endDate'])->format('d-m-Y') : '';
                 $dateOfBirth = $contactToImport['dateOfBirth'] && !empty($contactToImport['dateOfBirth']) ? Carbon::parse($contactToImport['dateOfBirth'])->format('d-m-Y') : '';
+
+                $partialHiddenIbanContactToImport = self::partialHiddenIban($contactToImport['iban']);
+
+                // Choose which fields to use based on the 'eanType'
+                if ($contactToImport['eanType'] === 'Gas') {
+                    $ean = $contactToImport['eanGas'] && !empty($contactToImport['eanGas']) ? 'EAN: ' . $contactToImport['eanGas'] : '';
+                    $memberSince = $contactToImport['memberSinceGas'] && !empty($contactToImport['memberSinceGas']) ? Carbon::parse($contactToImport['memberSinceGas'])->format('d-m-Y') : '';
+                    $endDate = $contactToImport['endDateGas'] && !empty($contactToImport['endDateGas']) ? Carbon::parse($contactToImport['endDateGas'])->format('d-m-Y') : '';
+                } else {
+                    $ean = $contactToImport['ean'] && !empty($contactToImport['ean']) ? 'EAN: ' . $contactToImport['ean'] : '';
+                    $memberSince = $contactToImport['memberSince'] && !empty($contactToImport['memberSince']) ? Carbon::parse($contactToImport['memberSince'])->format('d-m-Y') : '';
+                    $endDate = $contactToImport['endDate'] && !empty($contactToImport['endDate']) ? Carbon::parse($contactToImport['endDate'])->format('d-m-Y') : '';
+                }
 
                 $rowData = [];
 
@@ -95,10 +105,10 @@ class ContactToImportExcelHelper
                 $rowData[10] = $contactToImport['addition'] ?: '';
                 $rowData[11] = $contactToImport['postalCode'] ?: '';
                 $rowData[12] = $contactToImport['city'] ?: '';
-                $rowData[13] = $contactToImport['emailContact'] ?: '';
-                $rowData[14] = $contactToImport['emailContactFinancial'] ?: '';
-                $rowData[15] = $contactToImport['phoneNumber'] ?: '';
-                $rowData[16] = $contactToImport['iban'] ?: '';
+                $rowData[13] = $partialHiddenIbanContactToImport;
+                $rowData[14] = $contactToImport['emailContact'] ?: '';
+                $rowData[15] = $contactToImport['emailContactFinancial'] ?: '';
+                $rowData[16] = $contactToImport['phoneNumber'] ?: '';
                 $rowData[17] = $contactToImport['chamberOfCommerceNumber'] ?: '';
                 $rowData[18] = $contactToImport['supplierCodeRef'] ?: '';
                 $rowData[19] = $contactToImport['eanType'] ?: '';
@@ -133,6 +143,9 @@ class ContactToImportExcelHelper
                                 'endDate' => ($contactForImport['esEndDateElectricity'] && !empty($contactForImport['esEndDateElectricity']) ? Carbon::parse($contactForImport['esEndDateElectricity'])->format('d-m-Y') : ''),
                             ];
                         }
+
+                        $partialHiddenIbanContactForImport = self::partialHiddenIban($contactForImport['iban']);
+
                         $rowData = [];
 
                         $rowData[0] = '';
@@ -148,14 +161,14 @@ class ContactToImportExcelHelper
                         $rowData[10] = $contactForImport['addition'] ?: '';
                         $rowData[11] = $contactForImport['postalCode'] ?: '';
                         $rowData[12] = $contactForImport['city'] ?: '';
-                        $rowData[13] = $contactForImport['emailContact'] ?: '';
-                        $rowData[14] = $contactForImport['emailContactFinancial'] ?: '';
-                        $rowData[15] = $contactForImport['phoneNumber'] ?: '';
-                        $rowData[16] = $contactForImport['iban'] ?: '';
+                        $rowData[13] = $partialHiddenIbanContactForImport;
+                        $rowData[14] = $contactForImport['emailContact'] ?: '';
+                        $rowData[15] = $contactForImport['emailContactFinancial'] ?: '';
+                        $rowData[16] = $contactForImport['phoneNumber'] ?: '';
                         $rowData[17] = $contactForImport['chamberOfCommerceNumber'] ?: '';
                         $rowData[18] = $contactForImportData['supplierCodeRef'] ?: '';
-                        $rowData[19] = $contactForImportData['ean'] ?: '';
-                        $rowData[20] = $contactForImportData['eanType'] ?: '';
+                        $rowData[19] = $contactForImportData['eanType'] ?: '';
+                        $rowData[20] = $contactForImportData['ean'] ?: '';
                         $rowData[21] = $contactForImportData['esNumber'] ?: '';
                         $rowData[22] = $contactForImportData['memberSince'] ?: '';
                         $rowData[23] = $contactForImportData['endDate'] ?: '';
@@ -173,13 +186,13 @@ class ContactToImportExcelHelper
         // Load all data in worksheet
         $sheet->fromArray($completeData);
 
-        for ($col = 'A'; $col !== 'T'; $col++) {
+        for ($col = 'A'; $col !== 'Y'; $col++) {
             $spreadsheet->getActiveSheet()
                 ->getColumnDimension($col)
                 ->setAutoSize(true);
         }
 
-        $sheet->getStyle('A1:T1')
+        $sheet->getStyle('A1:X1')
             ->applyFromArray([
                 'font' => [
                     'bold' => true,
@@ -191,4 +204,20 @@ class ContactToImportExcelHelper
         $document = $writer->save('php://output');
         return $document;
     }
+
+    private function partialHiddenIban(string $partialHiddenIban) : string
+    {
+        if($partialHiddenIban && !empty($partialHiddenIban) && strlen($partialHiddenIban)>13)
+        {
+            $numberOfHiddenCharacters = strlen($partialHiddenIban) - 11;                         // 18 - 11 = 7
+            $partialHiddenIbanContactForImport = substr($partialHiddenIban, 0, 7);  // eerste 7
+            while($numberOfHiddenCharacters > 0) {
+                $partialHiddenIbanContactForImport = $partialHiddenIbanContactForImport . '*';
+                $numberOfHiddenCharacters--;
+            }
+            return $partialHiddenIbanContactForImport . (substr($partialHiddenIban, -4));
+        }
+        return '';
+    }
 }
+

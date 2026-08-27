@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources\Webform;
 
-
 use App\Http\Resources\Team\FullTeam;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -14,6 +13,8 @@ class FullWebform extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'apiType' => $this->api_type?->value,
+            'apiTypeName' => $this->api_type?->getName(),
             'apiKey' => $this->api_key,
             'apiKeyDate' => $this->api_key_date,
             'emailAddressErrorReport' => $this->email_address_error_report,
@@ -25,6 +26,10 @@ class FullWebform extends JsonResource
             'responsibleUser' => FullUser::make($this->whenLoaded('responsibleUser')),
             'responsibleTeamId' => $this->responsible_team_id,
             'responsibleTeam' => FullTeam::make($this->whenLoaded('responsibleTeam')),
+            'actions' => FullWebformAction::collection($this->whenLoaded('actions')),
+            'canCreateParticipations' => $this->canCreateParticipations(),
+            'allowedParticipationStatusIds' => $this->allowedParticipationStatusIds(),
+            'canCreateOrders' => $this->canCreateOrders(),
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
         ];

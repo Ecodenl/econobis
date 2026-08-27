@@ -14,6 +14,7 @@ use App\Eco\HousingFile\HousingFile;
 use App\Eco\Team\Team;
 use App\Eco\User\User;
 use App\Eco\Webform\Webform;
+use App\Eco\Webform\WebformApiType;
 use App\Http\Controllers\Controller;
 use App\Notifications\HoomdossierRequestProcessed;
 use Carbon\Carbon;
@@ -53,6 +54,9 @@ class EndPointHoomDossierController extends Controller
             $this->webform = $webform;
             $this->log('Endpoint met id ' . $webform->id . ' gevonden bij code ' . $apiKey . '.');
         }
+
+        $this->validateApiTypeForHoomDossier($webform);
+
         $this->checkMaxRequests($webform);
 
         $this->cooperation = Cooperation::first();
@@ -150,6 +154,18 @@ class EndPointHoomDossierController extends Controller
     protected function log(string $text)
     {
         $this->logs[] = $text;
+    }
+
+    private function validateApiTypeForHoomDossier(Webform $webform): void
+    {
+        if ($webform->api_type === WebformApiType::WEBFORM_API) {
+            $this->error('Endpoint not found', 404);
+        }
+
+        if ($webform->api_type === null) {
+            $webform->api_type = WebformApiType::HOOMDOSSIER_API;
+            $webform->save();
+        }
     }
 
     protected function checkMaxRequests($webform)

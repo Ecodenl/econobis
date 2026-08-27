@@ -7,12 +7,12 @@ use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\QuotationRequest\QuotationRequest;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 
 class QuotationRequestWorkflowHelper
 {
@@ -22,7 +22,7 @@ class QuotationRequestWorkflowHelper
         $this->quotationRequest = $quotationRequest;
         $this->quotationRequest_status = $quotationRequest->status;
         $this->contact = $quotationRequest->opportunity->intake->contact;
-        $this->cooperativeName = PortalSettings::get('cooperativeName');
+        $this->cooperativeName = PortalSettings::first()?->cooperative_name;;
 
     }
 
@@ -84,12 +84,12 @@ class QuotationRequestWorkflowHelper
 
         if(!$to) return false;
 
-        $mail = Mail::fromMailbox($mailbox)
-            ->to($to);
+        $mail = MailHelper::fromMailbox($mailbox)
+            ->to($to->email);
         $toEmail = $to->email;
         $ccEmail = '';
         if($cc) {
-            $mail->cc($this->quotationRequest->organisationOrCoach->primaryEmailAddress);
+            $mail->cc($cc->email);
             $ccEmail = $cc->email;
         }
 
@@ -137,8 +137,8 @@ class QuotationRequestWorkflowHelper
             $mailbox = Mailbox::getDefault();
         }
 
-        $mail = Mail::fromMailbox($mailbox)
-            ->to($this->quotationRequest->organisationOrCoach->primaryEmailAddress);
+        $mail = MailHelper::fromMailbox($mailbox)
+            ->to($this->quotationRequest->organisationOrCoach->primaryEmailAddress?->email);
 
         $this->mailWorkflow($emailTemplate, $mail, $mailbox, $this->quotationRequest->organisationOrCoach->primaryEmailAddress->email, '');
 

@@ -107,18 +107,17 @@ class AdministrationController extends ApiController
             ->string('emailBccNotas')->whenMissing(null)->onEmpty(null)->alias('email_bcc_notas')->next()
             ->integer('portalSettingsLayoutId')->validate('nullable|exists:portal_settings_layouts,id')->onEmpty(null)->whenMissing(null)->alias('portal_settings_layout_id')->next()
             ->string('logoName')->whenMissing(null)->onEmpty(null)->alias('logo_name')->next()
+            ->boolean('usesInterimFinancialOverviews')->whenMissing(false)->onEmpty(false)->alias('uses_interim_financial_overviews')->next()
             ->get();
 
         //bool als string? waarschijnlijk door formdata
         $usesVat = $request->input('usesVat');
-
         if($usesVat == 'false' || $usesVat == '0'){
             $usesVat = false;
         }
         if($usesVat == 'true' || $usesVat == '1'){
             $usesVat = true;
         }
-
         $data['uses_vat'] = $usesVat;
 
         $data['uses_mollie'] = false;
@@ -127,6 +126,16 @@ class AdministrationController extends ApiController
             $data['uses_mollie'] = (bool) $request->input('usesMollie') && $request->input('usesMollie') !== 'false';
             $data['mollie_api_key'] = $request->input('mollieApiKey');
         }
+
+        //bool als string? waarschijnlijk door formdata
+        $usesInterimFinancialOverviews = $request->input('usesInterimFinancialOverviews');
+        if($usesInterimFinancialOverviews == 'false' || $usesInterimFinancialOverviews == '0'){
+            $usesInterimFinancialOverviews = false;
+        }
+        if($usesInterimFinancialOverviews == 'true' || $usesInterimFinancialOverviews == '1'){
+            $usesInterimFinancialOverviews = true;
+        }
+        $data['uses_interim_financial_overviews'] = $usesInterimFinancialOverviews;
 
         $administration = new Administration($data);
 
@@ -192,32 +201,38 @@ class AdministrationController extends ApiController
 
         //bool als string? waarschijnlijk door formdata
         $usesTwinfield = $request->input('usesTwinfield');
-
         if($usesTwinfield == 'false' || $usesTwinfield == '0'){
             $usesTwinfield = false;
         }
         if($usesTwinfield == 'true' || $usesTwinfield == '1'){
             $usesTwinfield = true;
         }
-
         $data['uses_twinfield'] = $usesTwinfield;
 
         //bool als string? waarschijnlijk door formdata
         $usesVat = $request->input('usesVat');
-
         if($usesVat == 'false' || $usesVat == '0'){
             $usesVat = false;
         }
         if($usesVat == 'true' || $usesVat == '1'){
             $usesVat = true;
         }
-
         $data['uses_vat'] = $usesVat;
 
         if(\Auth::user()->email === 'support@econobis.nl' || \Auth::user()->email === 'software@xaris.nl'){
             $data['uses_mollie'] = (bool) $request->input('usesMollie') && $request->input('usesMollie') !== 'false';
             $data['mollie_api_key'] = $request->input('mollieApiKey');
         }
+
+        //bool als string? waarschijnlijk door formdata
+        $usesInterimFinancialOverviews = $request->input('usesInterimFinancialOverviews');
+        if($usesInterimFinancialOverviews == 'false' || $usesInterimFinancialOverviews == '0'){
+            $usesInterimFinancialOverviews = false;
+        }
+        if($usesInterimFinancialOverviews == 'true' || $usesInterimFinancialOverviews == '1'){
+            $usesInterimFinancialOverviews = true;
+        }
+        $data['uses_interim_financial_overviews'] = $usesInterimFinancialOverviews;
 
         $administration->fill($data);
 

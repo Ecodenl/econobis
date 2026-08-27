@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 
 /**
- * Class DeleteFreeFieldsField
+ * Class DeletePortalFreeFieldsPage
  *
  * @package App\Helpers\Delete\Models
  */

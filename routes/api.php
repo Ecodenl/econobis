@@ -163,11 +163,11 @@ Route::namespace('Api')
 
         Route::get('/user/grid', 'User\GridController@index');
         Route::get('/user/rolesPermissionsExcel', 'User\UserController@rolesPermissionsExcel');
+        Route::get('/user/with-permission-manage-group', 'User\UserController@withPermissionManageGroup');
         Route::post('/user', 'User\UserController@store');
         Route::get('/user/{user}', 'User\UserController@show');
         Route::post('/user/{user}', 'User\UserController@update');
         Route::post('/user/{user}/unblock', 'User\UserController@unblock');
-        Route::get('/user/with-permission/{permission}', 'User\UserController@withPermission');
         Route::post('/user/{user}/roles/add/{role}', 'User\UserController@addRole');
         Route::post('/user/{user}/roles/remove/{role}', 'User\UserController@removeRole');
         Route::post('/user/{user}/reset-two-factor', 'User\UserController@resetTwoFactor');
@@ -279,6 +279,15 @@ Route::namespace('Api')
 
         Route::get('contact-group/{contactGroup}/tasks', 'ContactGroup\ContactGroupController@tasks');
 
+        Route::get('cleanup/items', 'DataCleanup\CleanupController@getCleanupItems');
+        Route::post('cleanup/update-items-all', 'DataCleanup\CleanupController@updateItemsAll');
+        Route::post('cleanup/update-item/{cleanupType}', 'DataCleanup\CleanupController@updateItem');
+        Route::post('cleanup/cleanup-items-all', 'DataCleanup\CleanupController@cleanupItemsAll');
+        Route::post('cleanup/cleanup-item/{cleanupType}', 'DataCleanup\CleanupController@cleanupItem');
+
+        Route::get('cleanup/force-delete-contacts-stats', 'DataCleanup\CleanupController@getForceDeleteContactsStats');
+        Route::post('cleanup/force-delete-contacts', 'DataCleanup\CleanupController@forceDeleteSoftDeletedContacts');
+
         Route::get('task/grid/tasks', 'Task\TaskController@gridTask');
         Route::get('task/grid/notes', 'Task\TaskController@gridNote');
         Route::get('task/peek', 'Task\TaskController@peek');
@@ -356,10 +365,15 @@ Route::namespace('Api')
         Route::get('mailbox/receive/from-mailboxes-user', 'Mailbox\MailboxController@receiveMailFromMailboxesUser');
         Route::get('mailbox/{mailbox}/make-primary', 'Mailbox\MailboxController@makePrimary');
 
+        Route::post('mailbox/{mailbox}/ms-oauth/force-reconnect', [MailboxController::class, 'forceMsOauthReconnect']);
+        Route::post('mailbox/{mailbox}/ms-oauth/force-select-account', [MailboxController::class, 'forceMsOauthSelectAccount']);
+
+
         /**
          * Districts
          */
         Route::get('district', [\App\Http\Controllers\Api\District\DistrictController::class, 'index']);
+        Route::get('district/peek/{active?}', [\App\Http\Controllers\Api\District\DistrictController::class, 'peek']);
         Route::get('district/{district}', [\App\Http\Controllers\Api\District\DistrictController::class, 'show']);
         Route::get('district/{district}/calendar-items', [\App\Http\Controllers\Api\District\DistrictController::class, 'getCalendarItems']);
         Route::post('district', [\App\Http\Controllers\Api\District\DistrictController::class, 'create']);
@@ -480,12 +494,15 @@ Route::namespace('Api')
         Route::post('team/{team}/{user}/detach', 'Team\TeamController@detachUser');
         Route::post('team/{team}/{contactGroup}/attach-contact-group', 'Team\TeamController@attachContactGroup');
         Route::post('team/{team}/{contactGroup}/detach-contact-group', 'Team\TeamController@detachContactGroup');
+        Route::post('team/{team}/{district}/attach-district', 'Team\TeamController@attachDistrict');
+        Route::post('team/{team}/{district}/detach-district', 'Team\TeamController@detachDistrict');
         Route::post('team/{team}/{documentCreatedFrom}/attach-document-created-from', 'Team\TeamController@attachDocumentCreatedFrom');
         Route::post('team/{team}/{documentCreatedFrom}/detach-document-created-from', 'Team\TeamController@detachDocumentCreatedFrom');
 
         Route::get('/quotation-request/grid', 'QuotationRequest\QuotationRequestController@grid');
         Route::get('/quotation-request/peek', 'QuotationRequest\QuotationRequestController@peek');
         Route::get('/quotation-request/csv', 'QuotationRequest\QuotationRequestController@csv');
+        Route::get('/quotation-request/excel/{type}', 'QuotationRequest\QuotationRequestController@excel');
         Route::get('/quotation-request/amount-open', 'QuotationRequest\QuotationRequestController@getAmountOfOpenQuotationRequests');
         Route::get('/opportunity/{opportunity}/{opportunityAction}/quotation-request', 'QuotationRequest\QuotationRequestController@getStore');
         Route::post('/quotation-request', 'QuotationRequest\QuotationRequestController@store');
@@ -707,10 +724,6 @@ Route::namespace('Api')
         Route::get('opportunity-status/jory', 'Opportunity\OpportunityStatusController@jory');
         Route::post('opportunity-status/{opportunityStatus}', 'Opportunity\OpportunityStatusController@update');
 
-        Route::get('setting', 'Setting\SettingController@get');
-        Route::get('setting/multiple', 'Setting\SettingController@multiple');
-        Route::post('setting', 'Setting\SettingController@store');
-
         Route::get('financial-overview/jory', 'FinancialOverview\FinancialOverviewController@jory');
         Route::post('financial-overview', 'FinancialOverview\FinancialOverviewController@store');
         Route::post('financial-overview/{financialOverview}', 'FinancialOverview\FinancialOverviewController@update');
@@ -729,23 +742,30 @@ Route::namespace('Api')
         Route::get('financial-overview-contact/{financialOverviewContact}/download-preview', 'FinancialOverview\FinancialOverviewContactController@downloadPreview');
         Route::get('financial-overview-contact/{financialOverviewContact}/download', 'FinancialOverview\FinancialOverviewContactController@download');
         Route::get('financial-overview-contact/{financialOverviewContact}/get', 'FinancialOverview\FinancialOverviewContactController@getFinancialOverviewContact');
+        Route::get('financial-overview-contact/{financialOverviewContact}/get-for-interim', 'FinancialOverview\FinancialOverviewContactController@getFinancialOverviewContactForInterim');
         Route::post('financial-overview-contact/{financialOverview}/sending/email', 'FinancialOverview\FinancialOverviewContactController@getFinancialOverviewContactsForSendingEmail');
         Route::post('financial-overview-contact/{financialOverview}/sending/post', 'FinancialOverview\FinancialOverviewContactController@getFinancialOverviewContactsForSendingPost');
         Route::post('financial-overview-contact/{financialOverview}/send-all', 'FinancialOverview\FinancialOverviewContactController@sendAll');
         Route::post('financial-overview-contact/{financialOverview}/send-all-post', 'FinancialOverview\FinancialOverviewContactController@sendAllPost');
+        Route::post('financial-overview-contact/{financialOverviewContact}/update-for-interim', 'FinancialOverview\FinancialOverviewContactController@updateForInterim');
+        Route::post('financial-overview-contact/{financialOverviewContact}/send-interim', 'FinancialOverview\FinancialOverviewContactController@sendInterim');
+        Route::post('financial-overview-contact/{financialOverviewContact}/send-interim-post', 'FinancialOverview\FinancialOverviewContactController@sendInterimPost');
 
         Route::get('financial-overview-post/grid', 'FinancialOverview\FinancialOverviewPostController@grid');
         Route::get('financial-overview-post/{financialOverviewPost}/download', 'FinancialOverview\FinancialOverviewPostController@downloadFinancialOverviewPost');
         Route::post('financial-overview-post/{financialOverviewPost}/delete', 'FinancialOverview\FinancialOverviewPostController@deleteFinancialOverviewPost');
+
+        Route::get('portal-settings/jory', 'PortalSettings\PortalSettingsController@jory');
+        Route::post('portal-settings/{portalSettings}', 'PortalSettings\PortalSettingsController@update');
+
+        Route::get('portal-settings-dashboard/jory', 'PortalSettingsDashboard\PortalSettingsDashboardController@jory');
+        Route::post('portal-settings-dashboard/{portalSettingsDashboard}', 'PortalSettingsDashboard\PortalSettingsDashboardController@update');
 
         Route::get('portal-settings-layout/jory', 'PortalSettingsLayout\PortalSettingsLayoutController@jory');
         Route::get('portal-settings-layout/default', 'PortalSettingsLayout\PortalSettingsLayoutController@getDefault');
         Route::post('portal-settings-layout', 'PortalSettingsLayout\PortalSettingsLayoutController@store');
         Route::post('portal-settings-layout/{portalSettingsLayout}', 'PortalSettingsLayout\PortalSettingsLayoutController@update');
         Route::post('portal-settings-layout/{portalSettingsLayout}/delete', 'PortalSettingsLayout\PortalSettingsLayoutController@destroy');
-
-        Route::get('portal-settings-dashboard/jory', 'PortalSettingsDashboard\PortalSettingsDashboardController@jory');
-        Route::post('portal-settings-dashboard/{portalSettingsDashboard}', 'PortalSettingsDashboard\PortalSettingsDashboardController@update');
 
         Route::get('portal-settings-dashboard-widget/jory', 'PortalSettingsDashboard\PortalSettingsDashboardWidgetController@jory');
         Route::post('portal-settings-dashboard-widget', 'PortalSettingsDashboard\PortalSettingsDashboardWidgetController@store');
@@ -759,6 +779,10 @@ Route::namespace('Api')
         Route::post('cooperation-hoom-campaign', 'Cooperation\CooperationController@storeHoomCampaign');
         Route::post('cooperation-hoom-campaign/{cooperationHoomCampaign}', 'Cooperation\CooperationController@updateHoomCampaign');
         Route::post('cooperation-hoom-campaign/{cooperationHoomCampaign}/delete', 'Cooperation\CooperationController@destroyHoomCampaign');
+        Route::post('cooperation-cleanup-item/{cooperationCleanupItem}', 'Cooperation\CooperationController@updateCleanupItem');
+        Route::get('cooperation-cleanup-contacts-excluded-groups', 'Cooperation\CooperationController@getExcludedGroups');
+        Route::post('cooperation-cleanup-contacts-excluded-group', 'Cooperation\CooperationController@storeCleanupContactsExcludedGroup');
+        Route::post('cooperation-cleanup-contacts-excluded-group/{excludedGroup}/delete', 'Cooperation\CooperationController@destroyCleanupContactsExcludedGroup');
 
         // Free fields general
         Route::get('free-fields-field/get-for-filter/{tableType}', 'FreeFields\FreeFieldsFieldController@getForFilter');
@@ -770,6 +794,7 @@ Route::namespace('Api')
 
         Route::get('free-fields-field-records/get-values', 'FreeFields\FreeFieldsFieldRecordController@getValues');
         Route::post('free-fields-field-records/update-values', 'FreeFields\FreeFieldsFieldRecordController@updateValues');
+        Route::get('free-fields-field-log/excel/mutations', 'FreeFields\FreeFieldsFieldRecordController@excelLogMutations');
 
         Route::get('free-fields-field/free-fields-tables/peek', 'FreeFields\FreeFieldsTableController@peek');
         Route::get('free-fields-field/free-fields-field-formats/peek', 'FreeFields\FreeFieldsFieldFormatController@peek');

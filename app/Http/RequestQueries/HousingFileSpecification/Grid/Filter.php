@@ -64,14 +64,14 @@ class Filter extends RequestFilter
     ];
 
     protected function applyAddressFilter($query, $type, $data) {
-        // Elke term moet in een van de naam velden voor komen.
-        // Opbreken in array zodat 2 losse woorden ook worden gevonden als deze in 2 verschillende velden staan
-        $terms = explode(' ', $data);
+        // Elke zoekterm moet voorkomen in de straat, het huisnummer of de toevoeging.
+        $terms = array_filter(explode(' ', $data));
 
         foreach ($terms as $term){
             $query->where(function($query) use ($term) {
                 $query->where('addresses.street', 'LIKE', '%' . $term . '%');
                 $query->orWhere('addresses.number', 'LIKE', '%' . $term . '%');
+                $query->orWhere('addresses.addition', 'LIKE', '%' . $term . '%');
             });
         }
 

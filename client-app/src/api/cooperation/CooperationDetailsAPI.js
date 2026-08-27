@@ -37,6 +37,30 @@ export default {
         return getAxiosInstance().post(requestUrl);
     },
 
+    updateCleanupItem: (cleanupItemId, payload) => {
+        const requestUrl = `cooperation-cleanup-item/${cleanupItemId}`;
+
+        return getAxiosInstance().post(requestUrl, payload);
+    },
+
+    getExcludedGroups: function() {
+        const requestUrl = `cooperation-cleanup-contacts-excluded-groups`;
+
+        return getAxiosInstance().get(requestUrl);
+    },
+
+    createCleanupContactsExcludedGroup: payload => {
+        const requestUrl = `cooperation-cleanup-contacts-excluded-group`;
+
+        return getAxiosInstance().post(requestUrl, payload);
+    },
+
+    deleteCleanupContactsExcludedGroup: cleanupContactsExcludedGroupId => {
+        const requestUrl = `cooperation-cleanup-contacts-excluded-group/${cleanupContactsExcludedGroupId}/delete`;
+
+        return getAxiosInstance().post(requestUrl);
+    },
+
     syncAllWithLaposta: id => {
         const requestUrl = `cooperation/${id}/sync-all-with-laposta`;
 

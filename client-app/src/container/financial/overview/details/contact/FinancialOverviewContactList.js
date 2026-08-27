@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+
 import axios from 'axios';
 import moment from 'moment';
 
@@ -18,16 +20,20 @@ import ButtonIcon from '../../../../../components/button/ButtonIcon';
 import ButtonText from '../../../../../components/button/ButtonText';
 import { connect } from 'react-redux';
 import { previewFinancialOverview } from '../../../../../actions/financial-overview/FinancialOverviewActions';
+import FinancialOverviewCreateInterimModal from '../../create/FinancialOverviewCreateInterimModal';
+import { setError } from '../../../../../actions/general/ErrorActions';
 
 const recordsPerPage = 50;
 // const maxRecordsPost = 50;
 
 function FinancialOverviewContactList({ financialOverview, previewFinancialOverview }) {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const [showSelectFinancialOverviewContactsToSend, setShowSelectFinancialOverviewContactsToSend] = useState(false);
     const [checkedAll, setCheckedAll] = useState(false);
     const [financialOverviewContactIds, setFinancialOverviewContactIds] = useState([]);
+    const [onlyInterimFinancialOverviewContacts, setOnlyInterimFinancialOverviewContacts] = useState(false);
     const [onlyEmailFinancialOverviewContacts, setOnlyEmailFinancialOverviewContacts] = useState(false);
     const [onlyPostFinancialOverviewContacts, setOnlyPostFinancialOverviewContacts] = useState(false);
     const [showErrorMessagePost, setShowErrorMessagePost] = useState(false);
@@ -47,6 +53,9 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
     const [pagination, setPagination] = useState({ offset: 0, limit: recordsPerPage });
     const pressedEnter = useKeyPress('Enter');
 
+    const [showInterimModal, setShowInterimModal] = useState(false);
+    const [selectedFOContactId, setSelectedFOContactId] = useState(null);
+
     // If pagination, sort or filter created at change then reload data
     useEffect(
         function() {
@@ -59,6 +68,7 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
             filter.statusId,
             filter.dateSent,
             filter.emailedTo,
+            onlyInterimFinancialOverviewContacts,
             onlyEmailFinancialOverviewContacts,
             onlyPostFinancialOverviewContacts,
             financialOverview.totalFinancialOverviewProjectsConcept,
@@ -88,6 +98,7 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
                     sort,
                     pagination,
                     financialOverview.id,
+                    onlyInterimFinancialOverviewContacts,
                     onlyEmailFinancialOverviewContacts,
                     onlyPostFinancialOverviewContacts
                 ),
@@ -104,7 +115,13 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
             )
             .catch(error => {
                 setLoading(false);
-                alert('Er is iets misgegaan met ophalen van de gegevens.');
+
+                dispatch(
+                    setError(
+                        error?.response?.status ?? 500,
+                        error?.response?.data?.message ?? 'Er is iets misgegaan met ophalen van de gegevens.'
+                    )
+                );
             });
     }
 
@@ -159,6 +176,7 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
         setShowSelectFinancialOverviewContactsToSend(false);
         setCheckedAll(false);
         setFinancialOverviewContactIds([]);
+        setOnlyInterimFinancialOverviewContacts(false);
         setOnlyEmailFinancialOverviewContacts(false);
         setOnlyPostFinancialOverviewContacts(false);
         setShowErrorMessagePost(false);
@@ -232,11 +250,7 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
         if (isChecked) {
             financialOverviewContactIds = meta.financialOverviewContactIdsTotal;
         }
-        // if (onlyPostFinancialOverviewContacts) {
-        //     setFinancialOverviewContactIds(financialOverviewContactIds.slice(0, maxRecordsPost));
-        // } else {
         setFinancialOverviewContactIds(financialOverviewContactIds);
-        // }
         setCheckedAll(isChecked);
     }
 
@@ -257,6 +271,11 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
 
     function checkAllFinancialOverviewContactsAreChecked() {
         setCheckedAll(financialOverviewContactIds.length === meta.financialOverviewContactIdsTotal.length);
+    }
+
+    function createInterim(financialOverviewContactId) {
+        setSelectedFOContactId(financialOverviewContactId);
+        setShowInterimModal(true);
     }
 
     let messageText = null;
@@ -360,6 +379,16 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
                             <ButtonText
                                 buttonText={postFinancialOverviewContactsText}
                                 onClickAction={() => previewSendPost()}
+                            />
+                        ) : null}
+                        {financialOverview.usesInterimFinancialOverviews ? (
+                            <ButtonText
+                                buttonText={
+                                    onlyInterimFinancialOverviewContacts ? 'Toon alles' : 'Alleen voor tussentijds'
+                                }
+                                onClickAction={() =>
+                                    setOnlyInterimFinancialOverviewContacts(!onlyInterimFinancialOverviewContacts)
+                                }
                             />
                         ) : null}
                     </div>
@@ -478,13 +507,14 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
                                     <FinancialOverviewContactItem
                                         key={financialOverviewContact.id}
                                         {...financialOverviewContact}
-                                        onlyEmailFinancialOverviewContacts={onlyEmailFinancialOverviewContacts}
-                                        onlyPostFinancialOverviewContacts={onlyPostFinancialOverviewContacts}
+                                        // onlyEmailFinancialOverviewContacts={onlyEmailFinancialOverviewContacts}
+                                        // onlyPostFinancialOverviewContacts={onlyPostFinancialOverviewContacts}
                                         showSelectFinancialOverviewContactsToSend={
                                             showSelectFinancialOverviewContactsToSend
                                         }
                                         toggleFinancialOverviewContactCheck={toggleFinancialOverviewContactCheck}
                                         financialOverviewContactIds={financialOverviewContactIds}
+                                        createInterim={createInterim}
                                     />
                                 );
                             })
@@ -505,6 +535,13 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
                     />
                 </div>
             </form>
+
+            {showInterimModal && (
+                <FinancialOverviewCreateInterimModal
+                    financialOverviewContactId={selectedFOContactId}
+                    onClose={() => setShowInterimModal(false)}
+                />
+            )}
         </div>
     );
 }

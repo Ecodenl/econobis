@@ -193,7 +193,10 @@ class User extends Authenticatable
         $teamContactIds = [];
         foreach ($this->teams as $team) {
             foreach ($team->contactGroups as $contactGroup) {
-                $teamContactIds = array_merge($teamContactIds, $contactGroup->getAllContacts()->pluck('id')->toArray());
+                $teamContactIds = array_merge(
+                    $teamContactIds,
+                    $contactGroup->getAllContacts(true, false)
+                );
             }
         }
 
@@ -261,5 +264,17 @@ class User extends Authenticatable
         }
 
         return null;
+    }
+
+    public function getFullNameAttribute()
+    {
+        return $this->present()->fullName();
+    }
+
+    public function hasPrimaryRole(): bool
+    {
+        return $this->roles()
+            ->where('role_type', 'primary')
+            ->exists();
     }
 }

@@ -124,6 +124,10 @@ class LoginPortalAttemptThrottle
                 (bool) $portalUser->blocked_permanent
             );
 
+            Log::info('Portal OAuth token failure 1', [
+                'status' => $status,
+                'body' => method_exists($response, 'getContent') ? $response->getContent() : null,
+            ]);
             return $this->genericUnauthorized();
         }
 
@@ -138,6 +142,11 @@ class LoginPortalAttemptThrottle
             $portalUser->blocked_until,
             (bool) $portalUser->blocked_permanent
         );
+
+        Log::info('Portal OAuth token failure 2', [
+            'status' => $status,
+            'body' => method_exists($response, 'getContent') ? $response->getContent() : null,
+        ]);
         return $this->genericUnauthorized();
     }
 

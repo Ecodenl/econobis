@@ -63,9 +63,16 @@ class Filter extends RequestFilter
 
     protected function applyAddressFilter($query, $type, $data)
     {
-        $data = str_replace(' ', '', $data);
+        // Elke zoekterm moet voorkomen in de straat, het huisnummer of de toevoeging.
+        $terms = array_filter(explode(' ', $data));
 
-        $query->whereRaw('concat(IFNULL(addresses.street,\'\'), IFNULL(addresses.number,\'\'),  IFNULL(addresses.addition,\'\')) LIKE ' . DB::connection()->getPdo()->quote('%' . $data . '%'));
+        foreach ($terms as $term){
+            $query->where(function($query) use ($term) {
+                $query->where('addresses.street', 'LIKE', '%' . $term . '%');
+                $query->orWhere('addresses.number', 'LIKE', '%' . $term . '%');
+                $query->orWhere('addresses.addition', 'LIKE', '%' . $term . '%');
+            });
+        }
 
         return false;
     }

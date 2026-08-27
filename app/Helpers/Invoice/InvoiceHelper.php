@@ -2,6 +2,7 @@
 
 namespace App\Helpers\Invoice;
 
+use App\Eco\Contact\ContactType;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Invoice\InvoiceDocument;
@@ -12,6 +13,7 @@ use App\Eco\Invoice\InvoicesToSend;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Order\Order;
 use App\Eco\User\User;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\Resources\Invoice\Templates\InvoiceMail;
@@ -20,7 +22,6 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class InvoiceHelper
@@ -264,7 +265,7 @@ class InvoiceHelper
             . $subject . '</title></head>'
             . $htmlBody . '</html>';
 
-        $mail = Mail::fromMailbox($mailbox)
+        $mail = MailHelper::fromMailbox($mailbox)
             ->to($contactInfo['email']);
 
         $bcc = $invoice->administration->email_bcc_notas;
@@ -355,7 +356,7 @@ class InvoiceHelper
             return false;
         }
 
-        $mail = Mail::fromMailbox($mailbox)
+        $mail = MailHelper::fromMailbox($mailbox)
             ->to($contactInfo['email']);
 
         $subject = 'Betalingsherinnering';
@@ -434,7 +435,7 @@ class InvoiceHelper
         $contactPerson = $orderController->getContactInfoForOrder($invoice->order->contact)['contactPerson'];
         $contactName = null;
 
-        if ($invoice->order->contact->type_id == 'person') {
+        if ($invoice->order->contact->type_id === ContactType::PERSON) {
             $titleAddress = $invoice->order->contact?->person?->title?->address;
             $initials = $invoice->order->contact?->person?->initials ? $invoice->order->contact?->person?->initials : ($invoice->order->contact?->person?->first_name ? substr($invoice->order->contact?->person?->first_name, 0, 1) . "." : "");
             $prefix = $invoice->order->contact?->person->last_name_prefix;
@@ -453,7 +454,7 @@ class InvoiceHelper
             // Tenslotte voegen we toe: last_name
             $contactName .= $invoice->order->contact?->person->last_name;
 
-        } elseif ($invoice->order->contact->type_id == 'organisation') {
+        } elseif ($invoice->order->contact->type_id === ContactType::ORGANISATION) {
             $contactName = optional($invoice->order->contact->organisation)->statutory_name ? $invoice->order->contact->organisation->statutory_name : $invoice->order->contact->full_name;
         }
         // indien preview, dan zijn we nu klaar om PDF te tonen

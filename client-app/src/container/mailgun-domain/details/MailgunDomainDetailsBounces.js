@@ -40,7 +40,20 @@ export default function MailgunDomainDetailsBounces({ mailgunDomainId }) {
                 );
                 setLoading(false);
             })
-            .catch(() => {
+            .catch(error => {
+                // 403 = bewust geblokkeerd (system mailgun domain)
+                if (error?.response?.status === 403) {
+                    // Laravel stuurt vaak { message: "..." }
+                    const backendMsg = error?.response?.data?.message;
+
+                    setErrorText(
+                        backendMsg ||
+                            'Bounces worden niet getoond voor dit Mailgun-domein omdat het is ingesteld als systeemdomein.'
+                    );
+                    setLoading(false);
+                    return;
+                }
+
                 setErrorText('Er is iets misgegaan met ophalen van de mailgun bounces.');
                 setLoading(false);
             });

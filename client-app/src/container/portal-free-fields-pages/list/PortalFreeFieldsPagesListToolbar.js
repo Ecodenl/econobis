@@ -7,6 +7,7 @@ import ButtonIcon from '../../../components/button/ButtonIcon';
 function PortalFreeFieldsPagesListToolbar({
     portalFreeFieldsPagesTotal,
     refreshPortalFreeFieldsPageFields,
+    getExcelLogMutations,
     permissions,
 }) {
     const navigate = useNavigate();
@@ -20,6 +21,13 @@ function PortalFreeFieldsPagesListToolbar({
             <div className="col-md-4">
                 <div className="btn-group btn-group-flex" role="group">
                     <ButtonIcon iconName={'refresh'} onClickAction={refreshPortalFreeFieldsPageFields} />
+                    {permissions.viewFreeFieldsFieldLog && (
+                        <ButtonIcon
+                            iconName={'download'}
+                            onClickAction={getExcelLogMutations}
+                            title="Downloaden mutaties vrije velden"
+                        />
+                    )}
                     {permissions.manageFreeFields && (
                         <ButtonIcon iconName={'plus'} onClickAction={newPortalFreeFieldsPage} />
                     )}

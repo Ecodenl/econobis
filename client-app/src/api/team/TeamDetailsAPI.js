@@ -51,6 +51,19 @@ export default {
         return getAxiosInstance().post(requestUrl);
     },
 
+    newTeamDistrict: ({ teamId, districtId }) => {
+        const URL_TEAM = `${getApiUrl()}/api/team`;
+        const requestUrl = `${URL_TEAM}/${teamId}/${districtId}/attach-district`;
+
+        return getAxiosInstance().post(requestUrl);
+    },
+    deleteTeamDistrict: ({ teamId, districtId }) => {
+        const URL_TEAM = `${getApiUrl()}/api/team`;
+        const requestUrl = `${URL_TEAM}/${teamId}/${districtId}/detach-district`;
+
+        return getAxiosInstance().post(requestUrl);
+    },
+
     newTeamDocumentCreatedFrom: ({ teamId, documentCreatedFromId }) => {
         const URL_TEAM = `${getApiUrl()}/api/team`;
         const requestUrl = `${URL_TEAM}/${teamId}/${documentCreatedFromId}/attach-document-created-from`;

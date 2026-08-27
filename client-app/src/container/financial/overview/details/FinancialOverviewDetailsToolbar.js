@@ -49,14 +49,20 @@ class FinancialOverviewDetailsToolbar extends Component {
     };
 
     render() {
-        let { id, description, statusId, definitive } = this.props.financialOverview;
+        let {
+            id,
+            description,
+            statusId,
+            definitive,
+            hasInterimFinancialOverviewContacts,
+        } = this.props.financialOverview;
 
         return (
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
                         <ButtonIcon iconName={'arrowLeft'} onClickAction={() => this.props.navigate(-1)} />
-                        {!definitive && statusId === 'concept' ? (
+                        {!definitive && statusId === 'concept' && !hasInterimFinancialOverviewContacts ? (
                             <ButtonIcon
                                 iconName={'trash'}
                                 onClickAction={this.showDeleteItemModal.bind(this, id, description)}

@@ -110,12 +110,19 @@ function FinancialOverviewProjectItem({
         setModalErrorMessage('');
     }
 
-    const inProgressRowClass = financialOverviewProject.statusId === 'in-progress' ? 'in-progress-row' : '';
-
+    const rowClass =
+        financialOverviewProject.statusId === 'in-progress'
+            ? 'in-progress-row'
+            : financialOverviewProject.statusId === 'concept' &&
+              financialOverviewProject.hasInterimFinancialOverviewContacts
+            ? 'in-progress-row-light'
+            : financialOverviewProject.statusId === 'definitive'
+            ? 'success-row-light'
+            : '';
     return (
         <React.Fragment>
             <tr
-                className={`${highlightLine} ${inProgressRowClass}`}
+                className={`${highlightLine} ${rowClass}`}
                 onDoubleClick={() => clickItem(financialOverviewProject.id)}
                 onMouseEnter={() => onLineEnter()}
                 onMouseLeave={() => onLineLeave()}
@@ -141,10 +148,17 @@ function FinancialOverviewProjectItem({
                                 <a role="button" onClick={toggleMakeDefinitive}>
                                     <Icon className="mybtn-success" size={14} icon={check} />
                                 </a>
-                                &nbsp;&nbsp;&nbsp;
-                                <a role="button" onClick={toggleDelete}>
-                                    <Icon className="mybtn-danger" size={14} icon={trash} />
-                                </a>
+                                {financialOverviewProject.statusId === 'concept' &&
+                                !financialOverviewProject.hasInterimFinancialOverviewContacts ? (
+                                    <>
+                                        &nbsp;&nbsp;&nbsp;
+                                        <a role="button" onClick={toggleDelete}>
+                                            <Icon className="mybtn-danger" size={14} icon={trash} />
+                                        </a>
+                                    </>
+                                ) : (
+                                    ''
+                                )}
                             </>
                         )
                     ) : (

@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api\Email;
 
 
 use App\Eco\Contact\Contact;
+use App\Eco\Contact\ContactEmail;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
@@ -332,18 +333,51 @@ class EmailController extends Controller
             $replicatedAttachment->save();
         }
 
-        //if we send to group we save in a pivot because they can have alot of members
+        // Als we naar een groep versturen, registreren we de contacten én emailadressen
+        // in contact_email en houden we de pivot email->contacts in sync.
         if ($email->contact_group_id) {
             $contactGroup = ContactGroup::find($email->contact_group_id);
-            $contactIds = [];
-            foreach ($contactGroup->all_contacts as $contact) {
-                if ($contact->primaryEmailAddress) {
-                    $email->groupEmailAddresses()->attach($contact->primaryEmailAddress->id);
-                    array_push($contactIds, $contact->id);
-                }
+
+            if (! $contactGroup) {
+                // desnoods een log hier
+                return;
             }
-            $oldEmailContactIds = $email->contacts()->pluck('contacts.id')->toArray();
-            $email->contacts()->sync(array_unique(array_merge($contactIds, $oldEmailContactIds)));
+
+            $contactIds = [];
+
+            // Gebruik dezelfde logica als elders (getAllContacts) i.p.v. all_contacts
+            $contacts = $contactGroup->getAllContacts(false, true) ?? collect();
+
+            foreach ($contacts as $contact) {
+                $primary = $contact->primaryEmailAddress;
+
+                if (! $primary) {
+                    // optioneel loggen
+                    continue;
+                }
+
+                $contactIds[] = $contact->id;
+
+                // Eén ContactEmail per combinatie email + contact + emailadres
+                ContactEmail::updateOrCreate(
+                    [
+                        'email_id'         => $email->id,
+                        'contact_id'       => $contact->id,
+                        'email_address_id' => $primary->id,
+                    ],
+                    [
+                        'status_code' => ContactEmail::STATUS_SENT,
+                    ]
+                );
+
+                // LEGACY: oude groupEmailAddresses-koppeling. Niet meer gebruiken; vervangen door ContactEmail.
+                $email->groupEmailAddresses()->attach($contact->primaryEmailAddress->id);
+
+            }
+
+            // Bestaande pivot-relatie netjes up-to-date houden, (TODO check: volgens mij niet meer nodig nu hierboven ContactEmail::updateOrCreate hebben.)
+//            $oldEmailContactIds = $email->contacts()->pluck('contacts.id')->toArray();
+//            $email->contacts()->sync(array_unique(array_merge($contactIds, $oldEmailContactIds)));
         }
 
         $email->sent_by_user_id = Auth::id();

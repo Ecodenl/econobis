@@ -8,82 +8,242 @@
 
 namespace App\Helpers\Delete\Models;
 
-
 use App\Helpers\Delete\DeleteInterface;
+use App\Helpers\Delete\Traits\ChecksExcludedCleanupContacts;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class DeleteParticipation
- *
- * Relation: 1-n Revenue distribution. Action: call DeleteRevenueDistribution
- * Relation: 1-n Documents. Action: dissociate
- * Relation: 1-n Tasks. Action: call DeleteTask
  *
  * @package App\Helpers\Delete\Models
  */
 class DeleteParticipation implements DeleteInterface
 {
+    use ChecksExcludedCleanupContacts;
 
     private $errorMessage = [];
     private $participation;
+    private bool $isCleanup = false;
 
     /** Sets the model to delete
      *
      * @param Model $participation the model to delete
      */
-
     public function __construct(Model $participation)
     {
         $this->participation = $participation;
     }
 
-    /** Main method for deleting this model and all it's relations
+    /** If it's called by the cleanup functionality, we land on this function, else on the delete function
      *
      * @return array
      * @throws
      */
+    public function cleanup()
+    {
+        try {
+            $this->isCleanup = true;
+
+            if (! $this->canCleanup()) {
+                return $this->errorMessage;
+            }
+
+            return $this->delete();
+        } catch (\Exception $exception) {
+            Log::error('Fout bij opschonen Deelnames', [
+                'exception' => $exception->getMessage(),
+                'errormessages' => implode(' | ', $this->errorMessage),
+            ]);
+
+            $this->errorMessage[] =
+                "Fout bij opschonen Deelnames. "
+                . "(meld dit bij Econobis support)";
+
+            return $this->errorMessage;
+        }
+    }
+
+    public function canCleanup(): bool
+    {
+        if ($this->isContactExcludedFromCleanup(
+            $this->participation->contact_id
+        )) {
+            $this->errorMessage[] =
+                "Deelname {$this->participation->id} kan niet worden "
+                . "opgeschoond: het gekoppelde contact valt in een "
+                . "uitzonderingsgroep.";
+
+            return false;
+        }
+
+        foreach (
+            $this->participation->projectRevenueDistributions
+            as $revenueDistribution
+        ) {
+            $deleteRevenueDistribution =
+                new DeleteRevenueDistribution($revenueDistribution);
+
+            if (! $deleteRevenueDistribution->canCleanup()) {
+                $this->errorMessage[] =
+                    "Deelname {$this->participation->id} kan niet worden "
+                    . "opgeschoond: minimaal één gekoppelde "
+                    . "opbrengstverdeling hoort bij een uitgesloten contact.";
+
+                return false;
+            }
+        }
+
+        foreach (
+            $this->participation->revenueDistributionKwh
+            as $revenueDistributionKwh
+        ) {
+            $deleteRevenueDistributionKwh =
+                new DeleteRevenueDistributionKwh($revenueDistributionKwh);
+
+            if (! $deleteRevenueDistributionKwh->canCleanup()) {
+                $this->errorMessage[] =
+                    "Deelname {$this->participation->id} kan niet worden "
+                    . "opgeschoond: minimaal één gekoppelde "
+                    . "Kwh-opbrengstverdeling hoort bij een uitgesloten "
+                    . "contact.";
+
+                return false;
+            }
+        }
+
+        foreach ($this->participation->tasks as $task) {
+            $deleteTask = new DeleteTask($task);
+
+            if (! $deleteTask->canCleanup()) {
+                $this->errorMessage[] =
+                    "Deelname {$this->participation->id} kan niet worden "
+                    . "opgeschoond: minimaal één gekoppelde taak bevat "
+                    . "gegevens van een uitgesloten contact.";
+
+                return false;
+            }
+        }
+
+        foreach (
+            $this->participation->financialOverviewParticipantProjects
+            as $financialOverviewParticipantProject
+        ) {
+            $deleteFinancialOverviewParticipantProject =
+                new DeleteFinancialOverviewParticipantProject(
+                    $financialOverviewParticipantProject,
+                    true
+                );
+
+            if (! $deleteFinancialOverviewParticipantProject->canCleanup()) {
+                $this->errorMessage[] =
+                    "Deelname {$this->participation->id} kan niet worden "
+                    . "opgeschoond: minimaal één gekoppelde waardestaat hoort "
+                    . "bij een contact dat in een uitzonderingsgroep valt.";
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /** Main method for deleting this model and all it's relations
+     *
+     * @return array errorMessage array
+     * @throws
+     */
     public function delete()
     {
-        $this->canDelete();
+        if (! $this->canDelete()) {
+            return $this->errorMessage;
+        }
         $this->deleteModels();
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->participation->delete();
+        if( count($this->errorMessage) === 0 ) {
+            $this->participation->delete();
+        }
 
         return $this->errorMessage;
     }
 
     /** Checks if the model can be deleted and sets error messages
      */
-    public function canDelete()
+    public function canDelete(): bool
     {
-        if($this->participation->mutations()->count() > 0){
-            array_push($this->errorMessage, "Er zijn nog deelname mutaties in een project. Verwijder de deelname mutaties eerst.");
+        $projectCode = $this->participation?->project?->code ?? '*onbekend*';
+        $projectId = $this->participation?->project?->id ?? '?';
+        $participationId = $this->participation?->id ?? '?';
+        $contactName = $this->participation?->contact?->full_name_fnf ?? '*contact onbekend*';
+        if($this->participation->mutations()->exists()){
+            array_push($this->errorMessage, "Bij deelnemer " . $contactName . " (" . $participationId . ") zijn er nog deelname mutaties in project " . $projectCode . " (" . $projectId . "). Verwijder de deelname mutaties eerst.");
+            return false;
         }
+
+        return true;
     }
 
     /** Deletes models recursive
      */
     public function deleteModels()
     {
-        foreach ($this->participation->projectRevenueDistributions as $revenueDistribution){
-            $deleteRevenueDistribution = new DeleteRevenueDistribution($revenueDistribution);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteRevenueDistribution->delete());
-        }
-        foreach ($this->participation->revenueDistributionKwh as $revenueDistributionKwh){
-            $deleteRevenueDistributionKwh = new DeleteRevenueDistributionKwh($revenueDistributionKwh);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteRevenueDistributionKwh->delete());
+        foreach (
+            $this->participation->projectRevenueDistributions
+            as $revenueDistribution
+        ) {
+            $deleteRevenueDistribution =
+                new DeleteRevenueDistribution($revenueDistribution);
+
+            $this->errorMessage = array_merge(
+                $this->errorMessage,
+                $deleteRevenueDistribution->delete() ?? []
+            );
         }
 
-        foreach ($this->participation->tasks as $task){
+        foreach (
+            $this->participation->revenueDistributionKwh
+            as $revenueDistributionKwh
+        ) {
+            $deleteRevenueDistributionKwh =
+                new DeleteRevenueDistributionKwh(
+                    $revenueDistributionKwh
+                );
+
+            $this->errorMessage = array_merge(
+                $this->errorMessage,
+                $deleteRevenueDistributionKwh->delete() ?? []
+            );
+        }
+
+        foreach ($this->participation->tasks as $task) {
             $deleteTask = new DeleteTask($task);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
+
+            $this->errorMessage = array_merge(
+                $this->errorMessage,
+                $deleteTask->delete() ?? []
+            );
         }
 
-        foreach ($this->participation->financialOverviewParticipantProjects as $financialOverviewParticipantProject){
-            $deleteFinancialOverviewParticipantProject = new DeleteFinancialOverviewParticipantProject($financialOverviewParticipantProject);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteFinancialOverviewParticipantProject->delete());
+        foreach (
+            $this->participation->financialOverviewParticipantProjects
+            as $financialOverviewParticipantProject
+        ) {
+            $deleteFinancialOverviewParticipantProject =
+                new DeleteFinancialOverviewParticipantProject(
+                    $financialOverviewParticipantProject,
+                    $this->isCleanup
+                );
+
+            $result = $this->isCleanup
+                ? $deleteFinancialOverviewParticipantProject->cleanup()
+                : $deleteFinancialOverviewParticipantProject->delete();
+
+            $this->errorMessage = array_merge(
+                $this->errorMessage,
+                $result ?? []
+            );
         }
     }
 

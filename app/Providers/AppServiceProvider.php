@@ -23,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Passport::$clientUuids = false;
         Passport::enablePasswordGrant();
 
         Schema::defaultStringLength(191);

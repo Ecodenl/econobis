@@ -4,8 +4,8 @@ namespace App\Eco\EmailAddress;
 
 use App\Eco\AbstractType\HasTypeTrait;
 use App\Eco\Contact\Contact;
+use App\Eco\Contact\ContactEmail;
 use App\Eco\Email\Email;
-use App\Eco\EmailAddress\EmailAddressType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -20,6 +20,7 @@ class EmailAddress extends Model
 
     protected $casts = [
         'primary' => 'boolean',
+        'type_id' => EmailAddressType::class,
     ];
 
     public function contact()
@@ -31,12 +32,21 @@ class EmailAddress extends Model
     {
         return $this->belongsTo(Email::class);
     }
-
-    public function getType()
+    public function contactEmails()
     {
-        if(!$this->type_id) return null;
+        return $this->hasMany(ContactEmail::class, 'email_address_id');
+    }
+
+    public function getType(): ?EmailAddressType
+    {
+        if (!$this->type_id) {
+            return null;
+        }
+
+        if ($this->type_id instanceof EmailAddressType) {
+            return $this->type_id;
+        }
 
         return EmailAddressType::get($this->type_id);
     }
-
 }

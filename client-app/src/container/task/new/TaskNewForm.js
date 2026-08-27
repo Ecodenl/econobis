@@ -178,7 +178,6 @@ const TaskNewForm = props => {
 const mapStateToProps = state => {
     return {
         meDetails: state.meDetails,
-        permissions: state.systemData.permissions,
         taskStatuses: state.systemData.taskStatuses,
         taskTypes: state.systemData.taskTypes,
         teams: state.systemData.teams,

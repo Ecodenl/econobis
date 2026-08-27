@@ -11,6 +11,8 @@ class CampaignStatus extends Model
 
     protected $table = 'campaign_status';
 
+    public $timestamps = false;
+
     /**
      * The attributes that are mass assignable.
      *

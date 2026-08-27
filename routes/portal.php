@@ -1,21 +1,21 @@
 <?php
 
-use App\Http\Controllers\Api\Setting\SettingController;
+use App\Http\Controllers\Api\PortalSettings\PortalSettingsController;
 use App\Http\Controllers\Portal\ParticipationProject\ParticipantMutationMolliePaymentController;
 use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
 
-Route::get('setting/portal-active', 'Setting\PortalSettingController@getPortalActive');
-Route::get('setting/cooperative-name', 'Setting\PortalSettingController@getCooperativeName');
-Route::get('setting/portal-login-info-text', 'Setting\PortalSettingController@getPortalLoginInfoText');
-Route::get('setting/show-new-at-cooperative-link', 'Setting\PortalSettingController@getShowNewAtCooperativeLink');
-Route::get('setting/new-at-cooperative-link-text', 'Setting\PortalSettingController@getNewAtCooperativeLinkText');
+Route::get('portal-settings/portal-active', 'PortalSettings\PortalSettingsController@getPortalActive');
+Route::get('portal-settings/cooperative-name', 'PortalSettings\PortalSettingsController@getCooperativeName');
+Route::get('portal-settings/portal-login-info-text', 'PortalSettings\PortalSettingsController@getPortalLoginInfoText');
+Route::get('portal-settings/show-new-at-cooperative-link', 'PortalSettings\PortalSettingsController@getShowNewAtCooperativeLink');
+Route::get('portal-settings/new-at-cooperative-link-text', 'PortalSettings\PortalSettingsController@getNewAtCooperativeLinkText');
 
 Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 Route::post('register', 'Auth\RegisterController@register');
 Route::post('new-account', 'Auth\NewAccountController@createNewAccount');
 
-Route::middleware(['auth:api', 'scopes:use-portal', 'two-factor-portal'])
+Route::middleware(['auth:portal-api', 'scopes:use-portal', 'two-factor-portal'])
     ->group(function () {
         Route::get('/me', 'PortalUser\PortalUserController@me');
 
@@ -43,7 +43,6 @@ Route::middleware(['auth:api', 'scopes:use-portal', 'two-factor-portal'])
 
         Route::get('/contact-groups', 'ContactGroup\ContactGroupController@index');
 
-
         Route::post('/contact/{contact}/{project}/preview-document', 'Contact\ContactController@previewDocument');
         Route::post('/contact/{contact}/{project}/{participantProject}/preview-increase-document', 'Contact\ContactController@previewIncreaseDocument');
 
@@ -56,8 +55,11 @@ Route::middleware(['auth:api', 'scopes:use-portal', 'two-factor-portal'])
         Route::post('/project/participant/create', 'ParticipationProject\ParticipationProjectController@create');
         Route::post('/project/participant/{participantProject}/update', 'ParticipationProject\ParticipationProjectController@update');
 
-        Route::get('setting', '\\' . SettingController::class . '@get');
-        Route::get('setting/multiple', '\\' . SettingController::class . '@multiple');
+//        Route::get('setting', '\\' . PortalSettingsController::class . '@get');
+//        Route::get('setting/multiple', '\\' . PortalSettingsController::class . '@multiple');
+        Route::get('/portal-settings/{portalSettings}', 'PortalSettings\PortalSettingsController@getAllKeys');
+        Route::get('/portal-settings/show-allow-request-for-delete', 'PortalSettings\PortalSettingsController@getShowAllowRequestForDelete');
+        Route::get('/portal-settings/allow-request-for-delete-button-text', 'PortalSettings\PortalSettingsController@getAllowRequestForDeleteButtonText');
 
         Route::get('/portal-settings-dashboard/{portalSettingsDashboard}/{contact}', 'PortalSettingsDashboard\PortalSettingsDashboardController@get');
 
@@ -94,7 +96,7 @@ Route::middleware(['auth:api', 'scopes:use-portal', 'two-factor-portal'])
         Route::get('jory/{uri}', '\\' . JoryController::class . '@get');
     });
 
-Route::middleware(['auth:api', 'scopes:use-portal'])
+Route::middleware(['auth:portal-api', 'scopes:use-portal'])
     ->group(function () {
         Route::get('me/two-factor-status', [\App\Http\Controllers\Portal\Auth\TwoFactorAuthenticationController::class, 'status']);
         Route::post('me/confirmed-two-factor-authentication', [\App\Http\Controllers\Portal\Auth\ConfirmedTwoFactorAuthenticationController::class, 'store']);

@@ -24,6 +24,7 @@ class GridFinancialOverviewProject extends JsonResource
             'statusId' => $this->status_id,
             'status' => $this->status,
             'definitive' => $this->definitive,
+            'hasInterimFinancialOverviewContacts' => $this->has_interim_financial_overview_contacts,
         ];
     }
 }

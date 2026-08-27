@@ -15,8 +15,17 @@ class UserDetailsFormRoleListItem extends Component {
         };
     }
 
+    getErrorMessage = error => {
+        return (
+            error.response?.data?.message ||
+            error.response?.data?.error ||
+            'Je hebt niet de rechten om deze rol toe te kennen'
+        );
+    };
+
     handleInputChange = event => {
         const target = event.target;
+
         if (!target.checked) {
             UserAPI.removeRole(this.props.id, this.state.id)
                 .then(() => {
@@ -26,8 +35,8 @@ class UserDetailsFormRoleListItem extends Component {
                     });
                     this.props.updateRole(target.id, false);
                 })
-                .catch(function() {
-                    alert('Je hebt niet de rechten om deze rol toe te kennen');
+                .catch(error => {
+                    alert(this.getErrorMessage(error));
                 });
         } else {
             UserAPI.addRole(this.props.id, this.state.id)
@@ -38,8 +47,8 @@ class UserDetailsFormRoleListItem extends Component {
                     });
                     this.props.updateRole(target.id, true);
                 })
-                .catch(function() {
-                    alert('Je hebt niet de rechten om deze rol toe te kennen');
+                .catch(error => {
+                    alert(this.getErrorMessage(error));
                 });
         }
     };

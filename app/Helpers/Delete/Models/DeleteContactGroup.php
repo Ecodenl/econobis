@@ -13,7 +13,7 @@ use App\Eco\PortalSettingsDashboard\PortalSettingsDashboardWidget;
 use App\Eco\Project\Project;
 use App\Helpers\Delete\DeleteInterface;
 use App\Helpers\Laposta\LapostaListHelper;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -68,8 +68,8 @@ class DeleteContactGroup implements DeleteInterface
 
 
         // Group can not be deleted if it is used in portalsettings
-        $defaultContactGroupMemberId = PortalSettings::get('defaultContactGroupMemberId');
-        $defaultContactGroupNoMemberId = PortalSettings::get('defaultContactGroupNoMemberId');
+        $defaultContactGroupMemberId = PortalSettings::first()?->default_contact_group_member_id;
+        $defaultContactGroupNoMemberId = PortalSettings::first()?->default_contact_group_no_member_id;
         if($this->contactGroup->id == $defaultContactGroupMemberId || $this->contactGroup->id == $defaultContactGroupNoMemberId){
             array_push($this->errorMessage, "Deze groep wordt nog gebruikt in algemene portal instellingen.");
         }

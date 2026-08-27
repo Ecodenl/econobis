@@ -31,6 +31,15 @@ export function* deleteTeamContactGroupSaga({ teamId, contactGroupId }) {
     }
 }
 
+export function* deleteTeamDistrictSaga({ teamId, districtId }) {
+    try {
+        yield call(TeamDetailsAPI.deleteTeamDistrict, { teamId, districtId });
+        yield put({ type: 'DELETE_TEAM_DISTRICT_SUCCESS', districtId });
+    } catch (error) {
+        yield put({ type: 'DELETE_TEAM_DISTRICT_ERROR', error });
+    }
+}
+
 export function* deleteTeamDocumentCreatedFromSaga({ teamId, documentCreatedFromId }) {
     try {
         yield call(TeamDetailsAPI.deleteTeamDocumentCreatedFrom, { teamId, documentCreatedFromId });

@@ -3,6 +3,7 @@
 namespace App\Helpers\Excel;
 
 use App\Eco\Address\AddressType;
+use App\Eco\Contact\ContactType;
 use App\Eco\Project\Project;
 use Carbon\Carbon;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -26,7 +27,9 @@ class ParticipantExcelHelper
     {
         set_time_limit(300);
 
-        $completeData = [];
+//        $completeData = [];
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
 
         $headerData = [];
 // [0]
@@ -180,7 +183,9 @@ class ParticipantExcelHelper
             $headerData[] = 'Obligatienummer(s)';
         }
 
-        $completeData[] = $headerData;
+//        $completeData[] = $headerData;
+        $sheet->fromArray($headerData, null, 'A1');
+        $rowIndex = 2; // we gaan vanaf rij 2 data schrijven
 
         foreach ($this->participants->chunk(500) as $chunk) {
             foreach ($chunk as $participant) {
@@ -207,9 +212,9 @@ class ParticipantExcelHelper
 
                 if ($participant->contact->addresses) {
                     foreach (AddressType::collection() as $type) {
-                        $address = $participant->contact->addresses()->where('type_id', $type->id)->where('primary', true)->first();
+                        $address = $participant->contact->addresses()->where('type_id', $type->value)->where('primary', true)->first();
                         if(!$address){
-                            $address = $participant->contact->addresses()->where('type_id', $type->id)->first();
+                            $address = $participant->contact->addresses()->where('type_id', $type->value)->first();
                         }
 
                         $addressArr = [];
@@ -220,7 +225,7 @@ class ParticipantExcelHelper
                         $addressArr['city'] = ($address ? $address->city : '');
                         $addressArr['country'] = (($address && $address->country) ? $address->country->name : '');
 
-                        $participant['address_' . $type->id] = $addressArr;
+                        $participant['address_' . $type->value] = $addressArr;
                     }
                 }
 
@@ -245,7 +250,7 @@ class ParticipantExcelHelper
                 $participant->iban_contact = $participant->contact->iban;
                 $participant->iban_attn_contact = $participant->contact->iban_attn;
                 // person/organisation fields
-                if ($participant->contact->type_id === 'person') {
+                if ($participant->contact->type_id === ContactType::PERSON) {
                     $participant->title = $participant->contact->person->title;
                     $participant->initials = $participant->contact->person->initials;
                     $participant->first_name = $participant->contact->person->first_name;
@@ -257,14 +262,14 @@ class ParticipantExcelHelper
                     $participant->date_of_birth = $dateOfBirth ? $dateOfBirth->format('d-m-Y') : '';
                 }
 
-                if($participant->contact->type_id === 'person' && $participant->contact->legalRepContact){
+                if($participant->contact->type_id === ContactType::PERSON && $participant->contact->legalRepContact){
                     $participant->lrcStartDate = $participant->contact->legalRepContact->start_date ? Carbon::parse($participant->contact->legalRepContact->start_date)->format('d-m-Y') : '';
                     $participant->lrcEndDate = $participant->contact->legalRepContact->end_date ? Carbon::parse($participant->contact->legalRepContact->end_date)->format('d-m-Y') : '';
                     $participant->lrcOccupation = $participant->contact->legalRepContact->occupation->primary_occupation;
                     $participant->lrcFullName = $participant->contact->legalRepContact->contact->full_name;
                     $participant->lrcPrimaryEmailAddress = $participant->contact->legalRepContact->contact->primaryEmailAddress ? $participant->contact->legalRepContact->contact->primaryEmailAddress->email : '';
                     $participant->lrcPrimaryPhonenumber = $participant->contact->legalRepContact->contact->primaryPhonenumber ? $participant->contact->legalRepContact->contact->primaryPhonenumber->number : '';
-                    if($participant->contact->type_id === 'person' && $participant->contact->legalRepContact && $participant->contact->legalRepContact->contact->type_id == 'person'){
+                    if($participant->contact->type_id === ContactType::PERSON && $participant->contact->legalRepContact && $participant->contact->legalRepContact->contact->type_id === ContactType::PERSON){
                         $participant->lrcTitle = $participant->contact->legalRepContact->contact->person->title ? $participant->contact->legalRepContact->contact->person->title->name : '';
                         $participant->lrcInitials = $participant->contact->legalRepContact->contact->person->initials;
                         $participant->lrcFirstName = $participant->contact->legalRepContact->contact->person->first_name;
@@ -274,7 +279,7 @@ class ParticipantExcelHelper
                     }
                 }
 
-                if ($participant->contact->type_id === 'organisation' && $participant->contact->contactPerson && $participant->contact->contactPerson->contact->type_id == 'person') {
+                if ($participant->contact->type_id === ContactType::ORGANISATION && $participant->contact->contactPerson && $participant->contact->contactPerson->contact->type_id === ContactType::PERSON) {
                     $participant->cpStartDate = $participant->contact->contactPerson->startDate ? Carbon::parse($participant->contact->contactPerson->startDate)->format('d-m-Y') : '';
                     $participant->cpEndDate = $participant->contact->contactPerson->endDate ? Carbon::parse($participant->contact->contactPerson->endDate)->format('d-m-Y') : '';
                     $participant->cpOccupation = $participant->contact->contactPerson->occupation->primary_occupation;
@@ -631,25 +636,29 @@ class ParticipantExcelHelper
                         $rowData[128] = $participant->obligationNumbersAsString;
                     }
 
-                    $completeData[] = $rowData;
+//                    $completeData[] = $rowData;
+                    $sheet->fromArray($rowData, null, 'A' . $rowIndex);
+                    $rowIndex++;
                 }
-
             }
+            // kleine hint om GC te helpen
+            unset($chunk);
         }
 
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
+//        $spreadsheet = new Spreadsheet();
+//        $sheet = $spreadsheet->getActiveSheet();
 
-        for ($col = 'A'; $col !== 'DZ'; $col++) {
-            $spreadsheet->getActiveSheet()
-                ->getColumnDimension($col)
-                ->setAutoSize(true);
-        }
+//        autoSize uitgezet, kost voor deze excel download met potentieel heel veel cellen enorm veel geheugen.
+//        for ($col = 'A'; $col !== 'DZ'; $col++) {
+//            $spreadsheet->getActiveSheet()
+//                ->getColumnDimension($col)
+//                ->setAutoSize(true);
+//        }
 
         $sheet->getStyle('1:1')->getFont()->setBold(true);
 
         // Load all data in worksheet
-        $sheet->fromArray($completeData);
+//        $sheet->fromArray($completeData);
 
         $writer = new Xlsx($spreadsheet);
         $document = $writer->save('php://output');
@@ -690,7 +699,7 @@ class ParticipantExcelHelper
             foreach ($chunk as $participant) {
 
                 // person/organisation fields
-                if ($participant->contact->type_id === 'person') {
+                if ($participant->contact->type_id === ContactType::PERSON) {
                     $participant->title = $participant->contact->person->title;
                     $participant->initials = $participant->contact->person->initials;
                     $participant->first_name = $participant->contact->person->first_name;

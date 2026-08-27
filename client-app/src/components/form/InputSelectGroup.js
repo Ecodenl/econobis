@@ -15,6 +15,7 @@ const InputSelectGroup = props => {
         onBlurAction,
         required,
         error,
+        errorMessage,
         readOnly,
         emptyOption,
     } = props;
@@ -51,6 +52,11 @@ const InputSelectGroup = props => {
                     })}
                 </select>
             </div>
+            {error && (
+                <div className="col-sm-offset-6 col-sm-6">
+                    <span className="has-error-message"> {errorMessage}</span>
+                </div>
+            )}
         </div>
     );
 };
@@ -62,6 +68,7 @@ InputSelectGroup.defaultProps = {
     readOnly: false,
     required: '',
     error: false,
+    errorMessage: '',
     value: '',
     emptyOption: true,
 };
@@ -80,6 +87,7 @@ InputSelectGroup.propTypes = {
     required: PropTypes.string,
     readOnly: PropTypes.bool,
     error: PropTypes.bool,
+    errorMessage: PropTypes.string,
     optionName: PropTypes.string,
     emptyOption: PropTypes.bool,
 };

@@ -23,8 +23,9 @@ use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Project\ProjectType;
 use App\Helpers\CSV\RevenueDistributionCSVHelper;
 use App\Helpers\Delete\Models\DeleteRevenue;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\RequestInput\RequestInput;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
@@ -41,7 +42,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -86,7 +86,18 @@ class ProjectRevenueController extends ApiController
         $limit = 100;
         $offset = $request->input('page') ? $request->input('page') * $limit : 0;
 
-        $distribution = $projectRevenue->distribution()->limit($limit)->offset($offset)->orderBy('status')->get();
+        $distribution = $projectRevenue
+            ->distribution()
+            ->with(['contact'])
+            ->orderBy(
+                Contact::select('full_name')
+                    ->whereColumn('contacts.id', 'project_revenue_distribution.contact_id'),
+                'asc'
+            )
+            ->orderBy('project_revenue_distribution.id', 'asc')
+            ->limit($limit)
+            ->offset($offset)
+            ->get();
 
         $distributionIdsTotal = $projectRevenue->distribution()->pluck('id')->toArray();
         $total = $projectRevenue->distribution()->count();
@@ -206,6 +217,7 @@ class ProjectRevenueController extends ApiController
     {
         $this->authorize('manage', ProjectRevenue::class);
 
+        // dateConfirmed is verplaatst naar aparte confirm functie
         $data = $requestInput
             ->string('distributionTypeId')->onEmpty(null)->alias('distribution_type_id')->next()
             ->boolean('confirmed')->next()
@@ -268,7 +280,6 @@ class ProjectRevenueController extends ApiController
             ->orderBy('date_begin')->get());
     }
 
-
     public function confirm(RequestInput $requestInput, ProjectRevenue $projectRevenue)
     {
         $this->authorize('manage', ProjectRevenue::class);
@@ -316,12 +327,26 @@ class ProjectRevenueController extends ApiController
     {
         $this->authorize('manage', ProjectRevenue::class);
 
-        $ids = $request->input('ids') ? $request->input('ids') : [];
+        $ids = $request->input('ids', []);
 
-        $distributions = new ProjectRevenueDistribution();
-        foreach(array_chunk($ids,900) as $chunk){
-            $distributions = $distributions->orWhereIn('id', $chunk);
+        if (empty($ids)) {
+            return ProjectRevenueDistributionPeek::collection(collect());
         }
+
+        $distributions = ProjectRevenueDistribution::query()
+            ->where(function ($q) use ($ids) {
+                foreach (array_chunk($ids, 900) as $chunk) {
+                    $q->orWhereIn('id', $chunk);
+                }
+            })
+            ->with(['contact'])
+            ->orderBy(
+                Contact::select('full_name')
+                    ->whereColumn('contacts.id', 'project_revenue_distribution.contact_id'),
+                'asc'
+            )
+            ->orderBy('project_revenue_distribution.id', 'asc');
+
         return ProjectRevenueDistributionPeek::collection($distributions->get());
     }
 
@@ -412,8 +437,8 @@ class ProjectRevenueController extends ApiController
         $this->authorize('view', Project::class);
 
         $subject = $request->input('subject');
-        $portalName = PortalSettings::get('portalName');
-        $cooperativeName = PortalSettings::get('cooperativeName');
+        $portalName = PortalSettings::first()?->portal_name;
+        $cooperativeName = PortalSettings::first()?->cooperative_name;
         $subject = str_replace('{cooperatie_portal_naam}', $portalName, $subject);
         $subject = str_replace('{cooperatie_naam}', $cooperativeName, $subject);
 
@@ -448,7 +473,7 @@ class ProjectRevenueController extends ApiController
                     $fromEmail = \Config::get('mail.from.address');
                 }
 
-                $email = Mail::fromMailbox($mailbox)
+                $email = MailHelper::fromMailbox($mailbox)
                     ->to($primaryEmailAddress->email);
 
                 if (!$subject) {
@@ -932,8 +957,8 @@ class ProjectRevenueController extends ApiController
 
     public function createParticipantRevenueReport($subject, $distributionId, ?DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate, $showOnPortal)
     {
-        $portalName = PortalSettings::get('portalName');
-        $cooperativeName = PortalSettings::get('cooperativeName');
+        $portalName = PortalSettings::first()?->portal_name;
+        $cooperativeName = PortalSettings::first()?->cooperative_name;
         $subject = str_replace('{cooperatie_portal_naam}', $portalName, $subject);
         $subject = str_replace('{cooperatie_naam}', $cooperativeName, $subject);
 
@@ -1072,7 +1097,7 @@ class ProjectRevenueController extends ApiController
                         $fromName = \Config::get('mail.from.name');
                     }
 
-                    $email = Mail::fromMailbox($mailbox)
+                    $email = MailHelper::fromMailbox($mailbox)
                         ->to($primaryEmailAddress->email);
 
                     if (!$subject) {

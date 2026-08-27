@@ -78,4 +78,9 @@ class HousingFileSpecification extends Model
     {
         return $this->belongsTo(Campaign::class);
     }
+
+    public function newEloquentBuilder($query)
+    {
+        return new HousingFileSpecificationBuilder($query);
+    }
 }

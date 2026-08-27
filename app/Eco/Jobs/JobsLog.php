@@ -25,23 +25,30 @@ class JobsLog extends Model
         = [
             'id'
         ];
+    protected $casts = [
+        'job_category_id' => JobCategory::class,
+    ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function getCategory()
+    public function getCategory(): ?JobCategory
     {
-        if (!$this->job_category_id) return null;
+        if (!$this->job_category_id) {
+            return null;
+        }
+
+        if ($this->job_category_id instanceof JobCategory) {
+            return $this->job_category_id;
+        }
 
         return JobCategory::get($this->job_category_id);
     }
 
     public function getJobCategoryNameAttribute()
     {
-        if (!$this->job_category_id) return '';
-
-        return JobCategory::get($this->job_category_id)->name;
+        return $this->getCategory()?->getName() ?? '';
     }
 }

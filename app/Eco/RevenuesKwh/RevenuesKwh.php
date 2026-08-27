@@ -8,11 +8,12 @@ use App\Eco\Project\ProjectRevenueDistributionType;
 use App\Eco\User\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class RevenuesKwh extends Model
 {
-    use RevisionableTrait;
+    use RevisionableTrait, SoftDeletes;
 
     protected $table = 'revenues_kwh';
 

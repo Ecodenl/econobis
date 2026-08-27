@@ -26,6 +26,7 @@ class FullOpportunity extends JsonResource
             'measureCategory' => $this->measureCategory,
             'measures' => FullMeasure::collection($this->whenLoaded('measures')),
             'number' => $this->number,
+            'opportunityCode' => $this->opportunity_code,
             'status' => GenericResource::make($this->whenLoaded('status')),
             'datePlannedToSendWfEmailStatus' => $this->date_planned_to_send_wf_email_status,
             'intake' => FullIntake::make($this->whenLoaded('intake')),
@@ -55,6 +56,8 @@ class FullOpportunity extends JsonResource
             'relatedQuotationRequestsStatuses' => $this->relatedQuotationRequestsStatuses,
             'defaultStatusId' => $this->defaultStatusId,
             'amount' => $this->amount,
+            'belowWozLimit' => $this->below_woz_limit,
+            'exceptionDebtRelief' => $this->exception_debt_relief,
         ];
     }
 }

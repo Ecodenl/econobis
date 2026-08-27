@@ -6,6 +6,7 @@ use App\Eco\Address\Address;
 use App\Eco\Administration\Administration;
 use App\Eco\Contact\Contact;
 use App\Eco\Invoice\Invoice;
+use App\Eco\Twinfield\TwinfieldConnectionType;
 use App\Eco\Twinfield\TwinfieldCustomerNumber;
 use App\Eco\Twinfield\TwinfieldLog;
 use Carbon\Carbon;
@@ -56,7 +57,7 @@ class TwinfieldCustomerHelper
     {
         if ($twinFieldConnection) {
             $this->connection = $twinFieldConnection;
-        } elseif ($this->administration->twinfield_connection_type === "openid") {
+        } elseif ($this->administration->twinfield_connection_type === TwinfieldConnectionType::OPENID) {
             $provider = new OAuthProvider([
                 'clientId'     => $this->administration->twinfield_client_id,
                 'clientSecret' => $this->administration->twinfield_client_secret,

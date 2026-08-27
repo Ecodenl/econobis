@@ -43,13 +43,23 @@ class FullProjectRevenue extends JsonResource
                 'kwhEndCalendarYearLow' => $this->kwh_end_calendar_year_low,
                 'kwhEndLow' => $this->kwh_end_low,
                 'kwhResult' => $this->kwh_result,
-                'revenue' => $this->revenue,
+                'revenue' => $this->revenue === null
+                    ? null
+                    : number_format((float) $this->revenue, 2, '.', ''),
                 'amountRevenue' => $this->amount_revenue,
                 'datePayed' => $this->date_payed,
-                'payPercentage' => $this->pay_percentage,
-                'payAmount' => $this->pay_amount,
-                'keyAmountFirstPercentage' => $this->key_amount_first_percentage,
-                'payPercentageValidFromKeyAmount' => $this->pay_percentage_valid_from_key_amount,
+                'payPercentage' => $this->pay_percentage === null
+                    ? null
+                    : number_format((float) $this->pay_percentage, 2, '.', ''),
+                'payAmount' => $this->pay_amount === null
+                    ? null
+                    : number_format((float) $this->pay_amount, 2, '.', ''),
+                'keyAmountFirstPercentage' => $this->key_amount_first_percentage === null
+                    ? null
+                    : number_format((float) $this->key_amount_first_percentage, 2, '.', ''),
+                'payPercentageValidFromKeyAmount' => $this->pay_percentage_valid_from_key_amount === null
+                    ? null
+                    : number_format((float) $this->pay_percentage_valid_from_key_amount, 2, '.', ''),
                 'categoryId' => $this->category_id,
                 'category' => GenericResource::make($this->whenLoaded('category')),
                 'createdAt' => $this->created_at,

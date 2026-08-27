@@ -2,6 +2,7 @@
 
 namespace App\Helpers\Workflow;
 
+use App\Eco\Contact\ContactType;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Intake\Intake;
 use App\Eco\Intake\IntakeStatus;
@@ -11,10 +12,10 @@ use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\Organisation\Organisation;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
+use App\Helpers\Mail\MailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
-use Illuminate\Support\Facades\Mail;
 
 class IntakeWorkflowHelper
 {
@@ -25,7 +26,7 @@ class IntakeWorkflowHelper
         $this->opportunity = null;
         $this->quotationRequest = null;
         $this->measureCategory = $measureCategory;
-        $this->cooperativeName = PortalSettings::get('cooperativeName');
+        $this->cooperativeName = PortalSettings::first()?->cooperative_name;;
 
     }
 
@@ -110,7 +111,7 @@ class IntakeWorkflowHelper
 
         $organisation = Organisation::find($this->measureCategory->organisation_id_wf_create_quotation_request);
         $organisationContactperson = null;
-        if(optional(optional($organisation->contact->contactPerson)->contact)->type_id == 'person'){
+        if(optional(optional($organisation->contact->contactPerson)->contact)->type_id === ContactType::PERSON){
             $organisationContactperson = optional($organisation->contact->contactPerson)->contact;
         }
         if(!$organisationContactperson || !$organisationContactperson->primaryEmailAddress)
@@ -118,7 +119,7 @@ class IntakeWorkflowHelper
             return false;
         }
 
-        $mail = Mail::to($organisationContactperson->primaryEmailAddress->email);
+        $mail = MailHelper::to($organisationContactperson->primaryEmailAddress->email);
         $this->mailWorkflow($emailTemplate, $mail, $organisationContactperson);
         return true;
     }

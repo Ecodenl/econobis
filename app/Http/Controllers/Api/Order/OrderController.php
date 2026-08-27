@@ -9,6 +9,8 @@
 namespace App\Http\Controllers\Api\Order;
 
 use App\Eco\Contact\Contact;
+use App\Eco\Contact\ContactType;
+use App\Eco\EmailAddress\EmailAddressType;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Order\Order;
 use App\Eco\Order\OrderProduct;
@@ -137,8 +139,8 @@ class OrderController extends ApiController
             ->string('collectionFrequencyId')->onEmpty(null)->whenMissing(null)->alias('collection_frequency_id')->next()
             ->string('collectionFrequencyId')->alias('collection_frequency_id')->next()
             ->string('paymentTypeId')->validate('required')->alias('payment_type_id')->next()
-            ->string('IBAN')->onEmpty(null)->whenMissing(null)->next()
-            ->string('ibanAttn')->onEmpty(null)->whenMissing(null)->alias('iban_attn')->next()
+//            ->string('IBAN')->onEmpty(null)->whenMissing(null)->next()
+//            ->string('ibanAttn')->onEmpty(null)->whenMissing(null)->alias('iban_attn')->next()
             ->string('numberOfInvoiceReminders')->onEmpty(null)->whenMissing(null)->alias('number_of_invoice_reminders')->next()
             ->string('poNumber')->onEmpty(null)->whenMissing(null)->alias('po_number')->next()
             ->string('projectNumber')->onEmpty(null)->whenMissing(null)->alias('project_number')->next()
@@ -170,8 +172,8 @@ class OrderController extends ApiController
             ->integer('emailTemplateExhortationId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_exhortation_id')->next()
             ->string('collectionFrequencyId')->onEmpty(null)->whenMissing(null)->alias('collection_frequency_id')->next()
             ->string('paymentTypeId')->validate('required')->alias('payment_type_id')->next()
-            ->string('IBAN')->onEmpty(null)->whenMissing(null)->next()
-            ->string('ibanAttn')->onEmpty(null)->whenMissing(null)->alias('iban_attn')->next()
+//            ->string('IBAN')->onEmpty(null)->whenMissing(null)->next()
+//            ->string('ibanAttn')->onEmpty(null)->whenMissing(null)->alias('iban_attn')->next()
             ->string('numberOfInvoiceReminders')->onEmpty(null)->whenMissing(null)->alias('number_of_invoice_reminders')->next()
             ->string('poNumber')->onEmpty(null)->whenMissing(null)->alias('po_number')->next()
             ->string('projectNumber')->onEmpty(null)->whenMissing(null)->alias('project_number')->next()
@@ -253,6 +255,7 @@ class OrderController extends ApiController
         $product->ledger_id ?: $product->ledger_id = null;
         $product->cost_center_id = $productData['costCenterId'];
         $product->cost_center_id ?: $product->cost_center_id = null;
+        $product->cleanup_exception = $productData['cleanupException'];
 
         $priceHistory = new PriceHistory();
         $priceHistory->date_start = Carbon::today();
@@ -301,6 +304,7 @@ class OrderController extends ApiController
         $product->ledger_id ?: $product->ledger_id = null;
         $product->cost_center_id = $productData['costCenterId'];
         $product->cost_center_id ?: $product->cost_center_id = null;
+        $product->cleanup_exception = $productData['cleanupException'];
 
         $orderProductData = $request->input('orderProduct');
 
@@ -400,12 +404,12 @@ class OrderController extends ApiController
 
             if($contact->contactPerson()->exists()){
                 $contactPerson = '';
-                if ($contact->contactPerson->contact->type_id == 'person') {
+                if ($contact->contactPerson->contact->type_id === ContactType::PERSON) {
                     $initials = $contact->contactPerson->contact->person->initials;
                     $prefix = $contact->contactPerson->contact->person->last_name_prefix;
                     $contactInitialsOrFirstName = $initials ? $initials : $contact->contactPerson->contact->person->first_name;
                     $contactPerson = $prefix ? ($contactInitialsOrFirstName . ' ' . $prefix . ' ' . $contact->contactPerson->contact->person->last_name) : $contactInitialsOrFirstName . ' ' . $contact->contactPerson->contact->person->last_name;
-                } elseif ($contact->contactPerson->contact->type_id == 'organisation') {
+                } elseif ($contact->contactPerson->contact->type_id === ContactType::ORGANISATION) {
                     $contactPerson = $contact->contactPerson->contact->full_name;
                 }
 
@@ -425,7 +429,7 @@ class OrderController extends ApiController
         $emailAddresses = $contact->emailAddresses->reverse();
 
         foreach($emailAddresses as $emailAddress) {
-            if ($emailAddress->type_id === 'invoice') {
+            if ($emailAddress->type_id === EmailAddressType::INVOICE) {
                 return $emailAddress;
             }
         }

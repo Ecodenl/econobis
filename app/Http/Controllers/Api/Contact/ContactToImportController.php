@@ -240,7 +240,7 @@ class ContactToImportController extends Controller
             'number' => $contactToImport->housenumber,
             'addition' => $contactToImport->addition ?? '',
             'city' => $contactToImport->city,
-            'postal_code' => $contactToImport->postal_code,
+            'postal_code' => str_replace(' ', '', $contactToImport->postal_code),
             'country_id' => null,
             'ean_electricity' => $contactToImport->ean,
             'ean_gas' => $contactToImport->ean_gas,

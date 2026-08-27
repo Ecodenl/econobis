@@ -40,7 +40,7 @@ class MailgunDomainsListItem extends Component {
     }
 
     render() {
-        const { id, domain, isVerified } = this.props;
+        const { id, domain, isVerified, isSystemMailgunDomain } = this.props;
 
         return (
             <tr
@@ -51,6 +51,7 @@ class MailgunDomainsListItem extends Component {
             >
                 <td>{domain}</td>
                 <td>{isVerified ? 'Ja' : 'Nee'}</td>
+                <td>{isSystemMailgunDomain ? 'Ja' : 'Nee'}</td>
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>

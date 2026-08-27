@@ -1,4 +1,5 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
+
 import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
@@ -70,6 +71,8 @@ function AddressDetailsFormAddressEnergySupplierNew(props) {
         memberSince: false,
         endDate: false,
     });
+
+    const isSubmittingRef = useRef(false);
 
     const canRedirectToFinalSettlement = useMemo(() => {
         return messageHasParticipationsProjectsArray.length === 1 && !!messageHasParticipationsRedirect;
@@ -177,6 +180,8 @@ function AddressDetailsFormAddressEnergySupplierNew(props) {
                     }
                 })
                 .catch(error => {
+                    isSubmittingRef.current = false;
+
                     if (error.response) {
                         setError(error.response.status, error.response.data.message);
                     } else {
@@ -198,6 +203,10 @@ function AddressDetailsFormAddressEnergySupplierNew(props) {
     const handleSubmit = useCallback(
         event => {
             event.preventDefault();
+
+            if (isSubmittingRef.current) {
+                return;
+            }
 
             let newErrors = {
                 energySupplierId: false,
@@ -245,15 +254,20 @@ function AddressDetailsFormAddressEnergySupplierNew(props) {
             setErrors(newErrors);
 
             if (!hasErrors) {
+                isSubmittingRef.current = true;
+
                 AddressEnergySupplierAPI.validateAddressEnergySupplierForm(addressEnergySupplier)
                     .then(payload => {
                         if (!payload.data.responseValidation.hasErrors) {
                             doNewAddressEnergySupplier(addressEnergySupplier);
                         } else {
+                            isSubmittingRef.current = false;
                             setError(422, payload.data.responseValidation.message);
                         }
                     })
                     .catch(error => {
+                        isSubmittingRef.current = false;
+
                         if (error.response) {
                             setError(error.response.status, error.response.data.message);
                         } else {
@@ -355,7 +369,7 @@ function AddressDetailsFormAddressEnergySupplierNew(props) {
                             buttonText="Annuleren"
                             onClickAction={toggleShowNew}
                         />
-                        <ButtonText buttonText="Opslaan" onClickAction={handleSubmit} type="submit" value="Submit" />
+                        <ButtonText buttonText="Opslaan" type="submit" value="Submit" />
                     </div>
 
                     {showMessageDoubleEsNumber && (

@@ -64,13 +64,14 @@ class CheckInvalidEnergySupplierPeriods extends Command
                 }
             }
 
-            $gasIssues = $this->checkSequenceForTypes($address, [1, 3], 'Gas', $doRecover);
-            if ($gasIssues['hasOverlap']) {
-                $overlappingAddresses[] = $gasIssues['message'];
-            }
-            if ($gasIssues['hasGap']) {
-                $gapAddresses[] = $gasIssues['message'];
-            }
+// Controle op gaten in gasperioden doen we niet meer, dus ook niet meer op controleren hier in controlescript.
+//            $gasIssues = $this->checkSequenceForTypes($address, [1, 3], 'Gas', $doRecover);
+//            if ($gasIssues['hasOverlap']) {
+//                $overlappingAddresses[] = $gasIssues['message'];
+//            }
+//            if ($gasIssues['hasGap']) {
+//                $gapAddresses[] = $gasIssues['message'];
+//            }
 
             $electricityIssues = $this->checkSequenceForTypes($address, [2, 3], 'Elektriciteit', $doRecover);
             if ($electricityIssues['hasOverlap']) {

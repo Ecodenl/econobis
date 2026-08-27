@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+
 import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
@@ -58,6 +59,8 @@ function AddressDetailsFormAddressEnergySupplierItem(props) {
         memberSince: false,
         endDate: false,
     });
+
+    const isSubmittingRef = useRef(false);
 
     useEffect(() => {
         if (!isEqual(localAddressEnergySupplier, addressEnergySupplierProp) && !showEdit) {
@@ -187,6 +190,8 @@ function AddressDetailsFormAddressEnergySupplierItem(props) {
                     }
                 })
                 .catch(error => {
+                    isSubmittingRef.current = false;
+
                     if (error.response) {
                         setError(error.response.status, error.response.data.message);
                     } else {
@@ -207,6 +212,10 @@ function AddressDetailsFormAddressEnergySupplierItem(props) {
     const handleSubmit = useCallback(
         event => {
             event.preventDefault();
+
+            if (isSubmittingRef.current) {
+                return;
+            }
 
             const addressEnergySupplier = localAddressEnergySupplier;
 
@@ -240,15 +249,20 @@ function AddressDetailsFormAddressEnergySupplierItem(props) {
             setErrors(newErrors);
 
             if (!hasErrors) {
+                isSubmittingRef.current = true;
+
                 AddressEnergySupplierAPI.validateAddressEnergySupplierForm(addressEnergySupplier)
                     .then(payload => {
                         if (!payload.data.responseValidation.hasErrors) {
                             doUpdateAddressEnergySupplier(addressEnergySupplier);
                         } else {
+                            isSubmittingRef.current = false;
                             setError(422, payload.data.responseValidation.message);
                         }
                     })
                     .catch(error => {
+                        isSubmittingRef.current = false;
+
                         if (error.response) {
                             setError(error.response.status, error.response.data.message);
                         } else {

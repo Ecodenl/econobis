@@ -140,7 +140,7 @@ const AddressDetailsFormAddressEnergySupplierEdit = ({
 
                     <div className="pull-right btn-group" role="group">
                         <ButtonText buttonClassName="btn-default" buttonText="Annuleren" onClickAction={cancelEdit} />
-                        <ButtonText buttonText="Opslaan" onClickAction={handleSubmit} type="submit" value="Submit" />
+                        <ButtonText buttonText="Opslaan" type="submit" value="Submit" />
                     </div>
                 </PanelBody>
             </Panel>

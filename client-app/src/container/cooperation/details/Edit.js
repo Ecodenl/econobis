@@ -78,7 +78,7 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
         let formData = new FormData();
 
         for (const [key, value] of Object.entries(values)) {
-            formData.append(key, value);
+            formData.append(key, value ?? '');
         }
 
         // Send form data

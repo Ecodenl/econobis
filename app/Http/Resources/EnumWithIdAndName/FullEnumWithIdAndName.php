@@ -16,7 +16,7 @@ class FullEnumWithIdAndName extends JsonResource
         if (is_object($resource)) {
             if (method_exists($resource, 'getId')) {
                 $id = $resource->getId();
-            } elseif (property_exists($resource, 'id')) {
+            } elseif (isset($resource->id)) {
                 $id = $resource->id;
             } elseif (property_exists($resource, 'value')) {
                 $id = $resource->value;
@@ -24,7 +24,7 @@ class FullEnumWithIdAndName extends JsonResource
 
             if (method_exists($resource, 'getName')) {
                 $name = $resource->getName();
-            } elseif (property_exists($resource, 'name')) {
+            } elseif (isset($resource->name)) {
                 $name = $resource->name;
             }
         }

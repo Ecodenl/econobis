@@ -181,6 +181,10 @@ class ProjectController extends ApiController
             ->double('transactionCostsPercentage2')->validate('nullable|numeric')->whenMissing(null)->alias('transaction_costs_percentage_2')->next()
             ->double('transactionCostsAmount3')->validate('nullable|numeric')->whenMissing(null)->alias('transaction_costs_amount_3')->next()
             ->double('transactionCostsPercentage3')->validate('nullable|numeric')->whenMissing(null)->alias('transaction_costs_percentage_3')->next()
+            ->string('monitorProvider')->validate('nullable|max:191')->onEmpty(null)->alias('monitor_provider')->next()
+            ->string('energyCommunityExternalCode')->validate('nullable|max:191|unique:projects,energy_community_external_code')->onEmpty(null)->alias('energy_community_external_code')->next()
+            ->boolean('energySharing')->alias('energy_sharing')->next()
+            ->boolean('energySupplierRegistrationRequired')->alias('energy_supplier_registration_required')->next()
             ->get();
 
         $project = new Project();
@@ -313,6 +317,10 @@ class ProjectController extends ApiController
             ->double('transactionCostsPercentage2')->validate('nullable|numeric')->whenMissing(null)->alias('transaction_costs_percentage_2')->next()
             ->double('transactionCostsAmount3')->validate('nullable|numeric')->whenMissing(null)->alias('transaction_costs_amount_3')->next()
             ->double('transactionCostsPercentage3')->validate('nullable|numeric')->whenMissing(null)->alias('transaction_costs_percentage_3')->next()
+            ->string('monitorProvider')->validate('nullable|max:191')->onEmpty(null)->alias('monitor_provider')->next()
+            ->string('energyCommunityExternalCode')->validate('nullable|max:191|unique:projects,energy_community_external_code,' . $project->id)->onEmpty(null)->alias('energy_community_external_code')->next()
+            ->boolean('energySharing')->alias('energy_sharing')->next()
+            ->boolean('energySupplierRegistrationRequired')->alias('energy_supplier_registration_required')->next()
             ->get();
 
         $project->fill($data);

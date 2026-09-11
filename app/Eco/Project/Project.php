@@ -38,6 +38,8 @@ class Project extends Model
 
     protected $casts = [
         'uses_mollie' => 'bool',
+        'energy_sharing' => 'bool',
+        'energy_supplier_registration_required' => 'bool',
     ];
 
     public function newEloquentBuilder($query)

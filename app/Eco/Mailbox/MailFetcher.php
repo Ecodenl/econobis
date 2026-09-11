@@ -149,15 +149,23 @@ class MailFetcher
 
         $this->initImapConnection();
     }
+
     private function fetchEmail($mailId)
     {
         $emailData = $this->imap->getMail($mailId, $this->mailbox->email_mark_as_seen);
 //        dd($emailData);
 
-        // geen fromAddress, dan melding
+        // geen fromAddress, dan melding, wel doorgaan
         if(!$emailData->fromAddress){
             Log::error("Email zonder from (mailbox: " . $this->mailbox->id . ", imap_id: " . $emailData->id . ").");
-//            return;
+        }
+
+        $from = $emailData->fromAddress ?: '';
+
+        if (mb_strlen($from, 'UTF-8') > 191) {
+            Log::error("Deze mail heeft een from die langer is dan 191 karakters en hierdoor ingekort. Origineel:");
+            Log::error($from);
+            $from = mb_substr($from, 0, 191, 'UTF-8');
         }
 
         try {
@@ -204,8 +212,8 @@ class MailFetcher
             $textHtml = mb_convert_encoding($textHtml, 'UTF-8', mb_list_encodings());
         }
 
-        if(strlen($textHtml) > 250000){
-            $textHtml = substr($emailData->textHtml, 0, 250000);
+        if (mb_strlen($textHtml, 'UTF-8') > 250000) {
+            $textHtml = mb_substr($textHtml, 0, 250000, 'UTF-8');
             $textHtml .= '<p>Deze mail is langer dan 250.000 karakters en hierdoor ingekort.</p>';
         }
 
@@ -215,18 +223,16 @@ class MailFetcher
             $subject = mb_convert_encoding($subject, 'UTF-8', mb_list_encodings());
         }
 
-        if(strlen($subject) > 250){
-            $subject = substr($subject, 0, 249);
-        }
+        $subject = mb_substr($subject, 0, 249, 'UTF-8');
 
         $email = new Email([
             'mailbox_id' => $this->mailbox->id,
-            'from' => $emailData->fromAddress ?: '',
+            'from' => $from,
             'to' => array_keys($emailData->to),
             'cc' => array_keys($emailData->cc),
             'bcc' => array_keys($emailData->bcc),
             'subject' => $subject,
-            'subject_for_filter' => trim(mb_substr($subject ?? '', 0, 150)),
+            'subject_for_filter' => trim(mb_substr($subject, 0, 150, 'UTF-8')),
             'html_body' => $textHtml,
             'date_sent' => $dateSent,
             'folder' => 'inbox',

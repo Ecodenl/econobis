@@ -26,13 +26,19 @@ class MailgunMailController
         Log::info("Email mailgun store (mailbox: " . $mailbox->id . ").");
 
         $from = $request->getFrom();
+
         // geen fromAddress, dan melding
-        if(!$from){
+        if (!$from) {
             Log::error("Email zonder from (mailbox: " . $mailbox->id . ", message_id: " . ($request->input('Message-Id') ?? 'geen') . ").");
             $from = '';
-//            return;
         }
 
+        // fromAddress te lang, dan afkappen en melding
+        if (mb_strlen($from, 'UTF-8') > 191) {
+            Log::error("Deze mail heeft een from die langer is dan 191 karakters en hierdoor ingekort. Origineel:");
+            Log::error($from);
+            $from = mb_substr($from, 0, 191, 'UTF-8');
+        }
         // indien email al bestaat, dan melding en overslaan
         if (Email::whereMailboxId($mailbox->id)
             ->whereMessageId($request->input('Message-Id'))
@@ -48,24 +54,22 @@ class MailgunMailController
             $textHtml = mb_convert_encoding($textHtml, 'UTF-8', mb_list_encodings());
         }
 
-        if (strlen($textHtml) > 250000) {
-            $textHtml = substr($textHtml, 0, 250000);
+        if (mb_strlen($textHtml, 'UTF-8') > 250000) {
+            $textHtml = mb_substr($textHtml, 0, 250000, 'UTF-8');
             $textHtml .= '<p>Deze mail is langer dan 250.000 karakters en hierdoor ingekort.</p>';
         }
-
         if(!$request->input('Subject')){
             Log::error("Email zonder subject (mailbox: " . $mailbox->id . ", message_id: " . ($request->input('Message-Id') ?? 'geen') . ").");
         }
 
         $subject = $request->input('Subject') ?? '';
-        $currentEncodingTextSubject= mb_detect_encoding( $subject, 'UTF-8', true);
-        if(false === $currentEncodingTextSubject){
+
+        $currentEncodingTextSubject = mb_detect_encoding($subject, 'UTF-8', true);
+        if (false === $currentEncodingTextSubject) {
             $subject = mb_convert_encoding($subject, 'UTF-8', mb_list_encodings());
         }
 
-        if(strlen($subject) > 250){
-            $subject = substr($subject, 0, 249);
-        }
+        $subject = mb_substr($subject, 0, 249, 'UTF-8');
 
         $email = new Email([
             'mailbox_id' => $mailbox->id,
@@ -74,7 +78,7 @@ class MailgunMailController
             'cc' => $request->getCc() ?? [],
             'bcc' => [],
             'subject' => $subject,
-            'subject_for_filter' => trim(mb_substr($subject ?? '', 0, 150)),
+            'subject_for_filter' => trim(mb_substr($subject, 0, 150, 'UTF-8')),
             'html_body' => $textHtml,
             'date_sent' => Carbon::now(),
             'folder' => 'inbox',

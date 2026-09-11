@@ -55,11 +55,12 @@ class MailgunStoreMailRequest extends FormRequest
             $html = nl2br($this->input('body-plain'));
         }
 
-        if (strlen($html) <= 250000) {
+        if (mb_strlen($html, 'UTF-8') <= 250000) {
             return $html;
         }
 
-        return substr($html, 0, 250000) . '<p>Deze mail is langer dan 250.000 karakters en hierdoor ingekort.</p>';
+        return mb_substr($html, 0, 250000, 'UTF-8')
+            . '<p>Deze mail is langer dan 250.000 karakters en hierdoor ingekort.</p>';
     }
 
     public function getCidForAttachment($attachmentKey)

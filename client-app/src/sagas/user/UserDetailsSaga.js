@@ -1,4 +1,4 @@
-import { put, call, wait } from 'redux-saga/effects';
+import { put, call } from 'redux-saga/effects';
 import UserAPI from '../../api/user/UserAPI';
 
 export function* fetchUserDetailsSaga({ payload }) {

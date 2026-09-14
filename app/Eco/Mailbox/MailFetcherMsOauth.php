@@ -224,13 +224,12 @@ class MailFetcherMsOauth
         // geen fromAddress, dan melding
         if ($from === '') {
             Log::error("Email zonder from (mailbox: {$this->mailbox->id}, message_id: {$message->getInternetMessageId()}).");
-//            return;
         }
         // fromAddress te lang, dan afkappen en melding
-        if (strlen($from) > 191) {
+        if (mb_strlen($from, 'UTF-8') > 191) {
             Log::error("Deze mail heeft een from die langer is dan 191 karakters en hierdoor ingekort. Origineel:");
             Log::error($from);
-            $from = substr($from, 0, 191);
+            $from = mb_substr($from, 0, 191, 'UTF-8');
         }
 
         $tos = [];
@@ -283,20 +282,19 @@ class MailFetcherMsOauth
             $textHtml = mb_convert_encoding($textHtml, 'UTF-8', mb_list_encodings());
         }
 
-        if (strlen($textHtml) > 250000) {
-            $textHtml = substr($textHtml, 0, 250000);
+        if (mb_strlen($textHtml, 'UTF-8') > 250000) {
+            $textHtml = mb_substr($textHtml, 0, 250000, 'UTF-8');
             $textHtml .= '<p>Deze mail is langer dan 250.000 karakters en hierdoor ingekort.</p>';
         }
 
         $subject = $message->getSubject() ?: '';
+
         $currentEncodingTextSubject= mb_detect_encoding( $subject, 'UTF-8', true);
         if(false === $currentEncodingTextSubject){
             $subject = mb_convert_encoding($subject, 'UTF-8', mb_list_encodings());
         }
 
-        if (strlen($subject) > 250) {
-            $subject = substr($subject, 0, 249);
-        }
+        $subject = mb_substr($subject, 0, 249, 'UTF-8');
 
         $sentDateTime = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::parse( $message->getSentDateTime())->format('Y-m-d H:i:s'), 'UTC');
         $sentDateTime->setTimezone(date_default_timezone_get());
@@ -308,7 +306,7 @@ class MailFetcherMsOauth
             'cc' => $ccs,
             'bcc' => $bccs,
             'subject' => $subject,
-            'subject_for_filter' => trim(mb_substr($subject ?? '', 0, 150)),
+            'subject_for_filter' => trim(mb_substr($subject, 0, 150, 'UTF-8')),
             'html_body' => $textHtml,
             'date_sent' => $sentDateTime,
             'folder' => 'inbox',

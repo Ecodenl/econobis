@@ -185,6 +185,19 @@ class CheckFetchEmail extends Command
             echo "Failed to retrieve textHtml or textPlain from email (" . $emailData->id . ") in mailbox (" . $mailboxId . "). Error: " . $ex->getMessage();
             return;
         }
+
+        // geen fromAddress, dan melding
+        $from = $emailData->fromAddress ?: '';
+
+        if ($from === '') {
+            Log::info("Email zonder from (mailbox: {$mailboxId}, message_id: {$emailData->messageId}).");
+        }
+        // fromAddress te lang, dan melding
+        if (mb_strlen($from, 'UTF-8') > 191) {
+            Log::info("Deze mail heeft een from die langer is dan 191 karakters en hierdoor ingekort. Origineel:");
+            Log::info($from);
+        }
+
         $textHtml = $textHtml?: '';
         // when encoding isn't UTF-8 encode texthtml to utf8.
         $currentEncodingTextHtml= mb_detect_encoding( $textHtml, 'UTF-8', true);
@@ -193,8 +206,8 @@ class CheckFetchEmail extends Command
             $textHtml = mb_convert_encoding($textHtml, 'UTF-8', mb_list_encodings());
         }
 
-        if(strlen($textHtml) > 250000){
-            $textHtml = substr($emailData->textHtml, 0, 250000);
+        if (mb_strlen($textHtml, 'UTF-8') > 250000) {
+            $textHtml = mb_substr($textHtml, 0, 250000, 'UTF-8');
             $textHtml .= '<p>Deze mail is langer dan 250.000 karakters en hierdoor ingekort.</p>';
         }
 
@@ -207,13 +220,10 @@ class CheckFetchEmail extends Command
         }
         Log::info($subject);
 
-
-        if(strlen($subject) > 250){
-            $subject = substr($subject, 0, 249);
-        }
+        $subject = mb_substr($subject, 0, 249, 'UTF-8');
 
         Log::info("message_id " . $emailData->messageId );
-        Log::info("from " .  $emailData->fromAddress );
+        Log::info("from " .  $from );
         Log::info("to ");
         Log::info($emailData->to );
         Log::info("cc ");

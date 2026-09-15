@@ -195,19 +195,19 @@ class ProjectController extends ApiController
 
         // Create project valuecourse if participationWorth is > 0
         // Only if project type is capital or postal code link capital
-        if($project->participation_worth > 0) {
-            if($project->projectType->code_ref != 'loan') {
-                $projectValueCourse = new ProjectValueCourse();
+        if($project->participation_worth > 0
+            && $project->projectType->code_ref != 'loan'
+            && $project->projectType->code_ref != 'energy_community') {
+            $projectValueCourse = new ProjectValueCourse();
 
-                $projectValueCourse->fill([
-                    'project_id' => $project->id,
-                    'date' => Carbon::now(),
-                    'book_worth' => $project->participation_worth,
-                    'active' => true,
-                ]);
+            $projectValueCourse->fill([
+                'project_id' => $project->id,
+                'date' => Carbon::now(),
+                'book_worth' => $project->participation_worth,
+                'active' => true,
+            ]);
 
-                $projectValueCourse->save();
-            }
+            $projectValueCourse->save();
         }
 
         $contactGroupIds = explode(',', $request->contactGroupIds);

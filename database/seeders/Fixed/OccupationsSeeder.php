@@ -49,6 +49,7 @@ class OccupationsSeeder extends Seeder
             ['code_ref' => 'unknown_role', 'primary_occupation' => 'Rol onbekend', 'secondary_occupation' => 'Rol onbekend bij', 'occupation_for_portal' => 0, 'is_active' => true],
             ['code_ref' => 'working_group_member', 'primary_occupation' => 'Werkgroep lid', 'secondary_occupation' => 'Werkgroep lid bij', 'occupation_for_portal' => 0, 'is_active' => true],
             ['code_ref' => 'network', 'primary_occupation' => 'Netwerk', 'secondary_occupation' => 'Netwerk lid', 'occupation_for_portal' => 0, 'is_active' => true],
+            ['code_ref' => 'vve_tenant', 'primary_occupation' => 'VvE huurder', 'secondary_occupation' => 'VvE huurder van', 'occupation_for_portal' => 0, 'is_active' => true],
         ];
 
         foreach ($occupations as $occupation) {

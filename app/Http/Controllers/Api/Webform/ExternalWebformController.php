@@ -934,17 +934,22 @@ class ExternalWebformController extends Controller
             // contactActie = "CCT" -> Controle contact taak
             switch($this->contactActie){
                 case 'UPC' :
-                    $contact = $this->updateContact($contact, $data, $dataFreeFieldContacts, $ownerAndResponsibleUser);
-                    $address = $contact->addresses()
-                        ->where('postal_code', $data['address_postal_code'])
-                        ->where('number', $data['address_number'])
-                        ->where('addition', $data['address_addition'])
-                        ->first();
-                    if($address){
-                        $this->log('Adres gevonden bij meegegeven postcode/huisnummer: ' . $data['address_postal_code'] . ' ' . $data['address_number'] . '-' . $data['address_addition']);
-                        $this->address = $address;
-                    } elseif ($contact->primaryAddress) {
-                        $this->log('Geen adres postcode/huisnummer meegegeven of gevonden, verder met primair adres bij contact met postcode/huisnummer: ' . $contact->primaryAddress->postal_code . ' ' . $contact->primaryAddress->number . '-' . $contact->primaryAddress->addition );
+                    $contact = $this->updateContact(
+                        $contact,
+                        $data,
+                        $dataFreeFieldContacts,
+                        $ownerAndResponsibleUser
+                    );
+
+                    $this->addAddressToContact($data, $contact);
+
+                    if (!$this->address && $contact->primaryAddress) {
+                        $this->log(
+                            'Geen adres postcode/huisnummer meegegeven, verder met primair adres bij contact met postcode/huisnummer: '
+                            . $contact->primaryAddress->postal_code . ' '
+                            . $contact->primaryAddress->number . '-'
+                            . $contact->primaryAddress->addition
+                        );
                         $this->address = $contact->primaryAddress;
                     }
 //                    $this->addPhoneNumberToContact($data, $contact);

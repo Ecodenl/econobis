@@ -193,8 +193,8 @@ class ProjectController extends ApiController
 
         $project->save();
 
-        // Create project valuecourse if participationWorth is > 0
-        // Only if project type is capital or postal code link capital
+        // Create project value course if participationWorth is > 0.
+        // Not applicable for loan and energy community projects.
         if($project->participation_worth > 0
             && $project->projectType->code_ref != 'loan'
             && $project->projectType->code_ref != 'energy_community') {
@@ -334,15 +334,20 @@ class ProjectController extends ApiController
 //         Deze procedure zullen we nog moeten ombouwen naar verwerking in job(s).
                 foreach ($project->participantsProject as $participantProject){
                     $participantProject->participations_definitive_worth = $participantProject->calculator()->participationsDefinitiveWorth();
-                    if($project->projectType->code_ref == 'capital' || $project->projectType->code_ref == 'postalcode_link_capital') {
+                    // Capital worth is only applicable for capital and postal code link capital projects.
+                    if ($project->projectType->code_ref == 'capital'
+                        || $project->projectType->code_ref == 'postalcode_link_capital')
+                    {
                         $participantProject->participations_capital_worth = $participantProject->calculator()->participationsCapitalWorth();
                     }
                     $participantProject->save();
                 }
 
-                // Create project valuecourse if participationWorth changed and no valuecourse with bookworth is filled out
-                // Only if project type is capital or postal code link capital
-                if($project->projectType->code_ref != 'loan') {
+                // Create project valuecourse if participationWorth changed and no value course with bookworth is filled out
+                // Not applicable for loan and energy community projects.
+                if ($project->projectType->code_ref != 'loan'
+                    && $project->projectType->code_ref != 'energy_community')
+                {
                     $projectValueCourseWithBookWorthCount = $project->projectValueCourses->where('book_worth', '>', '0')->count();
 
                     if($projectValueCourseWithBookWorthCount === 0) {

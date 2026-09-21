@@ -95,6 +95,8 @@ const ProjectFormViewGeneral = ({
         ? postalcodeLink.replace(/\D/g, '').length === 4 && postalcodeLink.replace(/[0-9]/g, '').trim().length === 2
         : false;
 
+    const isEnergyCommunity = projectType && projectType.codeRef === 'energy_community';
+
     return (
         <React.Fragment>
             <section
@@ -111,26 +113,30 @@ const ProjectFormViewGeneral = ({
                     <ViewText label={'Type project'} value={projectType ? projectType.name : ''} />
                     <ViewText label={'Status'} value={projectStatus ? projectStatus.name : ''} />
                 </div>
-                <div className="row">
-                    <ViewText label={'Controle voor SCE subsidie'} value={isSceProject ? 'Ja' : 'Nee'} />
-                    {isSceProject ? (
-                        <ViewText
-                            label={'Basis project'}
-                            value={baseProjectCodeRefWithName ? baseProjectCodeRefWithName.name : ''}
-                        />
-                    ) : null}
-                </div>
-                <div className="row">
-                    <ViewText label={'Opgesteld vermogen kWp'} value={powerKwAvailable} />
-                    {isSceProject ? (
-                        <ViewText
-                            className={'form-group col-sm-6'}
-                            label={'Benodigd aantal deelnemende leden'}
-                            value={requiredParticipants}
-                            textToolTip={`Dit aantal wordt berekend door het opgesteld vermogen kWp door 5 te delen. Dit om aan de voorwaarden van het RVO te voldoen. Zie https://www.rvo.nl/subsidies-financiering/sce/voorwaarden`}
-                        />
-                    ) : null}
-                </div>
+                {!isEnergyCommunity ? (
+                    <div className="row">
+                        <ViewText label={'Controle voor SCE subsidie'} value={isSceProject ? 'Ja' : 'Nee'} />
+                        {isSceProject ? (
+                            <ViewText
+                                label={'Basis project'}
+                                value={baseProjectCodeRefWithName ? baseProjectCodeRefWithName.name : ''}
+                            />
+                        ) : null}
+                    </div>
+                ) : null}
+                {!isEnergyCommunity ? (
+                    <div className="row">
+                        <ViewText label={'Opgesteld vermogen kWp'} value={powerKwAvailable} />
+                        {isSceProject ? (
+                            <ViewText
+                                className={'form-group col-sm-6'}
+                                label={'Benodigd aantal deelnemende leden'}
+                                value={requiredParticipants}
+                                textToolTip={`Dit aantal wordt berekend door het opgesteld vermogen kWp door 5 te delen. Dit om aan de voorwaarden van het RVO te voldoen. Zie https://www.rvo.nl/subsidies-financiering/sce/voorwaarden`}
+                            />
+                        ) : null}
+                    </div>
+                ) : null}
                 {isSceProject ? (
                     <>
                         <div className="row">
@@ -244,22 +250,27 @@ const ProjectFormViewGeneral = ({
                         ) : null}
                     </>
                 ) : null}
-                <div className="row">
-                    <ViewText
-                        label={'Start productie'}
-                        value={dateProduction ? moment(dateProduction).format('L') : ''}
-                    />
-                    <ViewText
-                        label={'Standaard ingangsdatum mutatie'}
-                        value={dateEntry ? moment(dateEntry).format('L') : ''}
-                    />
-                </div>
-                <div className="row">
-                    <ViewText
-                        label={'Begindatum volgende periode opbrengst euro'}
-                        value={dateInterestBearing ? moment(dateInterestBearing).format('L') : ''}
-                    />
-                </div>
+                {!isEnergyCommunity ? (
+                    <div className="row">
+                        <ViewText
+                            label={'Start productie'}
+                            value={dateProduction ? moment(dateProduction).format('L') : ''}
+                        />
+                        <ViewText
+                            label={'Standaard ingangsdatum mutatie'}
+                            value={dateEntry ? moment(dateEntry).format('L') : ''}
+                        />
+                    </div>
+                ) : null}
+                {!isEnergyCommunity ? (
+                    <div className="row">
+                        <ViewText
+                            label={'Begindatum volgende periode opbrengst euro'}
+                            value={dateInterestBearing ? moment(dateInterestBearing).format('L') : ''}
+                        />
+                    </div>
+                ) : null}
+
                 {projectType.codeRef === 'loan' || projectType.codeRef === 'obligation' ? (
                     <div className="row">
                         <ViewText

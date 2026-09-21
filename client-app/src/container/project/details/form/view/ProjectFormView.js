@@ -8,6 +8,7 @@ import ProjectFormViewLoan from './ProjectFormViewLoan';
 import ProjectFormViewObligation from './ProjectFormViewObligation';
 import ProjectFormViewPostalcodeLinkCapital from './ProjectFormViewPostalcodeLinkCapital';
 import ProjectFormViewCapital from './ProjectFormViewCapital';
+import ProjectFormViewEnergyCommunity from './ProjectFormViewEnergyCommunity';
 import RequiredParticipantsHelper from '../../../../../helpers/RequiredParticipantsHelper';
 
 const ProjectFormView = props => {
@@ -67,6 +68,12 @@ const ProjectFormView = props => {
         participationsGranted,
         participationsOptioned,
         participationsInteressed,
+        monitorProviderWithName,
+        energyCommunityExternalCode,
+        energySharing,
+        energySupplierRegistrationRequired,
+        totalParticipationsPowerKwAvailable,
+        totalParticipationsPowerKwhConsumption,
         amountDefinitive,
         amountGranted,
         amountOptioned,
@@ -271,6 +278,16 @@ const ProjectFormView = props => {
                         eanManager={eanManager}
                         warrantyOrigin={warrantyOrigin}
                         eanSupply={eanSupply}
+                    />
+                ) : null}
+                {projectType && projectType.codeRef === 'energy_community' ? (
+                    <ProjectFormViewEnergyCommunity
+                        monitorProviderWithName={monitorProviderWithName}
+                        energyCommunityExternalCode={energyCommunityExternalCode}
+                        energySharing={energySharing}
+                        energySupplierRegistrationRequired={energySupplierRegistrationRequired}
+                        totalParticipationsPowerKwAvailable={totalParticipationsPowerKwAvailable}
+                        totalParticipationsPowerKwhConsumption={totalParticipationsPowerKwhConsumption}
                     />
                 ) : null}
             </section>

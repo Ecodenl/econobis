@@ -36,19 +36,21 @@ class ProjectDetailsForm extends Component {
 
                 <FreeFields table={'projects'} recordId={this.props.project.id} initialShowEdit={false} />
 
-                {/* Shows value course only when project type is not equal to loan */}
-                {this.props.project.projectType && this.props.project.projectType.codeRef !== 'loan' ? (
+                {/* Shows value course only when applicable for project type */}
+                {this.props.project.projectType &&
+                this.props.project.projectType.codeRef !== 'loan' &&
+                this.props.project.projectType.codeRef !== 'energy_community' ? (
                     <ProjectDetailsFormValueCourse />
                 ) : null}
-                {this.props.project.projectStatus.codeRef !== 'concept' && (
-                    <>
-                        <RevenuesListForm projectId={this.props.project.id} />
-                        {this.props.project.projectType &&
-                        this.props.project.projectType.codeRef === 'postalcode_link_capital' ? (
-                            <RevenuesKwhListForm projectId={this.props.project.id} />
-                        ) : null}
-                    </>
-                )}
+                {this.props.project.projectStatus.codeRef !== 'concept' &&
+                    this.props.project.projectType?.codeRef !== 'energy_community' && (
+                        <>
+                            <RevenuesListForm projectId={this.props.project.id} />
+                            {this.props.project.projectType?.codeRef === 'postalcode_link_capital' ? (
+                                <RevenuesKwhListForm projectId={this.props.project.id} />
+                            ) : null}
+                        </>
+                    )}
                 <ProjectDetailsFormConclusion />
             </div>
         );

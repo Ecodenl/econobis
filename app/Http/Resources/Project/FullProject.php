@@ -68,6 +68,7 @@ class FullProject extends JsonResource
                 'totalParticipationsPowerKwAvailable' => $this->total_participations_power_kw_available,
                 'totalParticipationsPowerKwhConsumption' => $this->total_participations_power_kwh_consumption,
                 'monitorProvider' => $this->monitor_provider,
+                'monitorProviderWithName' => FullEnumWithIdAndName::make($this->getMonitorProvider()),
                 'energyCommunityExternalCode' => $this->energy_community_external_code,
                 'energySharing' => $this->energy_sharing,
                 'energySupplierRegistrationRequired' => $this->energy_supplier_registration_required,

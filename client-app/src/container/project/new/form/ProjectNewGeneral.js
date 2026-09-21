@@ -62,6 +62,8 @@ const ProjectFormNewGeneral = ({
         ? postalcodeLink.replace(/\D/g, '').length === 4 && postalcodeLink.replace(/[0-9]/g, '').trim().length === 2
         : false;
 
+    const isEnergyCommunity = projectTypeCodeRef === 'energy_community';
+
     // todo WM: zelfde controle postalcodeLink / addressNumberSeries zit nu ook in ProjectNewApp
     errors.postalcodeLink = false;
     errorMessages.postalcodeLink = '';
@@ -137,45 +139,49 @@ const ProjectFormNewGeneral = ({
                 />
             </div>
 
-            <div className="row">
-                <InputToggle
-                    label={'Controle voor SCE subsidie'}
-                    name={'isSceProject'}
-                    value={isSceProject}
-                    onChangeAction={handleInputChange}
-                    disabled={!useSceProject}
-                />
-                {isSceProject ? (
-                    <InputSelect
-                        label={'Basis project'}
-                        name={'baseProjectCodeRef'}
-                        options={baseProjectCodeRefs}
-                        value={baseProjectCodeRef}
+            {!isEnergyCommunity ? (
+                <div className="row">
+                    <InputToggle
+                        label={'Controle voor SCE subsidie'}
+                        name={'isSceProject'}
+                        value={isSceProject}
                         onChangeAction={handleInputChange}
-                        required={isSceProject ? 'required' : ''}
-                        error={errors.baseProjectCodeRef}
-                        errorMessage={errorMessages.baseProjectCodeRef}
+                        disabled={!useSceProject}
                     />
-                ) : null}
-            </div>
+                    {isSceProject ? (
+                        <InputSelect
+                            label={'Basis project'}
+                            name={'baseProjectCodeRef'}
+                            options={baseProjectCodeRefs}
+                            value={baseProjectCodeRef}
+                            onChangeAction={handleInputChange}
+                            required={isSceProject ? 'required' : ''}
+                            error={errors.baseProjectCodeRef}
+                            errorMessage={errorMessages.baseProjectCodeRef}
+                        />
+                    ) : null}
+                </div>
+            ) : null}
 
-            <div className="row">
-                <InputText
-                    type={'number'}
-                    label={'Opgesteld vermogen kWp'}
-                    name={'powerKwAvailable'}
-                    value={powerKwAvailable}
-                    onChangeAction={handleInputChange}
-                />
-                {isSceProject ? (
-                    <ViewText
-                        className={'form-group col-sm-6'}
-                        label={'Benodigd aantal deelnemende leden'}
-                        value={requiredParticipants}
-                        textToolTip={`Dit aantal wordt berekend door het opgesteld vermogen kWp door 5 te delen. Dit om aan de voorwaarden van het RVO te voldoen. Zie https://www.rvo.nl/subsidies-financiering/sce/voorwaarden`}
+            {!isEnergyCommunity ? (
+                <div className="row">
+                    <InputText
+                        type={'number'}
+                        label={'Opgesteld vermogen kWp'}
+                        name={'powerKwAvailable'}
+                        value={powerKwAvailable}
+                        onChangeAction={handleInputChange}
                     />
-                ) : null}
-            </div>
+                    {isSceProject ? (
+                        <ViewText
+                            className={'form-group col-sm-6'}
+                            label={'Benodigd aantal deelnemende leden'}
+                            value={requiredParticipants}
+                            textToolTip={`Dit aantal wordt berekend door het opgesteld vermogen kWp door 5 te delen. Dit om aan de voorwaarden van het RVO te voldoen. Zie https://www.rvo.nl/subsidies-financiering/sce/voorwaarden`}
+                        />
+                    ) : null}
+                </div>
+            ) : null}
 
             {isSceProject ? (
                 <>
@@ -404,23 +410,25 @@ const ProjectFormNewGeneral = ({
                 </>
             ) : null}
 
-            <div className="row">
-                <InputDate
-                    label={'Start productie'}
-                    name={'dateProduction'}
-                    value={dateProduction}
-                    onChangeAction={handleInputChangeDate}
-                />
-                <InputDate
-                    label={'Standaard ingangsdatum mutatie'}
-                    name={'dateEntry'}
-                    value={dateEntry}
-                    onChangeAction={handleInputChangeDate}
-                    disabledBefore={disableBeforeEntryDate}
-                    error={errors.dateEntry}
-                    errorMessage={errorMessages.dateEntry}
-                />
-            </div>
+            {!isEnergyCommunity ? (
+                <div className="row">
+                    <InputDate
+                        label={'Start productie'}
+                        name={'dateProduction'}
+                        value={dateProduction}
+                        onChangeAction={handleInputChangeDate}
+                    />
+                    <InputDate
+                        label={'Standaard ingangsdatum mutatie'}
+                        name={'dateEntry'}
+                        value={dateEntry}
+                        onChangeAction={handleInputChangeDate}
+                        disabledBefore={disableBeforeEntryDate}
+                        error={errors.dateEntry}
+                        errorMessage={errorMessages.dateEntry}
+                    />
+                </div>
+            ) : null}
         </React.Fragment>
     );
 };

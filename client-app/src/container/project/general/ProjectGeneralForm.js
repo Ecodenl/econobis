@@ -7,6 +7,7 @@ import ParticipantsListApp from './list-participants/ParticipantsListApp';
 import ProjectGeneralFormViewObligation from './summary/ProjectGeneralFormViewObligation';
 import ProjectGeneralFormViewCapital from './summary/ProjectGeneralFormViewCapital';
 import ProjectGeneralFormViewPostalcodeLinkCapital from './summary/ProjectGeneralFormViewPostalcodeLinkCapital';
+import ProjectGeneralFormViewEnergyCommunity from './summary/ProjectGeneralFormViewEnergyCommunity';
 
 class ProjectGeneralForm extends Component {
     renderProjectSummary() {
@@ -19,6 +20,8 @@ class ProjectGeneralForm extends Component {
                 return <ProjectGeneralFormViewCapital />;
             case 'postalcode_link_capital':
                 return <ProjectGeneralFormViewPostalcodeLinkCapital />;
+            case 'energy_community':
+                return <ProjectGeneralFormViewEnergyCommunity />;
             default:
                 return <div>Geen type project gevonden.</div>;
         }

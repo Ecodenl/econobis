@@ -177,6 +177,13 @@ class Project extends Model
         return TransactionCostsCodeRef::get($this->transaction_costs_code_ref);
     }
 
+    public function getMonitorProvider()
+    {
+        if (!$this->monitor_provider) return null;
+
+        return MonitorProvider::get($this->monitor_provider);
+    }
+
     public function getBaseProjectCodeRef()
     {
         if (!$this->base_project_code_ref) return null;

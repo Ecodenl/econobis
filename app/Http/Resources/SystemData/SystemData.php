@@ -69,6 +69,7 @@ use App\Eco\Product\ProductDuration;
 use App\Eco\Product\ProductInvoiceFrequency;
 use App\Eco\Product\ProductPaymentType;
 use App\Eco\Project\BaseProjectCodeRef;
+use App\Eco\Project\MonitorProvider;
 use App\Eco\Project\ProjectLoanType;
 use App\Eco\Project\ProjectRevenueCategory;
 use App\Eco\Project\ProjectRevenueDistributionType;
@@ -228,6 +229,7 @@ class SystemData extends JsonResource
             'mailgunDomain' => $mailgunDomains,
             'measureCategories' => MeasureCategory::select(['id', 'name'])->orderBy('name')->get(),
             'measures' => MeasurePeek::collection(Measure::orderBy('name')->get()),
+            'monitorProviders' => FullEnumWithIdAndName::collection(MonitorProvider::collection()),
             'occupations' => FullOccupation::collection(Occupation::orderBy('primary_occupation')->get()),
             'opportunityActions' => GenericResource::collection(OpportunityAction::all()),
             'opportunityEvaluationStatuses' => OpportunityEvaluationStatusResource::collection(OpportunityEvaluationStatus::all()),

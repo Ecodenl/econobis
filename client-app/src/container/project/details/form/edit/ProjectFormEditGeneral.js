@@ -162,6 +162,8 @@ const ProjectFormEditGeneral = ({
         ? postalcodeLink.replace(/\D/g, '').length === 4 && postalcodeLink.replace(/[0-9]/g, '').trim().length === 2
         : false;
 
+    const isEnergyCommunity = projectType && projectType.codeRef === 'energy_community';
+
     // todo WM: zelfde controle postalcodeLink / addressNumberSeries zit nu ook in ProjectFormEdit
     errors.postalcodeLink = false;
     errorMessages.postalcodeLink = '';
@@ -230,45 +232,49 @@ const ProjectFormEditGeneral = ({
                     errorMessage={errorMessages.projectStatusId}
                 />
             </div>
-            <div className="row">
-                <InputToggle
-                    label={'Controle voor SCE subsidie'}
-                    name={'isSceProject'}
-                    value={isSceProject}
-                    onChangeAction={handleInputChange}
-                    disabled={!useSceProject}
-                />
-                {isSceProject ? (
-                    <InputSelect
-                        label={'Basis project'}
-                        name={'baseProjectCodeRef'}
-                        options={baseProjectCodeRefs}
-                        value={baseProjectCodeRef}
+            {!isEnergyCommunity ? (
+                <div className="row">
+                    <InputToggle
+                        label={'Controle voor SCE subsidie'}
+                        name={'isSceProject'}
+                        value={isSceProject}
                         onChangeAction={handleInputChange}
-                        required={isSceProject ? 'required' : ''}
-                        error={errors.baseProjectCodeRef}
-                        errorMessage={errorMessages.baseProjectCodeRef}
+                        disabled={!useSceProject}
                     />
-                ) : null}
-            </div>
+                    {isSceProject ? (
+                        <InputSelect
+                            label={'Basis project'}
+                            name={'baseProjectCodeRef'}
+                            options={baseProjectCodeRefs}
+                            value={baseProjectCodeRef}
+                            onChangeAction={handleInputChange}
+                            required={isSceProject ? 'required' : ''}
+                            error={errors.baseProjectCodeRef}
+                            errorMessage={errorMessages.baseProjectCodeRef}
+                        />
+                    ) : null}
+                </div>
+            ) : null}
 
-            <div className="row">
-                <InputText
-                    type={'number'}
-                    label={'Opgesteld vermogen kWp'}
-                    name={'powerKwAvailable'}
-                    value={powerKwAvailable}
-                    onChangeAction={handleInputChange}
-                />
-                {isSceProject ? (
-                    <ViewText
-                        className={'form-group col-sm-6'}
-                        label={'Benodigd aantal deelnemende leden'}
-                        value={requiredParticipants}
-                        textToolTip={`Dit aantal wordt berekend door het opgesteld vermogen kWp door 5 te delen. Dit om aan de voorwaarden van het RVO te voldoen. Zie https://www.rvo.nl/subsidies-financiering/sce/voorwaarden`}
+            {!isEnergyCommunity ? (
+                <div className="row">
+                    <InputText
+                        type={'number'}
+                        label={'Opgesteld vermogen kWp'}
+                        name={'powerKwAvailable'}
+                        value={powerKwAvailable}
+                        onChangeAction={handleInputChange}
                     />
-                ) : null}
-            </div>
+                    {isSceProject ? (
+                        <ViewText
+                            className={'form-group col-sm-6'}
+                            label={'Benodigd aantal deelnemende leden'}
+                            value={requiredParticipants}
+                            textToolTip={`Dit aantal wordt berekend door het opgesteld vermogen kWp door 5 te delen. Dit om aan de voorwaarden van het RVO te voldoen. Zie https://www.rvo.nl/subsidies-financiering/sce/voorwaarden`}
+                        />
+                    ) : null}
+                </div>
+            ) : null}
 
             {isSceProject ? (
                 <>
@@ -494,34 +500,38 @@ const ProjectFormEditGeneral = ({
                 </>
             ) : null}
 
-            <div className="row">
-                <InputDate
-                    label={'Start productie'}
-                    name={'dateProduction'}
-                    value={dateProduction}
-                    onChangeAction={handleInputChangeDate}
-                />
-                <InputDate
-                    label={'Standaard ingangsdatum mutatie'}
-                    name={'dateEntry'}
-                    value={dateEntry}
-                    onChangeAction={handleInputChangeDate}
-                    disabledBefore={disableBeforeEntryDate}
-                    error={errors.dateEntry}
-                    errorMessage={errorMessages.dateEntry}
-                />
-            </div>
+            {!isEnergyCommunity ? (
+                <div className="row">
+                    <InputDate
+                        label={'Start productie'}
+                        name={'dateProduction'}
+                        value={dateProduction}
+                        onChangeAction={handleInputChangeDate}
+                    />
+                    <InputDate
+                        label={'Standaard ingangsdatum mutatie'}
+                        name={'dateEntry'}
+                        value={dateEntry}
+                        onChangeAction={handleInputChangeDate}
+                        disabledBefore={disableBeforeEntryDate}
+                        error={errors.dateEntry}
+                        errorMessage={errorMessages.dateEntry}
+                    />
+                </div>
+            ) : null}
 
-            <div className="row">
-                <InputDate
-                    label={'Begindatum volgende periode opbrengst euro'}
-                    name={'dateInterestBearing'}
-                    value={dateInterestBearing}
-                    onChangeAction={handleInputChangeDate}
-                    disabledBefore={dateProduction}
-                    readOnly={!allowChangeDateInterestBearing}
-                />
-            </div>
+            {!isEnergyCommunity ? (
+                <div className="row">
+                    <InputDate
+                        label={'Begindatum volgende periode opbrengst euro'}
+                        name={'dateInterestBearing'}
+                        value={dateInterestBearing}
+                        onChangeAction={handleInputChangeDate}
+                        disabledBefore={dateProduction}
+                        readOnly={!allowChangeDateInterestBearing}
+                    />
+                </div>
+            ) : null}
 
             {projectType.codeRef === 'loan' || projectType.codeRef === 'obligation' ? (
                 <div className="row">

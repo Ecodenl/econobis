@@ -55,15 +55,18 @@ const MutationFormView = ({
     } = participantMutation;
 
     let allowDelete = false;
-    if (status && status.codeRef !== 'final') {
-        allowDelete = true;
-    } else if (
-        participantMutation.changeAllowed &&
-        !isPaidByMollie &&
-        !financialOverviewDefinitive &&
-        participantProjectDateTerminated === null
-    ) {
-        allowDelete = true;
+
+    if (projectTypeCodeRef !== 'energy_community') {
+        if (status && status.codeRef !== 'final') {
+            allowDelete = true;
+        } else if (
+            participantMutation.changeAllowed &&
+            !isPaidByMollie &&
+            !financialOverviewDefinitive &&
+            participantProjectDateTerminated === null
+        ) {
+            allowDelete = true;
+        }
     }
 
     return (
@@ -73,12 +76,28 @@ const MutationFormView = ({
             onMouseLeave={() => onLineLeave()}
         >
             <StyledContainer onClick={openDetails}>
-                <StyledColumn columnWidth={'100px'}>{type.name}</StyledColumn>
-                <StyledColumn columnWidth={'80px'}>{status && status.name}</StyledColumn>
-                <StyledColumn columnWidth={'100px'}>{datePayment ? moment(datePayment).format('L') : ''}</StyledColumn>
-                <StyledColumn columnWidth={'100px'}>{dateEntry ? moment(dateEntry).format('L') : ''}</StyledColumn>
-                <StyledColumn columnWidth={'120px'}>{type.description}</StyledColumn>
+                <StyledColumn columnWidth={projectTypeCodeRef === 'energy_community' ? '140px' : '100px'}>
+                    {type.name}
+                </StyledColumn>
+                <StyledColumn columnWidth={projectTypeCodeRef === 'energy_community' ? '120px' : '80px'}>
+                    {status && status.name}
+                </StyledColumn>
+
+                {projectTypeCodeRef !== 'energy_community' && (
+                    <StyledColumn columnWidth={'100px'}>
+                        {datePayment ? moment(datePayment).format('L') : ''}
+                    </StyledColumn>
+                )}
+
+                <StyledColumn columnWidth={projectTypeCodeRef === 'energy_community' ? '120px' : '100px'}>
+                    {dateEntry ? moment(dateEntry).format('L') : ''}
+                </StyledColumn>
+                <StyledColumn columnWidth={projectTypeCodeRef === 'energy_community' ? '200px' : '120px'}>
+                    {type.description}
+                </StyledColumn>
+
                 {projectTypeCodeRef === 'loan' ? <StyledColumn>{amount && moneyPresenter(amount)}</StyledColumn> : null}
+
                 {projectTypeCodeRef === 'obligation' ||
                 projectTypeCodeRef === 'capital' ||
                 projectTypeCodeRef === 'postalcode_link_capital' ? (
@@ -86,35 +105,43 @@ const MutationFormView = ({
                         {(amount || participationWorth) && moneyPresenter(amount + participationWorth)}
                     </StyledColumn>
                 ) : null}
+
                 {(projectTypeCodeRef === 'obligation' ||
                     projectTypeCodeRef === 'capital' ||
                     projectTypeCodeRef === 'postalcode_link_capital') && <StyledColumn>{quantity}</StyledColumn>}
-                <StyledColumn>{returns && moneyPresenter(returns)}</StyledColumn>
+
+                {projectTypeCodeRef !== 'energy_community' && (
+                    <StyledColumn>{returns && moneyPresenter(returns)}</StyledColumn>
+                )}
+
                 {projectTypeCodeRef === 'postalcode_link_capital' && <StyledColumn>{payoutKwh}</StyledColumn>}
                 {projectTypeCodeRef === 'postalcode_link_capital' && (
                     <StyledColumn>
                         {indicationOfRestitutionEnergyTax && moneyPresenter(indicationOfRestitutionEnergyTax)}
                     </StyledColumn>
                 )}
-                {!deletedAt && (
-                    <StyledColumn columnWidth={'6%'}>
-                        {showActionButtons && !financialOverviewDefinitive && permissions.manageParticipation ? (
-                            <a role="button" onClick={openDetails}>
-                                <Icon className="mybtn-success" size={14} icon={pencil} />
-                            </a>
-                        ) : (
-                            ''
-                        )}
-                        &nbsp;
-                        {allowDelete && showActionButtons && permissions.manageParticipation ? (
-                            <a role="button" onClick={toggleDelete}>
-                                <Icon className="mybtn-danger" size={14} icon={trash} />
-                            </a>
-                        ) : (
-                            ''
-                        )}
-                    </StyledColumn>
-                )}
+
+                <StyledColumn columnWidth={'7%'}>
+                    {!deletedAt && (
+                        <>
+                            {showActionButtons && !financialOverviewDefinitive && permissions.manageParticipation ? (
+                                <a role="button" onClick={openDetails}>
+                                    <Icon className="mybtn-success" size={14} icon={pencil} />
+                                </a>
+                            ) : (
+                                ''
+                            )}
+                            &nbsp;
+                            {allowDelete && showActionButtons && permissions.manageParticipation ? (
+                                <a role="button" onClick={toggleDelete}>
+                                    <Icon className="mybtn-danger" size={14} icon={trash} />
+                                </a>
+                            ) : (
+                                ''
+                            )}
+                        </>
+                    )}
+                </StyledColumn>
             </StyledContainer>
         </div>
     );

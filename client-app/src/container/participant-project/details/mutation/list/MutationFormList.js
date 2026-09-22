@@ -23,22 +23,39 @@ const MutationFormList = ({ projectTypeCodeRef, participantMutations }) => {
     return (
         <div>
             <StyledContainer className="row border header">
-                <StyledColumn columnWidth={'100px'}>Type</StyledColumn>
-                <StyledColumn columnWidth={'80px'}>Status</StyledColumn>
-                <StyledColumn columnWidth={'100px'}>Betaal datum</StyledColumn>
-                <StyledColumn columnWidth={'100px'}>Ingangs- datum</StyledColumn>
-                <StyledColumn columnWidth={'120px'}>Omschrijving</StyledColumn>
+                <StyledColumn columnWidth={projectTypeCodeRef === 'energy_community' ? '140px' : '100px'}>
+                    Type
+                </StyledColumn>
+                <StyledColumn columnWidth={projectTypeCodeRef === 'energy_community' ? '120px' : '80px'}>
+                    Status
+                </StyledColumn>
+
+                {projectTypeCodeRef !== 'energy_community' && (
+                    <StyledColumn columnWidth={'100px'}>Betaal datum</StyledColumn>
+                )}
+
+                <StyledColumn columnWidth={projectTypeCodeRef === 'energy_community' ? '120px' : '100px'}>
+                    Ingangs- datum
+                </StyledColumn>
+                <StyledColumn columnWidth={projectTypeCodeRef === 'energy_community' ? '200px' : '120px'}>
+                    Omschrijving
+                </StyledColumn>
+
                 {projectTypeCodeRef === 'loan' && <StyledColumn>Lening rekening</StyledColumn>}
                 {(projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital') && (
                     <StyledColumn>Kapitaal rekening</StyledColumn>
                 )}
+
                 {projectTypeCodeRef === 'obligation' && <StyledColumn>Obligatie rekening</StyledColumn>}
                 {projectTypeCodeRef === 'obligation' && <StyledColumn>Aantal obligaties</StyledColumn>}
                 {(projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital') && (
                     <StyledColumn>Aantal participaties</StyledColumn>
                 )}
-                <StyledColumn>Opbrengst</StyledColumn>
+
+                {projectTypeCodeRef !== 'energy_community' && <StyledColumn>Opbrengst</StyledColumn>}
+
                 {projectTypeCodeRef === 'postalcode_link_capital' && <StyledColumn>kWh</StyledColumn>}
+
                 {projectTypeCodeRef === 'postalcode_link_capital' && (
                     <StyledColumn>Indicatie teruggave EB</StyledColumn>
                 )}

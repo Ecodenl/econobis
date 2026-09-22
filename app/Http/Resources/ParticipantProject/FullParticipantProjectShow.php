@@ -53,6 +53,7 @@ class FullParticipantProjectShow extends JsonResource
                 'typeId' => $this->type_id,
                 'type' => GenericResource::make($this->whenLoaded('participantProjectPayoutType')),
                 'powerKwhConsumption' => $this->power_kwh_consumption,
+                'powerKwAvailable' => $this->power_kw_available,
                 'createdAt' => $this->created_at,
                 'createdWith' => $this->created_with,
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),

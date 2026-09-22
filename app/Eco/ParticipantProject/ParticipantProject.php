@@ -216,8 +216,19 @@ class ParticipantProject extends Model
     public function getDateEntryFirstDepositAttribute()
     {
         $projectType = $this->project->projectType;
-        $mutationType = ParticipantMutationType::where('code_ref', 'first_deposit')->where('project_type_id', $projectType->id)->first();
-        $mutationFirstDeposit = $this->mutationsDefinitive()->where('type_id', $mutationType->id)->first();
+
+        $mutationTypeCodeRef = $projectType->code_ref === 'energy_community'
+            ? 'participation'
+            : 'first_deposit';
+
+        $mutationType = ParticipantMutationType::where('code_ref', $mutationTypeCodeRef)
+            ->where('project_type_id', $projectType->id)
+            ->first();
+
+        $mutationFirstDeposit = $this->mutationsDefinitive()
+            ->where('type_id', $mutationType->id)
+            ->first();
+
         return $mutationFirstDeposit ? $mutationFirstDeposit->date_entry : null;
     }
 

@@ -12,7 +12,7 @@ export default function(participantMutation, statusCodeRef, typeCodeRef, project
         if (projectTypeCodeRef === 'loan') {
             values.amountInterest = participantMutation.amountInterest;
             values.amount = participantMutation.amountInterest;
-        } else {
+        } else if (projectTypeCodeRef !== 'energy_community') {
             values.quantityInterest = participantMutation.quantityInterest;
             values.quantity = participantMutation.quantityInterest;
         }
@@ -23,7 +23,7 @@ export default function(participantMutation, statusCodeRef, typeCodeRef, project
         if (projectTypeCodeRef === 'loan') {
             values.amountOption = participantMutation.amountOption;
             values.amount = participantMutation.amountOption;
-        } else {
+        } else if (projectTypeCodeRef !== 'energy_community') {
             values.quantityOption = participantMutation.quantityOption;
             values.quantity = participantMutation.quantityOption;
         }
@@ -34,7 +34,7 @@ export default function(participantMutation, statusCodeRef, typeCodeRef, project
         if (projectTypeCodeRef === 'loan') {
             values.amountGranted = participantMutation.amountGranted;
             values.amount = participantMutation.amountGranted;
-        } else {
+        } else if (projectTypeCodeRef !== 'energy_community') {
             values.quantityGranted = participantMutation.quantityGranted;
             values.quantity = participantMutation.quantityGranted;
         }
@@ -42,17 +42,21 @@ export default function(participantMutation, statusCodeRef, typeCodeRef, project
 
     if (statusCodeRef === 'final') {
         values.dateGranted = participantMutation.dateGranted;
-        values.datePayment = participantMutation.datePayment;
-        values.paymentReference = participantMutation.paymentReference;
         values.dateEntry = participantMutation.dateEntry;
+
         if (projectTypeCodeRef === 'loan') {
             values.amountFinal = participantMutation.amountFinal;
             values.amount = participantMutation.amountFinal;
-        } else {
+        } else if (projectTypeCodeRef !== 'energy_community') {
             values.quantityFinal = participantMutation.quantityFinal;
             values.quantity = participantMutation.quantityFinal;
         }
-        values.dateContractRetour = participantMutation.dateContractRetour;
+
+        if (projectTypeCodeRef !== 'energy_community') {
+            values.datePayment = participantMutation.datePayment;
+            values.paymentReference = participantMutation.paymentReference;
+            values.dateContractRetour = participantMutation.dateContractRetour;
+        }
     }
 
     return values;

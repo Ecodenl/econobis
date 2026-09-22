@@ -37,7 +37,7 @@ export default function(
                         hasErrors = true;
                     }
                 }
-            } else {
+            } else if (projectTypeCodeRef !== 'energy_community') {
                 if (typeCodeRef === 'with_drawal') {
                     if (participantMutation.quantityInterest && participantMutation.quantityInterest > 0) {
                         errors.quantityInterest = true;
@@ -69,7 +69,7 @@ export default function(
                         hasErrors = true;
                     }
                 }
-            } else {
+            } else if (projectTypeCodeRef !== 'energy_community') {
                 if (typeCodeRef === 'with_drawal') {
                     if (!participantMutation.quantityOption || participantMutation.quantityOption >= 0) {
                         errors.quantityOption = true;
@@ -105,7 +105,7 @@ export default function(
                         hasErrors = true;
                     }
                 }
-            } else {
+            } else if (projectTypeCodeRef !== 'energy_community') {
                 if (typeCodeRef === 'with_drawal') {
                     if (!participantMutation.quantityGranted || participantMutation.quantityGranted >= 0) {
                         errors.quantityGranted = true;
@@ -147,7 +147,7 @@ export default function(
                         hasErrors = true;
                     }
                 }
-            } else {
+            } else if (projectTypeCodeRef !== 'energy_community') {
                 if (typeCodeRef === 'with_drawal') {
                     if (!participantMutation.quantityFinal || participantMutation.quantityFinal >= 0) {
                         errors.quantityFinal = true;

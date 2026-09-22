@@ -46,7 +46,20 @@ class ProjectCalculator
     {
         return $this->project->participantMutations()->whereNull('participation_project.date_terminated')->where('participant_mutations.status_id', 1)->sum('amount');
     }
-
+    public function totalParticipationsPowerKwAvailable()
+    {
+        return $this->project->participantsProject()
+            ->whereNull('date_terminated')
+            ->where('participations_definitive', '>', 0)
+            ->sum('power_kw_available');
+    }
+    public function totalParticipationsPowerKwhConsumption()
+    {
+        return $this->project->participantsProject()
+            ->whereNull('date_terminated')
+            ->where('participations_definitive', '>', 0)
+            ->sum('power_kwh_consumption');
+    }
 
     public function run()
     {
@@ -58,6 +71,14 @@ class ProjectCalculator
         $this->project->amount_granted = $this->amountGranted();
         $this->project->amount_optioned = $this->amountOptioned();
         $this->project->amount_interessed = $this->amountInteressed();
+
+        if ($this->project->projectType->code_ref === 'energy_community') {
+            $this->project->total_participations_power_kw_available =
+                $this->totalParticipationsPowerKwAvailable();
+
+            $this->project->total_participations_power_kwh_consumption =
+                $this->totalParticipationsPowerKwhConsumption();
+        }
 
         return $this->project;
     }

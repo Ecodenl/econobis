@@ -15,6 +15,10 @@ class ParticipantProjectCalculator
 
     public function participationsDefinitiveWorth()
     {
+        if ($this->participantProject->project->projectType->code_ref === 'energy_community') {
+            return 0;
+        }
+
         return $this->participationsDefinitive() * $this->participantProject->project->currentBookWorth();
     }
     public function participationsCapitalWorth()

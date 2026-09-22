@@ -77,6 +77,8 @@ class ParticipantMutationController extends ApiController
 
         $participantMutation->fill($data);
 
+        $this->setEnergyCommunityQuantity($participantMutation);
+
         $differentTransactionCostsAmount = $request->get('differentTransactionCostsAmount');
         if($differentTransactionCostsAmount == ''){
             $differentTransactionCostsAmount = null;
@@ -87,7 +89,9 @@ class ParticipantMutationController extends ApiController
             $participantMutation->transaction_costs_amount = $differentTransactionCostsAmount;
         }
 
-        $result = $this->checkMutationAllowed($participantMutation);
+        if ($participantMutation->participation->project->projectType->code_ref !== 'energy_community') {
+            $this->checkMutationAllowed($participantMutation);
+        }
 
         $this->recalculateParticipantMutation($participantMutation);
 
@@ -109,8 +113,9 @@ class ParticipantMutationController extends ApiController
         $this->authorize('manage', ParticipantMutation::class);
 
         $participantMutationOld = ParticipantMutation::find($participantMutation->id);
-        $result = $this->checkMutationAllowed($participantMutationOld);
-
+        if ($participantMutationOld->participation->project->projectType->code_ref !== 'energy_community') {
+            $this->checkMutationAllowed($participantMutationOld);
+        }
         $dateRegisterOld = $participantMutation->participation->dateEntryFirstDeposit;
 
         $data = $requestInput
@@ -144,6 +149,8 @@ class ParticipantMutationController extends ApiController
 
         $participantMutation->fill($data);
 
+        $this->setEnergyCommunityQuantity($participantMutation);
+
         $differentTransactionCostsAmount = $request->get('differentTransactionCostsAmount');
         if($differentTransactionCostsAmount == ''){
             $differentTransactionCostsAmount = null;
@@ -157,8 +164,9 @@ class ParticipantMutationController extends ApiController
             $participantMutation->transaction_costs_amount = $differentTransactionCostsAmount;
         }
 
-        $result = $this->checkMutationAllowed($participantMutation);
-
+        if ($participantMutation->participation->project->projectType->code_ref !== 'energy_community') {
+            $this->checkMutationAllowed($participantMutation);
+        }
         $this->recalculateParticipantMutation($participantMutation);
 
         $dateRegisterNew = $participantMutation->participation->dateEntryFirstDeposit;
@@ -177,8 +185,9 @@ class ParticipantMutationController extends ApiController
     {
         $this->authorize('manage', ParticipantMutation::class);
 
-        $result = $this->checkMutationAllowed($participantMutation);
-
+        if ($participantMutation->participation->project->projectType->code_ref !== 'energy_community') {
+            $this->checkMutationAllowed($participantMutation);
+        }
         $melding = null;
 
         $participantProject = $participantMutation->participation;
@@ -354,10 +363,8 @@ class ParticipantMutationController extends ApiController
             if ($financialOverviewProjectQuery->exists()) {
                 $financialOverview = $financialOverviewProjectQuery->first()->financialOverview;
                 abort(409, 'Project komt al voor in definitive waardestaat ' . $financialOverview->description . '. Deze mutatie is niet meer mogelijk.');
-                return false;
             }
         }
-        return true;
     }
 
     public function calculationTransactionCosts($participantMutation)
@@ -481,5 +488,36 @@ class ParticipantMutationController extends ApiController
         }
 
         return $transactionCosts;
+    }
+
+    private function setEnergyCommunityQuantity(ParticipantMutation $participantMutation): void
+    {
+        if (
+            $participantMutation->participation->project->projectType->code_ref !== 'energy_community'
+            || $participantMutation->type->code_ref !== 'participation'
+        ) {
+            return;
+        }
+
+        $participantMutation->quantity = 1;
+
+        switch ($participantMutation->status->code_ref) {
+            case 'interest':
+                $participantMutation->quantity_interest = 1;
+                break;
+            case 'option':
+                $participantMutation->quantity_option = 1;
+                break;
+            case 'granted':
+                $participantMutation->quantity_granted = 1;
+                break;
+            case 'final':
+                $participantMutation->quantity_final = 1;
+
+                if ($participantMutation->date_granted !== null) {
+                    $participantMutation->quantity_granted = 1;
+                }
+                break;
+        }
     }
 }

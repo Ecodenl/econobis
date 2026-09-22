@@ -443,6 +443,7 @@ class ParticipationProjectController extends ApiController
             ->string('ibanPayoutAttn')->alias('iban_payout_attn')->next()
             ->integer('typeId')->validate('nullable|exists:participant_project_payout_type,id')->onEmpty(null)->alias('type_id')->next()
             ->integer('powerKwhConsumption')->alias('power_kwh_consumption')->next()
+            ->integer('powerKwAvailable')->alias('power_kw_available')->next()
             ->get();
 
         $participantProject->fill($data);
@@ -530,15 +531,18 @@ class ParticipationProjectController extends ApiController
         try {
             DB::beginTransaction();
 
+            $project = $participantProject->project;
+
             $deleteParticipation = new DeleteParticipation($participantProject);
             $result = $deleteParticipation->delete();
-// todo WM: check of hier niet ook recalculate financialoverviewcontact moeten doen?
-//            // Indien participation project in concept waardestaat / waardestaten, dan die herberekenen.
-//            $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
+
             if(count($result) > 0){
                 DB::rollBack();
                 abort(412, implode(";", array_unique($result)));
             }
+
+            // Herbereken de afhankelijke gegevens op het project
+            $project->calculator()->run()->save();
 
             DB::commit();
         } catch (\PDOException $e) {
@@ -1186,58 +1190,132 @@ class ParticipationProjectController extends ApiController
                     ->double('amountInterest')->onEmpty(null)->alias('amount_interest')->next()
                     ->date('dateInterest')->onEmpty(null)->validate('date')->alias('date_interest')->next()
                     ->get();
+
                 $mutationData['quantity'] = isset($mutationData['quantity_interest']) ? $mutationData['quantity_interest'] : null;
+
                 $mutationData['amount'] = isset($mutationData['amount_interest']) ? $mutationData['amount_interest'] : null;
                 break;
             case 'option':
+                $quantityOptionValidation = $project->projectType->code_ref === 'energy_community'
+                    ? 'nullable'
+                    : 'required_without:amountOption';
+
+                $amountOptionValidation = $project->projectType->code_ref === 'energy_community'
+                    ? 'nullable'
+                    : 'required_without:quantityOption';
+
                 $mutationData = $requestInput
                     ->integer('statusId')->validate('required|exists:participant_mutation_statuses,id')->alias('status_id')->next()
-                    ->integer('quantityOption')->validate('required_without:amountOption')->alias('quantity_option')->next()
-                    ->double('amountOption')->validate('required_without:quantityOption')->alias('amount_option')->next()
+                    ->integer('quantityOption')->validate($quantityOptionValidation)->onEmpty(null)->alias('quantity_option')->next()
+                    ->double('amountOption')->validate($amountOptionValidation)->onEmpty(null)->alias('amount_option')->next()
                     ->date('dateOption')->validate('required|date')->alias('date_option')->next()
                     ->get();
+
                 $mutationData['quantity'] = isset($mutationData['quantity_option']) ? $mutationData['quantity_option'] : null;
+
                 $mutationData['amount'] = isset($mutationData['amount_option']) ? $mutationData['amount_option'] : null;
                 break;
             case 'granted':
+                $quantityGrantedValidation = $project->projectType->code_ref === 'energy_community'
+                    ? 'nullable'
+                    : 'required_without:amountGranted';
+
+                $amountGrantedValidation = $project->projectType->code_ref === 'energy_community'
+                    ? 'nullable'
+                    : 'required_without:quantityGranted';
+
                 $mutationData = $requestInput
                     ->integer('statusId')->validate('required|exists:participant_mutation_statuses,id')->alias('status_id')->next()
-                    ->integer('quantityGranted')->validate('required_without:amountGranted')->alias('quantity_granted')->next()
-                    ->double('amountGranted')->validate('required_without:quantityGranted')->alias('amount_granted')->next()
+                    ->integer('quantityGranted')->validate($quantityGrantedValidation)->onEmpty(null)->alias('quantity_granted')->next()
+                    ->double('amountGranted')->validate($amountGrantedValidation)->onEmpty(null)->alias('amount_granted')->next()
                     ->date('dateGranted')->validate('required|date')->alias('date_granted')->next()
                     ->get();
+
                 $mutationData['quantity'] = isset($mutationData['quantity_granted']) ? $mutationData['quantity_granted'] : null;
+
                 $mutationData['amount'] = isset($mutationData['amount_granted']) ? $mutationData['amount_granted'] : null;
                 break;
             case 'final':
+                $quantityFinalValidation = $project->projectType->code_ref === 'energy_community'
+                    ? 'nullable'
+                    : 'required_without:amountFinal';
+
+                $amountFinalValidation = $project->projectType->code_ref === 'energy_community'
+                    ? 'nullable'
+                    : 'required_without:quantityFinal';
+
                 $mutationData = $requestInput
                     ->integer('statusId')->validate('required|exists:participant_mutation_statuses,id')->alias('status_id')->next()
-                    ->integer('quantityFinal')->validate('required_without:amountFinal')->alias('quantity_final')->next()
-                    ->double('amountFinal')->validate('required_without:quantityFinal')->alias('amount_final')->next()
+                    ->integer('quantityFinal')->validate($quantityFinalValidation)->onEmpty(null)->alias('quantity_final')->next()
+                    ->double('amountFinal')->validate($amountFinalValidation)->onEmpty(null)->alias('amount_final')->next()
                     ->date('dateGranted')->validate('nullable|date')->onEmpty(null)->alias('date_granted')->next()
                     ->date('dateContractRetour')->validate('nullable|date')->onEmpty(null)->alias('date_contract_retour')->next()
                     ->date('datePayment')->validate('nullable|date')->onEmpty(null)->alias('date_payment')->next()
                     ->string('paymentReference')->onEmpty(null)->alias('payment_reference')->next()
                     ->date('dateEntry')->validate('required|date')->alias('date_entry')->next()
                     ->get();
-                $mutationData['quantity'] = isset($mutationData['quantity_final']) ? $mutationData['quantity_final'] : null;
-                $mutationData['amount'] = isset($mutationData['amount_final']) ? $mutationData['amount_final'] : null;
-                if(isset( $mutationData['date_granted'] ) )
-                {
-                    if(isset($mutationData['amount_final']) && $mutationData['amount_final'] <> 0 && !isset( $mutationData['amount_granted'] ) )
-                    {
-                        $mutationData = array_merge($mutationData, ['amount_granted' =>  $mutationData['amount_final']]);
-                    }elseif(isset($mutationData['quantity_final']) && $mutationData['quantity_final'] <> 0 && !isset( $mutationData['quantity_granted'] ) )
-                    {
-                        $mutationData = array_merge($mutationData, ['quantity_granted' =>  $mutationData['quantity_final']]);
+
+                $mutationData['quantity'] = isset($mutationData['quantity_final'])
+                    ? $mutationData['quantity_final']
+                    : null;
+
+                $mutationData['amount'] = isset($mutationData['amount_final'])
+                    ? $mutationData['amount_final']
+                    : null;
+
+                if (isset($mutationData['date_granted'])) {
+                    if (
+                        isset($mutationData['amount_final'])
+                        && $mutationData['amount_final'] <> 0
+                        && !isset($mutationData['amount_granted'])
+                    ) {
+                        $mutationData['amount_granted'] = $mutationData['amount_final'];
+                    } elseif (
+                        isset($mutationData['quantity_final'])
+                        && $mutationData['quantity_final'] <> 0
+                        && !isset($mutationData['quantity_granted'])
+                    ) {
+                        $mutationData['quantity_granted'] = $mutationData['quantity_final'];
                     }
                 }
                 break;
         }
+        if ($project->projectType->code_ref === 'energy_community') {
+            // Voor Energiegemeenschappen is het aantal altijd 1.
+            $mutationData['quantity'] = 1;
 
+            switch ($participantMutationStatus->code_ref) {
+                case 'interest':
+                    $mutationData['quantity_interest'] = 1;
+                    break;
+                case 'option':
+                    $mutationData['quantity_option'] = 1;
+                    break;
+                case 'granted':
+                    $mutationData['quantity_granted'] = 1;
+                    break;
+                case 'final':
+                    $mutationData['quantity_final'] = 1;
+
+                    if (isset($mutationData['date_granted'])) {
+                        $mutationData['quantity_granted'] = 1;
+                    }
+                    break;
+            }
+        }
         $mutationData['participation_id'] = $participantProject->id;
 
-        $participantMutationType = ParticipantMutationType::where('project_type_id', $project->project_type_id)->where('code_ref', 'first_deposit')->first();
+        $mutationTypeCodeRef = $project->projectType->code_ref === 'energy_community'
+            ? 'participation'
+            : 'first_deposit';
+
+        $participantMutationType = ParticipantMutationType::where(
+            'project_type_id',
+            $project->project_type_id
+        )
+            ->where('code_ref', $mutationTypeCodeRef)
+            ->firstOrFail();
+
         $mutationData['type_id'] = $participantMutationType->id;
 
         // Remove unnecessary fields from $mutationData
@@ -1251,11 +1329,16 @@ class ParticipationProjectController extends ApiController
         $participantMutationController = new ParticipantMutationController();
         $participantMutation->transaction_costs_amount = $participantMutationController->calculationTransactionCosts($participantMutation);
 
-        $dateEntryYear = \Carbon\Carbon::parse($participantMutation->date_entry)->year;
-        $result = $this->checkMutationAllowed($participantMutation, $dateEntryYear);
+        if ($project->projectType->code_ref !== 'energy_community') {
+            $dateEntryYear = \Carbon\Carbon::parse($participantMutation->date_entry)->year;
+            $this->checkMutationAllowed($participantMutation, $dateEntryYear);
+        }
 
         // Calculate participation worth based on current book worth of project
-        if($participantMutation->status->code_ref === 'final' && $project->projectType->code_ref !== 'loan') {
+        if($participantMutation->status->code_ref === 'final'
+            && $project->projectType->code_ref !== 'loan'
+            && $project->projectType->code_ref !== 'energy_community'
+        ) {
             $bookWorth = ProjectValueCourse::where('project_id', $participantMutation->participation->project_id)
                 ->where('date', '<=', $participantMutation->date_entry)
                 ->orderBy('date', 'desc')
@@ -1416,7 +1499,7 @@ class ParticipationProjectController extends ApiController
             // we controleren in jaar van beeindigsdatum + 1 dag
             // (dit laatste omdat beeindiging op 31-12 nog wel mag, ook als hij in beeindigingsjaar dus in def. ws zat.
             $dateEntryYear = \Carbon\Carbon::parse($participantProject['date_terminated'])->addDay()->year;
-            $result = $this->checkMutationAllowed($participantMutation, $dateEntryYear);
+            $this->checkMutationAllowed($participantMutation, $dateEntryYear);
 
             $participantMutation->save();
 
@@ -1461,7 +1544,7 @@ class ParticipationProjectController extends ApiController
         // we controleren in jaar van beeindigsdatum + 1 dag
         // (dit laatste omdat beeindiging op 31-12 nog wel mag, ook als hij in beeindigingsjaar dus in def. ws zat.
         $dateEntryYear = \Carbon\Carbon::parse($participantProject->date_terminated)->addDay()->year;
-        $result = $this->checkMutationAllowed($participantMutation, $dateEntryYear);
+        $this->checkMutationAllowed($participantMutation, $dateEntryYear);
 
         $participantMutation->save();
 
@@ -1562,10 +1645,8 @@ class ParticipationProjectController extends ApiController
             if ($financialOverviewProjectQuery->exists()) {
                 $financialOverview = $financialOverviewProjectQuery->first()->financialOverview;
                 abort(409, 'Project komt al voor in definitive waardestaat ' . $financialOverview->description . '. Deze mutatie is niet meer mogelijk.');
-                return false;
             }
         }
-        return true;
     }
 
     protected function translateToValidCharacterSet($field){

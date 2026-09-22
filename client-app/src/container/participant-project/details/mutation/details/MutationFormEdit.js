@@ -1,6 +1,4 @@
 import React from 'react';
-import moment from 'moment/moment';
-moment.locale('nl');
 import { connect } from 'react-redux';
 import Panel from '../../../../../components/panel/Panel';
 import MutationFormEditEnergyTaxRefund from './MutationFormEditEnergyTaxRefund';
@@ -8,6 +6,9 @@ import MutationFormEditResult from './MutationFormEditResult';
 import MutationFormEditDeposit from './MutationFormEditDeposit';
 import MutationFormEditWithDrawal from './MutationFormEditWithDrawal';
 import MutationFormEditRedemption from './MutationFormEditRedemption';
+import MutationFormEditParticipation from './MutationFormEditParticipation';
+import moment from 'moment/moment';
+moment.locale('nl');
 
 const MutationFormEdit = ({
     readOnly,
@@ -134,6 +135,22 @@ const MutationFormEdit = ({
                         <MutationFormEditEnergyTaxRefund
                             participantMutationFromProps={participantMutationFromProps}
                             cancelDetails={cancelDetails}
+                        />
+                    ) : null}
+                    {type.codeRef === 'participation' ? (
+                        <MutationFormEditParticipation
+                            readOnly={readOnly}
+                            participantMutationFromState={participantMutationFromState}
+                            participantMutationFromProps={participantMutationFromProps}
+                            participantMutationStatusesOptions={participantMutationStatusesOptions}
+                            errors={errors}
+                            errorMessage={errorMessage}
+                            projectTypeCodeRef={projectTypeCodeRef}
+                            handleInputChange={handleInputChange}
+                            handleInputChangeDate={handleInputChangeDate}
+                            cancelDetails={cancelDetails}
+                            buttonText={buttonTextSubmit}
+                            handleSubmit={handleSubmit}
                         />
                     ) : null}
                 </Panel>

@@ -285,7 +285,7 @@ class DynamicContactGroupFilter extends Model
             return '';
         }
 
-        if (method_exists($this->model_name, 'find')) {
+        if (is_subclass_of($this->model_name, Model::class)) {
             $model = $this->model_name::find($this->data);
 
             if (!$model) {

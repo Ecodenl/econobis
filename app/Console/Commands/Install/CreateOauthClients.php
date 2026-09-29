@@ -219,8 +219,15 @@ class CreateOauthClients extends Command
 
         $client = Client::query()
             ->whereKey($id)
-            ->where('provider', $provider)
             ->where('revoked', false)
+            ->when(
+                $provider === 'users',
+                fn ($query) => $query->where(function ($query) {
+                    $query->where('provider', 'users')
+                        ->orWhereNull('provider');
+                }),
+                fn ($query) => $query->where('provider', $provider)
+            )
             ->first();
 
         if (!$client) {

@@ -10,6 +10,7 @@ namespace App\Helpers\Delete\Models;
 
 use App\Helpers\Delete\DeleteInterface;
 use App\Helpers\Delete\Traits\ChecksExcludedCleanupContacts;
+use App\Helpers\Laposta\LapostaMemberHelper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 
@@ -393,6 +394,9 @@ class DeleteContact implements DeleteInterface
         }
 
         $this->contact->manualEmails()->detach();
+
+        // First delete laposta members before we detach contact from groups.
+        $this->deleteLapostaMembers();
         $this->contact->groups()->detach();
     }
 
@@ -447,4 +451,26 @@ class DeleteContact implements DeleteInterface
             $result ?? []
         );
     }
+
+    private function deleteLapostaMembers(): void
+    {
+        foreach ($this->contact->groups as $contactGroup) {
+            $contactGroupPivot = $contactGroup->pivot;
+
+            if (
+                $contactGroup->laposta_list_id === null
+                || $contactGroupPivot->laposta_member_id === null
+            ) {
+                continue;
+            }
+
+            $lapostaMemberHelper = new LapostaMemberHelper(
+                $contactGroup,
+                $this->contact
+            );
+
+            $lapostaMemberHelper->deleteMember(true);
+        }
+    }
+
 }

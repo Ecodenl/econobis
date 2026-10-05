@@ -8,6 +8,7 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 
 class ResetPasswordController extends Controller
@@ -25,6 +26,11 @@ class ResetPasswordController extends Controller
 
     use ResetsPasswords {
         reset as parentReset;
+    }
+
+    public function broker()
+    {
+        return Password::broker('portal');
     }
 
     /**

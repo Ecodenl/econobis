@@ -8,13 +8,18 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Auth;
 use Laposta;
 use Laposta_Member;
 
 class DeleteMemberToLaposta implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    // Legacy properties for jobs queued before release 6.0.0.8.
+    private $contactGroup;
+    private $contact;
 
     private $lapostaKey;
     private $contactGroupId;
@@ -39,7 +44,12 @@ class DeleteMemberToLaposta implements ShouldQueue
 
         Laposta::setApiKey($this->lapostaKey);
 
-        $member = new Laposta_Member($this->lapostaListId ?: '');
+        // Support jobs queued before release 6.0.0.8.
+        $contactGroupId = $this->contactGroupId ?? $this->contactGroup?->id;
+        $lapostaListId = $this->lapostaListId ?? $this->contactGroup?->laposta_list_id;
+        $contactId = $this->contactId ?? $this->contact?->id;
+
+        $member = new Laposta_Member($lapostaListId ?: '');
 
         try {
             // wait for 1,5 second
@@ -48,16 +58,16 @@ class DeleteMemberToLaposta implements ShouldQueue
 
             $member->delete($this->lapostaMemberId);
 
-            $contactGroup = ContactGroup::find($this->contactGroupId);
+            $contactGroup = ContactGroup::find($contactGroupId);
 
             if (
                 $contactGroup
                 && $contactGroup->contacts()
-                    ->where('contact_id', $this->contactId)
+                    ->where('contact_id', $contactId)
                     ->exists()
             ) {
                 $contactGroup->contacts()->updateExistingPivot(
-                    $this->contactId,
+                    $contactId,
                     [
                         'laposta_member_id' => null,
                         'laposta_member_state' => null,
@@ -81,16 +91,16 @@ class DeleteMemberToLaposta implements ShouldQueue
                 $message = 'Fout onbekend';
             }
 
-            $contactGroup = ContactGroup::find($this->contactGroupId);
+            $contactGroup = ContactGroup::find($contactGroupId);
 
             if (
                 $contactGroup
                 && $contactGroup->contacts()
-                    ->where('contact_id', $this->contactId)
+                    ->where('contact_id', $contactId)
                     ->exists()
             ) {
                 $contactGroup->contacts()->updateExistingPivot(
-                    $this->contactId,
+                    $contactId,
                     ['laposta_last_error_message' => $message]
                 );
             }

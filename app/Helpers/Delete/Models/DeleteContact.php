@@ -466,7 +466,8 @@ class DeleteContact implements DeleteInterface
 
             $lapostaMemberHelper = new LapostaMemberHelper(
                 $contactGroup,
-                $this->contact
+                $this->contact,
+                true
             );
 
             $lapostaMemberHelper->deleteMember(true);

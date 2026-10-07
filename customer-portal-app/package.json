@@ -11,7 +11,7 @@
     "ibantools": "^2.2.0",
     "js-file-download": "^0.4.12",
     "lodash": "^4.17.21",
-    "moment": "^2.29.1",
+    "moment": "^2.31.0",
     "pdfjs-dist": "^3.11.174",
     "react": "^18.2.0",
     "react-bootstrap": "^1.6.6",

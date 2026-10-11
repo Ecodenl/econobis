@@ -257,6 +257,12 @@ class ParticipantProject extends Model
 
     public function getDateTerminatedAllowedFromAttribute()
     {
+        if ($this->project->projectType->code_ref === 'energy_community') {
+            return $this->date_entry_first_deposit
+                ? Carbon::parse($this->date_entry_first_deposit)->format('Y-m-d')
+                : null;
+        }
+
         $dateEntryLastMutation = $this->date_entry_last_mutation
             ? Carbon::parse($this->date_entry_last_mutation)->format('Y-m-d')
             : null;

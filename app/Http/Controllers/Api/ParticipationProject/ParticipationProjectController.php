@@ -604,15 +604,38 @@ class ParticipationProjectController extends ApiController
                 ->date('dateTerminated')->validate('date')->alias('date_terminated')->next()
                 ->get();
 
-            // Set terminated date
-            $participantProject->date_terminated = Carbon::parse($data['date_terminated'])->format('Y-m-d');
             $projectType = $participantProject->project->projectType;
 
+            // Controleer bij energiegemeenschappen eerst of beëindigen is toegestaan.
+            if ($projectType->code_ref === 'energy_community') {
+                if (
+                    $participantProject->date_terminated !== null ||
+                    $participantProject->calculator()->participationsDefinitive() != 1
+                ) {
+                    abort(409, 'Alleen een actieve, definitieve deelname kan worden beëindigd.');
+                }
+
+                $dateTerminatedAllowedFrom = $participantProject->date_terminated_allowed_from;
+
+                if (
+                    !$dateTerminatedAllowedFrom ||
+                    Carbon::parse($data['date_terminated'])->lt(
+                        Carbon::parse($dateTerminatedAllowedFrom)
+                    )
+                ) {
+                    abort(409, 'De beëindigingsdatum mag niet vóór de eerste ingangsdatum liggen.');
+                }
+            }
+
+            // Set terminated date
+            $participantProject->date_terminated = Carbon::parse($data['date_terminated'])->format('Y-m-d');
             $participantProject->save();
 
-            // Make mutation withdrawal of total participations/loan
-            $this->createMutationWithDrawal($participantProject, $projectType);
-// todo WM: check of deze nu hier goed staat, stond eerst voor createMutaionWithDrawal
+            if ($projectType->code_ref === 'energy_community') {
+                $this->createMutationTerminationParticipation($participantProject, $projectType);
+            } else {
+                $this->createMutationWithDrawal($participantProject, $projectType);
+            }
             // Indien participation project in concept waardestaat / waardestaten, dan die herberekenen.
             $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
 
@@ -703,7 +726,6 @@ class ParticipationProjectController extends ApiController
                 })
                 ->forceDelete();
 
-            // todo WM: check of deze nu hier goed staat, stond eerst voor createMutaionWithDrawal
             // Indien participation project in concept waardestaat / waardestaten, dan die herberekenen.
             $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
 
@@ -715,7 +737,23 @@ class ParticipationProjectController extends ApiController
     {
         $this->authorize('manage', ParticipantProject::class);
 
+        // ToDo: WM Wellicht deze check gewoon voor alle projectTypen doen?
+        if (
+            $participantProject->project->projectType->code_ref === 'energy_community' &&
+            !$this->getUndoTerminatedAllowed($participantProject)
+        ) {
+            abort(409, 'Het ongedaan maken van deze beëindiging is niet toegestaan.');
+        }
+
         DB::transaction(function () use ($participantProject, $requestInput) {
+
+            // Energiegemeenschappen hebben een eigen verwerking voor het
+            // ongedaan maken van een beëindiging.
+            if ($participantProject->project->projectType->code_ref === 'energy_community') {
+                $this->undoTerminateParticipation($participantProject);
+                return;
+            }
+
             $originalDateTerminated = Carbon::parse($participantProject->date_terminated)->format('Y-m-d');
 
             $data = $requestInput
@@ -809,6 +847,48 @@ class ParticipationProjectController extends ApiController
             // Indien participation project in concept waardestaat / waardestaten, dan die herberekenen.
             $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
         });
+    }
+
+    protected function undoTerminateParticipation(ParticipantProject $participantProject): void
+    {
+        if ($participantProject->date_terminated === null) {
+            abort(409, 'Deze deelname is niet beëindigd.');
+        }
+
+        $projectType = $participantProject->project->projectType;
+
+        $mutationTypeTerminationId = ParticipantMutationType::where('code_ref', 'termination')
+            ->where('project_type_id', $projectType->id)
+            ->value('id');
+
+        $mutationStatusFinalId = ParticipantMutationStatus::where('code_ref', 'final')->value('id');
+
+        $terminationMutation = ParticipantMutation::where('participation_id', $participantProject->id)
+            ->where('type_id', $mutationTypeTerminationId)
+            ->where('status_id', $mutationStatusFinalId)
+            ->whereDate(
+                'date_entry',
+                Carbon::parse($participantProject->date_terminated)->addDay()->format('Y-m-d')
+            )
+            ->first();
+
+        if (!$terminationMutation) {
+            abort(409, 'De bijbehorende beëindigingsmutatie is niet gevonden.');
+        }
+
+        foreach ($terminationMutation->statusLog as $statusLog) {
+            $statusLog->delete();
+        }
+
+        $terminationMutation->delete();
+
+        $participantProject->date_terminated = null;
+        $participantProject->save();
+
+        $participantProject->calculator()->run()->save();
+        $participantProject->project->calculator()->run()->save();
+
+        $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
     }
 
     public function peek()
@@ -1501,6 +1581,33 @@ class ParticipationProjectController extends ApiController
         }
     }
 
+    protected function createMutationTerminationParticipation(
+        ParticipantProject $participantProject,
+                           $projectType
+    ): void {
+        $mutationStatusFinalId = ParticipantMutationStatus::where('code_ref', 'final')->value('id');
+
+        $mutationTypeTerminationId = ParticipantMutationType::where('code_ref', 'termination')
+            ->where('project_type_id', $projectType->id)
+            ->value('id');
+
+        $participantMutation = new ParticipantMutation();
+        $participantMutation->participation_id = $participantProject->id;
+        $participantMutation->type_id = $mutationTypeTerminationId;
+        $participantMutation->status_id = $mutationStatusFinalId;
+        $participantMutation->date_entry = Carbon::parse($participantProject->date_terminated)
+            ->addDay()
+            ->format('Y-m-d');
+
+        $participantMutation->quantity = -1;
+        $participantMutation->quantity_final = -1;
+
+        $participantMutation->save();
+
+        $participantProject->calculator()->run()->save();
+        $participantProject->project->calculator()->run()->save();
+    }
+
     /**
      * @param ParticipantProject $participantProject
      * @param $projectType
@@ -1795,53 +1902,66 @@ class ParticipationProjectController extends ApiController
 
     public function getUndoTerminatedAllowed(ParticipantProject $participantProject)
     {
+        // Een deelname die niet beëindigd is, kan niet worden hersteld.
+        if ($participantProject->date_terminated === null) {
+            return false;
+        }
+
+        // Bij energiegemeenschappen zijn er geen waardestaten of opbrengstverdelingen.
+        if ($participantProject->project->projectType->code_ref === 'energy_community') {
+            return true;
+        }
+
         $dateTerminated = Carbon::parse($participantProject->date_terminated)->format('Y-m-d');
+        $yearTerminated = Carbon::parse($participantProject->date_terminated)->year;
 
-        if ( $dateTerminated != null) {
-            // Deelname beeindigd niet meer terug te draaien indien waardestaat al verstuurd voor jaar waarin beeindigd is of daarna (voor het geval ze om wat voor reden in beeindigingsjaar geen waardestaat gemaakt hebeen).
-            $yearTerminated = Carbon::parse($participantProject->date_terminated)->year;
-            if( $participantProject->financialOverviewParticipantProjects()->where('status_id', 'sent')
-                ->whereHas('financialOverviewProject', function ($query) use ($yearTerminated) {
-                    $query->whereHas('financialOverview', function ($query) use ($yearTerminated) {
-                        $query->where('year', '>=', $yearTerminated);
-                    });
-                })
-                ->exists() ) {
-                return false;
-            }
+        // Deelname beëindigd niet meer terug te draaien indien waardestaat al verstuurd
+        // voor jaar waarin beëindigd is of daarna.
+        if ($participantProject->financialOverviewParticipantProjects()
+            ->where('status_id', 'sent')
+            ->whereHas('financialOverviewProject', function ($query) use ($yearTerminated) {
+                $query->whereHas('financialOverview', function ($query) use ($yearTerminated) {
+                    $query->where('year', '>=', $yearTerminated);
+                });
+            })
+            ->exists()) {
+            return false;
+        }
 
-            // Deelname beeindigd alleen terugdraaien indien beeindigingsdatum deelname nog niet in een verdeling zit die niet concept is.
-            $projectRevenueDistributionsNotConcept = $participantProject->projectRevenueDistributions()
-                ->whereNotIn('status', ['concept'])
-                ->whereHas('revenue', function ($query) use($dateTerminated) {
+        // Deelname alleen terugdraaien indien beëindigingsdatum nog niet
+        // in een opbrengstverdeling zit die niet concept is.
+        $projectRevenueDistributionsNotConcept = $participantProject->projectRevenueDistributions()
+            ->whereNotIn('status', ['concept'])
+            ->whereHas('revenue', function ($query) use ($dateTerminated) {
+                $query->where('date_begin', '<=', $dateTerminated)
+                    ->where('date_end', '>=', $dateTerminated);
+            })
+            ->exists();
+
+        if ($projectRevenueDistributionsNotConcept) {
+            return false;
+        }
+
+        // Extra controle voor postcoderoosprojecten.
+        if ($participantProject->project->projectType->code_ref === 'postalcode_link_capital') {
+            $revenueDistributionKwh = $participantProject->revenueDistributionKwh()
+                ->whereHas('revenuesKwh', function ($query) use ($dateTerminated) {
                     $query->where('date_begin', '<=', $dateTerminated)
                         ->where('date_end', '>=', $dateTerminated);
                 })
+                ->whereHas('distributionPartsKwh', function ($query) {
+                    $query->whereHas('partsKwh', function ($query) {
+                        $query->whereNotIn('status', ['concept', 'concept-to-update']);
+                    });
+                })
                 ->exists();
-            if($projectRevenueDistributionsNotConcept){
-                return false;
-            }
 
-            // Deelname beeindigd bij PCR dan ook alleen terugdraaien indien beeindigingsdatum deelname nog niet in een deel kwh verdeling zit die niet concept of new is is
-            if ( $participantProject->project->projectType->code_ref == 'postalcode_link_capital' ) {
-                $revenueDistributionKwh = $participantProject->revenueDistributionKwh()
-                    ->whereHas('revenuesKwh', function ($query) use ($dateTerminated) {
-                        $query->where('date_begin', '<=', $dateTerminated)
-                            ->where('date_end', '>=', $dateTerminated);
-                    })
-                    ->whereHas('distributionPartsKwh', function ($query) use ($dateTerminated) {
-                        $query->whereHas('partsKwh', function ($query) use ($dateTerminated) {
-                            $query->whereNotIn('status', ['concept', 'concept-to-update']);
-                        });
-                    })
-                    ->exists();
-                if($revenueDistributionKwh){
-                    return false;
-                }
+            if ($revenueDistributionKwh) {
+                return false;
             }
         }
 
-        return $dateTerminated != null;
+        return true;
     }
 
     public function getParticipantBelongsToMembershipGroup(ParticipantProject $participantProject) :bool

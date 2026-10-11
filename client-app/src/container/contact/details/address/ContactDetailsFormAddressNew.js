@@ -19,6 +19,8 @@ function ContactDetailsFormAddressNew({ toggleShowNew }) {
 
     const addresses = useSelector(state => state.contactDetails.addresses);
     const addressTypes = useSelector(state => state.systemData.addressTypes);
+    const addressConnectionTypes = useSelector(state => state.systemData.addressConnectionTypes);
+
     const countries = useSelector(state => state.systemData.countries);
     const contactId = useSelector(state => state.contactDetails.id);
 
@@ -39,6 +41,7 @@ function ContactDetailsFormAddressNew({ toggleShowNew }) {
         countryId: '',
         eanElectricity: '',
         eanGas: '',
+        connectionType: '',
     });
 
     const [errors, setErrors] = useState({
@@ -320,6 +323,18 @@ function ContactDetailsFormAddressNew({ toggleShowNew }) {
                             value={address.eanGas}
                             onChangeAction={handleInputChange}
                             error={errors.eanGas}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputSelect
+                            label="Type aansluiting"
+                            id="connectionType"
+                            name="connectionType"
+                            options={addressConnectionTypes}
+                            value={address.connectionType}
+                            onChangeAction={handleInputChange}
+                            placeholder="Geen type geselecteerd"
                         />
                     </div>
 

@@ -56,7 +56,15 @@ class ParticipantsList extends Component {
                     <DataTableBody>
                         {loading ? (
                             <tr>
-                                <td colSpan={this.props.projectTypeRef === 'postalcode_link_capital' ? 11 : 10}>
+                                <td
+                                    colSpan={
+                                        this.props.projectTypeRef === 'energy_community'
+                                            ? 12
+                                            : this.props.projectTypeRef === 'postalcode_link_capital'
+                                            ? 11
+                                            : 10
+                                    }
+                                >
                                     {loadingText}
                                 </td>
                             </tr>

@@ -27,10 +27,9 @@ class HousingFile extends Model
         'id'
     ];
 
-//    protected $casts = [
-//        'is_house_for_sale' => 'boolean',
-//        'is_monument' => 'boolean',
-//    ];
+    protected $casts = [
+        'origin_application' => HousingFileApplication::class,
+    ];
 
     public function address()
     {

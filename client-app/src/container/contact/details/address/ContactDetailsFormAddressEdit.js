@@ -24,10 +24,12 @@ const ContactDetailsFormAddressEdit = props => {
         countryId,
         eanElectricity,
         eanGas,
+        connectionType,
     } = props.address;
 
     // Redux state ophalen
     const addressTypes = useSelector(state => state.systemData.addressTypes);
+    const addressConnectionTypes = useSelector(state => state.systemData.addressConnectionTypes);
     const countries = useSelector(state => state.systemData.countries);
 
     // filter 'old' adres type indien nodig
@@ -200,6 +202,18 @@ const ContactDetailsFormAddressEdit = props => {
                                 value={eanGas}
                                 onChangeAction={props.handleInputChange}
                                 error={props.eanGasError}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputSelect
+                                label="Type aansluiting"
+                                id="connectionType"
+                                name="connectionType"
+                                options={addressConnectionTypes}
+                                value={connectionType || ''}
+                                onChangeAction={props.handleInputChange}
+                                placeholder="Geen type geselecteerd"
                             />
                         </div>
 

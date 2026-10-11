@@ -18,6 +18,7 @@ import {
     setFilterParticipantProjectPostalCode,
 } from '../../../../actions/participants-project/ParticipantsProjectFiltersActions';
 import DataTableFilterDate from '../../../../components/dataTable/DataTableFilterDate';
+import { getParticipantMutationStatusName } from '../../../../helpers/participantMutationStatusHelper';
 
 const ParticipantsListFilter = props => {
     const onIdChange = e => {
@@ -81,9 +82,91 @@ const ParticipantsListFilter = props => {
     };
 
     const participantMutationStatusOptions = [
-        ...props.participantMutationStatuses,
+        ...props.participantMutationStatuses.map(status => ({
+            ...status,
+            name: getParticipantMutationStatusName(status, props.projectTypeRef),
+        })),
         { id: 'isTerminated', name: 'Beëindigd' },
     ];
+
+    if (props.projectTypeRef === 'energy_community') {
+        return (
+            <tr className="thead-filter">
+                {/* Checkbox */}
+                <th>
+                    {props.showCheckboxList && (
+                        <input type="checkbox" onChange={props.toggleCheckedAll} checked={props.checkedAll} />
+                    )}
+                </th>
+
+                {/* Naam */}
+                <th>
+                    {!props.showCheckboxList && (
+                        <input
+                            type="text"
+                            className="form-control input-sm"
+                            value={props.filters.name.data}
+                            onChange={onNameChange}
+                        />
+                    )}
+                </th>
+
+                {/* Adres */}
+                <th>
+                    {!props.showCheckboxList && (
+                        <input
+                            type="text"
+                            className="form-control input-sm"
+                            value={props.filters.address.data}
+                            onChange={onAddressChange}
+                        />
+                    )}
+                </th>
+
+                {/* Energieleverancier */}
+                <th />
+
+                {/* Status */}
+                <th>
+                    {!props.showCheckboxList && (
+                        <select
+                            className="form-control input-sm"
+                            value={props.filters.participantMutationStatusId.data}
+                            onChange={onParticipationMutationStatusIdChange}
+                        >
+                            <option />
+                            {participantMutationStatusOptions.map(status => (
+                                <option key={status.id} value={status.id}>
+                                    {status.name}
+                                </option>
+                            ))}
+                        </select>
+                    )}
+                </th>
+
+                {/* P1/P4 */}
+                <th />
+
+                {/* Type aansluiting */}
+                <th />
+
+                {/* EnergieID account */}
+                <th />
+
+                {/* Verbruik */}
+                <th />
+
+                {/* Opwek kWp */}
+                <th />
+
+                {/* Assets */}
+                <th />
+
+                {/* Actieknop */}
+                <th />
+            </tr>
+        );
+    }
 
     return (
         <tr className="thead-filter">

@@ -19,6 +19,7 @@ use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\FinancialOverview\FinancialOverviewProject;
+use App\Eco\HousingFile\HousingFile;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
@@ -74,10 +75,40 @@ class ParticipationProjectController extends ApiController
         $participantProject = $requestQuery->get();
         $participantProject->load([
             'address.currentAddressEnergySupplierElectricity.energySupplier',
+            'address.addressDongles.dongleReadOutType',
             'contact.primaryAddress',
             'contact.primaryEmailAddress',
             'project',
-    ]);
+        ]);
+
+        $addressIds = $participantProject->pluck('address_id')->filter()->unique();
+
+        $housingFiles = HousingFile::query()
+            ->whereIn('address_id', $addressIds)
+            ->whereIn(
+                'origin_application',
+                $participantProject
+                    ->pluck('project.leading_housing_file_application')
+                    ->filter()
+                    ->map(fn ($application) => $application->value)
+                    ->unique()
+            )
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->get()
+            ->groupBy(fn ($housingFile) => $housingFile->address_id . ':' . $housingFile->origin_application->value);
+
+        $participantProject->each(function ($participant) use ($housingFiles) {
+            $application = $participant->project?->leading_housing_file_application;
+
+            $key = $participant->address_id && $application
+                ? $participant->address_id . ':' . $application->value
+                : null;
+
+            $participant->housing_file_id = $key
+                ? $housingFiles->get($key)?->first()?->id
+                : null;
+        });
 
         return GridParticipantProject::collection($participantProject)
             ->additional(['meta' => [
@@ -260,6 +291,18 @@ class ParticipationProjectController extends ApiController
         $participantProject->participantProjectRevenuesKwh = $this->getParticipantProjectRevenuesKwh($participantProject);
         $participantProject->undoTerminatedAllowed = $this->getUndoTerminatedAllowed($participantProject);
         $participantProject->participantBelongsToMembershipGroup = $this->getParticipantBelongsToMembershipGroup($participantProject);
+
+        $leadingApplication = $participantProject->project->leading_housing_file_application;
+
+        $participantProject->housing_file_id = null;
+
+        if ($leadingApplication && $participantProject->address_id) {
+            $participantProject->housing_file_id = HousingFile::where('address_id', $participantProject->address_id)
+                ->where('origin_application', $leadingApplication->value)
+                ->orderByDesc('created_at')
+                ->orderByDesc('id')
+                ->value('id');
+        }
 
         return FullParticipantProjectShow::make($participantProject);
     }

@@ -7,6 +7,7 @@ import InputDate from '../../../../../components/form/InputDate';
 import ButtonText from '../../../../../components/button/ButtonText';
 import ParticipantDetailsMutationStatusLog from './status-log';
 import ParticipantDetailsMutationConclusion from './conclusion';
+import { getParticipantMutationStatusName } from '../../../../../helpers/participantMutationStatusHelper';
 
 const MutationFormEditParticipation = ({
     readOnly,
@@ -47,7 +48,10 @@ const MutationFormEditParticipation = ({
                         label={'Status'}
                         id={'status'}
                         className={'col-sm-6 form-group'}
-                        value={participantMutationFromProps.status.name}
+                        value={getParticipantMutationStatusName(
+                            participantMutationFromProps.status,
+                            'energy_community'
+                        )}
                     />
                 ) : (
                     <InputSelect
@@ -219,7 +223,10 @@ const MutationFormEditParticipation = ({
                 </>
             )}
 
-            <ParticipantDetailsMutationStatusLog statusLogs={participantMutationFromProps.statusLogs} />
+            <ParticipantDetailsMutationStatusLog
+                statusLogs={participantMutationFromProps.statusLogs}
+                projectTypeCodeRef={'energy_community'}
+            />
 
             <ParticipantDetailsMutationConclusion
                 createdAt={participantMutationFromProps.createdAt}

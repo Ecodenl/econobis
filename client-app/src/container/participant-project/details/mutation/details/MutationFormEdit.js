@@ -7,7 +7,9 @@ import MutationFormEditDeposit from './MutationFormEditDeposit';
 import MutationFormEditWithDrawal from './MutationFormEditWithDrawal';
 import MutationFormEditRedemption from './MutationFormEditRedemption';
 import MutationFormEditParticipation from './MutationFormEditParticipation';
+import { getParticipantMutationStatusName } from '../../../../../helpers/participantMutationStatusHelper';
 import moment from 'moment/moment';
+
 moment.locale('nl');
 
 const MutationFormEdit = ({
@@ -44,7 +46,10 @@ const MutationFormEdit = ({
                     buttonTextSubmit = 'Status doorzetten naar toegekend';
                     break;
                 case 'granted':
-                    buttonTextSubmit = 'Status doorzetten naar definitief';
+                    buttonTextSubmit =
+                        projectTypeCodeRef === 'energy_community'
+                            ? 'Status doorzetten naar deelnemer'
+                            : 'Status doorzetten naar definitief';
                     break;
                 default:
                     buttonTextSubmit = 'Opslaan';
@@ -74,6 +79,12 @@ const MutationFormEdit = ({
                 break;
         }
     }
+
+    participantMutationStatusesOptions = participantMutationStatusesOptions.map(status => ({
+        ...status,
+        name: getParticipantMutationStatusName(status, projectTypeCodeRef),
+    }));
+
     return (
         <div>
             <form className="form-horizontal" onSubmit={handleSubmit}>

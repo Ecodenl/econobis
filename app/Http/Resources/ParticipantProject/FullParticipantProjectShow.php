@@ -39,6 +39,7 @@ class FullParticipantProjectShow extends JsonResource
                 'address' => FullAddress::make($this->whenLoaded('address')),
                 'projectId' => $this->project_id,
                 'project' => ProjectResourceForParticipation::make($this->whenLoaded('project')),
+                'housingFileId' => $this->housing_file_id,
                 'relatedRevenues' => $this->participantProjectRevenues ? GridParticipantProjectRevenue::collection($this->participantProjectRevenues) : null,
                 'relatedRevenuesKwh' => $this->participantProjectRevenuesKwh ? GridParticipantProjectRevenueKwh::collection($this->participantProjectRevenuesKwh) : null,
                 'relatedOrders' => FullOrder::collection(Order::where('participation_id', $this->id)->get()),

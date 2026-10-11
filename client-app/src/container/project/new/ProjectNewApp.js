@@ -119,6 +119,7 @@ class ProjectNewApp extends Component {
                 energyCommunityExternalCode: '',
                 energySharing: false,
                 energySupplierRegistrationRequired: false,
+                leadingHousingFileApplication: '',
                 textRegisterPageHeader: defaultTextRegisterPageHeader,
                 textRegisterCurrentBookWorth: defaultTextRegisterCurrentBookWorth,
                 textRegisterParticipationSingular: defaultTextRegisterParticipationSingular,
@@ -530,6 +531,7 @@ class ProjectNewApp extends Component {
             energyCommunityExternalCode,
             energySharing,
             energySupplierRegistrationRequired,
+            leadingHousingFileApplication,
         } = this.state.project;
 
         const projectType = this.props.projectTypesActive.find(projectType => projectType.id == projectTypeId);
@@ -675,6 +677,7 @@ class ProjectNewApp extends Component {
                                             energyCommunityExternalCode={energyCommunityExternalCode}
                                             energySharing={energySharing}
                                             energySupplierRegistrationRequired={energySupplierRegistrationRequired}
+                                            leadingHousingFileApplication={leadingHousingFileApplication}
                                             handleInputChange={this.handleInputChange}
                                         />
                                     ) : null}

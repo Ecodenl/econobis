@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment/moment';
 import MoneyPresenter from '../../../../helpers/MoneyPresenter';
+import { getParticipantMutationStatusName } from '../../../../helpers/participantMutationStatusHelper';
+
 import validator from 'validator';
+
 moment.locale('nl');
 
 import Icon from 'react-icons-kit';
@@ -80,6 +83,83 @@ class ParticipantsListItem extends Component {
         const missingContactDataMessage = missingEmail ? 'Primair e-mailadres bij contact ontbreekt.' : '';
         const missingDataClass = missingEmail ? this.state.highlightRow + ' missing-data-row' : this.state.highlightRow;
 
+        if (this.props.projectTypeRef === 'energy_community') {
+            const { powerKwhConsumption, powerKwAvailable } = this.props;
+
+            const fullAddress = address
+                ? [`${street} ${number}${addition ? '-' + addition : ''}`.trim(), address.postalCode, address.city]
+                      .filter(Boolean)
+                      .join(', ')
+                : '';
+
+            const energySupplier = address?.currentAddressEnergySupplierElectricity?.energySupplier?.name || '';
+
+            return (
+                <tr
+                    title={missingContactDataMessage}
+                    className={missingDataClass}
+                    onDoubleClick={() => this.openItem(id)}
+                    onMouseEnter={() => this.onRowEnter()}
+                    onMouseLeave={() => this.onRowLeave()}
+                >
+                    <td>
+                        {this.props.showCheckboxList ? (
+                            <input
+                                type="checkbox"
+                                name={id}
+                                onChange={this.props.toggleParticipantCheck}
+                                checked={this.props.participantIds ? this.props.participantIds.includes(id) : false}
+                            />
+                        ) : null}
+                    </td>
+
+                    <td>{contact.fullName}</td>
+                    <td>{fullAddress}</td>
+                    <td>{energySupplier}</td>
+                    <td>
+                        {uniqueMutationStatuses
+                            .map(status => getParticipantMutationStatusName(status, this.props.projectTypeRef))
+                            .join(', ')}
+                    </td>
+
+                    <td>{this.props.dongleTypes || ''}</td>
+
+                    <td>{address?.connectionType || ''}</td>
+
+                    {/* EnergieID account */}
+                    <td />
+
+                    <td>{powerKwhConsumption ?? ''}</td>
+                    <td>{powerKwAvailable ?? ''}</td>
+
+                    <td>
+                        {this.props.housingFileId && (
+                            <a
+                                href={`/woningdossier/${this.props.housingFileId}`}
+                                onClick={event => {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                    this.props.navigate(`/woningdossier/${this.props.housingFileId}`);
+                                }}
+                            >
+                                Woningdossier
+                            </a>
+                        )}
+                    </td>
+
+                    <td>
+                        {this.state.showActionButtons ? (
+                            <a role="button" onClick={() => this.openItem(id)}>
+                                <Icon className="mybtn-success" size={14} icon={pencil} />
+                            </a>
+                        ) : (
+                            ''
+                        )}
+                    </td>
+                </tr>
+            );
+        }
+
         return (
             <tr
                 title={missingContactDataMessage}
@@ -109,7 +189,11 @@ class ParticipantsListItem extends Component {
                 ) : (
                     <td>{participantionsTotal ? participantionsTotal : ''}</td>
                 )}
-                <td>{uniqueMutationStatuses.map(item => item.name).join(', ')}</td>
+                <td>
+                    {uniqueMutationStatuses
+                        .map(status => getParticipantMutationStatusName(status, this.props.projectTypeRef))
+                        .join(', ')}
+                </td>
                 <td>{dateRegister ? moment(dateRegister).format('L') : ''}</td>
                 {this.props.projectTypeRef === 'postalcode_link_capital' ? (
                     <td>

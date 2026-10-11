@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\SystemData;
 
+use App\Eco\Address\AddressConnectionType;
 use App\Eco\Address\AddressType;
 use App\Eco\AddressDongle\AddressDongleTypeReadOut;
 use App\Eco\AddressDongle\AddressDongleTypeDongle;
@@ -28,6 +29,7 @@ use App\Eco\FinancialOverview\FinancialOverviewContactStatus;
 use App\Eco\HousingFile\BuildingType;
 use App\Eco\HousingFile\EnergyLabel;
 use App\Eco\HousingFile\EnergyLabelStatus;
+use App\Eco\HousingFile\HousingFileApplication;
 use App\Eco\HousingFile\HousingFileHoomHousingStatus;
 use App\Eco\HousingFile\HousingFileHoomLink;
 use App\Eco\HousingFile\HousingFileSpecificationFloor;
@@ -182,6 +184,7 @@ class SystemData extends JsonResource
             'hasCavityWallSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'has-cavity-wall')->get(),
             'hasSolarPanelsSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'has-solar-panels')->get(),
 
+            'addressConnectionTypes' => FullEnumWithIdAndName::collection(AddressConnectionType ::collection()),
             'addressTypes' => FullEnumWithIdAndName::collection(AddressType::collection()),
             'administrationsPeek' => AdministrationPeek::collection(Administration::orderBy('id')->get()),
             'appName' => config('app.name'),
@@ -213,6 +216,7 @@ class SystemData extends JsonResource
             'energySupplierTypes' => GenericResource::collection(EnergySupplierType::all()),
             'energySuppliers' => GenericResource::collection($sortedEnergySuppliers),
             'financialOverviewContactStatuses' => FullEnumWithIdAndName::collection(FinancialOverviewContactStatus::collection()),
+            'housingFileApplications' => FullEnumWithIdAndName::collection(HousingFileApplication::collection()),
             'housingFileSpecificationFloors' => HousingFileSpecificationFloor::select(['id', 'name'])->orderBy('name')->get(),
             'housingFileSpecificationSides' => HousingFileSpecificationSide::select(['id', 'name'])->orderBy('name')->get(),
             'housingFileSpecificationStatuses' => HousingFileSpecificationStatus::select(['id', 'name'])->orderBy('name')->get(),

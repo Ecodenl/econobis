@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Address;
 
 use App\Eco\Address\Address;
+use App\Eco\Address\AddressConnectionType;
 use App\Eco\Address\AddressType;
 use App\Eco\Administration\Administration;
 use App\Eco\Contact\Contact;
@@ -41,11 +42,13 @@ class AddressController extends ApiController
             'primary' => 'boolean',
             'eanElectricity' => '',
             'eanGas' => '',
+            'connectionType' => ['nullable', new EnumExists(AddressConnectionType::class)],
         ]);
 
         $data = $this->sanitizeData($data, [
             'typeId' => 'nullable',
             'countryId' => 'nullable',
+            'connectionType' => 'nullable',
             'primary' => 'boolean',
         ]);
 
@@ -86,11 +89,13 @@ class AddressController extends ApiController
             'primary' => 'boolean',
             'eanElectricity' => '',
             'eanGas' => '',
+            'connectionType' => ['nullable', new EnumExists(AddressConnectionType::class)],
         ]);
 
         $data = $this->sanitizeData($data, [
             'typeId' => 'nullable',
             'countryId' => 'nullable',
+            'connectionType' => 'nullable',
             'primary' => 'boolean',
         ]);
 

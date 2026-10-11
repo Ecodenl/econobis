@@ -72,6 +72,7 @@ const ProjectFormView = props => {
         energyCommunityExternalCode,
         energySharing,
         energySupplierRegistrationRequired,
+        leadingHousingFileApplication,
         totalParticipationsPowerKwAvailable,
         totalParticipationsPowerKwhConsumption,
         amountDefinitive,
@@ -286,6 +287,7 @@ const ProjectFormView = props => {
                         energyCommunityExternalCode={energyCommunityExternalCode}
                         energySharing={energySharing}
                         energySupplierRegistrationRequired={energySupplierRegistrationRequired}
+                        leadingHousingFileApplication={leadingHousingFileApplication}
                         totalParticipationsPowerKwAvailable={totalParticipationsPowerKwAvailable}
                         totalParticipationsPowerKwhConsumption={totalParticipationsPowerKwhConsumption}
                     />

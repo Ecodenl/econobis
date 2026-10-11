@@ -7,8 +7,10 @@ import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
 
-moment.locale('nl');
 import moneyPresenter from '../../../../../helpers/MoneyPresenter';
+import { getParticipantMutationStatusName } from '../../../../../helpers/participantMutationStatusHelper';
+
+moment.locale('nl');
 
 const StyledContainer = styled.div`
     display: flex;
@@ -80,7 +82,7 @@ const MutationFormView = ({
                     {type.name}
                 </StyledColumn>
                 <StyledColumn columnWidth={projectTypeCodeRef === 'energy_community' ? '120px' : '80px'}>
-                    {status && status.name}
+                    {status && getParticipantMutationStatusName(status, projectTypeCodeRef)}
                 </StyledColumn>
 
                 {projectTypeCodeRef !== 'energy_community' && (

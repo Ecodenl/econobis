@@ -11,6 +11,7 @@ use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\FinancialOverview\FinancialOverviewProject;
+use App\Eco\HousingFile\HousingFileApplication;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\RevenuesKwh\RevenuesKwh;
@@ -40,6 +41,7 @@ class Project extends Model
         'uses_mollie' => 'bool',
         'energy_sharing' => 'bool',
         'energy_supplier_registration_required' => 'bool',
+        'leading_housing_file_application' => HousingFileApplication::class,
     ];
 
     public function newEloquentBuilder($query)

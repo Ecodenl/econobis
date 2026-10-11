@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api\Project;
 
 use App\Eco\Email\Email;
+use App\Eco\HousingFile\HousingFileApplication;
 use App\Eco\Project\Project;
 use App\Eco\Project\ProjectValueCourse;
 use App\Helpers\Delete\Models\DeleteProject;
@@ -24,6 +25,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class ProjectController extends ApiController
 {
@@ -185,6 +187,7 @@ class ProjectController extends ApiController
             ->string('energyCommunityExternalCode')->validate('nullable|max:191|unique:projects,energy_community_external_code')->onEmpty(null)->alias('energy_community_external_code')->next()
             ->boolean('energySharing')->alias('energy_sharing')->next()
             ->boolean('energySupplierRegistrationRequired')->alias('energy_supplier_registration_required')->next()
+            ->string('leadingHousingFileApplication')->validate(['nullable', Rule::enum(HousingFileApplication::class)])->onEmpty(null)->alias('leading_housing_file_application')->next()
             ->get();
 
         $project = new Project();
@@ -321,6 +324,7 @@ class ProjectController extends ApiController
             ->string('energyCommunityExternalCode')->validate('nullable|max:191|unique:projects,energy_community_external_code,' . $project->id)->onEmpty(null)->alias('energy_community_external_code')->next()
             ->boolean('energySharing')->alias('energy_sharing')->next()
             ->boolean('energySupplierRegistrationRequired')->alias('energy_supplier_registration_required')->next()
+            ->string('leadingHousingFileApplication')->validate(['nullable', Rule::enum(HousingFileApplication::class)])->onEmpty(null)->alias('leading_housing_file_application')->next()
             ->get();
 
         $project->fill($data);

@@ -7,6 +7,7 @@ import InputDate from '../../../components/form/InputDate';
 import InputReactSelectLong from '../../../components/form/InputReactSelectLong';
 import AsyncSelectSet from '../../../components/form/AsyncSelectSet';
 import ContactsAPI from '../../../api/contact/ContactsAPI';
+import { getParticipantMutationStatusName } from '../../../helpers/participantMutationStatusHelper';
 
 function ParticipantNewForm(props) {
     const [searchTermContact, setSearchTermContact] = useState('');
@@ -57,6 +58,11 @@ function ParticipantNewForm(props) {
         participantMutationStatusItem => participantMutationStatusItem.id == statusId
     );
     const statusCodeRef = status ? status.codeRef : null;
+
+    const participantMutationStatusesOptions = participantMutationStatuses.map(status => ({
+        ...status,
+        name: getParticipantMutationStatusName(status, projectTypeCodeRef),
+    }));
 
     const getContactOptions = async () => {
         if (searchTermContact.length <= 1) return [];
@@ -142,7 +148,7 @@ function ParticipantNewForm(props) {
                     label={'Status'}
                     name={'statusId'}
                     id={'statusId'}
-                    options={participantMutationStatuses}
+                    options={participantMutationStatusesOptions}
                     value={statusId}
                     onChangeAction={handleInputChange}
                     required={'required'}

@@ -39,6 +39,7 @@ use App\Eco\HousingFile\BuildingType;
 use App\Eco\HousingFile\EnergyLabel;
 use App\Eco\HousingFile\EnergyLabelStatus;
 use App\Eco\HousingFile\HousingFile;
+use App\Eco\HousingFile\HousingFileApplication;
 use App\Eco\HousingFile\HousingFileHoomHousingStatus;
 use App\Eco\HousingFile\HousingFileSpecification;
 use App\Eco\HousingFile\RoofType;
@@ -2865,7 +2866,10 @@ class ExternalWebformController extends Controller
 
         // init values
         // check of housingfile al bestaat
-        $housingFile = HousingFile::where('address_id', $address->id)->orderBy('id', 'desc')->first();
+        $housingFile = HousingFile::where('address_id', $address->id)
+            ->where('origin_application', HousingFileApplication::ECONOBIS)
+            ->orderBy('id', 'desc')
+            ->first();
 
         // Als woondossier al bestaat en gegeven is niet meegegeven dan bestaande behouden
         if ($housingFile) {
@@ -3057,6 +3061,7 @@ class ExternalWebformController extends Controller
             $this->log('Er is geen woondossier gevonden op adres met postcode: ' . ($address->postal_code . ' nummer: ' . $address->number . ' toevoeging: ' . $address->addition ) .'. woondossier aanmaken.');
             $housingFile = HousingFile::create([
                 'address_id' =>  $address->id,
+                'origin_application' => HousingFileApplication::ECONOBIS,
                 'building_type_id' => $buildingTypeId,
                 'build_year' => $buildYear,
                 'is_house_for_sale' => $isHouseForSale,

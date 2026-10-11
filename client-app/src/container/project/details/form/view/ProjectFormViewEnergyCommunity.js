@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import ViewText from '../../../../../components/form/ViewText';
 
 const ProjectFormViewEnergyCommunity = ({
@@ -6,9 +7,15 @@ const ProjectFormViewEnergyCommunity = ({
     energyCommunityExternalCode,
     energySharing,
     energySupplierRegistrationRequired,
+    leadingHousingFileApplication,
     totalParticipationsPowerKwAvailable,
     totalParticipationsPowerKwhConsumption,
 }) => {
+    const housingFileApplications = useSelector(state => state.systemData.housingFileApplications);
+
+    const leadingHousingFileApplicationName =
+        housingFileApplications?.find(application => application.id === leadingHousingFileApplication)?.name || '';
+
     return (
         <React.Fragment>
             <hr style={{ margin: '10px 0' }} />
@@ -28,6 +35,10 @@ const ProjectFormViewEnergyCommunity = ({
                     label={'Registratie energieleverancier verplicht'}
                     value={energySupplierRegistrationRequired ? 'Ja' : 'Nee'}
                 />
+            </div>
+
+            <div className="row">
+                <ViewText label={'Leidend woningdossier'} value={leadingHousingFileApplicationName} />
             </div>
 
             <div className="row">

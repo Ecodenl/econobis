@@ -3863,7 +3863,7 @@ class ExternalWebformController extends Controller
             $finished_by_user = User::find($responsibleIds['responsible_user_id'] ? $responsibleIds['responsible_user_id'] : $webform->responsible_user_id );
             $task->finished_by_id = $finished_by_user ? $finished_by_user->id : null;
             $task->save();
-            $this->log('Taak met id ' . $task->id . ' automatisch gereed op ' . Carbon::parse($task->date_finished)->format('d-m-Y') . ' door verantwoordelijke: ' . $finished_by_user->fullname);
+            $this->log('Taak met id ' . $task->id . ' automatisch gereed op ' . Carbon::parse($task->date_finished)->format('d-m-Y') . ' door verantwoordelijke: ' . ($finished_by_user?->fullname ?? 'geen verantwoordelijke gebruiker') );
         }
 
         $this->log('Taak met id ' . $task->id . ' aangemaakt.');

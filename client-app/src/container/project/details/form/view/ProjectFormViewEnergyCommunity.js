@@ -10,6 +10,8 @@ const ProjectFormViewEnergyCommunity = ({
     leadingHousingFileApplication,
     totalParticipationsPowerKwAvailable,
     totalParticipationsPowerKwhConsumption,
+    totalParticipationsPowerKwAvailableOther,
+    totalParticipationsPowerKwhConsumptionOther,
 }) => {
     const housingFileApplications = useSelector(state => state.systemData.housingFileApplications);
 
@@ -44,6 +46,17 @@ const ProjectFormViewEnergyCommunity = ({
             <div className="row">
                 <ViewText label={'Totaal opgesteld vermogen deelnemers'} value={totalParticipationsPowerKwAvailable} />
                 <ViewText label={'Totaal verbruik deelnemers'} value={totalParticipationsPowerKwhConsumption} />
+            </div>
+
+            <div className="row">
+                <ViewText
+                    label={'Totaal opgesteld vermogen overige statussen'}
+                    value={totalParticipationsPowerKwAvailableOther}
+                />
+                <ViewText
+                    label={'Totaal verbruik overige statussen'}
+                    value={totalParticipationsPowerKwhConsumptionOther}
+                />
             </div>
         </React.Fragment>
     );

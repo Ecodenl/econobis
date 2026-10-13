@@ -61,6 +61,32 @@ class ProjectCalculator
             ->sum('power_kwh_consumption');
     }
 
+    public function totalParticipationsPowerKwAvailableOther()
+    {
+        return $this->project->participantsProject()
+            ->whereNull('date_terminated')
+            ->where('participations_definitive', 0)
+            ->where(function ($query) {
+                $query->where('participations_interessed', '>', 0)
+                    ->orWhere('participations_optioned', '>', 0)
+                    ->orWhere('participations_granted', '>', 0);
+            })
+            ->sum('power_kw_available');
+    }
+
+    public function totalParticipationsPowerKwhConsumptionOther()
+    {
+        return $this->project->participantsProject()
+            ->whereNull('date_terminated')
+            ->where('participations_definitive', 0)
+            ->where(function ($query) {
+                $query->where('participations_interessed', '>', 0)
+                    ->orWhere('participations_optioned', '>', 0)
+                    ->orWhere('participations_granted', '>', 0);
+            })
+            ->sum('power_kwh_consumption');
+    }
+
     public function run()
     {
         $this->project->participations_definitive = $this->participationsDefinitive();
@@ -78,6 +104,12 @@ class ProjectCalculator
 
             $this->project->total_participations_power_kwh_consumption =
                 $this->totalParticipationsPowerKwhConsumption();
+
+            $this->project->total_participations_power_kw_available_other =
+                $this->totalParticipationsPowerKwAvailableOther();
+
+            $this->project->total_participations_power_kwh_consumption_other =
+                $this->totalParticipationsPowerKwhConsumptionOther();
         }
 
         return $this->project;

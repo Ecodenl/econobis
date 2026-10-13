@@ -19,6 +19,8 @@ const ProjectGeneralFormViewEnergyCommunity = ({ project }) => {
         participationsInteressed,
         totalParticipationsPowerKwAvailable,
         totalParticipationsPowerKwhConsumption,
+        totalParticipationsPowerKwAvailableOther,
+        totalParticipationsPowerKwhConsumptionOther,
     } = project;
 
     return (
@@ -41,7 +43,7 @@ const ProjectGeneralFormViewEnergyCommunity = ({ project }) => {
 
                 <div className="row">
                     <ViewText label={'Start project'} value={dateStart ? moment(dateStart).format('L') : ''} />
-                    <ViewText label={'Deelnemers definitief'} value={participationsDefinitive} />
+                    <ViewText label={'Deelnemers'} value={participationsDefinitive} />
                 </div>
 
                 <div className="row">
@@ -55,6 +57,22 @@ const ProjectGeneralFormViewEnergyCommunity = ({ project }) => {
                 <div className="row">
                     <div className={'form-group col-md-6'} />
                     <ViewText label={'Totaal verbruik deelnemers'} value={totalParticipationsPowerKwhConsumption} />
+                </div>
+
+                <div className="row">
+                    <div className={'form-group col-md-6'} />
+                    <ViewText
+                        label={'Totaal opgesteld vermogen overige statussen'}
+                        value={totalParticipationsPowerKwAvailableOther}
+                    />
+                </div>
+
+                <div className="row">
+                    <div className={'form-group col-md-6'} />
+                    <ViewText
+                        label={'Totaal verbruik overige statussen'}
+                        value={totalParticipationsPowerKwhConsumptionOther}
+                    />
                 </div>
             </PanelBody>
         </Panel>

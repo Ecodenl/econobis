@@ -75,6 +75,8 @@ const ProjectFormView = props => {
         leadingHousingFileApplication,
         totalParticipationsPowerKwAvailable,
         totalParticipationsPowerKwhConsumption,
+        totalParticipationsPowerKwAvailableOther,
+        totalParticipationsPowerKwhConsumptionOther,
         amountDefinitive,
         amountGranted,
         amountOptioned,
@@ -290,6 +292,8 @@ const ProjectFormView = props => {
                         leadingHousingFileApplication={leadingHousingFileApplication}
                         totalParticipationsPowerKwAvailable={totalParticipationsPowerKwAvailable}
                         totalParticipationsPowerKwhConsumption={totalParticipationsPowerKwhConsumption}
+                        totalParticipationsPowerKwAvailableOther={totalParticipationsPowerKwAvailableOther}
+                        totalParticipationsPowerKwhConsumptionOther={totalParticipationsPowerKwhConsumptionOther}
                     />
                 ) : null}
             </section>

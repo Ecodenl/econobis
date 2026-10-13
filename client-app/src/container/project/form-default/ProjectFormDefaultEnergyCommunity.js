@@ -15,6 +15,8 @@ const ProjectFormDefaultEnergyCommunity = ({
     leadingHousingFileApplication,
     totalParticipationsPowerKwAvailable,
     totalParticipationsPowerKwhConsumption,
+    totalParticipationsPowerKwAvailableOther,
+    totalParticipationsPowerKwhConsumptionOther,
     showTotals = false,
     handleInputChange,
 }) => {
@@ -65,18 +67,32 @@ const ProjectFormDefaultEnergyCommunity = ({
                 />
             </div>
             {showTotals ? (
-                <div className="row">
-                    <ViewText
-                        label={'Totaal opgesteld vermogen deelnemers'}
-                        value={totalParticipationsPowerKwAvailable}
-                        className={'form-group col-sm-6'}
-                    />
-                    <ViewText
-                        label={'Totaal verbruik deelnemers'}
-                        value={totalParticipationsPowerKwhConsumption}
-                        className={'form-group col-sm-6'}
-                    />
-                </div>
+                <>
+                    <div className="row">
+                        <ViewText
+                            label={'Totaal opgesteld vermogen deelnemers'}
+                            value={totalParticipationsPowerKwAvailable}
+                            className={'form-group col-sm-6'}
+                        />
+                        <ViewText
+                            label={'Totaal verbruik deelnemers'}
+                            value={totalParticipationsPowerKwhConsumption}
+                            className={'form-group col-sm-6'}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Totaal opgesteld vermogen overige statussen'}
+                            value={totalParticipationsPowerKwAvailableOther}
+                            className={'form-group col-sm-6'}
+                        />
+                        <ViewText
+                            label={'Totaal verbruik overige statussen'}
+                            value={totalParticipationsPowerKwhConsumptionOther}
+                            className={'form-group col-sm-6'}
+                        />
+                    </div>
+                </>
             ) : null}
         </React.Fragment>
     );

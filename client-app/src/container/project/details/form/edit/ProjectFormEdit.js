@@ -1035,6 +1035,8 @@ class ProjectFormEdit extends Component {
             leadingHousingFileApplication,
             totalParticipationsPowerKwAvailable,
             totalParticipationsPowerKwhConsumption,
+            totalParticipationsPowerKwAvailableOther,
+            totalParticipationsPowerKwhConsumptionOther,
             textAgreeTerms,
             textLinkAgreeTerms,
             textLinkNameAgreeTerms,
@@ -1271,6 +1273,8 @@ class ProjectFormEdit extends Component {
                         leadingHousingFileApplication={leadingHousingFileApplication}
                         totalParticipationsPowerKwAvailable={totalParticipationsPowerKwAvailable}
                         totalParticipationsPowerKwhConsumption={totalParticipationsPowerKwhConsumption}
+                        totalParticipationsPowerKwAvailableOther={totalParticipationsPowerKwAvailableOther}
+                        totalParticipationsPowerKwhConsumptionOther={totalParticipationsPowerKwhConsumptionOther}
                         showTotals={true}
                         handleInputChange={this.handleInputChange}
                         monitorProviders={this.props.monitorProviders}

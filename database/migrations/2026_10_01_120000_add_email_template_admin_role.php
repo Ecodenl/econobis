@@ -38,12 +38,18 @@ return new class extends Migration
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
         User::whereHas('roles.permissions', function ($query) {
-            $query->where('name', 'create_email_template');
-        })->each(function (User $user) use ($role) {
-            if (!$user->hasRole($role)) {
-                $user->assignRole($role);
-            }
-        });
+            $query->where('name', 'create_email_template')
+                ->where('guard_name', 'api');
+        })
+            ->whereDoesntHave('roles', function ($query) {
+                $query->where('name', 'Beheerder')
+                    ->where('guard_name', 'api');
+            })
+            ->each(function (User $user) use ($role) {
+                if (!$user->hasRole($role)) {
+                    $user->assignRole($role);
+                }
+            });
 
         app(PermissionRegistrar::class)->forgetCachedPermissions();
     }
@@ -53,24 +59,13 @@ return new class extends Migration
      */
     public function down(): void
     {
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
-
-        $role = Role::where('name', 'Beheerder e-mail templates')
-            ->where('guard_name', 'api')
-            ->first();
-
-        if ($role) {
-            $role->delete();
-        }
-
-        $permission = Permission::where('name', 'manage_email_template')
-            ->where('guard_name', 'api')
-            ->first();
-
-        if ($permission) {
-            $permission->delete();
-        }
-
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
+        // Bewust geen automatische rollback.
+        //
+        // Deze migration kent een aanvullende rol toe aan bestaande gebruikers.
+        // Na uitvoering kan deze rol ook handmatig zijn toegekend.
+        // Het verwijderen van de rol zou deze gebruikerskoppelingen vernietigen.
+        //
+        // Een eventuele terugdraaiing van de rechtenstructuur vereist
+        // een afzonderlijke, gecontroleerde gegevensconversie.
     }
 };

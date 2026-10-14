@@ -3226,6 +3226,18 @@ class ExternalWebformController extends Controller
             if (!$project) $this->error('Er is een ongeldige waarde voor project meegegeven.');
 
             // Check address
+            if (!$contact->addressForPostalCodeCheck) {
+                $note = "Webformulier " . $this->webform->name . ".\n\n";
+                $note .= "Deelname kan niet worden aangemaakt voor contact "
+                    . $this->contact->full_name . " (" . $this->contact->number . ") "
+                    . "omdat er geen adres beschikbaar is.";
+
+                $this->addTaskCheckContact($this->responsibleIds, $this->contact, $this->webform, $note);
+
+                $this->log('Deelname kan niet worden aangemaakt: geen adres beschikbaar.');
+                return null;
+            }
+
             if($contact->addressForPostalCodeCheck){
                 $addressHelper = new AddressHelper($contact, $contact->addressForPostalCodeCheck);
                 $checkAddressOk = $addressHelper->checkAddress($project->id, false);
@@ -3233,6 +3245,7 @@ class ExternalWebformController extends Controller
                     $note = "Webformulier " . $this->webform->name . ".\n\n";
                     $note .= "Deelname kan niet worden aangemaakt voor contact " . $this->contact->full_name . " (" . $this->contact->number . ")  vanwege volgende fouten:\n";
                     $note .= implode("\n", $addressHelper->messages);
+
                     $this->addTaskCheckContact($this->responsibleIds, $this->contact, $this->webform, $note);
 
                     $this->log('Deelname kan niet worden aangemaakt vanwege volgende fouten:');
@@ -3318,6 +3331,14 @@ class ExternalWebformController extends Controller
             $participation_mutation_amount = $data['participation_mutation_amount'] ?: null;
             $participation_mutation_quantity = $data['participation_mutation_quantity'] ?: null;
 
+            if ($projectTypeCodeRef === 'energy_community') {
+                if ((string) $participation_mutation_quantity !== '1') {
+                    $this->log('EG-deelname: aantal ontbreekt of is ongelijk aan 1, aantal 1 gebruikt.');
+                }
+
+                $participation_mutation_quantity = 1;
+            }
+
             switch($status->code_ref){
                 case 'interest' :
                     $dateInterest = $participation_mutation_date;
@@ -3356,7 +3377,9 @@ class ExternalWebformController extends Controller
             $participantMutation = ParticipantMutation::create([
                 'participation_id' => $participation->id,
                 'created_with' => 'webform',
-                'type_id' => ParticipantMutationType::where('project_type_id', $project->project_type_id)->where('code_ref', 'first_deposit')->value('id'),
+                'type_id' => ParticipantMutationType::where('project_type_id', $project->project_type_id)
+                    ->where('code_ref', $projectTypeCodeRef === 'energy_community' ? 'participation' : 'first_deposit')
+                    ->value('id'),
                 'status_id' => $status->id,
                 'payment_reference' => $data['participation_mutation_payment_reference'],
                 'date_payment' => Carbon::make($data['participation_mutation_date_payment']),

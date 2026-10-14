@@ -395,7 +395,7 @@ class ParticipationProjectController extends ApiController
         // TODO clean up store inputs
         $data = $requestInput
             ->integer('contactId')->validate('required|exists:contacts,id')->alias('contact_id')->next()
-            ->integer('addressId')->validate('nullable|exists:addresses,id')->alias('address_id')->next()
+            ->integer('addressId')->validate('required|exists:addresses,id')->alias('address_id')->next()
             ->integer('projectId')->validate('required|exists:projects,id')->alias('project_id')->next()
             ->get();
 

@@ -12,6 +12,7 @@ use App\Eco\Email\Email;
 use App\Eco\HousingFile\HousingFileApplication;
 use App\Eco\Project\Project;
 use App\Eco\Project\ProjectValueCourse;
+use App\Helpers\Address\AddressHelper;
 use App\Helpers\Delete\Models\DeleteProject;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
@@ -328,6 +329,18 @@ class ProjectController extends ApiController
             ->get();
 
         $project->fill($data);
+
+        if (
+            $project->projectType->code_ref === 'energy_community'
+            && $project->isDirty('energy_sharing')
+            && $project->energy_sharing
+        ) {
+            $duplicateMessage = AddressHelper::checkEnergyCommunityProjectForDuplicates($project);
+
+            if ($duplicateMessage !== null) {
+                abort(412, $duplicateMessage);
+            }
+        }
 
         DB::transaction(function () use ($request, $project) {
             $participationWorthChanged = $project->isDirty(['participation_worth']);

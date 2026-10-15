@@ -407,6 +407,15 @@ class ParticipationProjectController extends ApiController
         $contact = Contact::find($participantProject->contact_id);
         $address = Address::find($participantProject->address_id);
 
+        if ($project->projectType->code_ref === 'energy_community') {
+            $addressHelper = new AddressHelper($contact, $address);
+            $duplicateMessage = $addressHelper->checkDuplicateEnergyCommunityParticipation($project);
+
+            if ($duplicateMessage !== null) {
+                return ['id' => 0, 'message' => [$duplicateMessage]];
+            }
+        }
+
         if($project->check_double_addresses){
             $errors = [];
 
@@ -853,6 +862,20 @@ class ParticipationProjectController extends ApiController
     {
         if ($participantProject->date_terminated === null) {
             abort(409, 'Deze deelname is niet beëindigd.');
+        }
+
+        $addressHelper = new AddressHelper(
+            $participantProject->contact,
+            $participantProject->address
+        );
+
+        $duplicateMessage = $addressHelper->checkDuplicateEnergyCommunityParticipation(
+            $participantProject->project,
+            $participantProject->id
+        );
+
+        if ($duplicateMessage !== null) {
+            abort(409, $duplicateMessage);
         }
 
         $projectType = $participantProject->project->projectType;

@@ -110,6 +110,19 @@ class AddressController extends ApiController
             $addressHelper = new AddressHelper($contact, $address);
             $contactAddressAllowed = $addressHelper->checkDoubleAddressAllowed(true);
             $checkAddressOk = $addressHelper->checkAddress(null, true);
+
+            if ($address->isDirty([
+                'postal_code',
+                'number',
+                'addition',
+                'ean_electricity',
+            ])) {
+                $duplicateMessage = $addressHelper->checkEnergyCommunityParticipationsForAddressUpdate();
+
+                if ($duplicateMessage !== null) {
+                    abort(412, $duplicateMessage);
+                }
+            }
         }
 
         $address->save();

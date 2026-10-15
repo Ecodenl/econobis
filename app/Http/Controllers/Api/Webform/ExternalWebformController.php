@@ -3254,6 +3254,26 @@ class ExternalWebformController extends Controller
                 }
             }
 
+            if ($project->projectType->code_ref === 'energy_community') {
+                $addressHelper = new AddressHelper($contact, $contact->addressForPostalCodeCheck);
+
+                $duplicateMessage = $addressHelper->checkDuplicateEnergyCommunityParticipation($project);
+
+                if ($duplicateMessage !== null) {
+                    $note = "Webformulier " . $this->webform->name . ".\n\n";
+                    $note .= "Deelname kan niet worden aangemaakt voor contact "
+                        . $this->contact->full_name . " (" . $this->contact->number . ") "
+                        . "vanwege de volgende fout:\n";
+                    $note .= $duplicateMessage;
+
+                    $this->addTaskCheckContact($this->responsibleIds, $this->contact, $this->webform, $note);
+
+                    $this->log('EG-deelname kan niet worden aangemaakt: ' . $duplicateMessage);
+
+                    return null;
+                }
+            }
+
             // Voor aanmaak van Participant Mutations wordt created by and updated by via ParticipantMutationObserver altijd bepaald obv Auth::id
             // Die moeten we eerst even setten als we dus hier vanuit webform komen.
             $responsibleUser = User::find($webform->responsible_user_id);

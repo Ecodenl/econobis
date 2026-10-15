@@ -70,6 +70,167 @@ class AddressHelper
         return $addressIsDouble;
     }
 
+    private static function hasEnergyCommunityAddressConflict(Address $address, Address $existingAddress): bool
+    {
+        $normalize = static function ($value): string {
+            return strtoupper(preg_replace('/\s+/', '', (string) $value));
+        };
+
+        $samePhysicalAddress =
+            $normalize($address->postal_code) === $normalize($existingAddress->postal_code)
+            && $address->number == $existingAddress->number
+            && $normalize($address->addition) === $normalize($existingAddress->addition);
+
+        if (!$samePhysicalAddress) {
+            return false;
+        }
+
+        $ean = $normalize($address->ean_electricity);
+        $existingEan = $normalize($existingAddress->ean_electricity);
+
+        // Alleen verschillende, ingevulde EAN-codes zijn toegestaan.
+        return $ean === '' || $existingEan === '' || $ean === $existingEan;
+    }
+
+    public function checkDuplicateEnergyCommunityParticipation(Project $project, ?int $excludeParticipationId = null): ?string
+    {
+        if ($project->projectType->code_ref !== 'energy_community') {
+            return null;
+        }
+
+        $address = $this->address;
+
+        // Binnen hetzelfde EG-project altijd controleren.
+        // Andere EG-projecten alleen meenemen wanneer bij beide
+        // projecten Energiedelen aanstaat.
+        $existingParticipations = \App\Eco\ParticipantProject\ParticipantProject::query()
+            ->whereNull('date_terminated')
+            ->when($excludeParticipationId !== null, function ($query) use ($excludeParticipationId) {
+                $query->where('id', '!=', $excludeParticipationId);
+            })
+            ->whereHas('project', function ($query) use ($project) {
+                $query->where(function ($query) use ($project) {
+                    $query->where('projects.id', $project->id);
+
+                    if ($project->energy_sharing) {
+                        $query->orWhere(function ($query) use ($project) {
+                            $query->where('projects.id', '!=', $project->id)
+                                ->where('projects.energy_sharing', true)
+                                ->whereHas('projectType', function ($query) {
+                                    $query->where('code_ref', 'energy_community');
+                                });
+                        });
+                    }
+                });
+            })
+            ->with(['address', 'project'])
+            ->get();
+
+        foreach ($existingParticipations as $participation) {
+            $existingAddress = $participation->address;
+
+            if (!$existingAddress) {
+                continue;
+            }
+
+            // Gebruik bij een adreswijziging de nieuwe, nog niet opgeslagen
+            // adresgegevens als beide deelnames hetzelfde adresrecord gebruiken.
+            if ($existingAddress->id === $address->id) {
+                $existingAddress = $address;
+            }
+
+            if (self::hasEnergyCommunityAddressConflict($address, $existingAddress)) {
+                if ($participation->project_id != $project->id) {
+                    return 'Dit adres komt al voor bij energiegemeenschap '
+                        . $participation->project->name . '.';
+                }
+
+                return 'Er bestaat al een actieve deelname op dit adres bij energiegemeenschap '
+                    . $project->name . '.';
+            }
+        }
+
+        return null;
+    }
+
+    public static function checkEnergyCommunityProjectForDuplicates(Project $project): ?string
+    {
+        $participations = \App\Eco\ParticipantProject\ParticipantProject::query()
+            ->whereNull('date_terminated')
+            ->whereHas('project', function ($query) use ($project) {
+                $query->where('projects.id', $project->id)
+                    ->orWhere(function ($query) use ($project) {
+                        $query->where('projects.id', '!=', $project->id)
+                            ->where('projects.energy_sharing', true)
+                            ->whereHas('projectType', function ($query) {
+                                $query->where('code_ref', 'energy_community');
+                            });
+                    });
+            })
+            ->with(['contact', 'address', 'project'])
+            ->get();
+
+        $currentParticipations = $participations->where('project_id', $project->id);
+
+        foreach ($currentParticipations as $participation) {
+            if (!$participation->contact || !$participation->address) {
+                return 'Deelname ' . $participation->id . ' heeft geen geldig contact of adres.';
+            }
+
+            foreach ($participations as $existingParticipation) {
+                if ($existingParticipation->id === $participation->id) {
+                    continue;
+                }
+
+                if (!$existingParticipation->address) {
+                    continue;
+                }
+
+                if (self::hasEnergyCommunityAddressConflict(
+                    $participation->address,
+                    $existingParticipation->address
+                )) {
+                    if ($existingParticipation->project_id != $project->id) {
+                        return 'Dit adres komt al voor bij energiegemeenschap '
+                            . $existingParticipation->project->name . '.';
+                    }
+
+                    return 'Er bestaat al een actieve deelname op dit adres bij energiegemeenschap '
+                        . $project->name . '.';
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public function checkEnergyCommunityParticipationsForAddressUpdate(): ?string
+    {
+        $participations = $this->address->participations()
+            ->whereNull('date_terminated')
+            ->with('project.projectType')
+            ->get();
+
+        foreach ($participations as $participation) {
+            $project = $participation->project;
+
+            if (!$project || $project->projectType->code_ref !== 'energy_community') {
+                continue;
+            }
+
+            $duplicateMessage = $this->checkDuplicateEnergyCommunityParticipation(
+                $project,
+                $participation->id
+            );
+
+            if ($duplicateMessage !== null) {
+                return $duplicateMessage;
+            }
+        }
+
+        return null;
+    }
+
     public function checkAddress($projectId, $abort)
     {
         $messages = [];

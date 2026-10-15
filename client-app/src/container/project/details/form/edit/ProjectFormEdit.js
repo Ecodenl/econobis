@@ -905,11 +905,21 @@ class ProjectFormEdit extends Component {
 
         if (!hasErrors) {
             this.setState({ isSaving: true });
-            ProjectDetailsAPI.updateProject(project.id, project).then(() => {
-                this.setState({ isSaving: false });
-                this.props.fetchProject(project.id);
-                this.props.switchToView();
-            });
+
+            ProjectDetailsAPI.updateProject(project.id, project)
+                .then(() => {
+                    this.setState({ isSaving: false });
+                    this.props.fetchProject(project.id);
+                    this.props.switchToView();
+                })
+                .catch(error => {
+                    this.setState({ isSaving: false });
+
+                    this.props.setError(
+                        error.response?.status || 500,
+                        error.response?.data?.message || 'Er is een fout opgetreden bij het opslaan van het project.'
+                    );
+                });
         } else if (!this.props.showCustomerPortalSettings) {
             this.props.toggleCustomerPortalSettings();
         }
@@ -1305,6 +1315,13 @@ class ProjectFormEdit extends Component {
 const mapDispatchToProps = dispatch => ({
     fetchProject: id => {
         dispatch(fetchProject(id));
+    },
+    setError: (httpCode, message) => {
+        dispatch({
+            type: 'SET_ERROR',
+            http_code: httpCode,
+            message: message,
+        });
     },
 });
 

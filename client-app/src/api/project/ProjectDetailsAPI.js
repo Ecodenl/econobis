@@ -19,10 +19,7 @@ export default {
 
         return getAxiosInstance()
             .post(requestUrl, data)
-            .then(response => response.data.data)
-            .catch(error => {
-                console.log(error);
-            });
+            .then(response => response.data.data);
     },
 
     storeProject: data => {

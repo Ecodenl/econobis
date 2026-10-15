@@ -2,6 +2,7 @@ import React from 'react';
 import InputText from '../../../components/form/InputText';
 import { Field, Formik } from 'formik';
 import Select from '../../../components/form/Select';
+import AddressConnectionTypes from '../../../data/AddressConnectionTypes';
 import Countries from '../../../data/Countries';
 import EnergySuppliers from '../../../data/EnergySuppliers';
 import Titles from '../../../data/Titles';
@@ -454,7 +455,9 @@ const DefaultContactPersonalEdit = function({
                             </Field>
                         </Col>
                     </Row>
-                    {initialContact.isParticipantPcrProject || projectTypeCodeRef === 'postalcode_link_capital' ? (
+                    {initialContact.isParticipantPcrProject ||
+                    projectTypeCodeRef === 'postalcode_link_capital' ||
+                    projectTypeCodeRef === 'energy_community' ? (
                         <>
                             <FormLabel
                                 htmlFor="ean_electricity"
@@ -497,6 +500,31 @@ const DefaultContactPersonalEdit = function({
                                     </Field>
                                 </Col>
                             </Row>
+
+                            {projectTypeCodeRef === 'energy_community' && (
+                                <>
+                                    <FormLabel htmlFor="connectionType" className="field-label">
+                                        Type aansluiting
+                                    </FormLabel>
+                                    <Row>
+                                        <Col xs={12} sm={10} md={6}>
+                                            <Field name="primaryAddress.connectionType">
+                                                {({ field }) => (
+                                                    <Select
+                                                        field={field}
+                                                        errors={errors}
+                                                        touched={touched}
+                                                        id="connectionType"
+                                                        placeholder="Selecteer type aansluiting"
+                                                        options={AddressConnectionTypes}
+                                                    />
+                                                )}
+                                            </Field>
+                                        </Col>
+                                    </Row>
+                                </>
+                            )}
+
                             <FormLabel htmlFor="ean_gas" className={'field-label'}>
                                 EAN nummer gas
                             </FormLabel>

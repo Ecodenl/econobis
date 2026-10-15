@@ -48,6 +48,20 @@ class ParticipationProjectController extends Controller
      */
     private $participationMutation;
 
+    private function authorizePortalContact($portalUser, int $contactId): void
+    {
+        $allowedContactIds = $portalUser->contact->occupations
+            ->where('allow_manage_in_portal', true)
+            ->whereIn('type_id', ['organisation', 'person'])
+            ->pluck('primary_contact_id')
+            ->toArray();
+
+        if ($portalUser->contact_id != $contactId
+            && !in_array($contactId, $allowedContactIds)) {
+            abort(403, 'Verboden');
+        }
+    }
+
     public function show(ParticipantProject $participantProject)
     {
         // ophalen contactgegevens portal user
@@ -55,26 +69,13 @@ class ParticipationProjectController extends Controller
         if (!Auth::isPortalUser() || !$portalUser->contact) {
             abort(501, 'Er is helaas een fout opgetreden.');
         }
-        $allowedContactOrganisationIds = $portalUser->contact->occupations
-            ->where('type_id', 'organisation')
-            ->where('allow_manage_in_portal', true)  // Uses the field from occupation_contact
-            ->pluck('primary_contact_id')
-            ->toArray();
-        $allowedContactPersonIds = $portalUser->contact->occupations
-            ->where('type_id', 'person')
-            ->where('allow_manage_in_portal', true)  // Uses the field from occupation_contact
-            ->pluck('primary_contact_id')
-            ->toArray();
-        $allowedContactIds = array_merge($allowedContactOrganisationIds, $allowedContactPersonIds);
 
-        $authorizedForContact = in_array($participantProject->contact_id, $allowedContactIds);
-        if ($portalUser->contact_id != $participantProject->contact_id && !$authorizedForContact) {
-            abort(403, 'Verboden');
-        }
+        $this->authorizePortalContact($portalUser, $participantProject->contact_id);
 
         $participantProject->allowIncreaseParticipations = false;
 
-        if ($participantProject->project->allow_increase_participations_in_portal
+        if ($participantProject->project->projectType->code_ref !== 'energy_community'
+            && $participantProject->project->allow_increase_participations_in_portal
             && $participantProject->project->date_start_registrations <= Carbon::now()->format('Y-m-d')
             && $participantProject->project->date_end_registrations >= Carbon::now()->format('Y-m-d')) {
 
@@ -120,22 +121,8 @@ class ParticipationProjectController extends Controller
         if (!Auth::isPortalUser() || !$portalUser->contact) {
             abort(501, 'Er is helaas een fout opgetreden.');
         }
-        $allowedContactOrganisationIds = $portalUser->contact->occupations
-            ->where('type_id', 'organisation')
-            ->where('allow_manage_in_portal', true)  // Uses the field from occupation_contact
-            ->pluck('primary_contact_id')
-            ->toArray();
-        $allowedContactPersonIds = $portalUser->contact->occupations
-            ->where('type_id', 'person')
-            ->where('allow_manage_in_portal', true)  // Uses the field from occupation_contact
-            ->pluck('primary_contact_id')
-            ->toArray();
-        $allowedContactIds = array_merge($allowedContactOrganisationIds, $allowedContactPersonIds);
 
-        $authorizedForContact = in_array($participantProject->contact_id, $allowedContactIds);
-        if ($portalUser->contact_id != $participantProject->contact_id && !$authorizedForContact) {
-            abort(403, 'Verboden');
-        }
+        $this->authorizePortalContact($portalUser, $participantProject->contact_id);
 
         if ($document->filename) {
             // todo wellicht moeten we hier nog wat op anders verzinnen, voornu gebruiken we responisibleUserId from settings.json, verderop zetten we dat weer terug naar portal user
@@ -172,6 +159,10 @@ class ParticipationProjectController extends Controller
         if (!$contact) {
             abort(501, 'Er is helaas een fout opgetreden (3).');
         }
+
+        // check portalgebruiker geauthoriseerd is voor aanmaak deelname
+        $this->authorizePortalContact($portalUser, $contact->id);
+
         // ophalen projectgegevens
         $project = Project::find($request->registerValues['projectId']);
         if (!$project) {
@@ -182,7 +173,8 @@ class ParticipationProjectController extends Controller
             abort(501, 'Project is nog niet open voor inschrijving.');
         }
         // project moet nog openstaan voor inschrijving
-        if ($project->date_end_registrations < Carbon::now()->format('Y-m-d')) {
+        if ($project->date_end_registrations !== null &&
+            $project->date_end_registrations < Carbon::now()->format('Y-m-d')) {
             abort(501, 'Project is gesloten voor inschrijving.');
         }
 
@@ -203,7 +195,22 @@ class ParticipationProjectController extends Controller
 
         $address = $contact->addressForPostalCodeCheck;
 
-        DB::transaction(function () use ($contact, $address, $project, $request, $portalUser, $responsibleUserId) {
+        if ($project->projectType->code_ref === 'energy_community') {
+            if (!$address) {
+                abort(412, 'Voor een deelname aan een energiegemeenschap is een geldig adres verplicht.');
+            }
+
+            $addressHelper = new AddressHelper($contact, $address);
+
+            if ($error = $addressHelper->checkDuplicateEnergyCommunityParticipation($project)) {
+                abort(412, $error);
+            }
+        }
+
+        $usesMollie = $project->uses_mollie
+            && $project->projectType->code_ref !== 'energy_community';
+
+        DB::transaction(function () use ($contact, $address, $project, $request, $portalUser, $responsibleUserId, $usesMollie) {
             $participation = $this->createParticipantProject($contact, $address, $project, $request, $portalUser, $responsibleUserId);
 
             /**
@@ -211,7 +218,7 @@ class ParticipationProjectController extends Controller
              * is ingeschakeld willen we deze stap pas na de betaling uitvoeren.
              */
             try {
-                if(!$project->uses_mollie) {
+                if(!$usesMollie) {
                     $this->createAndSendRegistrationDocument($contact, $project, $request->registerType, $participation, $responsibleUserId, $this->participationMutation);
                 }
             }
@@ -221,7 +228,7 @@ class ParticipationProjectController extends Controller
             }
         });
 
-        if($this->participationMutation->participation->project->uses_mollie){
+        if($usesMollie){
             /**
              * Als Mollie voor dit project aan staat dan returnen we die zodat er naar de betaalpagina geredirect kan worden.
              */
@@ -252,17 +259,34 @@ class ParticipationProjectController extends Controller
         if (!$contact) {
             abort(501, 'Er is helaas een fout opgetreden (3).');
         }
+
+        // check portalgebruiker geauthoriseerd is voor wijzigen deelname
+        $this->authorizePortalContact($portalUser, $contact->id);
+
         // ophalen projectgegevens
         $project = Project::find($request->registerValues['projectId']);
         if (!$project) {
             abort(501, 'Er is helaas een fout opgetreden (4).');
+        }
+        // Controleer of de bestaande deelname bij het opgegeven project hoort.
+        if ($participantProject->project_id !== $project->id) {
+            abort(412, 'De deelname hoort niet bij het opgegeven project.');
+        }
+        // Controleer of de bestaande deelname bij het opgegeven contact hoort.
+        if ($participantProject->contact_id !== $contact->id) {
+            abort(412, 'De deelname hoort niet bij het opgegeven contact.');
+        }
+        // Aanvullende inschrijvingen zijn niet mogelijk voor energiegemeenschappen.
+        if ($project->projectType->code_ref === 'energy_community') {
+            abort(412, 'Aanvullende inschrijvingen zijn niet mogelijk voor energiegemeenschappen.');
         }
         // project moet nog openstaan voor inschrijving
         if ($project->date_start_registrations > Carbon::now()->format('Y-m-d')) {
             abort(501, 'Project is nog niet open voor inschrijving.');
         }
         // project moet nog openstaan voor inschrijving
-        if ($project->date_end_registrations < Carbon::now()->format('Y-m-d')) {
+        if ($project->date_end_registrations !== null &&
+            $project->date_end_registrations < Carbon::now()->format('Y-m-d')) {
             abort(501, 'Project is gesloten voor inschrijving.');
         }
 
@@ -501,7 +525,13 @@ class ParticipationProjectController extends Controller
         $today = Carbon::now();
         $projectTypeCodeRef = $project->projectType->code_ref;
 
-        $participantMutationTypeId = ParticipantMutationType::where('project_type_id', $project->project_type_id)->where('code_ref','first_deposit')->value('id');
+        $participantMutationTypeCodeRef = $projectTypeCodeRef === 'energy_community'
+            ? 'participation'
+            : 'first_deposit';
+
+        $participantMutationTypeId = ParticipantMutationType::where('project_type_id', $project->project_type_id)
+            ->where('code_ref', $participantMutationTypeCodeRef)
+            ->value('id');
 
         $payoutTypeId = null;
         switch ($projectTypeCodeRef) {
@@ -550,9 +580,18 @@ class ParticipationProjectController extends Controller
         switch($status->code_ref){
             case 'option' :
                 $participationMutationDate = $today ?: null;
-                $participationMutationAmount = data_get($request->registerValues, 'amountOptioned', null);
-                $participationMutationQuantity = data_get($request->registerValues, 'participationsOptioned', null);
-                $participationMutationTransactionCostsAmount = data_get($request->registerValues, 'transactionCostsAmount', null);
+                // Bij EG project is aantal altijd 0
+                $participationMutationAmount = $projectTypeCodeRef === 'energy_community'
+                    ? 0
+                    : data_get($request->registerValues, 'amountOptioned', null);
+                // Bij EG project is aantal altijd 1
+                $participationMutationQuantity = $projectTypeCodeRef === 'energy_community'
+                    ? 1
+                    : data_get($request->registerValues, 'participationsOptioned', null);
+                // Bij EG project is aantal altijd 0
+                $participationMutationTransactionCostsAmount = $projectTypeCodeRef === 'energy_community'
+                    ? 0
+                    : data_get($request->registerValues, 'transactionCostsAmount', null);
                 $dateOption = $participationMutationDate;
                 $amountOption = $participationMutationAmount;
                 $quantityOption = $participationMutationQuantity;
@@ -592,7 +631,7 @@ class ParticipationProjectController extends Controller
          * Alleen koppelen aan juiste contactgroup als Mollie is uitgeschakeld, als Mollie
          * is ingeschakeld willen we koppelen pas na de betaling uitvoeren.
          */
-        if(!$project->uses_mollie) {
+        if (!$project->uses_mollie || $projectTypeCodeRef === 'energy_community') {
             $contactGroupController = new ContactGroupController();
             // indien gekozen voor member of no_member, maak koppeling met juiste contactgroup.
             switch ($participation->choice_membership) {

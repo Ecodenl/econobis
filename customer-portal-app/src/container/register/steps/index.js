@@ -3,6 +3,7 @@ import StepOneLoan from './StepOneLoan';
 import StepOneObligation from './StepOneObligation';
 import StepOneCapital from './StepOneCapital';
 import StepOnePcr from './StepOnePcr';
+import StepOneEnergyCommunity from './StepOneEnergyCommunity';
 import StepTwo from './StepTwo';
 import StepThree from './StepThree';
 import StepFour from './StepFour';
@@ -83,6 +84,15 @@ function Steps({
                             project={project}
                             contactProjectData={contactProjectData}
                             initialContact={initialContact}
+                            initialRegisterValues={initialRegisterValues}
+                            handleSubmitRegisterValues={handleSubmitRegisterValues}
+                        />
+                    );
+                case 'energy_community':
+                    return (
+                        <StepOneEnergyCommunity
+                            next={next}
+                            project={project}
                             initialRegisterValues={initialRegisterValues}
                             handleSubmitRegisterValues={handleSubmitRegisterValues}
                         />

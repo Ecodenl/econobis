@@ -62,6 +62,7 @@ export default {
                                 'primary',
                                 'typeId',
                                 'eanElectricity',
+                                'connectionType',
                                 'eanGas',
                             ],
                             rlt: {

@@ -16,8 +16,8 @@ class ParticipantMutationCollection extends JsonResource
      */
     public function toArray($request)
     {
-        $mutationResultType = ParticipantMutationType::where('code_ref', 'result')->where('project_type_id', $this->participation->project->project_type_id)->first()->id;
-        $mutationEnergyTaxRefundType = ParticipantMutationType::where('code_ref', 'energy_tax_refund')->first()->id;
+        $mutationResultType = ParticipantMutationType::where('code_ref', 'result')->where('project_type_id', $this->participation->project->project_type_id)->first()?->id;
+        $mutationEnergyTaxRefundType = ParticipantMutationType::where('code_ref', 'energy_tax_refund')->where('project_type_id', $this->participation->project->project_type_id)->first()?->id;
         $projectTypeCodeRef = $this->participation->project->projectType->code_ref;
         $projectTransactionCostsCodeRef = $this->participation->project->transaction_costs_code_ref;
         $projectTextTransactionCosts = $this->participation->project->text_transaction_costs;
@@ -166,6 +166,28 @@ class ParticipantMutationCollection extends JsonResource
                         ];
                 }
                 return $fields;
+            case 'energy_community':
+                return [
+                    'fields' => [
+                        [
+                            'type' => 'date',
+                            'label' => 'Datum',
+                            'value' => $date,
+                        ],
+                        [
+                            'type' => 'string',
+                            'label' => 'Omschrijving',
+                            'value' => $this->type ? $this->type->description : '',
+                        ],
+                        [
+                            'type' => 'string',
+                            'label' => 'Status',
+                            'value' => $this->status?->code_ref === 'final'
+                                ? 'Deelnemer'
+                                : ($this->status?->name ?? ''),
+                        ],
+                    ],
+                ];
         }
     }
     private function capitalizeFirstLetter(string $text): string

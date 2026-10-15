@@ -14,6 +14,8 @@ export default function(contactData) {
         city: '',
         countryId: '',
         eanElectricity: '',
+        connectionType: '',
+
         eanGas: '',
         currentAddressEnergySupplierElectricity: emptyCurrentAddressEnergySupplierElectricity,
     };

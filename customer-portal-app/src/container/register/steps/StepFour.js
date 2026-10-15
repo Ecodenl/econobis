@@ -163,7 +163,7 @@ function StepFour({
             ) : !contactDocumentOk ? (
                 <>
                     <Row>
-                        <Col>Er ging iets mis bij het maken van het bevestingsformulier voorbeeld.</Col>
+                        <Col>Er ging iets mis bij het maken van het bevestigingsformulier voorbeeld.</Col>
                     </Row>
                     <Row>
                         <Col xs={12} md={10}>
@@ -196,46 +196,52 @@ function StepFour({
                                         <ViewHtmlAsText value={contactDocument} />
                                     </Col>
                                 </Row>
-                                <Row>
-                                    <Col xs={12} md={3}>
-                                        <FormLabel className={'field-label-text'}>
-                                            {project.transactionCostsCodeRef === 'none'
-                                                ? 'Te betalen bedrag'
-                                                : 'Bedrag'}
-                                        </FormLabel>
-                                    </Col>
-                                    <Col xs={12} md={3}>
-                                        <TextBlock className={'float-right'}>
-                                            {MoneyPresenter(registerValues.amount)}
-                                        </TextBlock>
-                                    </Col>
-                                </Row>
-                                {project.transactionCostsCodeRef !== 'none' ? (
+                                {project.projectType.codeRef !== 'energy_community' && (
                                     <>
                                         <Row>
                                             <Col xs={12} md={3}>
                                                 <FormLabel className={'field-label-text'}>
-                                                    {project.textTransactionCosts}
+                                                    {project.transactionCostsCodeRef === 'none'
+                                                        ? 'Te betalen bedrag'
+                                                        : 'Bedrag'}
                                                 </FormLabel>
                                             </Col>
                                             <Col xs={12} md={3}>
                                                 <TextBlock className={'float-right'}>
-                                                    {MoneyPresenter(registerValues.transactionCostsAmount)}
+                                                    {MoneyPresenter(registerValues.amount)}
                                                 </TextBlock>
                                             </Col>
                                         </Row>
-                                        <Row>
-                                            <Col xs={12} md={3}>
-                                                <FormLabel className={'field-label-text'}>Totaal te betalen</FormLabel>
-                                            </Col>
-                                            <Col xs={12} md={3}>
-                                                <TextBlock className={'float-right'}>
-                                                    {MoneyPresenter(registerValues.totalAmount)}
-                                                </TextBlock>
-                                            </Col>
-                                        </Row>
+                                        {project.transactionCostsCodeRef !== 'none' ? (
+                                            <>
+                                                <Row>
+                                                    <Col xs={12} md={3}>
+                                                        <FormLabel className={'field-label-text'}>
+                                                            {project.textTransactionCosts}
+                                                        </FormLabel>
+                                                    </Col>
+                                                    <Col xs={12} md={3}>
+                                                        <TextBlock className={'float-right'}>
+                                                            {MoneyPresenter(registerValues.transactionCostsAmount)}
+                                                        </TextBlock>
+                                                    </Col>
+                                                </Row>
+                                                <Row>
+                                                    <Col xs={12} md={3}>
+                                                        <FormLabel className={'field-label-text'}>
+                                                            Totaal te betalen
+                                                        </FormLabel>
+                                                    </Col>
+                                                    <Col xs={12} md={3}>
+                                                        <TextBlock className={'float-right'}>
+                                                            {MoneyPresenter(registerValues.totalAmount)}
+                                                        </TextBlock>
+                                                    </Col>
+                                                </Row>
+                                            </>
+                                        ) : null}
                                     </>
-                                ) : null}
+                                )}
                                 <hr />
                                 <Row>
                                     <Col xs={12} md={10}>
@@ -296,7 +302,8 @@ function StepFour({
                                                     </span>
                                                 ) : (
                                                     <>
-                                                        {project.usesMollie ? (
+                                                        {project.projectType.codeRef !== 'energy_community' &&
+                                                        project.usesMollie ? (
                                                             <>
                                                                 Betaal en bevestig de{' '}
                                                                 {registerType === 'verhogen'

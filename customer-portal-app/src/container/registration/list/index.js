@@ -86,6 +86,26 @@ function RegistrationList(props) {
                                                         </Link>
                                                     </td>
                                                     <td>
+                                                        {participation.project.projectType.codeRef ===
+                                                            'energy_community' && (
+                                                            <>
+                                                                {participation.participationsOptioned != 0 && (
+                                                                    <span>
+                                                                        Energiegemeenschap <em>(Ingeschreven)</em>
+                                                                    </span>
+                                                                )}
+                                                                {participation.participationsGranted != 0 && (
+                                                                    <span>
+                                                                        Energiegemeenschap <em>(Toegekend)</em>
+                                                                    </span>
+                                                                )}
+                                                                {participation.participationsDefinitive != 0 && (
+                                                                    <span>
+                                                                        Energiegemeenschap <em>(Deelnemer)</em>
+                                                                    </span>
+                                                                )}
+                                                            </>
+                                                        )}
                                                         {participation.project.projectType.codeRef == 'loan' ? (
                                                             <>
                                                                 {participation.amountInteressed != 0 ? (

@@ -253,7 +253,10 @@ class ContactController extends ApiController
         $projects = Project::whereIn('project_status_id', $allowedProjectStatuses)
             ->whereIn('project_type_id', $activeProjectTypes)
             ->where('date_start_registrations', '<=', Carbon::today()->format('Y-m-d'))
-            ->where('date_end_registrations', '>=', Carbon::today()->format('Y-m-d'))
+            ->where(function ($query) {
+                $query->whereNull('date_end_registrations')
+                    ->orWhere('date_end_registrations', '>=', Carbon::today()->format('Y-m-d'));
+            })
             ->get();
         foreach ($projects as $key => $project) {
             $this->setContactProjectIndicators($project, $contact, $projects, $key);
@@ -1110,14 +1113,21 @@ class ContactController extends ApiController
         if ($mutationToPay && $project->uses_mollie) {
             $project->allowPayMollie = true;
             $project->econobisPaymentLink = $mutationToPay->econobis_payment_link;
-        } else if ($project->allow_increase_participations_in_portal
+        } else if ($project->projectType->code_ref !== 'energy_community'
+            && $project->allow_increase_participations_in_portal
             && $project->date_start_registrations <= Carbon::now()->format('Y-m-d')
             && $project->date_end_registrations >= Carbon::now()->format('Y-m-d')) {
             $project->allowIncreaseParticipations = true;
         }
 
-        // no participation for this contact/project yet or increase is allowed
-        if ( $project->hasParticipation === false || (bool)$project->allow_increase_participations_in_portal === true ) {
+        // no participation for this contact/project yet or (type not energy_community and increase is allowed)
+        if (
+            !$project->hasParticipation
+            || (
+                $project->projectType->code_ref !== 'energy_community'
+                && (bool)$project->allow_increase_participations_in_portal
+            )
+        ) {
 
             // no membership required, then allow register to project
             if (!$project->is_membership_required) {
@@ -1221,7 +1231,25 @@ class ContactController extends ApiController
                 }
 
             }
+            // Controleer of een nieuwe EG-deelname is toegestaan.
+            if ($project->projectType->code_ref === 'energy_community'
+                && $project->allowRegisterToProject) {
 
+                $address = $contact->addressForPostalCodeCheck;
+
+                if (!$address) {
+                    $project->allowRegisterToProject = false;
+                    $project->textNotAllowedRegisterToProject =
+                        'Voor een deelname aan een energiegemeenschap is een geldig adres verplicht.';
+                } else {
+                    $addressHelper = new AddressHelper($contact, $address);
+
+                    if ($error = $addressHelper->checkDuplicateEnergyCommunityParticipation($project)) {
+                        $project->allowRegisterToProject = false;
+                        $project->textNotAllowedRegisterToProject = $error;
+                    }
+                }
+            }
         }
     }
 

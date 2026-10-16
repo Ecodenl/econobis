@@ -26,6 +26,7 @@ export default {
                         'noAddressesFound',
                         'isParticipantPcrProject',
                         'isParticipantSceProject',
+                        'isParticipantEnergyCommunityProject',
                         'blockChangeAddress',
                         'blockChangeAddressNumber',
                     ],

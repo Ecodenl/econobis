@@ -510,6 +510,7 @@ const DefaultContactOrganisationEdit = function({
                         </Col>
                     </Row>
                     {initialContact.isParticipantPcrProject ||
+                    initialContact.isParticipantEnergyCommunityProject ||
                     projectTypeCodeRef === 'postalcode_link_capital' ||
                     projectTypeCodeRef === 'energy_community' ? (
                         <>
@@ -553,7 +554,8 @@ const DefaultContactOrganisationEdit = function({
                                 </Col>
                             </Row>
 
-                            {projectTypeCodeRef === 'energy_community' && (
+                            {(projectTypeCodeRef === 'energy_community' ||
+                                initialContact.isParticipantEnergyCommunityProject) && (
                                 <>
                                     <FormLabel htmlFor="connectionType" className="field-label">
                                         Type aansluiting

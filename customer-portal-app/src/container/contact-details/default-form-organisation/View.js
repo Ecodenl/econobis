@@ -22,6 +22,7 @@ function DefaultContactOrganisationView({ portalSettings, initialContact, freeFi
         dateDidAgreeAvg,
         number,
         isParticipantPcrProject,
+        isParticipantEnergyCommunityProject,
     } = initialContact;
 
     return (
@@ -153,7 +154,7 @@ function DefaultContactOrganisationView({ portalSettings, initialContact, freeFi
                             {visitAddress.country ? visitAddress.country.name : ''}
                         </TextBlock>
                     </Row>
-                    {isParticipantPcrProject ? (
+                    {isParticipantPcrProject || isParticipantEnergyCommunityProject ? (
                         <>
                             <FormLabel className={'field-label'}>EAN nummer elektriciteit</FormLabel>
                             <Row>
@@ -161,6 +162,16 @@ function DefaultContactOrganisationView({ portalSettings, initialContact, freeFi
                                     {visitAddress.eanElectricity}
                                 </TextBlock>
                             </Row>
+                            {isParticipantEnergyCommunityProject && (
+                                <>
+                                    <FormLabel className={'field-label'}>Type aansluiting</FormLabel>
+                                    <Row>
+                                        <TextBlock className={'col-12 col-sm-8'} placeholder={'Type aansluiting'}>
+                                            {visitAddress.connectionType}
+                                        </TextBlock>
+                                    </Row>
+                                </>
+                            )}
                             <FormLabel className={'field-label'}>EAN nummer gas</FormLabel>
                             <Row>
                                 <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer gas'}>

@@ -30,6 +30,7 @@ use App\Eco\Task\TaskType;
 use App\Eco\User\User;
 use App\Helpers\Address\AddressHelper;
 use App\Helpers\ContactGroup\ContactGroupHelper;
+use App\Helpers\Delete\Models\DeleteAddress;
 use App\Helpers\Document\DocumentHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Project\RevenuesKwhHelper;
@@ -659,6 +660,9 @@ class ContactController extends ApiController
         if($addressData['countryId'] == ''){
             $addressData['countryId'] = null;
         }
+        if (isset($addressData['connectionType']) && $addressData['connectionType'] === '') {
+            $addressData['connectionType'] = null;
+        }
         if($addressData['number'] == ''){
             $addressData['number'] = null;
         }
@@ -677,12 +681,32 @@ class ContactController extends ApiController
             {
                 if(empty($addressData['street']) && empty($addressData['postalCode']) && empty($addressData['city']) )
                 {
-                    $address->delete();
+                    $deleteAddress = new DeleteAddress($address);
+                    $result = $deleteAddress->delete();
+
+                    if (count($result) > 0) {
+                        abort(412, implode(';', array_unique($result)));
+                    }
                 }else{
 //                    if ($type == ContactType::ORGANISATION && $addressType == 'visit') {
 //                        $addressData['primary'] = true;
 //                    }
                     $address->fill($this->arrayKeysToSnakeCase($addressData));
+
+                    if ($address->isDirty([
+                        'postal_code',
+                        'number',
+                        'addition',
+                        'ean_electricity',
+                    ])) {
+                        $addressHelper = new AddressHelper($contact, $address);
+
+                        $duplicateMessage = $addressHelper->checkEnergyCommunityParticipationsForAddressUpdate();
+
+                        if ($duplicateMessage !== null) {
+                            abort(412, $duplicateMessage);
+                        }
+                    }
 
                     $addressHelper = new AddressHelper($contact, $address);
                     $checkAddressOk = $addressHelper->checkAddress($projectId, true);

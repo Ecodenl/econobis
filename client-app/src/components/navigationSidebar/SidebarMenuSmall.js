@@ -19,6 +19,7 @@ import { ic_business_center } from 'react-icons-kit/md/ic_business_center';
 import { road } from 'react-icons-kit/icomoon/road';
 import { forward } from 'react-icons-kit/icomoon/forward';
 import { stopwatch } from 'react-icons-kit/icomoon/stopwatch';
+import { tree } from 'react-icons-kit/icomoon/tree';
 
 const SidebarMenuSmall = ({ permissions, administrations }) => (
     <div className="sidebar-menu-small">
@@ -54,6 +55,12 @@ const SidebarMenuSmall = ({ permissions, administrations }) => (
         {permissions.menuEnergySaving && (
             <div className="sidebar-menu-small-item">
                 <SvgIcon size={20} icon={home} />
+            </div>
+        )}
+        {/* Energiegemeenschappen */}
+        {permissions.menuProjects && (
+            <div className="sidebar-menu-small-item">
+                <SvgIcon size={20} icon={tree} />
             </div>
         )}
         {/* Groepen beheer */}

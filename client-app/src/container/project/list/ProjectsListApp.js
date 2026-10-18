@@ -19,7 +19,16 @@ import { useParams } from 'react-router-dom';
 // Functionele wrapper voor de class component
 const ProjectsListAppWrapper = props => {
     const params = useParams();
-    return <ProjectsListApp {...props} params={params} />;
+    const isEnergyCommunity = window.location.hash.startsWith('#/energiegemeenschappen');
+
+    return (
+        <ProjectsListApp
+            key={isEnergyCommunity ? 'energy-community' : 'projects'}
+            {...props}
+            params={params}
+            isEnergyCommunity={isEnergyCommunity}
+        />
+    );
 };
 
 class ProjectsListApp extends Component {
@@ -62,11 +71,33 @@ class ProjectsListApp extends Component {
 
     componentWillUnmount() {
         this.props.clearProjects();
+        this.props.clearFilterProjects();
     }
 
     fetchProjectsData() {
         setTimeout(() => {
-            const filters = filterHelper(this.props.projectsFilters);
+            let projectFilters = this.props.projectsFilters;
+
+            if (this.props.isEnergyCommunity) {
+                const energyCommunityType = this.props.projectTypes.find(
+                    projectType => projectType.codeRef === 'energy_community'
+                );
+
+                if (!energyCommunityType) {
+                    return;
+                }
+
+                projectFilters = {
+                    ...projectFilters,
+                    projectTypeId: {
+                        ...projectFilters.projectTypeId,
+                        data: energyCommunityType.id,
+                    },
+                };
+            }
+
+            const filters = filterHelper(projectFilters);
+
             const sorts = this.props.projectsSorts;
             const pagination = { limit: 20, offset: this.props.projectsPagination.offset };
             const filterType = this.state.filterType;
@@ -131,6 +162,7 @@ class ProjectsListApp extends Component {
 const mapStateToProps = state => {
     return {
         projects: state.projects.list,
+        projectTypes: state.systemData.projectTypes,
         projectsFilters: state.projects.filters,
         projectsSorts: state.projects.sorts,
         projectsPagination: state.projects.pagination,

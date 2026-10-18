@@ -21,9 +21,10 @@ import { ic_business_center } from 'react-icons-kit/md/ic_business_center';
 import { road } from 'react-icons-kit/icomoon/road';
 import { forward } from 'react-icons-kit/icomoon/forward';
 import { stopwatch } from 'react-icons-kit/icomoon/stopwatch';
+import { tree } from 'react-icons-kit/icomoon/tree';
 
 const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongleRegistration }) => (
-    <div className="sidebar-menu" style={{ background: '$brand-primary', color: '#FFF', width: '240px' }}>
+    <div className="sidebar-menu" style={{ background: '$brand-primary', color: '#FFF', width: '280px' }}>
         <SideNav highlightColor="#FFF" highlightBgColor="#27AE60" defaultSelected="dashboard">
             <Nav id="dashboard">
                 <NavIcon>
@@ -292,6 +293,19 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongle
                             </NavText>
                         </Nav>
                     )}
+                </Nav>
+            )}
+
+            {permissions.menuProjects && (
+                <Nav id="energy-communities">
+                    <NavIcon>
+                        <SvgIcon size={20} icon={tree} />
+                    </NavIcon>
+                    <NavText>
+                        <Link className="sidebar-link-header" to="energiegemeenschappen">
+                            Energiegemeenschappen
+                        </Link>
+                    </NavText>
                 </Nav>
             )}
 

@@ -2229,7 +2229,7 @@ class TemplateVariableHelper
             case 'gemaakt_op':
                 return $model->created_at ? Carbon::parse($model->created_at)->format('d-m-Y') : null;
             case 'status':
-                return $model->getStatus() ? $model->getStatus()->name : '';
+                return $model->getStatus()?->getName() ?? '';
             case 'betaalwijze':
                 return $model->getPaymentType()?->getName() ?? '';
             case 'incasso_frequentie':

@@ -1038,7 +1038,7 @@ class ParticipationProjectController extends ApiController
                 $fileName = str_replace(' ', '', $this->translateToValidCharacterSet($project->code)) . '_' . str_replace(' ', '', $this->translateToValidCharacterSet($contact->full_name));
                 //max length name 25 tot nu toe
                 $fileName = substr($fileName, 0, 25);
-                $fileName = $fileName . substr($document->getDocumentGroup()->name, 0, 1) . (Document::where('document_group', 'revenue')->count() + 1) . '_' .  $time->format('Ymd') . '.pdf';
+                $fileName = $fileName . substr($document->getDocumentGroup()->getName(), 0, 1) . (Document::where('document_group', 'revenue')->count() + 1) . '_' .  $time->format('Ymd') . '.pdf';
                 $document->filename = $fileName;
 
                 $document->save();

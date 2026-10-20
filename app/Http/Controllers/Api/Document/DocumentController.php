@@ -160,7 +160,7 @@ class DocumentController extends Controller
             $name = substr($name, 0, 25);
 
             $fileName = $name
-                . substr($document->getDocumentGroup()->name, 0, 1)
+                . substr($document->getDocumentGroup()->getName(), 0, 1)
                 . (Document::where('document_group', $document->getDocumentGroup())->count() + 1)
                 . '_'
                 .  $time->format('Ymd')

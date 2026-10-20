@@ -69,8 +69,8 @@ class InvoiceCSVHelper
                 $invoice->date_reminder_3_formatted = $this->formatDate($invoice->date_reminder_3);
                 $invoice->date_exhortation_formatted = $this->formatDate($invoice->date_exhortation);
 
-                $invoice->status = $invoice->getStatus()->name;
-                $invoice->payment_type = $invoice->getPaymentType()->name;
+                $invoice->status = $invoice->getStatus()->getName();
+                $invoice->payment_type = $invoice->getPaymentType()->getName();
 
                 if($invoice->payment_type_id === 'collection'){
                     $invoice->date_collection_formatted = $this->formatDate($invoice->date_collection);
@@ -202,8 +202,8 @@ class InvoiceCSVHelper
                 $invoicesProduct->invoice->date_reminder_3_formatted = $this->formatDate($invoicesProduct->invoice->date_reminder_3);
                 $invoicesProduct->invoice->date_exhortation_formatted = $this->formatDate($invoicesProduct->invoice->date_exhortation);
 
-                $invoicesProduct->invoice->status = $invoicesProduct->invoice->getStatus()->name;
-                $invoicesProduct->invoice->payment_type = $invoicesProduct->invoice->getPaymentType()->name;
+                $invoicesProduct->invoice->status = $invoicesProduct->invoice->getStatus()->getName();
+                $invoicesProduct->invoice->payment_type = $invoicesProduct->invoice->getPaymentType()->getName();
 
                 if($invoicesProduct->invoice->payment_type_id === 'collection'){
                     $invoicesProduct->invoice->date_collection_formatted = $this->formatDate($invoicesProduct->invoice->date_collection);

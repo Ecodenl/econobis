@@ -6,7 +6,7 @@ import ButtonText from '../../../components/button/ButtonText';
 
 const validationSchema = Yup.object().shape({
     email: Yup.string()
-        .email()
+        .email('Dit is geen geldig e-mailadres.')
         .required('Verplicht'),
 });
 
@@ -31,8 +31,6 @@ const ForgotForm = ({ handleSubmit, showSuccessMessage }) => (
                             placeholder={'E-mailadres'}
                             errors={errors}
                             touched={touched}
-                            // todo check waarom dit erin stond ?!
-                            // showErrorMessage={false}
                         />
                     )}
                 </Field>

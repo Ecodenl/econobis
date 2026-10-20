@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Portal\Auth;
 
-use App\Eco\Portal\PortalUser;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
@@ -46,13 +45,19 @@ class ForgotPasswordController extends Controller
     protected function validateEmail(Request $request)
     {
         $this->validate($request, ['email' => 'required|email']);
-
-        if(PortalUser::where('email', $request->input('email'))->count() === 0){
-            abort(404, 'E-mail niet gevonden.');
-        }
     }
 
     //redirect is handled by react
-    protected function sendResetLinkResponse()
-    {}
+    protected function sendResetLinkResponse(Request $request, $response)
+    {
+    }
+
+    protected function sendResetLinkFailedResponse(Request $request, $response)
+    {
+        if ($response === Password::INVALID_USER) {
+            return $this->sendResetLinkResponse($request, Password::RESET_LINK_SENT);
+        }
+
+        abort(422, trans($response));
+    }
 }

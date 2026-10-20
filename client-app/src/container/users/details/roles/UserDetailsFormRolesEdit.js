@@ -21,6 +21,7 @@ class UserDetailsFormRolesEdit extends Component {
             'Beheerder portal instellingen',
             'Beheerder coöperatie instellingen',
             'Beheerder data opschoner',
+            'Beheerder e-mail templates',
         ];
 
         // Rollen die vallen onder "extra beheerrechten"

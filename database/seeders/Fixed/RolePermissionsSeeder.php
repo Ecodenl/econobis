@@ -812,6 +812,11 @@ class RolePermissionsSeeder extends Seeder
                 'menu_data_cleanup',
                 'manage_cleanup_exception_products',
             ],
+            'Beheerder energiegemeenschappen' => [
+                'manage_energy_community',
+                'menu_energy_communities',
+                'view_energy_community',
+            ],
         ];
 
         foreach ($rolePermissions as $roleName => $permissions) {

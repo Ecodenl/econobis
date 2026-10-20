@@ -58,7 +58,7 @@ const SidebarMenuSmall = ({ permissions, administrations }) => (
             </div>
         )}
         {/* Energiegemeenschappen */}
-        {permissions.menuProjects && (
+        {permissions.menuEnergyCommunities && (
             <div className="sidebar-menu-small-item">
                 <SvgIcon size={20} icon={tree} />
             </div>

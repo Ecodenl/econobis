@@ -144,6 +144,9 @@ class PermissionsSeeder extends Seeder
             'view_free_fields_field_log',
             'menu_data_cleanup',
             'manage_cleanup_exception_products',
+            'manage_energy_community',
+            'menu_energy_communities',
+            'view_energy_community',
         ];
 
         foreach (array_unique($permissions) as $permission) {

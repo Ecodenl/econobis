@@ -33,7 +33,10 @@ class ProjectController extends ApiController
 
     public function grid(RequestQuery $requestQuery)
     {
-        $this->authorize('view', Project::class);
+        abort_unless(
+            Auth::user()->hasAnyPermission(['view_project', 'view_energy_community']),
+            403
+        );
 
         // Check op geauthoriseerde administratie gaat via ProjectBuilder !
         $projects = $requestQuery->get();
@@ -53,7 +56,7 @@ class ProjectController extends ApiController
     {
         set_time_limit(60);
 
-        $this->authorize('view', Project::class);
+        $this->authorize('viewByProjectType', $project);
 
         // todo WM: dit moet wellicht anders
         if (!in_array($project->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) abort(403);
@@ -96,8 +99,6 @@ class ProjectController extends ApiController
 
     public function store(Request $request, RequestInput $requestInput)
     {
-        $this->authorize('manage', Project::class);
-
         $data = $requestInput
             ->string('name')->validate('required')->next()
             ->string('code')->validate('required')->next()
@@ -195,6 +196,8 @@ class ProjectController extends ApiController
 
         $project->fill($data);
 
+        $this->authorize('manageByProjectType', $project);
+
         $project->save();
 
         // Create project value course if participationWorth is > 0.
@@ -228,7 +231,7 @@ class ProjectController extends ApiController
 
     public function update(Request $request, RequestInput $requestInput, Project $project)
     {
-        $this->authorize('manage', Project::class);
+        $this->authorize('manageByProjectType', $project);
 
         $data = $requestInput
             ->string('name')->validate('required')->next()
@@ -330,6 +333,10 @@ class ProjectController extends ApiController
 
         $project->fill($data);
 
+        if ($project->isDirty('project_type_id')) {
+            $this->authorize('manageByProjectType', $project);
+        }
+
         if (
             $project->projectType->code_ref === 'energy_community'
             && $project->isDirty('energy_sharing')
@@ -409,7 +416,7 @@ class ProjectController extends ApiController
 
     public function destroy(Project $project)
     {
-        $this->authorize('manage', Project::class);
+        $this->authorize('manageByProjectType', $project);
 
         // todo WM: dit moet wellicht anders
         if (!in_array($project->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) abort(403);
@@ -464,10 +471,15 @@ class ProjectController extends ApiController
 
     public function getRelatedEmails($id, $folder)
     {
-        // todo WM: dit moet wellicht anders
-        if (!in_array(Project::find($id)->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) abort(403);
+        $project = Project::findOrFail($id);
 
-        $this->authorize('view', Project::class);
+        $this->authorize('viewByProjectType', $project);
+
+        // todo WM: dit moet wellicht anders
+        // Controle op toegestane administratie behouden
+        if (!in_array($project->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) {
+            abort(403);
+        }
 
         return Email::where('project_id', $id)->where('folder', $folder)->get();
     }

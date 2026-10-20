@@ -69,7 +69,10 @@ class ParticipationProjectController extends ApiController
 {
     public function grid(RequestQuery $requestQuery)
     {
-        $this->authorize('view', ParticipantProject::class);
+        abort_unless(
+            Auth::user()->hasAnyPermission(['view_participation', 'view_energy_community']),
+            403
+        );
 
         // Check op geauthoriseerde administratie gaat via ParticipantProjectBuilder !
         $participantProject = $requestQuery->get();

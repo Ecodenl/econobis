@@ -48,6 +48,21 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
 //            }
 //        }
 
+        $canViewParticipations = Auth::user()->hasPermissionTo('view_participation', 'api');
+        $canViewEnergyCommunities = Auth::user()->hasPermissionTo('view_energy_community', 'api');
+
+        if (!$canViewParticipations || !$canViewEnergyCommunities) {
+            $query->whereHas('project.projectType', function ($query) use ($canViewParticipations, $canViewEnergyCommunities) {
+                if ($canViewParticipations && !$canViewEnergyCommunities) {
+                    $query->where('code_ref', '!=', 'energy_community');
+                } elseif (!$canViewParticipations && $canViewEnergyCommunities) {
+                    $query->where('code_ref', 'energy_community');
+                } else {
+                    $query->whereRaw('1 = 0');
+                }
+            });
+        }
+
         return $query;
     }
 }

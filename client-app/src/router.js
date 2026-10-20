@@ -608,9 +608,30 @@ const AppRoutes = () => {
                         />
                         <Route path="project/preview-rapportage" element={<ParticipantReportCreateApp />} />
                         <Route path="project/:id" element={<ProjectGeneralApp />} />
-                        <Route path="projecten" element={<ProjectsListApp />} />
-                        <Route path="energiegemeenschappen" element={<ProjectsListApp />} />
-                        <Route path="projecten/:filter/:value" element={<ProjectsListApp />} />
+                        <Route
+                            path="projecten"
+                            element={
+                                <PermissionWrapper requiredPermission="menuProjects">
+                                    <ProjectsListApp />
+                                </PermissionWrapper>
+                            }
+                        />
+                        <Route
+                            path="energiegemeenschappen"
+                            element={
+                                <PermissionWrapper requiredPermission="menuEnergyCommunities">
+                                    <ProjectsListApp />
+                                </PermissionWrapper>
+                            }
+                        />
+                        <Route
+                            path="projecten/:filter/:value"
+                            element={
+                                <PermissionWrapper requiredPermission="menuProjects">
+                                    <ProjectsListApp />
+                                </PermissionWrapper>
+                            }
+                        />
                         <Route path="deelnemers" element={<ParticipantListApp />} />
                         <Route
                             path="project/deelnemer/:participationId/overdragen"

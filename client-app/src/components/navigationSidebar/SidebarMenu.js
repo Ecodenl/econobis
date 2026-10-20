@@ -296,7 +296,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongle
                 </Nav>
             )}
 
-            {permissions.menuProjects && (
+            {permissions.menuEnergyCommunities && (
                 <Nav id="energy-communities">
                     <NavIcon>
                         <SvgIcon size={20} icon={tree} />

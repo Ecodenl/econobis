@@ -15,19 +15,8 @@ class UserDetailsFormRolesEdit extends Component {
     render() {
         const { id, roles = {} } = this.props.userDetails;
 
-        const additionalRolesList = [
-            'Beheerder webformulier',
-            'Beheerder Mailgun domeinen',
-            'Beheerder portal instellingen',
-            'Beheerder coöperatie instellingen',
-            'Beheerder data opschoner',
-        ];
-
-        // Rollen die vallen onder "extra beheerrechten"
-        const rolesAdditionalPermissions = roles.filter(role => additionalRolesList.includes(role.name));
-
-        // De overige rollen
-        const rolesUserPermissions = roles.filter(role => !additionalRolesList.includes(role.name));
+        const rolesAdditionalPermissions = roles.filter(role => role.roleType === 'additional');
+        const rolesUserPermissions = roles.filter(role => role.roleType === 'primary');
 
         const hasKeyUserRole = this.props.keyUserRole && Boolean(this.props.keyUserRole.hasRole) === true;
 
@@ -87,7 +76,7 @@ class UserDetailsFormRolesEdit extends Component {
 const mapStateToProps = state => {
     return {
         userDetails: state.userDetails,
-        keyUserRole: state.userDetails.roles.find(role => role.name === 'Beheerder'),
+        keyUserRole: state.userDetails.roles.find(role => role.roleCode === 'admin'),
     };
 };
 

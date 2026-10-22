@@ -71,15 +71,18 @@ class FullUser extends JsonResource
 
     private function getRoles()
     {
-        $i = 0;
         $result = [];
-        foreach(Role::all() as $role){
-            $result[$i]['id'] = $role->id;
-            $result[$i]['name'] = $role->name;
-            $result[$i]['hasRole'] = $this->hasRole($role);
-            $i++;
+
+        foreach (Role::all() as $role) {
+            $result[] = [
+                'id' => $role->id,
+                'name' => $role->name,
+                'roleCode' => $role->role_code,
+                'roleType' => $role->role_type,
+                'hasRole' => $this->hasRole($role),
+            ];
         }
+
         return $result;
     }
-
 }

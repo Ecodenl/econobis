@@ -45,6 +45,14 @@ class ParticipantFormGeneral extends Component {
     }
 
     render() {
+        const { permissions, participantProject } = this.props;
+
+        const isEnergyCommunity = participantProject?.project?.typeCodeRef === 'energy_community';
+
+        const canManageParticipant = isEnergyCommunity
+            ? permissions.manageEnergyCommunity
+            : permissions.manageParticipation;
+
         return (
             <Panel
                 className={this.state.activeDiv}
@@ -52,7 +60,7 @@ class ParticipantFormGeneral extends Component {
                 onMouseLeave={() => this.onDivLeave()}
             >
                 <PanelBody>
-                    {this.state.showEdit && this.props.permissions.manageParticipation ? (
+                    {this.state.showEdit && canManageParticipant ? (
                         <ParticipantFormEdit switchToView={this.switchToView} />
                     ) : (
                         <ParticipantFormView switchToEdit={this.switchToEdit} />
@@ -66,6 +74,7 @@ class ParticipantFormGeneral extends Component {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
+        participantProject: state.participantProjectDetails,
     };
 };
 

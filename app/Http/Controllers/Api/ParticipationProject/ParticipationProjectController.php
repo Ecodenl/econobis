@@ -32,6 +32,7 @@ use App\Eco\Project\ProjectRevenue;
 use App\Eco\Project\ProjectRevenueCategory;
 use App\Eco\Project\ProjectValueCourse;
 use App\Helpers\Address\AddressHelper;
+use App\Helpers\Delete\Models\DeleteParticipantMutation;
 use App\Helpers\Delete\Models\DeleteParticipation;
 use App\Helpers\Delete\Models\DeleteRevenue;
 use App\Helpers\Excel\ParticipantExcelHelper;
@@ -257,7 +258,14 @@ class ParticipationProjectController extends ApiController
     {
         set_time_limit(120);
 
-        $this->authorize('view', ParticipantProject::class);
+        $this->authorize('viewByProjectType', [ParticipantProject::class, $participantProject->project]);
+
+        if (!in_array(
+            $participantProject->project->administration_id,
+            Auth::user()->administrations()->pluck('administrations.id')->toArray()
+        )) {
+            abort(403);
+        }
 
         $participantProject->load([
             'mutations' => function($query){
@@ -393,8 +401,6 @@ class ParticipationProjectController extends ApiController
 
     public function store(RequestInput $requestInput)
     {
-        $this->authorize('manage', ParticipantProject::class);
-
         // TODO clean up store inputs
         $data = $requestInput
             ->integer('contactId')->validate('required|exists:contacts,id')->alias('contact_id')->next()
@@ -407,6 +413,14 @@ class ParticipationProjectController extends ApiController
         $participantProject->fill($data);
 
         $project = Project::find($participantProject->project_id);
+        $this->authorize('manageByProjectType', [ParticipantProject::class, $project]);
+        if (!in_array(
+            $project->administration_id,
+            Auth::user()->administrations()->pluck('administrations.id')->toArray()
+        )) {
+            abort(403);
+        }
+
         $contact = Contact::find($participantProject->contact_id);
         $address = Address::find($participantProject->address_id);
 
@@ -484,7 +498,13 @@ class ParticipationProjectController extends ApiController
 
     public function update(RequestInput $requestInput, ParticipantProject $participantProject)
     {
-        $this->authorize('manage', ParticipantProject::class);
+        $this->authorize('manageByProjectType', [ParticipantProject::class, $participantProject->project]);
+        if (!in_array(
+            $participantProject->project->administration_id,
+            Auth::user()->administrations()->pluck('administrations.id')->toArray()
+        )) {
+            abort(403);
+        }
 
         $data = $requestInput
             ->boolean('didAcceptAgreement')->alias('did_accept_agreement')->next()
@@ -581,35 +601,40 @@ class ParticipationProjectController extends ApiController
 
     public function destroy(ParticipantProject $participantProject)
     {
-        $this->authorize('manage', ParticipantProject::class);
+        $this->authorize('manageByProjectType', [ParticipantProject::class, $participantProject->project]);
 
-        try {
-            DB::beginTransaction();
+        if (!in_array(
+            $participantProject->project->administration_id,
+            Auth::user()->administrations()->pluck('administrations.id')->toArray()
+        )) {
+            abort(403);
+        }
 
+        DB::transaction(function () use ($participantProject) {
             $project = $participantProject->project;
 
             $deleteParticipation = new DeleteParticipation($participantProject);
             $result = $deleteParticipation->delete();
 
-            if(count($result) > 0){
-                DB::rollBack();
-                abort(412, implode(";", array_unique($result)));
+            if (count($result) > 0) {
+                abort(412, implode('; ', array_unique($result)));
             }
 
             // Herbereken de afhankelijke gegevens op het project
             $project->calculator()->run()->save();
-
-            DB::commit();
-        } catch (\PDOException $e) {
-            DB::rollBack();
-            Log::error($e->getMessage());
-            abort(501, 'Er is helaas een fout opgetreden.');
-        }
+        });
     }
 
     public function terminate(ParticipantProject $participantProject, RequestInput $requestInput)
     {
-        $this->authorize('manage', ParticipantProject::class);
+        $this->authorize('manageByProjectType', [ParticipantProject::class, $participantProject->project]);
+
+        if (!in_array(
+            $participantProject->project->administration_id,
+            Auth::user()->administrations()->pluck('administrations.id')->toArray()
+        )) {
+            abort(403);
+        }
 
         DB::transaction(function () use ($participantProject, $requestInput) {
             $data = $requestInput
@@ -747,7 +772,14 @@ class ParticipationProjectController extends ApiController
 
     public function undoTerminate(ParticipantProject $participantProject, RequestInput $requestInput)
     {
-        $this->authorize('manage', ParticipantProject::class);
+        $this->authorize('manageByProjectType', [ParticipantProject::class, $participantProject->project]);
+
+        if (!in_array(
+            $participantProject->project->administration_id,
+            Auth::user()->administrations()->pluck('administrations.id')->toArray()
+        )) {
+            abort(403);
+        }
 
         // ToDo: WM Wellicht deze check gewoon voor alle projectTypen doen?
         if (
@@ -902,11 +934,12 @@ class ParticipationProjectController extends ApiController
             abort(409, 'De bijbehorende beëindigingsmutatie is niet gevonden.');
         }
 
-        foreach ($terminationMutation->statusLog as $statusLog) {
-            $statusLog->delete();
-        }
+        $deleteParticipantMutation = new DeleteParticipantMutation($terminationMutation);
+        $result = $deleteParticipantMutation->delete();
 
-        $terminationMutation->delete();
+        if (count($result) > 0) {
+            abort(409, implode('; ', array_unique($result)));
+        }
 
         $participantProject->date_terminated = null;
         $participantProject->save();

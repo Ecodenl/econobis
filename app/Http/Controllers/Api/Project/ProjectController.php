@@ -442,15 +442,29 @@ class ProjectController extends ApiController
 
     public function peek()
     {
-        if(Auth::user()->hasPermissionTo('view_project', 'api')){
-            $projects = Project::whereIn('administration_id', Auth::user()->administrations()->pluck('administrations.id'))->orderBy('name')->orderBy('id')->get();
-        } else {
-            $projects = new Collection();
+        $user = Auth::user();
+
+        $canViewProjects = $user->hasPermissionTo('view_project', 'api');
+        $canViewEnergyCommunities = $user->hasPermissionTo('view_energy_community', 'api');
+
+        $projects = Project::query()
+            ->whereIn('administration_id', $user->administrations()->pluck('administrations.id'));
+
+        if (!$canViewProjects || !$canViewEnergyCommunities) {
+            $projects->whereHas('projectType', function ($query) use ($canViewProjects, $canViewEnergyCommunities) {
+                if ($canViewProjects && !$canViewEnergyCommunities) {
+                    $query->where('code_ref', '!=', 'energy_community');
+                } elseif (!$canViewProjects && $canViewEnergyCommunities) {
+                    $query->where('code_ref', 'energy_community');
+                } else {
+                    $query->whereRaw('1 = 0');
+                }
+            });
         }
 
-        $projects->load(['projectType']);
-
-        return ProjectPeek::collection($projects);
+        return ProjectPeek::collection(
+            $projects->with('projectType')->orderBy('name')->orderBy('id')->get()
+        );
     }
 
     public function getObligationNumbers(Project $project)

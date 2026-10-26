@@ -159,6 +159,11 @@ class DeleteParticipation implements DeleteInterface
             return $this->errorMessage;
         }
         $this->deleteModels();
+
+        if (count($this->errorMessage) > 0) {
+            return $this->errorMessage;
+        }
+
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
@@ -177,7 +182,10 @@ class DeleteParticipation implements DeleteInterface
         $projectId = $this->participation?->project?->id ?? '?';
         $participationId = $this->participation?->id ?? '?';
         $contactName = $this->participation?->contact?->full_name_fnf ?? '*contact onbekend*';
-        if($this->participation->mutations()->exists()){
+        if (
+            $this->participation->project->projectType->code_ref !== 'energy_community'
+            && $this->participation->mutations()->exists()
+        ) {
             array_push($this->errorMessage, "Bij deelnemer " . $contactName . " (" . $participationId . ") zijn er nog deelname mutaties in project " . $projectCode . " (" . $projectId . "). Verwijder de deelname mutaties eerst.");
             return false;
         }
@@ -189,6 +197,21 @@ class DeleteParticipation implements DeleteInterface
      */
     public function deleteModels()
     {
+        if ($this->participation->project->projectType->code_ref === 'energy_community') {
+            foreach ($this->participation->mutations as $mutation) {
+                $deleteParticipantMutation = new DeleteParticipantMutation($mutation);
+
+                $this->errorMessage = array_merge(
+                    $this->errorMessage,
+                    $deleteParticipantMutation->delete() ?? []
+                );
+
+                if (count($this->errorMessage) > 0) {
+                    return;
+                }
+            }
+        }
+
         foreach (
             $this->participation->projectRevenueDistributions
             as $revenueDistribution

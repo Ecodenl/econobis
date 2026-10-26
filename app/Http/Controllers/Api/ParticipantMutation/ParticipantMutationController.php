@@ -10,6 +10,7 @@ use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Project\ProjectValueCourse;
 use App\Helpers\Delete\Models\DeleteFinancialOverviewParticipantProject;
+use App\Helpers\Delete\Models\DeleteParticipantMutation;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewParticipantProjectController;
@@ -211,17 +212,12 @@ class ParticipantMutationController extends ApiController
 
         DB::transaction(function () use ($participantMutation, $participantProject) {
 
-            $molliePayments = $participantMutation->molliePayments->whereNull('date_paid');
-            foreach ($molliePayments as $molliePayment)
-            {
-                $molliePayment->delete();
+            $deleteParticipantMutation = new DeleteParticipantMutation($participantMutation);
+            $result = $deleteParticipantMutation->delete();
+
+            if (count($result) > 0) {
+                abort(409, implode('; ', array_unique($result)));
             }
-            $statusLogs = $participantMutation->statusLog;
-            foreach ($statusLogs as $statusLog)
-            {
-                $statusLog->delete();
-            }
-            $participantMutation->delete();
 
             // Herbereken de afhankelijke gegevens op het participantProject
             $participantProject->calculator()->run()->save();

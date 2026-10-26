@@ -10,12 +10,17 @@ const ParticipantsListToolbar = props => {
 
     const { meta = {} } = props.participantsProject;
 
+    const canManageParticipants =
+        props.project.projectType?.codeRef === 'energy_community'
+            ? props.permissions.manageEnergyCommunity
+            : props.permissions.manageParticipation;
+
     return (
         <div className="row">
             <div className="col-md-2">
                 <div className="btn-group btn-group-flex" role="group">
                     <ButtonIcon iconName={'refresh'} onClickAction={props.resetParticipantProjectFilters} />
-                    {props.permissions.manageParticipation && (
+                    {canManageParticipants && (
                         <ButtonIcon
                             iconName={'plus'}
                             onClickAction={() => navigate(`/project/deelnemer/nieuw/${props.project.id}`)}

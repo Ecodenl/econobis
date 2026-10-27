@@ -35,6 +35,10 @@ class EmailTemplateFormGeneral extends Component {
     };
 
     onDivEnter() {
+        if (!this.props.permissions.manageEmailTemplate) {
+            return;
+        }
+
         this.setState({
             activeDiv: 'panel-grey',
         });
@@ -59,7 +63,9 @@ class EmailTemplateFormGeneral extends Component {
                     {this.state.showEdit && this.props.permissions.manageEmailTemplate ? (
                         <EmailTemplateFormEdit switchToView={this.switchToView} />
                     ) : (
-                        <EmailTemplateFormView switchToEdit={this.switchToEdit} />
+                        <EmailTemplateFormView
+                            switchToEdit={this.props.permissions.manageEmailTemplate ? this.switchToEdit : null}
+                        />
                     )}
                 </PanelBody>
             </Panel>

@@ -83,7 +83,7 @@ function StepFour({
                     // console.log(error);
                     // alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
                     setHasError(true);
-                    setErrorMessage('Er is iets misgegaan met opslaan!');
+                    setErrorMessage(error.response?.data?.message || 'Er is iets misgegaan met opslaan!');
 
                     actions.setSubmitting(false);
                 });
@@ -109,7 +109,7 @@ function StepFour({
                     // console.log(error);
                     // alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
                     setHasError(true);
-                    setErrorMessage('Er is iets misgegaan met opslaan!');
+                    setErrorMessage(error.response?.data?.message || 'Er is iets misgegaan met opslaan!');
 
                     actions.setSubmitting(false);
                 });

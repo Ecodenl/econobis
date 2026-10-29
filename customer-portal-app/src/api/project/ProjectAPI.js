@@ -43,6 +43,7 @@ export default {
                         'minAmountLoan',
                         'maxAmountLoan',
                         'isSceProject',
+                        'energySupplierRegistrationRequired',
                         'checkPostalcodeLink',
                         'postalcodeLink',
                         'linkAgreeTerms',

@@ -74,6 +74,10 @@ class FullProject extends JsonResource
                 'energyCommunityExternalCode' => $this->energy_community_external_code,
                 'energySharing' => $this->energy_sharing,
                 'energySupplierRegistrationRequired' => $this->energy_supplier_registration_required,
+                'hasParticipantsWithoutEnergySupplier' =>
+                    $this->projectType?->code_ref === 'energy_community'
+                        ? $this->hasParticipantsWithoutEnergySupplier()
+                        : false,
                 'leadingHousingFileApplication' => $this->leading_housing_file_application?->value,
                 'maxParticipations' => $this->max_participations,
                 'taxReferral' => $this->tax_referral,

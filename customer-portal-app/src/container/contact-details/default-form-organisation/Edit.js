@@ -23,6 +23,7 @@ const DefaultContactOrganisationEdit = function({
     freeFieldsFieldRecords,
     saveButtonGroup,
     projectTypeCodeRef,
+    energySupplierRegistrationRequired = false,
     setFieldValue,
     values,
     touched,
@@ -615,13 +616,16 @@ const DefaultContactOrganisationEdit = function({
                     ) : (
                         ''
                     )}
-                    {projectTypeCodeRef === 'postalcode_link_capital' || projectTypeCodeRef === undefined ? (
+                    {projectTypeCodeRef === 'postalcode_link_capital' ||
+                    projectTypeCodeRef === undefined ||
+                    energySupplierRegistrationRequired ? (
                         <>
                             <FormLabel
                                 htmlFor="energy_supplier_id"
                                 className={
                                     initialContact.isParticipantPcrProject ||
-                                    projectTypeCodeRef === 'postalcode_link_capital'
+                                    projectTypeCodeRef === 'postalcode_link_capital' ||
+                                    energySupplierRegistrationRequired
                                         ? 'field-label required'
                                         : 'field-label'
                                 }
@@ -727,7 +731,12 @@ const DefaultContactOrganisationEdit = function({
                                         </Col>
                                     </Row>
 
-                                    <FormLabel htmlFor="member_since" className={'field-label'}>
+                                    <FormLabel
+                                        htmlFor="member_since"
+                                        className={
+                                            energySupplierRegistrationRequired ? 'field-label required' : 'field-label'
+                                        }
+                                    >
                                         Klant bij leverancier sinds
                                     </FormLabel>
                                     <Row>

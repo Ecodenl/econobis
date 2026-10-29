@@ -200,6 +200,11 @@ class ParticipationProjectController extends Controller
                 abort(412, 'Voor een deelname aan een energiegemeenschap is een geldig adres verplicht.');
             }
 
+            if ($project->energy_supplier_registration_required
+                && !$address->currentAddressEnergySupplierElectricity()->exists()) {
+                abort(412, 'Voor deze energiegemeenschap is een actuele elektriciteitsleverancier op het deelnameadres verplicht.');
+            }
+
             $addressHelper = new AddressHelper($contact, $address);
 
             if ($error = $addressHelper->checkDuplicateEnergyCommunityParticipation($project)) {

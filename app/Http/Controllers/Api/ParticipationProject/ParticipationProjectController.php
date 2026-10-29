@@ -433,6 +433,19 @@ class ParticipationProjectController extends ApiController
             }
         }
 
+        if (
+            $project->projectType->code_ref === 'energy_community'
+            && $project->energy_supplier_registration_required
+            && !$address->currentAddressEnergySupplierElectricity()->exists()
+        ) {
+            return [
+                'id' => 0,
+                'message' => [
+                    'Deze energiegemeenschap vereist een actuele elektriciteitsleverancier op het deelnameadres.',
+                ],
+            ];
+        }
+
         if($project->check_double_addresses){
             $errors = [];
 

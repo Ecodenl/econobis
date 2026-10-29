@@ -123,6 +123,14 @@ class Project extends Model
         return $this->hasMany(ParticipantProject::class, 'project_id');
     }
 
+    public function hasParticipantsWithoutEnergySupplier(): bool
+    {
+        return $this->participantsProject()
+            ->whereNull('date_terminated')
+            ->whereDoesntHave('address.currentAddressEnergySupplierElectricity')
+            ->exists();
+    }
+
     public function financialOverviewProjects()
     {
         return $this->hasMany(FinancialOverviewProject::class);

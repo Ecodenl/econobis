@@ -349,6 +349,24 @@ class ProjectController extends ApiController
             }
         }
 
+        // Voorkom het verplicht stellen van een energieleverancier
+        // wanneer bestaande actieve EG-deelnames geen actuele leverancier hebben.
+        if (
+            $project->projectType?->code_ref === 'energy_community'
+            && $project->isDirty('energy_supplier_registration_required')
+            && $project->energy_supplier_registration_required
+        ) {
+            $hasParticipantsWithoutEnergySupplier = $project->hasParticipantsWithoutEnergySupplier();
+
+            if ($hasParticipantsWithoutEnergySupplier) {
+                abort(
+                    422,
+                    'Registratie energieleverancier kan niet verplicht worden gesteld, '
+                    . 'omdat één of meer actieve deelnemers geen actuele elektriciteitsleverancier hebben.'
+                );
+            }
+        }
+
         DB::transaction(function () use ($request, $project) {
             $participationWorthChanged = $project->isDirty(['participation_worth']);
 

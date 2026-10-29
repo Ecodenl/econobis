@@ -1042,6 +1042,7 @@ class ProjectFormEdit extends Component {
             energyCommunityExternalCode,
             energySharing,
             energySupplierRegistrationRequired,
+            hasParticipantsWithoutEnergySupplier,
             leadingHousingFileApplication,
             totalParticipationsPowerKwAvailable,
             totalParticipationsPowerKwhConsumption,
@@ -1280,6 +1281,7 @@ class ProjectFormEdit extends Component {
                         energyCommunityExternalCode={energyCommunityExternalCode}
                         energySharing={energySharing}
                         energySupplierRegistrationRequired={energySupplierRegistrationRequired}
+                        hasParticipantsWithoutEnergySupplier={hasParticipantsWithoutEnergySupplier}
                         leadingHousingFileApplication={leadingHousingFileApplication}
                         totalParticipationsPowerKwAvailable={totalParticipationsPowerKwAvailable}
                         totalParticipationsPowerKwhConsumption={totalParticipationsPowerKwhConsumption}

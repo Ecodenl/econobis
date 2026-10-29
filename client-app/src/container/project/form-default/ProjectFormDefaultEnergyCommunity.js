@@ -12,6 +12,7 @@ const ProjectFormDefaultEnergyCommunity = ({
     energyCommunityExternalCode,
     energySharing,
     energySupplierRegistrationRequired,
+    hasParticipantsWithoutEnergySupplier = false,
     leadingHousingFileApplication,
     totalParticipationsPowerKwAvailable,
     totalParticipationsPowerKwhConsumption,
@@ -54,6 +55,17 @@ const ProjectFormDefaultEnergyCommunity = ({
                     name={'energySupplierRegistrationRequired'}
                     value={energySupplierRegistrationRequired}
                     onChangeAction={handleInputChange}
+                    disabled={hasParticipantsWithoutEnergySupplier && !energySupplierRegistrationRequired}
+                    size={
+                        hasParticipantsWithoutEnergySupplier && !energySupplierRegistrationRequired
+                            ? 'col-sm-5'
+                            : 'col-sm-6'
+                    }
+                    textToolTip={
+                        hasParticipantsWithoutEnergySupplier && !energySupplierRegistrationRequired
+                            ? 'Deze instelling kan niet worden ingeschakeld omdat één of meer actieve deelnemers geen actuele elektriciteitsleverancier hebben.'
+                            : ''
+                    }
                 />
             </div>
             <div className="row">

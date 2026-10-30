@@ -29,8 +29,10 @@ use App\Eco\Task\Task;
 use App\Eco\Task\TaskType;
 use App\Eco\User\User;
 use App\Helpers\Address\AddressHelper;
+use App\Helpers\AddressEnergySupplier\AddressEnergySupplierHelper;
 use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\Delete\Models\DeleteAddress;
+use App\Helpers\Delete\Models\DeleteAddressEnergySupplier;
 use App\Helpers\Document\DocumentHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Project\RevenuesKwhHelper;
@@ -809,6 +811,13 @@ class ContactController extends ApiController
             $this->updateEnergySupplierToAddress($address, $currentAddressEnergySupplierElectricity);
         }
 
+        if (
+            $address !== null
+            && AddressEnergySupplierHelper::hasActiveEnergyCommunityRequiringSupplier($address->id)
+            && !$address->currentAddressEnergySupplierElectricity()->exists()
+        ) {
+            abort(422, 'Voor dit adres is een actuele elektriciteitsleverancier verplicht vanwege een actieve deelname aan een energiegemeenschap.');
+        }
     }
 
     protected function updateEnergySupplierToAddress(Address $address, $currentAddressEnergySupplierElectricityData)
@@ -862,7 +871,12 @@ class ContactController extends ApiController
         } else {
             if($currentAddressEnergySupplierElectricityData['energySupplierId'] == null) {
                 // delete
-                $currentAddressEnergySupplierElectricityOld->delete();
+                $deleteAddressEnergySupplier = new DeleteAddressEnergySupplier($currentAddressEnergySupplierElectricityOld);
+                $result = $deleteAddressEnergySupplier->delete();
+
+                if (count($result) > 0) {
+                    abort(422, implode('; ', array_unique($result)));
+                }
             }else{
                 if($currentAddressEnergySupplierElectricityData['memberSince'] == null) {
                     return;
@@ -899,6 +913,12 @@ class ContactController extends ApiController
 
                     $addressEnergySupplierController = new AddressEnergySupplierController();
                     $addressEnergySupplierController->validateAddressEnergySupplier($currentAddressEnergySupplierElectricityNew, true);
+
+                    if (AddressEnergySupplierHelper::wouldLoseLastCurrentElectricitySupplierAfterUpdate(
+                        $currentAddressEnergySupplierElectricityNew
+                    )) {
+                        abort(422, 'Deze wijziging is niet toegestaan, omdat hierdoor de laatste actuele elektriciteitsleverancier verdwijnt voor een actieve deelname aan een energiegemeenschap waarvoor registratie van een energieleverancier verplicht is.');
+                    }
 
                     $currentAddressEnergySupplierElectricityNew->save();
                     $this->checkSplitRevenuePart($currentAddressEnergySupplierElectricityNew);

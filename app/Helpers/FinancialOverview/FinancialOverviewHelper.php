@@ -27,6 +27,9 @@ class FinancialOverviewHelper
     {
         $checkDate = Carbon::createFromDate($financialOverview->year, 1, 1)->format('Y-m-d');
         $projects = Project::where('administration_id', $financialOverview->administration_id)
+            ->whereHas('projectType', function ($query) {
+                $query->where('code_ref', '!=', 'energy_community');
+            })
             ->where(function ($query) use($checkDate) {
                 $query->whereNull('date_end')
                     ->orWhere('date_end', '>=', $checkDate);

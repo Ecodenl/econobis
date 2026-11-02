@@ -49,6 +49,7 @@ const ProjectFormNewGeneral = ({
     handleInputChangeAdministration,
     handleInputChangeDate,
     handleContactGroupIds,
+    permissions,
     projectTypesActive,
     projectStatus,
     administrations,
@@ -63,6 +64,14 @@ const ProjectFormNewGeneral = ({
         : false;
 
     const isEnergyCommunity = projectTypeCodeRef === 'energy_community';
+
+    const availableProjectTypes = projectTypesActive.filter(projectType => {
+        if (projectType.codeRef === 'energy_community') {
+            return permissions?.manageEnergyCommunity === true;
+        }
+
+        return permissions?.manageProject === true;
+    });
 
     // todo WM: zelfde controle postalcodeLink / addressNumberSeries zit nu ook in ProjectNewApp
     errors.postalcodeLink = false;
@@ -120,7 +129,7 @@ const ProjectFormNewGeneral = ({
                 <InputSelect
                     label={'Type project'}
                     name={'projectTypeId'}
-                    options={projectTypesActive}
+                    options={availableProjectTypes}
                     value={projectTypeId}
                     onChangeAction={handleInputChangeProjectType}
                     required={'required'}
@@ -435,6 +444,7 @@ const ProjectFormNewGeneral = ({
 
 const mapStateToProps = state => {
     return {
+        permissions: state.meDetails.permissions,
         projectStatus: state.systemData.projectStatus,
         projectTypesActive: state.systemData.projectTypesActive,
         baseProjectCodeRefs: state.systemData.baseProjectCodeRefs,

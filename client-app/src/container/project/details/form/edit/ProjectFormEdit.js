@@ -199,7 +199,11 @@ class ProjectFormEdit extends Component {
     componentDidMount() {
         this.setDisableBeforeEntryDate();
 
-        if (this.state.project && !this.state.project.showQuestionAboutMembership) {
+        if (
+            this.state.project &&
+            this.state.project.projectType?.codeRef !== 'energy_community' &&
+            !this.state.project.showQuestionAboutMembership
+        ) {
             // todo WM: check / anders
             //
             const portalSettingsId = 1;

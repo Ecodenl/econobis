@@ -54,6 +54,13 @@ class ProjectFormGeneral extends Component {
     }
 
     render() {
+        const { project, permissions } = this.props;
+
+        const canManageProject =
+            project?.projectType?.codeRef === 'energy_community'
+                ? permissions.manageEnergyCommunity
+                : permissions.manageProject;
+
         return (
             <Panel
                 className={this.state.activeDiv}
@@ -61,7 +68,7 @@ class ProjectFormGeneral extends Component {
                 onMouseLeave={() => this.onDivLeave()}
             >
                 <PanelBody>
-                    {this.state.showEdit && this.props.permissions.manageProject ? (
+                    {this.state.showEdit && canManageProject ? (
                         <ProjectFormEdit
                             switchToView={this.switchToView}
                             showCustomerPortalSettings={this.state.showCustomerPortalSettings}
@@ -69,7 +76,7 @@ class ProjectFormGeneral extends Component {
                         />
                     ) : (
                         <ProjectFormView
-                            switchToEdit={this.switchToEdit}
+                            switchToEdit={canManageProject ? this.switchToEdit : null}
                             showCustomerPortalSettings={this.state.showCustomerPortalSettings}
                             toggleCustomerPortalSettings={this.toggleCustomerPortalSettings}
                         />
@@ -82,6 +89,7 @@ class ProjectFormGeneral extends Component {
 
 const mapStateToProps = state => {
     return {
+        project: state.projectDetails,
         permissions: state.meDetails.permissions,
     };
 };

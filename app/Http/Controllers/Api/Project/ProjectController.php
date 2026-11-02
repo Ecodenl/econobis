@@ -198,6 +198,14 @@ class ProjectController extends ApiController
 
         $this->authorize('manageByProjectType', $project);
 
+        // Controleer of de gebruiker toegang heeft tot de gekozen administratie.
+        abort_unless(
+            Auth::user()->administrations()
+                ->whereKey($project->administration_id)
+                ->exists(),
+            403
+        );
+
         $project->save();
 
         // Create project value course if participationWorth is > 0.
@@ -232,6 +240,14 @@ class ProjectController extends ApiController
     public function update(Request $request, RequestInput $requestInput, Project $project)
     {
         $this->authorize('manageByProjectType', $project);
+
+        // Controleer of de gebruiker toegang heeft tot de huidige administratie.
+        abort_unless(
+            Auth::user()->administrations()
+                ->whereKey($project->administration_id)
+                ->exists(),
+            403
+        );
 
         $data = $requestInput
             ->string('name')->validate('required')->next()
@@ -332,6 +348,16 @@ class ProjectController extends ApiController
             ->get();
 
         $project->fill($data);
+
+        // Controleer bij wijziging of de nieuwe administratie toegankelijk is.
+        if ($project->isDirty('administration_id')) {
+            abort_unless(
+                Auth::user()->administrations()
+                    ->whereKey($project->administration_id)
+                    ->exists(),
+                403
+            );
+        }
 
         if ($project->isDirty('project_type_id')) {
             $this->authorize('manageByProjectType', $project);

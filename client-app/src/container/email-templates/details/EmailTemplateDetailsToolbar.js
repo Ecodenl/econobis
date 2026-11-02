@@ -42,8 +42,12 @@ class EmailTemplateDetailsToolbar extends Component {
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
                         <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
-                        <ButtonIcon iconName={'copy'} onClickAction={this.toggleDuplicate} />
-                        <ButtonIcon iconName={'trash'} onClickAction={this.showDeleteModal} />
+                        {this.props.permissions.manageEmailTemplate && (
+                            <>
+                                <ButtonIcon iconName={'copy'} onClickAction={this.toggleDuplicate} />
+                                <ButtonIcon iconName={'trash'} onClickAction={this.showDeleteModal} />
+                            </>
+                        )}
                     </div>
                 </div>
                 <div className="col-md-4">
@@ -73,6 +77,7 @@ const mapStateToProps = state => {
     return {
         templateName: state.emailTemplateDetails.name,
         templateId: state.emailTemplateDetails.id,
+        permissions: state.meDetails.permissions,
     };
 };
 

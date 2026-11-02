@@ -90,10 +90,10 @@ class OrderCSVHelper
                 $order->date_next_invoice = $this->formatDate($order->date_next_invoice);
 
                 $frequency = $order->getCollectionFrequency() ;
-                $order->collectionFrequency = $frequency ? $frequency->name : '';
+                $order->collectionFrequency = $frequency ? $frequency->getName() : '';
 
-                $order->payment_type = $order->getPaymentType()->name;
-                $order->status = $order->getStatus()->name;
+                $order->payment_type = $order->getPaymentType()->getName();
+                $order->status = $order->getStatus()->getName();
                 $order->btw = $order->getTotalInclVatInclReductionAttribute() - $order->getTotalExclVatInclReductionAttribute();
 
                 $order->btw_formatted = $this->formatFinancial($order->btw);
@@ -274,10 +274,10 @@ class OrderCSVHelper
                 $ordersProduct->order->date_next_invoice = $this->formatDate($ordersProduct->order->date_next_invoice);
 
                 $frequency = $ordersProduct->order->getCollectionFrequency() ;
-                $ordersProduct->order->collectionFrequency = $frequency ? $frequency->name : '';
+                $ordersProduct->order->collectionFrequency = $frequency ? $frequency->getName() : '';
 
-                $ordersProduct->order->payment_type = $ordersProduct->order->getPaymentType()->name;
-                $ordersProduct->order->status = $ordersProduct->order->getStatus()->name;
+                $ordersProduct->order->payment_type = $ordersProduct->order->getPaymentType()->getName();
+                $ordersProduct->order->status = $ordersProduct->order->getStatus()->getName();
                 $ordersProduct->order->btw = $ordersProduct->order->getTotalInclVatInclReductionAttribute() - $ordersProduct->order->getTotalExclVatInclReductionAttribute();
             });
 

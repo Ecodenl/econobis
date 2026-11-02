@@ -935,17 +935,22 @@ class ExternalWebformController extends Controller
             // contactActie = "CCT" -> Controle contact taak
             switch($this->contactActie){
                 case 'UPC' :
-                    $contact = $this->updateContact($contact, $data, $dataFreeFieldContacts, $ownerAndResponsibleUser);
-                    $address = $contact->addresses()
-                        ->where('postal_code', $data['address_postal_code'])
-                        ->where('number', $data['address_number'])
-                        ->where('addition', $data['address_addition'])
-                        ->first();
-                    if($address){
-                        $this->log('Adres gevonden bij meegegeven postcode/huisnummer: ' . $data['address_postal_code'] . ' ' . $data['address_number'] . '-' . $data['address_addition']);
-                        $this->address = $address;
-                    } elseif ($contact->primaryAddress) {
-                        $this->log('Geen adres postcode/huisnummer meegegeven of gevonden, verder met primair adres bij contact met postcode/huisnummer: ' . $contact->primaryAddress->postal_code . ' ' . $contact->primaryAddress->number . '-' . $contact->primaryAddress->addition );
+                    $contact = $this->updateContact(
+                        $contact,
+                        $data,
+                        $dataFreeFieldContacts,
+                        $ownerAndResponsibleUser
+                    );
+
+                    $this->addAddressToContact($data, $contact);
+
+                    if (!$this->address && $contact->primaryAddress) {
+                        $this->log(
+                            'Geen adres postcode/huisnummer meegegeven, verder met primair adres bij contact met postcode/huisnummer: '
+                            . $contact->primaryAddress->postal_code . ' '
+                            . $contact->primaryAddress->number . '-'
+                            . $contact->primaryAddress->addition
+                        );
                         $this->address = $contact->primaryAddress;
                     }
 //                    $this->addPhoneNumberToContact($data, $contact);
@@ -1912,6 +1917,11 @@ class ExternalWebformController extends Controller
             $this->addContactNotesToContact($data, $contact);
             $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
             $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
+
+            // Bij UPC bestaande contactpersoon aan opgegeven contactgroep(en) koppelen.
+            if ($this->contactActie === 'UPC') {
+                $this->addExistingContactpersonToGroup($data, $contact, $ownerAndResponsibleUser);
+            }
 
             //freeFieldsFieldRecords updaten
             $tableId = FreeFieldsTable::where('table', 'contacts')->first()->id;
@@ -3533,6 +3543,111 @@ class ExternalWebformController extends Controller
     }
 
 
+    protected function addExistingContactpersonToGroup(
+        array $data,
+        Contact $organisationContact,
+        User $ownerAndResponsibleUser
+    ) {
+        // Alleen verwerken als er contactgroepen voor de contactpersoon zijn opgegeven.
+        if (
+            empty($data['group_name_contactperson']) &&
+            empty($data['contact_group_ids_contactperson'])
+        ) {
+            return;
+        }
+
+        $emailAddress = trim($data['email_address'] ?? '');
+
+        $this->log(
+            'Contactgroep(en) contactpersoon meegegeven bij bestaande organisatie '
+            . $organisationContact->id . '.'
+        );
+
+        $reason = null;
+        $matchingContactIds = collect();
+
+        if ($emailAddress === '') {
+            $reason = 'Er is geen e-mailadres meegegeven.';
+        } else {
+            // Zoek personen die via een actieve occupation aan deze organisatie gekoppeld zijn.
+            $linkedContactIds = OccupationContact::where(
+                'primary_contact_id',
+                $organisationContact->id
+            )
+                ->where(function ($query) {
+                    $query->whereNull('start_date')
+                        ->orWhereDate('start_date', '<=', Carbon::today());
+                })
+                ->where(function ($query) {
+                    $query->whereNull('end_date')
+                        ->orWhereDate('end_date', '>=', Carbon::today());
+                })
+                ->pluck('contact_id')
+                ->unique();
+
+            if ($linkedContactIds->isEmpty()) {
+                $reason = 'Er zijn geen actieve personen aan deze organisatie gekoppeld.';
+            } else {
+                // Match uitsluitend op e-mailadres en voorkom dubbele personen.
+                $matchingContactIds = Contact::whereIn('id', $linkedContactIds)
+                    ->whereHas('person')
+                    ->whereHas('emailAddresses', function ($query) use ($emailAddress) {
+                        $query->whereRaw('LOWER(TRIM(email)) = ?', [mb_strtolower($emailAddress)]);
+                    })
+                    ->pluck('id')
+                    ->unique();
+
+                if ($matchingContactIds->isEmpty()) {
+                    $reason = 'Geen gekoppelde persoon gevonden met dit e-mailadres.';
+                } elseif ($matchingContactIds->count() > 1) {
+                    $reason = 'Meerdere gekoppelde personen gevonden met dit e-mailadres.';
+                }
+            }
+        }
+
+        // Precies één bestaande contactpersoon gevonden.
+        if ($reason === null) {
+            $contactPerson = Contact::find($matchingContactIds->first());
+
+            $this->log(
+                'Bestaande contactpersoon gevonden: contact '
+                . $contactPerson->id . '.'
+            );
+
+            $this->addContactToGroupContactperson(
+                $data,
+                $contactPerson,
+                $ownerAndResponsibleUser
+            );
+
+            return;
+        }
+
+        // Geen eenduidige match: controletaak aanmaken.
+        $this->log('Controle contactpersoon noodzakelijk: ' . $reason);
+
+        $name = trim(
+            ($data['first_name'] ?? '') . ' '
+            . ($data['last_name_prefix'] ?? '') . ' '
+            . ($data['last_name'] ?? '')
+        );
+
+        $note = 'Controle contactpersoon webformulier.' . "\n"
+            . 'Reden: ' . $reason . "\n"
+            . 'Organisatie contact-ID: ' . $organisationContact->id . "\n"
+            . 'Naam contactpersoon: ' . $name . "\n"
+            . 'E-mailadres: ' . $emailAddress . "\n"
+            . 'Groepnaam: ' . ($data['group_name_contactperson'] ?? '') . "\n"
+            . 'Groep-ID(s): ' . ($data['contact_group_ids_contactperson'] ?? '');
+
+        $this->addTaskCheckContact(
+            $this->responsibleIds,
+            $organisationContact,
+            $this->webform,
+            $note
+        );
+    }
+
     protected function addContactToGroupContactperson(array $data, Contact $contact, $ownerAndResponsibleUser)
     {
         if ($data['group_name_contactperson']) {
@@ -3906,7 +4021,7 @@ class ExternalWebformController extends Controller
             $finished_by_user = User::find($responsibleIds['responsible_user_id'] ? $responsibleIds['responsible_user_id'] : $webform->responsible_user_id );
             $task->finished_by_id = $finished_by_user ? $finished_by_user->id : null;
             $task->save();
-            $this->log('Taak met id ' . $task->id . ' automatisch gereed op ' . Carbon::parse($task->date_finished)->format('d-m-Y') . ' door verantwoordelijke: ' . $finished_by_user->fullname);
+            $this->log('Taak met id ' . $task->id . ' automatisch gereed op ' . Carbon::parse($task->date_finished)->format('d-m-Y') . ' door verantwoordelijke: ' . ($finished_by_user?->fullname ?? 'geen verantwoordelijke gebruiker') );
         }
 
         $this->log('Taak met id ' . $task->id . ' aangemaakt.');

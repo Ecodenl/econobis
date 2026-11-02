@@ -2,7 +2,6 @@
 
 namespace App\Jobs\Laposta;
 
-use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\User\User;
 use Illuminate\Bus\Queueable;
@@ -18,17 +17,23 @@ class DeleteMemberToLaposta implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private $lapostaKey;
+    // Legacy properties for jobs queued before release 6.0.0.8.
     private $contactGroup;
     private $contact;
+
+    private $lapostaKey;
+    private $contactGroupId;
+    private $lapostaListId;
+    private $contactId;
     private $lapostaMemberId;
     private $userId;
 
-    public function __construct($lapostaKey, ContactGroup $contactGroup, Contact $contact, $lapostaMemberId, $userId)
+    public function __construct($lapostaKey, $contactGroupId, $lapostaListId, $contactId, $lapostaMemberId, $userId)
     {
         $this->lapostaKey = $lapostaKey;
-        $this->contactGroup = $contactGroup;
-        $this->contact = $contact;
+        $this->contactGroupId = $contactGroupId;
+        $this->lapostaListId = $lapostaListId;
+        $this->contactId = $contactId;
         $this->lapostaMemberId = $lapostaMemberId;
         $this->userId = $userId;
     }
@@ -39,20 +44,36 @@ class DeleteMemberToLaposta implements ShouldQueue
 
         Laposta::setApiKey($this->lapostaKey);
 
-        $member = new Laposta_Member($this->contactGroup->laposta_list_id ? $this->contactGroup->laposta_list_id : '');
+        // Support jobs queued before release 6.0.0.8.
+        $contactGroupId = $this->contactGroupId ?? $this->contactGroup?->id;
+        $lapostaListId = $this->lapostaListId ?? $this->contactGroup?->laposta_list_id;
+        $contactId = $this->contactId ?? $this->contact?->id;
+
+        $member = new Laposta_Member($lapostaListId ?: '');
 
         try {
             // wait for 1,5 second
             sleep(1);
             usleep(500000);
-            $lapostaResponse = $member->delete($this->lapostaMemberId);
 
-            if($this->contactGroup->contacts()->where('contact_id', $this->contact->id)->exists()){
-                $this->contactGroup->contacts()->updateExistingPivot($this->contact->id, [
-                    'laposta_member_id' => null,
-                    'laposta_member_state' => null,
-                    'laposta_last_error_message' => null,
-                ]);
+            $member->delete($this->lapostaMemberId);
+
+            $contactGroup = ContactGroup::find($contactGroupId);
+
+            if (
+                $contactGroup
+                && $contactGroup->contacts()
+                    ->where('contact_id', $contactId)
+                    ->exists()
+            ) {
+                $contactGroup->contacts()->updateExistingPivot(
+                    $contactId,
+                    [
+                        'laposta_member_id' => null,
+                        'laposta_member_state' => null,
+                        'laposta_last_error_message' => null,
+                    ]
+                );
             }
         } catch (\Exception $e) {
             // Mogelijke foutmeldingen laposta:
@@ -63,12 +84,26 @@ class DeleteMemberToLaposta implements ShouldQueue
             // 'API error: Unknown list%'
             // 'API error: Rate limit exceeded ...';
             if ($e->getMessage()) {
-                $message = strlen($e->getMessage())>191 ? (substr($e->getMessage(),0,188) . '...') : $e->getMessage();
+                $message = strlen($e->getMessage()) > 191
+                    ? substr($e->getMessage(), 0, 188) . '...'
+                    : $e->getMessage();
             } else {
                 $message = 'Fout onbekend';
             }
-//            $this->contactGroup->contacts()->updateExistingPivot($this->contact->id, ['laposta_member_state' => 'unknown', 'laposta_last_error_message' => $message]);
-            $this->contactGroup->contacts()->updateExistingPivot($this->contact->id, ['laposta_last_error_message' => $message]);
+
+            $contactGroup = ContactGroup::find($contactGroupId);
+
+            if (
+                $contactGroup
+                && $contactGroup->contacts()
+                    ->where('contact_id', $contactId)
+                    ->exists()
+            ) {
+                $contactGroup->contacts()->updateExistingPivot(
+                    $contactId,
+                    ['laposta_last_error_message' => $message]
+                );
+            }
         }
     }
 

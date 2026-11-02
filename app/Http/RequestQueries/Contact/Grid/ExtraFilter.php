@@ -1302,6 +1302,58 @@ class ExtraFilter extends RequestExtraFilter
         $freeFieldsFieldValueType = $freeFieldsFieldValueFilter['type'];
         $freeFieldsFieldValueData = $freeFieldsFieldValueFilter['data'];
 
+        $formatType = $freeFieldsField->freeFieldsFieldFormat->format_type;
+
+        $isNumeric = in_array($formatType, ['int', 'double_2_dec', 'amount_euro'], true);
+
+        if (
+            in_array($freeFieldsFieldValueType, ['nl', 'nnl'], true) ||
+            ($isNumeric && in_array($freeFieldsFieldValueType, ['is0', 'isn0'], true))
+        ) {
+            $column = match ($formatType) {
+                'boolean' => 'field_value_boolean',
+                'int' => 'field_value_int',
+                'double_2_dec', 'amount_euro' => 'field_value_double',
+                'date', 'datetime' => 'field_value_datetime',
+                default => 'field_value_text',
+            };
+
+            $hasValue = function ($q) use ($freeFieldsFieldNameData, $column, $freeFieldsFieldValueType) {
+                $q->where('field_id', $freeFieldsFieldNameData)
+                    ->whereNotNull($column);
+
+                if ($column === 'field_value_text') {
+                    $q->where($column, '!=', '');
+                }
+
+                if (in_array($freeFieldsFieldValueType, ['is0', 'isn0'], true)) {
+                    $q->where($column, '!=', 0);
+                }
+            };
+
+            $isEmpty = in_array($freeFieldsFieldValueType, ['nl', 'is0'], true);
+
+            if ($freeFieldsFieldTable === 'contacts') {
+                if ($isEmpty) {
+                    $query->whereDoesntHave('freeFieldsFieldRecords', $hasValue);
+                } else {
+                    $query->whereHas('freeFieldsFieldRecords', $hasValue);
+                }
+            } elseif ($freeFieldsFieldTable === 'addresses') {
+                if ($isEmpty) {
+                    $query->whereDoesntHave('addresses', function ($q) use ($hasValue) {
+                        $q->whereHas('freeFieldsFieldRecords', $hasValue);
+                    });
+                } else {
+                    $query->whereHas('addresses', function ($q) use ($hasValue) {
+                        $q->whereHas('freeFieldsFieldRecords', $hasValue);
+                    });
+                }
+            }
+
+            return;
+        }
+
         if($freeFieldsFieldTable === "contacts") {
             switch ($freeFieldsField->freeFieldsFieldFormat->format_type) {
                 case 'boolean':

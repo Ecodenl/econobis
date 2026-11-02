@@ -6,6 +6,7 @@ import ButtonText from '../../../../components/button/ButtonText';
 import PanelFooter from '../../../../components/panel/PanelFooter';
 
 import { fetchEmailTemplate } from '../../../../actions/email-templates/EmailTemplateDetailsActions';
+import { setError } from '../../../../actions/general/ErrorActions';
 import InputTinyMCE from '../../../../components/form/InputTinyMCE';
 import validator from 'validator';
 import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
@@ -82,10 +83,20 @@ class EmailTemplateFormEdit extends Component {
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-            EmailTemplateAPI.updateEmailTemplate(emailTemplate).then(payload => {
-                this.props.fetchEmailTemplate(payload.id);
-                this.props.switchToView();
-            });
+            EmailTemplateAPI.updateEmailTemplate(emailTemplate)
+                .then(payload => {
+                    this.props.fetchEmailTemplate(payload.id);
+                    this.props.switchToView();
+                })
+                .catch(error => {
+                    const status = error.response ? error.response.status : null;
+                    // Bij 403 geen servermelding meegeven, zodat ErrorModal "Verboden toegang" toont
+                    const message =
+                        status !== 403 && error.response && error.response.data && error.response.data.message
+                            ? error.response.data.message
+                            : null;
+                    this.props.setError(status, message);
+                });
     };
 
     render() {
@@ -193,6 +204,9 @@ class EmailTemplateFormEdit extends Component {
 const mapDispatchToProps = dispatch => ({
     fetchEmailTemplate: id => {
         dispatch(fetchEmailTemplate(id));
+    },
+    setError: (http_code, message) => {
+        dispatch(setError(http_code, message));
     },
 });
 

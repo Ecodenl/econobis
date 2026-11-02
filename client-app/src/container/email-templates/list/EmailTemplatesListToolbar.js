@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
@@ -15,7 +16,9 @@ const EmailTemplatesListToolbar = props => {
             <div className="col-md-4">
                 <div className="btn-group" role="group">
                     <ButtonIcon iconName={'refresh'} onClickAction={props.refreshEmailTemplatesData} />
-                    <ButtonIcon iconName={'plus'} onClickAction={newEmailTemplate} />
+                    {props.permissions.manageEmailTemplate && (
+                        <ButtonIcon iconName={'plus'} onClickAction={newEmailTemplate} />
+                    )}
                 </div>
             </div>
             <div className="col-md-4">
@@ -26,4 +29,10 @@ const EmailTemplatesListToolbar = props => {
     );
 };
 
-export default EmailTemplatesListToolbar;
+const mapStateToProps = state => {
+    return {
+        permissions: state.meDetails.permissions,
+    };
+};
+
+export default connect(mapStateToProps)(EmailTemplatesListToolbar);

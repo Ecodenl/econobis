@@ -101,6 +101,10 @@ class UserDetailsFormRoleListItem extends Component {
                     textToolTip:
                         'Als deze rol wordt toegewezen krijgt de gebruiker in het linkermenu de optie Financieel en in het rechtermenu op de contactpagina de opties Orders en Nota’s te zien . De rol Financieel medewerker mag contacten, orders en nota;s wijzigingen en verwijderen. De financieel controller mag ook projecten wijzigen.',
                 })}
+                {...(name === 'Beheerder e-mail templates' && {
+                    textToolTip:
+                        'Alleen een gebruiker met deze rol of de rol "beheerder" mag nieuwe e-mail templates aanmaken, dupliceren, wijzigen of verwijderen',
+                })}
             />
         );
     }

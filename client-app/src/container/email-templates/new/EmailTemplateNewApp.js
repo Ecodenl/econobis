@@ -3,12 +3,15 @@ import React, { Component } from 'react';
 import validator from 'validator';
 import { isEmpty } from 'lodash';
 import { useNavigate } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import EmailTemplateNewToolbar from './EmailTemplateNewToolbar';
 import EmailTemplateNew from './EmailTemplateNew';
 
 import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
 import DocumentsAPI from '../../../api/document/DocumentsAPI';
+import ErrorUnauthorized from '../../global/ErrorUnauthorized';
+import { setError } from '../../../actions/general/ErrorActions';
 
 // Functionele wrapper voor de class component
 const EmailTemplateNewAppWrapper = props => {
@@ -38,6 +41,10 @@ class EmailTemplateNewApp extends Component {
     }
 
     componentDidMount() {
+        if (!this.props.permissions.manageEmailTemplate) {
+            return;
+        }
+
         DocumentsAPI.fetchDefaultEmailDocumentsPeek().then(payload => {
             this.setState({
                 defaultEmailDocuments: payload,
@@ -84,12 +91,34 @@ class EmailTemplateNewApp extends Component {
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-            EmailTemplateAPI.storeEmailTemplate(emailTemplate).then(payload => {
-                this.props.navigate(`/email-template/${payload.id}`);
-            });
+            EmailTemplateAPI.storeEmailTemplate(emailTemplate)
+                .then(payload => {
+                    this.props.navigate(`/email-template/${payload.id}`);
+                })
+                .catch(error => {
+                    const status = error.response ? error.response.status : null;
+                    // Bij 403 geen servermelding meegeven, zodat ErrorModal "Verboden toegang" toont
+                    const message =
+                        status !== 403 && error.response && error.response.data && error.response.data.message
+                            ? error.response.data.message
+                            : null;
+                    this.props.setError(status, message);
+                });
     };
 
     render() {
+        if (!this.props.permissions.manageEmailTemplate) {
+            return (
+                <div className="panel panel-default">
+                    <div className="panel-body">
+                        <div className="col-md-12 margin-10-top">
+                            <ErrorUnauthorized />
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
         return (
             <div>
                 <div className="panel panel-default">
@@ -114,4 +143,16 @@ class EmailTemplateNewApp extends Component {
     }
 }
 
-export default EmailTemplateNewAppWrapper;
+const mapStateToProps = state => {
+    return {
+        permissions: state.meDetails.permissions,
+    };
+};
+
+const mapDispatchToProps = dispatch => ({
+    setError: (http_code, message) => {
+        dispatch(setError(http_code, message));
+    },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(EmailTemplateNewAppWrapper);

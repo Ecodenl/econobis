@@ -71,7 +71,7 @@ class EmailTemplateController extends Controller
     }
 
     public function update(RequestInput $requestInput, EmailTemplate $emailTemplate) {
-        $this->authorize('create', EmailTemplate::class);
+        $this->authorize('update', EmailTemplate::class);
 
         $data = $requestInput
             ->string('name')->validate('required')->next()
@@ -88,7 +88,7 @@ class EmailTemplateController extends Controller
 
     public function destroy(EmailTemplate $emailTemplate)
     {
-        $this->authorize('create', EmailTemplate::class);
+        $this->authorize('delete', EmailTemplate::class);
 
         try {
             DB::beginTransaction();
@@ -111,6 +111,8 @@ class EmailTemplateController extends Controller
 
     public function duplicate(EmailTemplate $emailTemplate)
     {
+        $this->authorize('create', EmailTemplate::class);
+
         $newTemplate = $emailTemplate->replicate();
         $newTemplate->save();
 

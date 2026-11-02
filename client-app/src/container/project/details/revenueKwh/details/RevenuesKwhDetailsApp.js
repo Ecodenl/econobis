@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import RevenuesKwhdetailsToolbar from './RevenuesKwhdetailsToolbar';
+import RevenuesKwhdetailsToolbar from './RevenuesKwhDetailsToolbar';
 
 import { fetchRevenuesKwh, clearRevenuesKwh } from '../../../../../actions/project/ProjectDetailsActions';
 import Panel from '../../../../../components/panel/Panel';

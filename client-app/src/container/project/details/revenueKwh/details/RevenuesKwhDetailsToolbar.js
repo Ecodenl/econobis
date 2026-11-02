@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import ButtonIcon from '../../../../../components/button/ButtonIcon';
-import RevenuesKwhdetailsDelete from './RevenuesKwhdetailsDelete';
+import RevenuesKwhdetailsDelete from './RevenuesKwhDetailsDelete';
 import { blockUI, unblockUI } from '../../../../../actions/general/BlockUIActions';
 import { bindActionCreators } from 'redux';
 import moment from 'moment/moment';

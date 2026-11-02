@@ -16,6 +16,7 @@ import ProjectFormDefaultPostalcodeLinkCapital from '../form-default/ProjectForm
 import ProjectFormDefaultCapital from '../form-default/ProjectFormDefaultCapital';
 import ProjectFormDefaultObligation from '../form-default/ProjectFormDefaultObligation';
 import ProjectFormDefaultLoan from '../form-default/ProjectFormDefaultLoan';
+import ProjectFormDefaultEnergyCommunity from '../form-default/ProjectFormDefaultEnergyCommunity';
 import moment from 'moment/moment';
 import { isEmpty } from 'lodash';
 import RequiredParticipantsHelper from '../../../helpers/RequiredParticipantsHelper';
@@ -114,6 +115,11 @@ class ProjectNewApp extends Component {
                 participationsGranted: null,
                 participationsOptioned: null,
                 participationsInterresed: null,
+                monitorProvider: '',
+                energyCommunityExternalCode: '',
+                energySharing: false,
+                energySupplierRegistrationRequired: false,
+                leadingHousingFileApplication: '',
                 textRegisterPageHeader: defaultTextRegisterPageHeader,
                 textRegisterCurrentBookWorth: defaultTextRegisterCurrentBookWorth,
                 textRegisterParticipationSingular: defaultTextRegisterParticipationSingular,
@@ -204,6 +210,9 @@ class ProjectNewApp extends Component {
             isSceProject = false;
             checkPostalcodeLink = true;
         }
+        if (projectType && projectType.codeRef === 'energy_community') {
+            isSceProject = false;
+        }
 
         this.setState({
             ...this.state,
@@ -280,6 +289,13 @@ class ProjectNewApp extends Component {
         }
         let projectType;
         projectType = this.props.projectTypesActive.find(projectType => projectType.id == project.projectTypeId);
+
+        // Init fields that are not applicable for energy community projects.
+        if (projectType && projectType.codeRef === 'energy_community') {
+            project.powerKwAvailable = null;
+            project.dateProduction = null;
+            project.dateEntry = null;
+        }
 
         if (
             project.isSceProject &&
@@ -511,6 +527,11 @@ class ProjectNewApp extends Component {
             participationsGranted,
             participationsOptioned,
             participationsInteressed,
+            monitorProvider,
+            energyCommunityExternalCode,
+            energySharing,
+            energySupplierRegistrationRequired,
+            leadingHousingFileApplication,
         } = this.state.project;
 
         const projectType = this.props.projectTypesActive.find(projectType => projectType.id == projectTypeId);
@@ -520,7 +541,11 @@ class ProjectNewApp extends Component {
 
         const numberOfParticipantsStillNeeded = requiredParticipants;
         let useSceProject = false;
-        if (projectType && projectType.codeRef !== 'postalcode_link_capital') {
+        if (
+            projectType &&
+            projectType.codeRef !== 'postalcode_link_capital' &&
+            projectType.codeRef !== 'energy_community'
+        ) {
             useSceProject = true;
         }
 
@@ -645,6 +670,18 @@ class ProjectNewApp extends Component {
                                         />
                                     ) : null}
 
+                                    {projectType && projectType.codeRef === 'energy_community' ? (
+                                        <ProjectFormDefaultEnergyCommunity
+                                            monitorProvider={monitorProvider}
+                                            monitorProviders={this.props.monitorProviders}
+                                            energyCommunityExternalCode={energyCommunityExternalCode}
+                                            energySharing={energySharing}
+                                            energySupplierRegistrationRequired={energySupplierRegistrationRequired}
+                                            leadingHousingFileApplication={leadingHousingFileApplication}
+                                            handleInputChange={this.handleInputChange}
+                                        />
+                                    ) : null}
+
                                     <PanelFooter>
                                         {this.state.confirmSubmit ? (
                                             <div className="pull-right">
@@ -693,6 +730,7 @@ const mapStateToProps = state => {
         administrations: state.meDetails.administrations,
         projectTypesActive: state.systemData.projectTypesActive,
         projectLoanTypes: state.systemData.projectLoanTypes,
+        monitorProviders: state.systemData.monitorProviders,
     };
 };
 

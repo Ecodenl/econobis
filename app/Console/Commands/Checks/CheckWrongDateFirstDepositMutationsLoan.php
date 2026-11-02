@@ -49,7 +49,7 @@ class CheckWrongDateFirstDepositMutationsLoan extends Command
         $projectTypeLoan = ProjectType::where('code_ref', 'loan')->first()->id;
         $mutationTypeFirstDespositId = ParticipantMutationType::where('code_ref', 'first_deposit')->where('project_type_id',  $projectTypeLoan)->first()->id;
         $mutationTypeDespositId = ParticipantMutationType::where('code_ref', 'deposit')->where('project_type_id',  $projectTypeLoan)->first()->id;
-        $mutationTypeWithDrawalId = ParticipantMutationType::where('code_ref', 'withDrawal')->where('project_type_id',  $projectTypeLoan)->first()->id;
+        $mutationTypeWithDrawalId = ParticipantMutationType::where('code_ref', 'with_drawal')->where('project_type_id',  $projectTypeLoan)->first()->id;
 
 //        $participationsWithWrongDateEntries = DB::select(DB::raw('SELECT a.id, a.participation_id, a.type_id, a.date_entry, b.id , b.type_id, b.date_entry FROM participant_mutations as a, participant_mutations as b
 //            where a.participation_id = b.participation_id

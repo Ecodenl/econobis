@@ -11,7 +11,7 @@ export default function(participation, statusCodeRef, projectTypeCodeRef) {
             values.dateInterest = participation.dateInterest;
             if (projectTypeCodeRef === 'loan') {
                 values.amountInterest = participation.amountInterest;
-            } else {
+            } else if (projectTypeCodeRef !== 'energy_community') {
                 values.quantityInterest = participation.quantityInterest;
             }
             break;
@@ -19,7 +19,7 @@ export default function(participation, statusCodeRef, projectTypeCodeRef) {
             values.dateOption = participation.dateOption;
             if (projectTypeCodeRef === 'loan') {
                 values.amountOption = participation.amountOption;
-            } else {
+            } else if (projectTypeCodeRef !== 'energy_community') {
                 values.quantityOption = participation.quantityOption;
             }
             break;
@@ -27,20 +27,24 @@ export default function(participation, statusCodeRef, projectTypeCodeRef) {
             values.dateGranted = participation.dateGranted;
             if (projectTypeCodeRef === 'loan') {
                 values.amountGranted = participation.amountGranted;
-            } else {
+            } else if (projectTypeCodeRef !== 'energy_community') {
                 values.quantityGranted = participation.quantityGranted;
             }
             break;
         case 'final':
             values.dateGranted = participation.dateGranted;
-            values.dateContractRetour = participation.dateContractRetour;
-            values.datePayment = participation.datePayment;
-            values.paymentReference = participation.paymentReference;
             values.dateEntry = participation.dateEntry;
+
             if (projectTypeCodeRef === 'loan') {
                 values.amountFinal = participation.amountFinal;
-            } else {
+            } else if (projectTypeCodeRef !== 'energy_community') {
                 values.quantityFinal = participation.quantityFinal;
+            }
+
+            if (projectTypeCodeRef !== 'energy_community') {
+                values.dateContractRetour = participation.dateContractRetour;
+                values.datePayment = participation.datePayment;
+                values.paymentReference = participation.paymentReference;
             }
             break;
         default:

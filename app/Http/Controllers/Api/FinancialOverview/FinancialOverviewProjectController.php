@@ -65,6 +65,12 @@ class FinancialOverviewProjectController extends Controller
             ->string('statusId')->onEmpty('in-progress')->whenMissing('in-progress')->alias('status_id')->next()
             ->get();
 
+        $project = Project::findOrFail($data['project_id']);
+
+        if ($project->projectType && $project->projectType->code_ref === 'energy_community') {
+            abort(422, 'Voor projecten van het type Energiegemeenschap kunnen geen waardestaten worden aangemaakt.');
+        }
+
         $financialOverviewProject = new FinancialOverviewProject($data);
         $financialOverviewProject->save();
 

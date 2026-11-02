@@ -807,6 +807,11 @@ class RolePermissionsSeeder extends Seeder
             'Beheerder e-mail templates' => [
                 'manage_email_template',
             ],
+            'Beheerder energiegemeenschappen' => [
+                'manage_energy_community',
+                'menu_energy_communities',
+                'view_energy_community',
+            ],
         ];
 
         foreach ($rolePermissions as $roleName => $permissions) {

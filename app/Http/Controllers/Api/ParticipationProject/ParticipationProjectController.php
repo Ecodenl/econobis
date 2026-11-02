@@ -19,6 +19,7 @@ use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\FinancialOverview\FinancialOverviewProject;
+use App\Eco\HousingFile\HousingFile;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
@@ -31,6 +32,7 @@ use App\Eco\Project\ProjectRevenue;
 use App\Eco\Project\ProjectRevenueCategory;
 use App\Eco\Project\ProjectValueCourse;
 use App\Helpers\Address\AddressHelper;
+use App\Helpers\Delete\Models\DeleteParticipantMutation;
 use App\Helpers\Delete\Models\DeleteParticipation;
 use App\Helpers\Delete\Models\DeleteRevenue;
 use App\Helpers\Excel\ParticipantExcelHelper;
@@ -68,16 +70,49 @@ class ParticipationProjectController extends ApiController
 {
     public function grid(RequestQuery $requestQuery)
     {
-        $this->authorize('view', ParticipantProject::class);
+        abort_unless(
+            Auth::user()->hasAnyPermission(['view_participation', 'view_energy_community']),
+            403
+        );
 
         // Check op geauthoriseerde administratie gaat via ParticipantProjectBuilder !
         $participantProject = $requestQuery->get();
         $participantProject->load([
             'address.currentAddressEnergySupplierElectricity.energySupplier',
+            'address.addressDongles.dongleReadOutType',
             'contact.primaryAddress',
             'contact.primaryEmailAddress',
             'project',
-    ]);
+        ]);
+
+        $addressIds = $participantProject->pluck('address_id')->filter()->unique();
+
+        $housingFiles = HousingFile::query()
+            ->whereIn('address_id', $addressIds)
+            ->whereIn(
+                'origin_application',
+                $participantProject
+                    ->pluck('project.leading_housing_file_application')
+                    ->filter()
+                    ->map(fn ($application) => $application->value)
+                    ->unique()
+            )
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->get()
+            ->groupBy(fn ($housingFile) => $housingFile->address_id . ':' . $housingFile->origin_application->value);
+
+        $participantProject->each(function ($participant) use ($housingFiles) {
+            $application = $participant->project?->leading_housing_file_application;
+
+            $key = $participant->address_id && $application
+                ? $participant->address_id . ':' . $application->value
+                : null;
+
+            $participant->housing_file_id = $key
+                ? $housingFiles->get($key)?->first()?->id
+                : null;
+        });
 
         return GridParticipantProject::collection($participantProject)
             ->additional(['meta' => [
@@ -223,7 +258,14 @@ class ParticipationProjectController extends ApiController
     {
         set_time_limit(120);
 
-        $this->authorize('view', ParticipantProject::class);
+        $this->authorize('viewByProjectType', [ParticipantProject::class, $participantProject->project]);
+
+        if (!in_array(
+            $participantProject->project->administration_id,
+            Auth::user()->administrations()->pluck('administrations.id')->toArray()
+        )) {
+            abort(403);
+        }
 
         $participantProject->load([
             'mutations' => function($query){
@@ -260,6 +302,18 @@ class ParticipationProjectController extends ApiController
         $participantProject->participantProjectRevenuesKwh = $this->getParticipantProjectRevenuesKwh($participantProject);
         $participantProject->undoTerminatedAllowed = $this->getUndoTerminatedAllowed($participantProject);
         $participantProject->participantBelongsToMembershipGroup = $this->getParticipantBelongsToMembershipGroup($participantProject);
+
+        $leadingApplication = $participantProject->project->leading_housing_file_application;
+
+        $participantProject->housing_file_id = null;
+
+        if ($leadingApplication && $participantProject->address_id) {
+            $participantProject->housing_file_id = HousingFile::where('address_id', $participantProject->address_id)
+                ->where('origin_application', $leadingApplication->value)
+                ->orderByDesc('created_at')
+                ->orderByDesc('id')
+                ->value('id');
+        }
 
         return FullParticipantProjectShow::make($participantProject);
     }
@@ -347,12 +401,10 @@ class ParticipationProjectController extends ApiController
 
     public function store(RequestInput $requestInput)
     {
-        $this->authorize('manage', ParticipantProject::class);
-
         // TODO clean up store inputs
         $data = $requestInput
             ->integer('contactId')->validate('required|exists:contacts,id')->alias('contact_id')->next()
-            ->integer('addressId')->validate('nullable|exists:addresses,id')->alias('address_id')->next()
+            ->integer('addressId')->validate('required|exists:addresses,id')->alias('address_id')->next()
             ->integer('projectId')->validate('required|exists:projects,id')->alias('project_id')->next()
             ->get();
 
@@ -361,8 +413,38 @@ class ParticipationProjectController extends ApiController
         $participantProject->fill($data);
 
         $project = Project::find($participantProject->project_id);
+        $this->authorize('manageByProjectType', [ParticipantProject::class, $project]);
+        if (!in_array(
+            $project->administration_id,
+            Auth::user()->administrations()->pluck('administrations.id')->toArray()
+        )) {
+            abort(403);
+        }
+
         $contact = Contact::find($participantProject->contact_id);
         $address = Address::find($participantProject->address_id);
+
+        if ($project->projectType->code_ref === 'energy_community') {
+            $addressHelper = new AddressHelper($contact, $address);
+            $duplicateMessage = $addressHelper->checkDuplicateEnergyCommunityParticipation($project);
+
+            if ($duplicateMessage !== null) {
+                return ['id' => 0, 'message' => [$duplicateMessage]];
+            }
+        }
+
+        if (
+            $project->projectType->code_ref === 'energy_community'
+            && $project->energy_supplier_registration_required
+            && !$address->currentAddressEnergySupplierElectricity()->exists()
+        ) {
+            return [
+                'id' => 0,
+                'message' => [
+                    'Deze energiegemeenschap vereist een actuele elektriciteitsleverancier op het deelnameadres.',
+                ],
+            ];
+        }
 
         if($project->check_double_addresses){
             $errors = [];
@@ -429,7 +511,13 @@ class ParticipationProjectController extends ApiController
 
     public function update(RequestInput $requestInput, ParticipantProject $participantProject)
     {
-        $this->authorize('manage', ParticipantProject::class);
+        $this->authorize('manageByProjectType', [ParticipantProject::class, $participantProject->project]);
+        if (!in_array(
+            $participantProject->project->administration_id,
+            Auth::user()->administrations()->pluck('administrations.id')->toArray()
+        )) {
+            abort(403);
+        }
 
         $data = $requestInput
             ->boolean('didAcceptAgreement')->alias('did_accept_agreement')->next()
@@ -443,6 +531,7 @@ class ParticipationProjectController extends ApiController
             ->string('ibanPayoutAttn')->alias('iban_payout_attn')->next()
             ->integer('typeId')->validate('nullable|exists:participant_project_payout_type,id')->onEmpty(null)->alias('type_id')->next()
             ->integer('powerKwhConsumption')->alias('power_kwh_consumption')->next()
+            ->integer('powerKwAvailable')->alias('power_kw_available')->next()
             ->get();
 
         $participantProject->fill($data);
@@ -525,47 +614,78 @@ class ParticipationProjectController extends ApiController
 
     public function destroy(ParticipantProject $participantProject)
     {
-        $this->authorize('manage', ParticipantProject::class);
+        $this->authorize('manageByProjectType', [ParticipantProject::class, $participantProject->project]);
 
-        try {
-            DB::beginTransaction();
+        if (!in_array(
+            $participantProject->project->administration_id,
+            Auth::user()->administrations()->pluck('administrations.id')->toArray()
+        )) {
+            abort(403);
+        }
+
+        DB::transaction(function () use ($participantProject) {
+            $project = $participantProject->project;
 
             $deleteParticipation = new DeleteParticipation($participantProject);
             $result = $deleteParticipation->delete();
-// todo WM: check of hier niet ook recalculate financialoverviewcontact moeten doen?
-//            // Indien participation project in concept waardestaat / waardestaten, dan die herberekenen.
-//            $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
-            if(count($result) > 0){
-                DB::rollBack();
-                abort(412, implode(";", array_unique($result)));
+
+            if (count($result) > 0) {
+                abort(412, implode('; ', array_unique($result)));
             }
 
-            DB::commit();
-        } catch (\PDOException $e) {
-            DB::rollBack();
-            Log::error($e->getMessage());
-            abort(501, 'Er is helaas een fout opgetreden.');
-        }
+            // Herbereken de afhankelijke gegevens op het project
+            $project->calculator()->run()->save();
+        });
     }
 
     public function terminate(ParticipantProject $participantProject, RequestInput $requestInput)
     {
-        $this->authorize('manage', ParticipantProject::class);
+        $this->authorize('manageByProjectType', [ParticipantProject::class, $participantProject->project]);
+
+        if (!in_array(
+            $participantProject->project->administration_id,
+            Auth::user()->administrations()->pluck('administrations.id')->toArray()
+        )) {
+            abort(403);
+        }
 
         DB::transaction(function () use ($participantProject, $requestInput) {
             $data = $requestInput
                 ->date('dateTerminated')->validate('date')->alias('date_terminated')->next()
                 ->get();
 
-            // Set terminated date
-            $participantProject->date_terminated = Carbon::parse($data['date_terminated'])->format('Y-m-d');
             $projectType = $participantProject->project->projectType;
 
+            // Controleer bij energiegemeenschappen eerst of beëindigen is toegestaan.
+            if ($projectType->code_ref === 'energy_community') {
+                if (
+                    $participantProject->date_terminated !== null ||
+                    $participantProject->calculator()->participationsDefinitive() != 1
+                ) {
+                    abort(409, 'Alleen een actieve, definitieve deelname kan worden beëindigd.');
+                }
+
+                $dateTerminatedAllowedFrom = $participantProject->date_terminated_allowed_from;
+
+                if (
+                    !$dateTerminatedAllowedFrom ||
+                    Carbon::parse($data['date_terminated'])->lt(
+                        Carbon::parse($dateTerminatedAllowedFrom)
+                    )
+                ) {
+                    abort(409, 'De beëindigingsdatum mag niet vóór de eerste ingangsdatum liggen.');
+                }
+            }
+
+            // Set terminated date
+            $participantProject->date_terminated = Carbon::parse($data['date_terminated'])->format('Y-m-d');
             $participantProject->save();
 
-            // Make mutation withdrawal of total participations/loan
-            $this->createMutationWithDrawal($participantProject, $projectType);
-// todo WM: check of deze nu hier goed staat, stond eerst voor createMutaionWithDrawal
+            if ($projectType->code_ref === 'energy_community') {
+                $this->createMutationTerminationParticipation($participantProject, $projectType);
+            } else {
+                $this->createMutationWithDrawal($participantProject, $projectType);
+            }
             // Indien participation project in concept waardestaat / waardestaten, dan die herberekenen.
             $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
 
@@ -656,7 +776,6 @@ class ParticipationProjectController extends ApiController
                 })
                 ->forceDelete();
 
-            // todo WM: check of deze nu hier goed staat, stond eerst voor createMutaionWithDrawal
             // Indien participation project in concept waardestaat / waardestaten, dan die herberekenen.
             $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
 
@@ -666,9 +785,32 @@ class ParticipationProjectController extends ApiController
 
     public function undoTerminate(ParticipantProject $participantProject, RequestInput $requestInput)
     {
-        $this->authorize('manage', ParticipantProject::class);
+        $this->authorize('manageByProjectType', [ParticipantProject::class, $participantProject->project]);
+
+        if (!in_array(
+            $participantProject->project->administration_id,
+            Auth::user()->administrations()->pluck('administrations.id')->toArray()
+        )) {
+            abort(403);
+        }
+
+        // ToDo: WM Wellicht deze check gewoon voor alle projectTypen doen?
+        if (
+            $participantProject->project->projectType->code_ref === 'energy_community' &&
+            !$this->getUndoTerminatedAllowed($participantProject)
+        ) {
+            abort(409, 'Het ongedaan maken van deze beëindiging is niet toegestaan.');
+        }
 
         DB::transaction(function () use ($participantProject, $requestInput) {
+
+            // Energiegemeenschappen hebben een eigen verwerking voor het
+            // ongedaan maken van een beëindiging.
+            if ($participantProject->project->projectType->code_ref === 'energy_community') {
+                $this->undoTerminateParticipation($participantProject);
+                return;
+            }
+
             $originalDateTerminated = Carbon::parse($participantProject->date_terminated)->format('Y-m-d');
 
             $data = $requestInput
@@ -704,7 +846,7 @@ class ParticipationProjectController extends ApiController
 
             // Laatste opname mutatieregel weer ongedaan maken. (niet meer verwijderen indien reeds opgenomen in definitieve waardestaat !)
             $projectType = $participantProject->project->projectType;
-            $withDrawalTypes = ParticipantMutationType::whereIn('code_ref', ['withDrawal'])->where('project_type_id', $projectType->id)->get()->pluck('id')->toArray();
+            $withDrawalTypes = ParticipantMutationType::whereIn('code_ref', ['with_drawal'])->where('project_type_id', $projectType->id)->get()->pluck('id')->toArray();
             $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
             $mutationDefinitiveLast =  ParticipantMutation::where('participation_id', $participantProject->id)
                 ->whereIn('type_id', $withDrawalTypes)
@@ -729,7 +871,7 @@ class ParticipationProjectController extends ApiController
             }
             // Laatste opname mutatieregel weer ongedaan maken. (niet meer verwijderen indien reeds opgenomen in definitieve waardestaat !)
             $projectType = $participantProject->project->projectType;
-            $withDrawalTypes = ParticipantMutationType::whereIn('code_ref', ['withDrawal'])->where('project_type_id', $projectType->id)->get()->pluck('id')->toArray();
+            $withDrawalTypes = ParticipantMutationType::whereIn('code_ref', ['with_drawal'])->where('project_type_id', $projectType->id)->get()->pluck('id')->toArray();
             $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
             $mutationDefinitiveLast =  ParticipantMutation::where('participation_id', $participantProject->id)
                 ->whereIn('type_id', $withDrawalTypes)
@@ -762,6 +904,63 @@ class ParticipationProjectController extends ApiController
             // Indien participation project in concept waardestaat / waardestaten, dan die herberekenen.
             $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
         });
+    }
+
+    protected function undoTerminateParticipation(ParticipantProject $participantProject): void
+    {
+        if ($participantProject->date_terminated === null) {
+            abort(409, 'Deze deelname is niet beëindigd.');
+        }
+
+        $addressHelper = new AddressHelper(
+            $participantProject->contact,
+            $participantProject->address
+        );
+
+        $duplicateMessage = $addressHelper->checkDuplicateEnergyCommunityParticipation(
+            $participantProject->project,
+            $participantProject->id
+        );
+
+        if ($duplicateMessage !== null) {
+            abort(409, $duplicateMessage);
+        }
+
+        $projectType = $participantProject->project->projectType;
+
+        $mutationTypeTerminationId = ParticipantMutationType::where('code_ref', 'termination')
+            ->where('project_type_id', $projectType->id)
+            ->value('id');
+
+        $mutationStatusFinalId = ParticipantMutationStatus::where('code_ref', 'final')->value('id');
+
+        $terminationMutation = ParticipantMutation::where('participation_id', $participantProject->id)
+            ->where('type_id', $mutationTypeTerminationId)
+            ->where('status_id', $mutationStatusFinalId)
+            ->whereDate(
+                'date_entry',
+                Carbon::parse($participantProject->date_terminated)->addDay()->format('Y-m-d')
+            )
+            ->first();
+
+        if (!$terminationMutation) {
+            abort(409, 'De bijbehorende beëindigingsmutatie is niet gevonden.');
+        }
+
+        $deleteParticipantMutation = new DeleteParticipantMutation($terminationMutation);
+        $result = $deleteParticipantMutation->delete();
+
+        if (count($result) > 0) {
+            abort(409, implode('; ', array_unique($result)));
+        }
+
+        $participantProject->date_terminated = null;
+        $participantProject->save();
+
+        $participantProject->calculator()->run()->save();
+        $participantProject->project->calculator()->run()->save();
+
+        $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
     }
 
     public function peek()
@@ -1186,58 +1385,132 @@ class ParticipationProjectController extends ApiController
                     ->double('amountInterest')->onEmpty(null)->alias('amount_interest')->next()
                     ->date('dateInterest')->onEmpty(null)->validate('date')->alias('date_interest')->next()
                     ->get();
+
                 $mutationData['quantity'] = isset($mutationData['quantity_interest']) ? $mutationData['quantity_interest'] : null;
+
                 $mutationData['amount'] = isset($mutationData['amount_interest']) ? $mutationData['amount_interest'] : null;
                 break;
             case 'option':
+                $quantityOptionValidation = $project->projectType->code_ref === 'energy_community'
+                    ? 'nullable'
+                    : 'required_without:amountOption';
+
+                $amountOptionValidation = $project->projectType->code_ref === 'energy_community'
+                    ? 'nullable'
+                    : 'required_without:quantityOption';
+
                 $mutationData = $requestInput
                     ->integer('statusId')->validate('required|exists:participant_mutation_statuses,id')->alias('status_id')->next()
-                    ->integer('quantityOption')->validate('required_without:amountOption')->alias('quantity_option')->next()
-                    ->double('amountOption')->validate('required_without:quantityOption')->alias('amount_option')->next()
+                    ->integer('quantityOption')->validate($quantityOptionValidation)->onEmpty(null)->alias('quantity_option')->next()
+                    ->double('amountOption')->validate($amountOptionValidation)->onEmpty(null)->alias('amount_option')->next()
                     ->date('dateOption')->validate('required|date')->alias('date_option')->next()
                     ->get();
+
                 $mutationData['quantity'] = isset($mutationData['quantity_option']) ? $mutationData['quantity_option'] : null;
+
                 $mutationData['amount'] = isset($mutationData['amount_option']) ? $mutationData['amount_option'] : null;
                 break;
             case 'granted':
+                $quantityGrantedValidation = $project->projectType->code_ref === 'energy_community'
+                    ? 'nullable'
+                    : 'required_without:amountGranted';
+
+                $amountGrantedValidation = $project->projectType->code_ref === 'energy_community'
+                    ? 'nullable'
+                    : 'required_without:quantityGranted';
+
                 $mutationData = $requestInput
                     ->integer('statusId')->validate('required|exists:participant_mutation_statuses,id')->alias('status_id')->next()
-                    ->integer('quantityGranted')->validate('required_without:amountGranted')->alias('quantity_granted')->next()
-                    ->double('amountGranted')->validate('required_without:quantityGranted')->alias('amount_granted')->next()
+                    ->integer('quantityGranted')->validate($quantityGrantedValidation)->onEmpty(null)->alias('quantity_granted')->next()
+                    ->double('amountGranted')->validate($amountGrantedValidation)->onEmpty(null)->alias('amount_granted')->next()
                     ->date('dateGranted')->validate('required|date')->alias('date_granted')->next()
                     ->get();
+
                 $mutationData['quantity'] = isset($mutationData['quantity_granted']) ? $mutationData['quantity_granted'] : null;
+
                 $mutationData['amount'] = isset($mutationData['amount_granted']) ? $mutationData['amount_granted'] : null;
                 break;
             case 'final':
+                $quantityFinalValidation = $project->projectType->code_ref === 'energy_community'
+                    ? 'nullable'
+                    : 'required_without:amountFinal';
+
+                $amountFinalValidation = $project->projectType->code_ref === 'energy_community'
+                    ? 'nullable'
+                    : 'required_without:quantityFinal';
+
                 $mutationData = $requestInput
                     ->integer('statusId')->validate('required|exists:participant_mutation_statuses,id')->alias('status_id')->next()
-                    ->integer('quantityFinal')->validate('required_without:amountFinal')->alias('quantity_final')->next()
-                    ->double('amountFinal')->validate('required_without:quantityFinal')->alias('amount_final')->next()
+                    ->integer('quantityFinal')->validate($quantityFinalValidation)->onEmpty(null)->alias('quantity_final')->next()
+                    ->double('amountFinal')->validate($amountFinalValidation)->onEmpty(null)->alias('amount_final')->next()
                     ->date('dateGranted')->validate('nullable|date')->onEmpty(null)->alias('date_granted')->next()
                     ->date('dateContractRetour')->validate('nullable|date')->onEmpty(null)->alias('date_contract_retour')->next()
                     ->date('datePayment')->validate('nullable|date')->onEmpty(null)->alias('date_payment')->next()
                     ->string('paymentReference')->onEmpty(null)->alias('payment_reference')->next()
                     ->date('dateEntry')->validate('required|date')->alias('date_entry')->next()
                     ->get();
-                $mutationData['quantity'] = isset($mutationData['quantity_final']) ? $mutationData['quantity_final'] : null;
-                $mutationData['amount'] = isset($mutationData['amount_final']) ? $mutationData['amount_final'] : null;
-                if(isset( $mutationData['date_granted'] ) )
-                {
-                    if(isset($mutationData['amount_final']) && $mutationData['amount_final'] <> 0 && !isset( $mutationData['amount_granted'] ) )
-                    {
-                        $mutationData = array_merge($mutationData, ['amount_granted' =>  $mutationData['amount_final']]);
-                    }elseif(isset($mutationData['quantity_final']) && $mutationData['quantity_final'] <> 0 && !isset( $mutationData['quantity_granted'] ) )
-                    {
-                        $mutationData = array_merge($mutationData, ['quantity_granted' =>  $mutationData['quantity_final']]);
+
+                $mutationData['quantity'] = isset($mutationData['quantity_final'])
+                    ? $mutationData['quantity_final']
+                    : null;
+
+                $mutationData['amount'] = isset($mutationData['amount_final'])
+                    ? $mutationData['amount_final']
+                    : null;
+
+                if (isset($mutationData['date_granted'])) {
+                    if (
+                        isset($mutationData['amount_final'])
+                        && $mutationData['amount_final'] <> 0
+                        && !isset($mutationData['amount_granted'])
+                    ) {
+                        $mutationData['amount_granted'] = $mutationData['amount_final'];
+                    } elseif (
+                        isset($mutationData['quantity_final'])
+                        && $mutationData['quantity_final'] <> 0
+                        && !isset($mutationData['quantity_granted'])
+                    ) {
+                        $mutationData['quantity_granted'] = $mutationData['quantity_final'];
                     }
                 }
                 break;
         }
+        if ($project->projectType->code_ref === 'energy_community') {
+            // Voor Energiegemeenschappen is het aantal altijd 1.
+            $mutationData['quantity'] = 1;
 
+            switch ($participantMutationStatus->code_ref) {
+                case 'interest':
+                    $mutationData['quantity_interest'] = 1;
+                    break;
+                case 'option':
+                    $mutationData['quantity_option'] = 1;
+                    break;
+                case 'granted':
+                    $mutationData['quantity_granted'] = 1;
+                    break;
+                case 'final':
+                    $mutationData['quantity_final'] = 1;
+
+                    if (isset($mutationData['date_granted'])) {
+                        $mutationData['quantity_granted'] = 1;
+                    }
+                    break;
+            }
+        }
         $mutationData['participation_id'] = $participantProject->id;
 
-        $participantMutationType = ParticipantMutationType::where('project_type_id', $project->project_type_id)->where('code_ref', 'first_deposit')->first();
+        $mutationTypeCodeRef = $project->projectType->code_ref === 'energy_community'
+            ? 'participation'
+            : 'first_deposit';
+
+        $participantMutationType = ParticipantMutationType::where(
+            'project_type_id',
+            $project->project_type_id
+        )
+            ->where('code_ref', $mutationTypeCodeRef)
+            ->firstOrFail();
+
         $mutationData['type_id'] = $participantMutationType->id;
 
         // Remove unnecessary fields from $mutationData
@@ -1251,11 +1524,16 @@ class ParticipationProjectController extends ApiController
         $participantMutationController = new ParticipantMutationController();
         $participantMutation->transaction_costs_amount = $participantMutationController->calculationTransactionCosts($participantMutation);
 
-        $dateEntryYear = \Carbon\Carbon::parse($participantMutation->date_entry)->year;
-        $result = $this->checkMutationAllowed($participantMutation, $dateEntryYear);
+        if ($project->projectType->code_ref !== 'energy_community') {
+            $dateEntryYear = \Carbon\Carbon::parse($participantMutation->date_entry)->year;
+            $this->checkMutationAllowed($participantMutation, $dateEntryYear);
+        }
 
         // Calculate participation worth based on current book worth of project
-        if($participantMutation->status->code_ref === 'final' && $project->projectType->code_ref !== 'loan') {
+        if($participantMutation->status->code_ref === 'final'
+            && $project->projectType->code_ref !== 'loan'
+            && $project->projectType->code_ref !== 'energy_community'
+        ) {
             $bookWorth = ProjectValueCourse::where('project_id', $participantMutation->participation->project_id)
                 ->where('date', '<=', $participantMutation->date_entry)
                 ->orderBy('date', 'desc')
@@ -1375,6 +1653,33 @@ class ParticipationProjectController extends ApiController
         }
     }
 
+    protected function createMutationTerminationParticipation(
+        ParticipantProject $participantProject,
+                           $projectType
+    ): void {
+        $mutationStatusFinalId = ParticipantMutationStatus::where('code_ref', 'final')->value('id');
+
+        $mutationTypeTerminationId = ParticipantMutationType::where('code_ref', 'termination')
+            ->where('project_type_id', $projectType->id)
+            ->value('id');
+
+        $participantMutation = new ParticipantMutation();
+        $participantMutation->participation_id = $participantProject->id;
+        $participantMutation->type_id = $mutationTypeTerminationId;
+        $participantMutation->status_id = $mutationStatusFinalId;
+        $participantMutation->date_entry = Carbon::parse($participantProject->date_terminated)
+            ->addDay()
+            ->format('Y-m-d');
+
+        $participantMutation->quantity = -1;
+        $participantMutation->quantity_final = -1;
+
+        $participantMutation->save();
+
+        $participantProject->calculator()->run()->save();
+        $participantProject->project->calculator()->run()->save();
+    }
+
     /**
      * @param ParticipantProject $participantProject
      * @param $projectType
@@ -1388,7 +1693,7 @@ class ParticipationProjectController extends ApiController
         }
 
         $mutationStatusFinalId = ParticipantMutationStatus::where('code_ref', 'final')->value('id');
-        $mutationTypeWithDrawalId = ParticipantMutationType::where('code_ref', 'withDrawal')->where('project_type_id', $projectType->id)->value('id');
+        $mutationTypeWithDrawalId = ParticipantMutationType::where('code_ref', 'with_drawal')->where('project_type_id', $projectType->id)->value('id');
 
         if ($amountOrParticipationsDefinitive != 0) {
             $participantMutation = new ParticipantMutation();
@@ -1416,7 +1721,7 @@ class ParticipationProjectController extends ApiController
             // we controleren in jaar van beeindigsdatum + 1 dag
             // (dit laatste omdat beeindiging op 31-12 nog wel mag, ook als hij in beeindigingsjaar dus in def. ws zat.
             $dateEntryYear = \Carbon\Carbon::parse($participantProject['date_terminated'])->addDay()->year;
-            $result = $this->checkMutationAllowed($participantMutation, $dateEntryYear);
+            $this->checkMutationAllowed($participantMutation, $dateEntryYear);
 
             $participantMutation->save();
 
@@ -1461,7 +1766,7 @@ class ParticipationProjectController extends ApiController
         // we controleren in jaar van beeindigsdatum + 1 dag
         // (dit laatste omdat beeindiging op 31-12 nog wel mag, ook als hij in beeindigingsjaar dus in def. ws zat.
         $dateEntryYear = \Carbon\Carbon::parse($participantProject->date_terminated)->addDay()->year;
-        $result = $this->checkMutationAllowed($participantMutation, $dateEntryYear);
+        $this->checkMutationAllowed($participantMutation, $dateEntryYear);
 
         $participantMutation->save();
 
@@ -1562,10 +1867,8 @@ class ParticipationProjectController extends ApiController
             if ($financialOverviewProjectQuery->exists()) {
                 $financialOverview = $financialOverviewProjectQuery->first()->financialOverview;
                 abort(409, 'Project komt al voor in definitive waardestaat ' . $financialOverview->description . '. Deze mutatie is niet meer mogelijk.');
-                return false;
             }
         }
-        return true;
     }
 
     protected function translateToValidCharacterSet($field){
@@ -1671,53 +1974,66 @@ class ParticipationProjectController extends ApiController
 
     public function getUndoTerminatedAllowed(ParticipantProject $participantProject)
     {
+        // Een deelname die niet beëindigd is, kan niet worden hersteld.
+        if ($participantProject->date_terminated === null) {
+            return false;
+        }
+
+        // Bij energiegemeenschappen zijn er geen waardestaten of opbrengstverdelingen.
+        if ($participantProject->project->projectType->code_ref === 'energy_community') {
+            return true;
+        }
+
         $dateTerminated = Carbon::parse($participantProject->date_terminated)->format('Y-m-d');
+        $yearTerminated = Carbon::parse($participantProject->date_terminated)->year;
 
-        if ( $dateTerminated != null) {
-            // Deelname beeindigd niet meer terug te draaien indien waardestaat al verstuurd voor jaar waarin beeindigd is of daarna (voor het geval ze om wat voor reden in beeindigingsjaar geen waardestaat gemaakt hebeen).
-            $yearTerminated = Carbon::parse($participantProject->date_terminated)->year;
-            if( $participantProject->financialOverviewParticipantProjects()->where('status_id', 'sent')
-                ->whereHas('financialOverviewProject', function ($query) use ($yearTerminated) {
-                    $query->whereHas('financialOverview', function ($query) use ($yearTerminated) {
-                        $query->where('year', '>=', $yearTerminated);
-                    });
-                })
-                ->exists() ) {
-                return false;
-            }
+        // Deelname beëindigd niet meer terug te draaien indien waardestaat al verstuurd
+        // voor jaar waarin beëindigd is of daarna.
+        if ($participantProject->financialOverviewParticipantProjects()
+            ->where('status_id', 'sent')
+            ->whereHas('financialOverviewProject', function ($query) use ($yearTerminated) {
+                $query->whereHas('financialOverview', function ($query) use ($yearTerminated) {
+                    $query->where('year', '>=', $yearTerminated);
+                });
+            })
+            ->exists()) {
+            return false;
+        }
 
-            // Deelname beeindigd alleen terugdraaien indien beeindigingsdatum deelname nog niet in een verdeling zit die niet concept is.
-            $projectRevenueDistributionsNotConcept = $participantProject->projectRevenueDistributions()
-                ->whereNotIn('status', ['concept'])
-                ->whereHas('revenue', function ($query) use($dateTerminated) {
+        // Deelname alleen terugdraaien indien beëindigingsdatum nog niet
+        // in een opbrengstverdeling zit die niet concept is.
+        $projectRevenueDistributionsNotConcept = $participantProject->projectRevenueDistributions()
+            ->whereNotIn('status', ['concept'])
+            ->whereHas('revenue', function ($query) use ($dateTerminated) {
+                $query->where('date_begin', '<=', $dateTerminated)
+                    ->where('date_end', '>=', $dateTerminated);
+            })
+            ->exists();
+
+        if ($projectRevenueDistributionsNotConcept) {
+            return false;
+        }
+
+        // Extra controle voor postcoderoosprojecten.
+        if ($participantProject->project->projectType->code_ref === 'postalcode_link_capital') {
+            $revenueDistributionKwh = $participantProject->revenueDistributionKwh()
+                ->whereHas('revenuesKwh', function ($query) use ($dateTerminated) {
                     $query->where('date_begin', '<=', $dateTerminated)
                         ->where('date_end', '>=', $dateTerminated);
                 })
+                ->whereHas('distributionPartsKwh', function ($query) {
+                    $query->whereHas('partsKwh', function ($query) {
+                        $query->whereNotIn('status', ['concept', 'concept-to-update']);
+                    });
+                })
                 ->exists();
-            if($projectRevenueDistributionsNotConcept){
-                return false;
-            }
 
-            // Deelname beeindigd bij PCR dan ook alleen terugdraaien indien beeindigingsdatum deelname nog niet in een deel kwh verdeling zit die niet concept of new is is
-            if ( $participantProject->project->projectType->code_ref == 'postalcode_link_capital' ) {
-                $revenueDistributionKwh = $participantProject->revenueDistributionKwh()
-                    ->whereHas('revenuesKwh', function ($query) use ($dateTerminated) {
-                        $query->where('date_begin', '<=', $dateTerminated)
-                            ->where('date_end', '>=', $dateTerminated);
-                    })
-                    ->whereHas('distributionPartsKwh', function ($query) use ($dateTerminated) {
-                        $query->whereHas('partsKwh', function ($query) use ($dateTerminated) {
-                            $query->whereNotIn('status', ['concept', 'concept-to-update']);
-                        });
-                    })
-                    ->exists();
-                if($revenueDistributionKwh){
-                    return false;
-                }
+            if ($revenueDistributionKwh) {
+                return false;
             }
         }
 
-        return $dateTerminated != null;
+        return true;
     }
 
     public function getParticipantBelongsToMembershipGroup(ParticipantProject $participantProject) :bool

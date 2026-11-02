@@ -209,12 +209,12 @@ function MutationFormNew(props) {
                 return participantMutationType.codeRef === 'first_deposit';
             } else if (hasLoanFirstDeposit === 'final') {
                 return (
-                    participantMutationType.codeRef === 'deposit' || participantMutationType.codeRef === 'withDrawal'
+                    participantMutationType.codeRef === 'deposit' || participantMutationType.codeRef === 'with_drawal'
                 );
             }
         } else {
             return (
-                participantMutationType.codeRef === 'first_deposit' || participantMutationType.codeRef === 'withDrawal'
+                participantMutationType.codeRef === 'first_deposit' || participantMutationType.codeRef === 'with_drawal'
             );
         }
         return false;
@@ -287,7 +287,7 @@ function MutationFormNew(props) {
                             {projectTransactionCostsCodeRef === 'none' ||
                             (mutationTypeCodeRef !== 'first_deposit' &&
                                 mutationTypeCodeRef !== 'deposit' &&
-                                mutationTypeCodeRef !== 'withDrawal') ||
+                                mutationTypeCodeRef !== 'with_drawal') ||
                             statusId == '' ? null : (
                                 <>
                                     <ViewText
@@ -327,7 +327,7 @@ function MutationFormNew(props) {
                             />
                         ) : null}
 
-                        {mutationTypeCodeRef === 'withDrawal' ? (
+                        {mutationTypeCodeRef === 'with_drawal' ? (
                             <MutationNewWithDrawal
                                 statusCodeRef={statusCodeRef}
                                 {...participationMutation}

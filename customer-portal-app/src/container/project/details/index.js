@@ -10,6 +10,7 @@ import LoanDetails from './LoanDetails';
 import ObligationDetails from './ObligationDetails';
 import CapitalDetails from './CapitalDetails';
 import PcrDetails from './PcrDetails';
+import EnergyCommunityDetails from './EnergyCommunityDetails';
 import { ThemeSettingsContext } from '../../../context/ThemeSettingsContext';
 import { PortalUserContext } from '../../../context/PortalUserContext';
 import { isEmpty } from 'lodash';
@@ -78,6 +79,8 @@ function ProjectDetails({ match }) {
                 return <CapitalDetails project={project} />;
             case 'postalcode_link_capital':
                 return <PcrDetails project={project} />;
+            case 'energy_community':
+                return <EnergyCommunityDetails project={project} />;
             default:
                 return null;
         }

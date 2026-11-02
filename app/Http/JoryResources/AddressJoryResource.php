@@ -31,6 +31,7 @@ class AddressJoryResource extends JoryResource
         $this->field('city')->filterable()->sortable();
         $this->field('country_id')->filterable()->sortable();
         $this->field('ean_electricity')->filterable()->sortable();
+        $this->field('connection_type')->filterable()->sortable();
         $this->field('ean_gas')->filterable()->sortable();
         $this->field('primary')->filterable()->sortable();
 

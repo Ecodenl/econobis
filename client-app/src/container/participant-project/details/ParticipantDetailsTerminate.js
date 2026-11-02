@@ -27,7 +27,16 @@ const ParticipantDetailsTerminate = ({
     function getAdditionalInfoForTerminatingOrChangeEntryDate(participantProjectId) {
         ParticipantProjectDetailsAPI.getAdditionalInfoForTerminatingOrChangeEntryDate(participantProjectId).then(
             payload => {
-                setDateTerminated(payload.dateTerminatedAllowedFrom ? payload.dateTerminatedAllowedFrom : '');
+                const allowedFrom = payload.dateTerminatedAllowedFrom;
+
+                if (projectTypeCodeRef === 'energy_community') {
+                    const today = moment().format('YYYY-MM-DD');
+
+                    setDateTerminated(allowedFrom && moment(allowedFrom).isAfter(today, 'day') ? allowedFrom : today);
+                } else {
+                    setDateTerminated(allowedFrom || '');
+                }
+
                 setDateTerminatedAllowedFrom(
                     payload.dateTerminatedAllowedFrom ? payload.dateTerminatedAllowedFrom : ''
                 );
@@ -121,9 +130,13 @@ const ParticipantDetailsTerminate = ({
                     />
                     {participantProject.participationsDefinitive != 0 ? (
                         <ViewText
-                            label={'Datum laatste terugbetaling wordt'}
+                            label={
+                                projectTypeCodeRef === 'energy_community'
+                                    ? 'Ingangsdatum beëindigingsmutatie wordt'
+                                    : 'Datum laatste terugbetaling wordt'
+                            }
                             value={
-                                dateEntryLastMutation && dateTerminated
+                                (projectTypeCodeRef === 'energy_community' || dateEntryLastMutation) && dateTerminated
                                     ? moment(dateTerminated)
                                           .add(1, 'day')
                                           .format('DD-MM-Y')

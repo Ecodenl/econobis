@@ -884,6 +884,19 @@ class Contact extends Model
         return false;
     }
 
+    public function getIsParticipantEnergyCommunityProjectAttribute()
+    {
+        foreach ($this->participations as $participation) {
+            if (!isset($participation->date_terminated)
+                && $participation->project
+                && $participation->project->projectType?->code_ref === 'energy_community') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function getIsParticipantSceProjectAttribute()
     {
         foreach ($this->participations as $participation) {

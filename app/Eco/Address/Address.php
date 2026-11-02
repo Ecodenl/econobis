@@ -29,6 +29,7 @@ class Address extends Model
 
     protected $casts = [
         'primary' => 'boolean',
+        'connection_type' => AddressConnectionType::class,
     ];
 
     public function addressEnergySuppliers()

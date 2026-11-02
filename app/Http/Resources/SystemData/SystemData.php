@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\SystemData;
 
+use App\Eco\Address\AddressConnectionType;
 use App\Eco\Address\AddressType;
 use App\Eco\AddressDongle\AddressDongleTypeReadOut;
 use App\Eco\AddressDongle\AddressDongleTypeDongle;
@@ -28,6 +29,7 @@ use App\Eco\FinancialOverview\FinancialOverviewContactStatus;
 use App\Eco\HousingFile\BuildingType;
 use App\Eco\HousingFile\EnergyLabel;
 use App\Eco\HousingFile\EnergyLabelStatus;
+use App\Eco\HousingFile\HousingFileApplication;
 use App\Eco\HousingFile\HousingFileHoomHousingStatus;
 use App\Eco\HousingFile\HousingFileHoomLink;
 use App\Eco\HousingFile\HousingFileSpecificationFloor;
@@ -69,6 +71,7 @@ use App\Eco\Product\ProductDuration;
 use App\Eco\Product\ProductInvoiceFrequency;
 use App\Eco\Product\ProductPaymentType;
 use App\Eco\Project\BaseProjectCodeRef;
+use App\Eco\Project\MonitorProvider;
 use App\Eco\Project\ProjectLoanType;
 use App\Eco\Project\ProjectRevenueCategory;
 use App\Eco\Project\ProjectRevenueDistributionType;
@@ -181,6 +184,7 @@ class SystemData extends JsonResource
             'hasCavityWallSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'has-cavity-wall')->get(),
             'hasSolarPanelsSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'has-solar-panels')->get(),
 
+            'addressConnectionTypes' => FullEnumWithIdAndName::collection(AddressConnectionType ::collection()),
             'addressTypes' => FullEnumWithIdAndName::collection(AddressType::collection()),
             'administrationsPeek' => AdministrationPeek::collection(Administration::orderBy('id')->get()),
             'appName' => config('app.name'),
@@ -212,6 +216,7 @@ class SystemData extends JsonResource
             'energySupplierTypes' => GenericResource::collection(EnergySupplierType::all()),
             'energySuppliers' => GenericResource::collection($sortedEnergySuppliers),
             'financialOverviewContactStatuses' => FullEnumWithIdAndName::collection(FinancialOverviewContactStatus::collection()),
+            'housingFileApplications' => FullEnumWithIdAndName::collection(HousingFileApplication::collection()),
             'housingFileSpecificationFloors' => HousingFileSpecificationFloor::select(['id', 'name'])->orderBy('name')->get(),
             'housingFileSpecificationSides' => HousingFileSpecificationSide::select(['id', 'name'])->orderBy('name')->get(),
             'housingFileSpecificationStatuses' => HousingFileSpecificationStatus::select(['id', 'name'])->orderBy('name')->get(),
@@ -228,6 +233,7 @@ class SystemData extends JsonResource
             'mailgunDomain' => $mailgunDomains,
             'measureCategories' => MeasureCategory::select(['id', 'name'])->orderBy('name')->get(),
             'measures' => MeasurePeek::collection(Measure::orderBy('name')->get()),
+            'monitorProviders' => FullEnumWithIdAndName::collection(MonitorProvider::collection()),
             'occupations' => FullOccupation::collection(Occupation::orderBy('primary_occupation')->get()),
             'opportunityActions' => GenericResource::collection(OpportunityAction::all()),
             'opportunityEvaluationStatuses' => OpportunityEvaluationStatusResource::collection(OpportunityEvaluationStatus::all()),
@@ -237,7 +243,12 @@ class SystemData extends JsonResource
             'orderStatuses' => FullEnumWithIdAndName::collection(OrderStatusToSelect::collection()),
             'organisationTypes' => FullOrganisationType::collection(OrganisationType::all()),
             'participantMutationStatuses' => FullParticipantMutationStatus::collection(ParticipantMutationStatus::all()),
-            'participantMutationTypes' => FullParticipantMutationType::collection(ParticipantMutationType::all()),
+//            'participantMutationTypes' => FullParticipantMutationType::collection(ParticipantMutationType::all()),
+            'participantMutationTypes' => FullParticipantMutationType::collection(
+                ParticipantMutationType::orderBy('project_type_id')
+                    ->orderBy('order_per_type')
+                    ->get()
+            ),
             'participantProjectPayoutTypes' => GenericResource::collection(ParticipantProjectPayoutType::all()),
             'paymentInvoiceStatuses' => FullEnumWithIdAndName::collection(PaymentInvoiceStatus::collection()),
             'personTypes' => FullPersonType::collection(PersonType::all()),

@@ -90,10 +90,19 @@ class ParticipantDetailsToolbar extends Component {
             let numberOfMutations = participantProject.participantMutations
                 ? participantProject.participantMutations.length
                 : null;
+
             let disableBeforeEntryDate = this.getDisableBeforeEntryDate(project);
+
+            const isEnergyCommunity = project.typeCodeRef === 'energy_community';
+
+            const canManageParticipant = isEnergyCommunity
+                ? this.props.permissions.manageEnergyCommunity
+                : this.props.permissions.manageParticipation;
+
             let allowDeleteAndTerminateButtons = false;
+
             if (
-                this.props.permissions.manageParticipation &&
+                canManageParticipant &&
                 (numberOfMutations == 0 ||
                     validator.isEmpty(disableBeforeEntryDate) ||
                     moment().format('YYYY-01-01') >= disableBeforeEntryDate)

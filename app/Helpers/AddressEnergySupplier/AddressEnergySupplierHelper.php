@@ -2,6 +2,7 @@
 
 namespace App\Helpers\AddressEnergySupplier;
 
+use App\Eco\Address\Address;
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
 use Carbon\Carbon;
@@ -122,6 +123,13 @@ class AddressEnergySupplierHelper
                 . ') bij adres '
                 . $address
                 . ' kan niet verwijderd worden omdat deze nog nodig is voor een nog niet verwerkte opbrengstverdeling.';
+        }
+
+        if (self::wouldRemoveLastCurrentElectricitySupplier($addressEnergySupplier)) {
+            $messages[] = 'Deze energieleverancier kan niet verwijderd worden, '
+                . 'omdat dit de laatste actuele elektriciteitsleverancier is '
+                . 'voor een actieve deelname aan een energiegemeenschap '
+                . 'waarvoor registratie van een energieleverancier verplicht is.';
         }
 
         return $messages;
@@ -275,4 +283,78 @@ class AddressEnergySupplierHelper
         return false;
     }
 
+    public static function wouldRemoveLastCurrentElectricitySupplier(
+        AddressEnergySupplier $addressEnergySupplier
+    ): bool {
+        // Alleen actuele leveranciers van elektriciteit zijn relevant.
+        if (
+            !$addressEnergySupplier->is_current_supplier
+            || !in_array((int) $addressEnergySupplier->energy_supply_type_id, [2, 3], true)
+        ) {
+            return false;
+        }
+
+        // Alleen relevant bij actieve EG-deelnames met verplichte registratie.
+        if (!self::hasActiveEnergyCommunityRequiringSupplier($addressEnergySupplier->address_id)) {
+            return false;
+        }
+
+        // Is er nog een andere actuele elektriciteitsleverancier?
+        return !AddressEnergySupplier::query()
+            ->where('address_id', $addressEnergySupplier->address_id)
+            ->where('id', '!=', $addressEnergySupplier->id)
+            ->where('is_current_supplier', true)
+            ->whereIn('energy_supply_type_id', [2, 3])
+            ->exists();
+    }
+
+    public static function hasActiveEnergyCommunityRequiringSupplier(int $addressId): bool
+    {
+        return Address::query()
+            ->whereKey($addressId)
+            ->whereHas('participations', function ($query) {
+                $query->whereNull('date_terminated')
+                    ->whereHas('project', function ($query) {
+                        $query->where('energy_supplier_registration_required', true)
+                            ->whereHas('projectType', function ($query) {
+                                $query->where('code_ref', 'energy_community');
+                            });
+                    });
+            })
+            ->exists();
+    }
+
+    public static function wouldLoseLastCurrentElectricitySupplierAfterUpdate(
+        AddressEnergySupplier $addressEnergySupplier
+    ): bool {
+        if (
+            !in_array((int) $addressEnergySupplier->energy_supply_type_id, [2, 3], true)
+            || !$addressEnergySupplier->getOriginal('is_current_supplier')
+        ) {
+            return false;
+        }
+
+        if (!self::hasActiveEnergyCommunityRequiringSupplier($addressEnergySupplier->address_id)) {
+            return false;
+        }
+
+        $today = Carbon::today()->toDateString();
+
+        $willRemainCurrent = $addressEnergySupplier->is_current_supplier
+            && (!$addressEnergySupplier->member_since
+                || Carbon::parse($addressEnergySupplier->member_since)->toDateString() <= $today)
+            && (!$addressEnergySupplier->end_date
+                || Carbon::parse($addressEnergySupplier->end_date)->toDateString() >= $today);
+
+        if ($willRemainCurrent) {
+            return false;
+        }
+
+        return !AddressEnergySupplier::query()
+            ->where('address_id', $addressEnergySupplier->address_id)
+            ->whereKeyNot($addressEnergySupplier->id)
+            ->where('is_current_supplier', true)
+            ->whereIn('energy_supply_type_id', [2, 3])
+            ->exists();
+    }
 }

@@ -14,6 +14,7 @@ use App\Eco\HousingFile\BuildingType;
 use App\Eco\HousingFile\EnergyLabel;
 use App\Eco\HousingFile\EnergyLabelStatus;
 use App\Eco\HousingFile\HousingFile;
+use App\Eco\HousingFile\HousingFileApplication;
 use App\Eco\Contact\Contact;
 use App\Eco\HousingFile\HousingFileHoomHousingStatus;
 use App\Eco\HousingFile\HousingFileHousingStatus;
@@ -173,6 +174,7 @@ class HousingFileController extends ApiController
 
 
         $housingFile = new HousingFile($data);
+        $housingFile->origin_application = HousingFileApplication::ECONOBIS;
         $housingFile->save();
 
         //if applicable we will set the below_woz_limit to true or false for all opportunities indirectly related to this housingfile where the below_woz_limit is still not set (null)

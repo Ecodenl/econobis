@@ -259,6 +259,10 @@ class AddressEnergySupplierController extends ApiController
 
             $this->validateAddressEnergySupplier($addressEnergySupplier, true);
 
+            if (AddressEnergySupplierHelper::wouldLoseLastCurrentElectricitySupplierAfterUpdate($addressEnergySupplier)) {
+                abort(422, 'Deze wijziging is niet toegestaan, omdat hierdoor de laatste actuele elektriciteitsleverancier verdwijnt voor een actieve deelname aan een energiegemeenschap waarvoor registratie van een energieleverancier verplicht is.');
+            }
+
             $aesMemberSince = $addressEnergySupplier->member_since
                 ? Carbon::parse($addressEnergySupplier->member_since)->format('Y-m-d')
                 : '1900-01-01';

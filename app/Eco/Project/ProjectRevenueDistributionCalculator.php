@@ -322,11 +322,11 @@ class ProjectRevenueDistributionCalculator
     {
         if($this->projectLoanTypeCodeRef && $this->projectLoanTypeCodeRef === 'annuitair'){
             // Annuïtair
-            $mutationTypes = ParticipantMutationType::whereIn('code_ref', ['first_deposit', 'deposit', 'withDrawal', 'redemption'])->where('project_type_id', $this->projectTypeId)->pluck('id')->toArray();
+            $mutationTypes = ParticipantMutationType::whereIn('code_ref', ['first_deposit', 'deposit', 'with_drawal', 'redemption'])->where('project_type_id', $this->projectTypeId)->pluck('id')->toArray();
             $mutations = $this->projectRevenueDistribution->participation->mutationsDefinitive()->whereIn('type_id', $mutationTypes)->whereDate('date_entry', '<=', $this->projectRevenueDistribution->revenue->date_reference);
         } else {
             // Lineair
-            $mutationTypes = ParticipantMutationType::whereIn('code_ref', ['first_deposit', 'deposit', 'withDrawal'])->where('project_type_id', $this->projectTypeId)->pluck('id')->toArray();
+            $mutationTypes = ParticipantMutationType::whereIn('code_ref', ['first_deposit', 'deposit', 'with_drawal'])->where('project_type_id', $this->projectTypeId)->pluck('id')->toArray();
             $mutations = $this->projectRevenueDistribution->participation->mutationsDefinitive()->whereIn('type_id', $mutationTypes);
         }
 

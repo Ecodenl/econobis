@@ -214,6 +214,19 @@ export default {
         }),
     }),
 
+    validationSchemaEnergySupplierRequired: Yup.object().shape({
+        visitAddress: Yup.object().shape({
+            currentAddressEnergySupplierElectricity: Yup.object().shape({
+                energySupplierId: Yup.string()
+                    .nullable()
+                    .required('Verplicht'),
+                memberSince: Yup.string()
+                    .nullable()
+                    .required('Verplicht'),
+            }),
+        }),
+    }),
+
     validationSchemaPostalCodeAndNumber: Yup.object().shape({
         visitAddress: Yup.object().shape({
             number: Yup.string()

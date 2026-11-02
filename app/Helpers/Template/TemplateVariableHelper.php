@@ -681,7 +681,7 @@ class TemplateVariableHelper
     public static function getParticipantProjectVar($model, $varname){
         $projectTypeCodeRef = $model->project->projectType->code_ref;
         $mutationDepositTypes = ParticipantMutationType::where('project_type_id', $model->project->project_type_id)->whereIn('code_ref', ['first_deposit', 'deposit'])->get()->pluck('id');
-        $mutationWithDrawalTypes = ParticipantMutationType::where('project_type_id', $model->project->project_type_id)->whereIn('code_ref', ['withDrawal'])->get()->pluck('id');
+        $mutationWithDrawalTypes = ParticipantMutationType::where('project_type_id', $model->project->project_type_id)->whereIn('code_ref', ['with_drawal'])->get()->pluck('id');
         switch ($varname) {
             case 'contact_naam':
                 return $model->contact->full_name_fnf;

@@ -18,6 +18,35 @@ const ParticipantsListHead = ({
         }, 100);
     };
 
+    if (projectTypeRef === 'energy_community') {
+        return (
+            <tr className="thead-title">
+                <DataTableHeadTitle title={''} width={'2%'} />
+
+                <DataTableHeadTitleAndSort sortColumn={'name'} title={'Naam'} setSorts={setSorts} />
+
+                <DataTableHeadTitleAndSort sortColumn={'address'} title={'Adres'} setSorts={setSorts} />
+
+                <DataTableHeadTitle title={'Energieleverancier'} />
+
+                <DataTableHeadTitleAndSort
+                    sortColumn={'participantMutationStatusId'}
+                    title={'Status'}
+                    setSorts={setSorts}
+                />
+
+                <DataTableHeadTitle title={'P1/P4'} />
+                <DataTableHeadTitle title={'Type aansluiting'} />
+                <DataTableHeadTitle title={'EnergieID account'} />
+                <DataTableHeadTitle title={'Verbruik'} />
+                <DataTableHeadTitle title={'Opwek kWp'} />
+                <DataTableHeadTitle title={'Assets'} />
+
+                <th width="5%" />
+            </tr>
+        );
+    }
+
     return (
         <tr className="thead-title">
             <DataTableHeadTitle title={''} width={'2%'} />

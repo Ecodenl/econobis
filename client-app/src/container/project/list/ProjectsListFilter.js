@@ -47,8 +47,14 @@ const ProjectsListFilter = props => {
             <th>
                 <select
                     className="form-control input-sm"
-                    value={props.filters.projectTypeId.data}
+                    value={
+                        window.location.hash.startsWith('#/energiegemeenschappen')
+                            ? props.projectTypes.find(projectType => projectType.codeRef === 'energy_community')?.id ??
+                              ''
+                            : props.filters.projectTypeId.data
+                    }
                     onChange={onTypeProjectChange}
+                    disabled={window.location.hash.startsWith('#/energiegemeenschappen')}
                 >
                     <option />
                     {props.projectTypes.map(projectType => {

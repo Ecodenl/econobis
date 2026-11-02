@@ -29,7 +29,10 @@ use App\Eco\Task\Task;
 use App\Eco\Task\TaskType;
 use App\Eco\User\User;
 use App\Helpers\Address\AddressHelper;
+use App\Helpers\AddressEnergySupplier\AddressEnergySupplierHelper;
 use App\Helpers\ContactGroup\ContactGroupHelper;
+use App\Helpers\Delete\Models\DeleteAddress;
+use App\Helpers\Delete\Models\DeleteAddressEnergySupplier;
 use App\Helpers\Document\DocumentHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Project\RevenuesKwhHelper;
@@ -253,7 +256,10 @@ class ContactController extends ApiController
         $projects = Project::whereIn('project_status_id', $allowedProjectStatuses)
             ->whereIn('project_type_id', $activeProjectTypes)
             ->where('date_start_registrations', '<=', Carbon::today()->format('Y-m-d'))
-            ->where('date_end_registrations', '>=', Carbon::today()->format('Y-m-d'))
+            ->where(function ($query) {
+                $query->whereNull('date_end_registrations')
+                    ->orWhere('date_end_registrations', '>=', Carbon::today()->format('Y-m-d'));
+            })
             ->get();
         foreach ($projects as $key => $project) {
             $this->setContactProjectIndicators($project, $contact, $projects, $key);
@@ -656,6 +662,9 @@ class ContactController extends ApiController
         if($addressData['countryId'] == ''){
             $addressData['countryId'] = null;
         }
+        if (isset($addressData['connectionType']) && $addressData['connectionType'] === '') {
+            $addressData['connectionType'] = null;
+        }
         if($addressData['number'] == ''){
             $addressData['number'] = null;
         }
@@ -674,12 +683,32 @@ class ContactController extends ApiController
             {
                 if(empty($addressData['street']) && empty($addressData['postalCode']) && empty($addressData['city']) )
                 {
-                    $address->delete();
+                    $deleteAddress = new DeleteAddress($address);
+                    $result = $deleteAddress->delete();
+
+                    if (count($result) > 0) {
+                        abort(412, implode(';', array_unique($result)));
+                    }
                 }else{
 //                    if ($type == ContactType::ORGANISATION && $addressType == 'visit') {
 //                        $addressData['primary'] = true;
 //                    }
                     $address->fill($this->arrayKeysToSnakeCase($addressData));
+
+                    if ($address->isDirty([
+                        'postal_code',
+                        'number',
+                        'addition',
+                        'ean_electricity',
+                    ])) {
+                        $addressHelper = new AddressHelper($contact, $address);
+
+                        $duplicateMessage = $addressHelper->checkEnergyCommunityParticipationsForAddressUpdate();
+
+                        if ($duplicateMessage !== null) {
+                            abort(412, $duplicateMessage);
+                        }
+                    }
 
                     $addressHelper = new AddressHelper($contact, $address);
                     $checkAddressOk = $addressHelper->checkAddress($projectId, true);
@@ -782,6 +811,13 @@ class ContactController extends ApiController
             $this->updateEnergySupplierToAddress($address, $currentAddressEnergySupplierElectricity);
         }
 
+        if (
+            $address !== null
+            && AddressEnergySupplierHelper::hasActiveEnergyCommunityRequiringSupplier($address->id)
+            && !$address->currentAddressEnergySupplierElectricity()->exists()
+        ) {
+            abort(422, 'Voor dit adres is een actuele elektriciteitsleverancier verplicht vanwege een actieve deelname aan een energiegemeenschap.');
+        }
     }
 
     protected function updateEnergySupplierToAddress(Address $address, $currentAddressEnergySupplierElectricityData)
@@ -835,7 +871,12 @@ class ContactController extends ApiController
         } else {
             if($currentAddressEnergySupplierElectricityData['energySupplierId'] == null) {
                 // delete
-                $currentAddressEnergySupplierElectricityOld->delete();
+                $deleteAddressEnergySupplier = new DeleteAddressEnergySupplier($currentAddressEnergySupplierElectricityOld);
+                $result = $deleteAddressEnergySupplier->delete();
+
+                if (count($result) > 0) {
+                    abort(422, implode('; ', array_unique($result)));
+                }
             }else{
                 if($currentAddressEnergySupplierElectricityData['memberSince'] == null) {
                     return;
@@ -872,6 +913,12 @@ class ContactController extends ApiController
 
                     $addressEnergySupplierController = new AddressEnergySupplierController();
                     $addressEnergySupplierController->validateAddressEnergySupplier($currentAddressEnergySupplierElectricityNew, true);
+
+                    if (AddressEnergySupplierHelper::wouldLoseLastCurrentElectricitySupplierAfterUpdate(
+                        $currentAddressEnergySupplierElectricityNew
+                    )) {
+                        abort(422, 'Deze wijziging is niet toegestaan, omdat hierdoor de laatste actuele elektriciteitsleverancier verdwijnt voor een actieve deelname aan een energiegemeenschap waarvoor registratie van een energieleverancier verplicht is.');
+                    }
 
                     $currentAddressEnergySupplierElectricityNew->save();
                     $this->checkSplitRevenuePart($currentAddressEnergySupplierElectricityNew);
@@ -1110,14 +1157,21 @@ class ContactController extends ApiController
         if ($mutationToPay && $project->uses_mollie) {
             $project->allowPayMollie = true;
             $project->econobisPaymentLink = $mutationToPay->econobis_payment_link;
-        } else if ($project->allow_increase_participations_in_portal
+        } else if ($project->projectType->code_ref !== 'energy_community'
+            && $project->allow_increase_participations_in_portal
             && $project->date_start_registrations <= Carbon::now()->format('Y-m-d')
             && $project->date_end_registrations >= Carbon::now()->format('Y-m-d')) {
             $project->allowIncreaseParticipations = true;
         }
 
-        // no participation for this contact/project yet or increase is allowed
-        if ( $project->hasParticipation === false || (bool)$project->allow_increase_participations_in_portal === true ) {
+        // no participation for this contact/project yet or (type not energy_community and increase is allowed)
+        if (
+            !$project->hasParticipation
+            || (
+                $project->projectType->code_ref !== 'energy_community'
+                && (bool)$project->allow_increase_participations_in_portal
+            )
+        ) {
 
             // no membership required, then allow register to project
             if (!$project->is_membership_required) {
@@ -1221,7 +1275,25 @@ class ContactController extends ApiController
                 }
 
             }
+            // Controleer of een nieuwe EG-deelname is toegestaan.
+            if ($project->projectType->code_ref === 'energy_community'
+                && $project->allowRegisterToProject) {
 
+                $address = $contact->addressForPostalCodeCheck;
+
+                if (!$address) {
+                    $project->allowRegisterToProject = false;
+                    $project->textNotAllowedRegisterToProject =
+                        'Voor een deelname aan een energiegemeenschap is een geldig adres verplicht.';
+                } else {
+                    $addressHelper = new AddressHelper($contact, $address);
+
+                    if ($error = $addressHelper->checkDuplicateEnergyCommunityParticipation($project)) {
+                        $project->allowRegisterToProject = false;
+                        $project->textNotAllowedRegisterToProject = $error;
+                    }
+                }
+            }
         }
     }
 

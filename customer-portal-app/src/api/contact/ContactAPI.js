@@ -26,6 +26,7 @@ export default {
                         'noAddressesFound',
                         'isParticipantPcrProject',
                         'isParticipantSceProject',
+                        'isParticipantEnergyCommunityProject',
                         'blockChangeAddress',
                         'blockChangeAddressNumber',
                     ],
@@ -62,6 +63,7 @@ export default {
                                 'primary',
                                 'typeId',
                                 'eanElectricity',
+                                'connectionType',
                                 'eanGas',
                             ],
                             rlt: {

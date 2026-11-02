@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import DocumentHarmonica from './harmonica/DocumentHarmonica';
 import OrderHarmonica from './harmonica/OrderHarmonica';
+import HousingFileHarmonica from './harmonica/HousingFileHarmonica';
 
 // Functionele wrapper voor de class component
 const ParticipantDetailsHarmonicaWrapper = props => {
@@ -87,6 +88,13 @@ class ParticipantDetailsHarmonica extends Component {
                         orderCount={orderCount}
                         permissions={this.props.meDetails.permissions}
                     />
+
+                    {this.props.participant.housingFileId && (
+                        <HousingFileHarmonica
+                            housingFileId={this.props.participant.housingFileId}
+                            permissions={this.props.meDetails.permissions}
+                        />
+                    )}
                 </div>
             </div>
         );

@@ -31,6 +31,7 @@ class RolesSeeder extends Seeder
             ['name' => 'Beheerder coöperatie instellingen', 'role_code' => 'cooperation_settings_admin', 'role_type' => 'additional'],
             ['name' => 'Beheerder data opschoner', 'role_code' => 'data_cleaner_admin', 'role_type' => 'additional'],
             ['name' => 'Beheerder e-mail templates', 'role_code' => 'email_template_admin', 'role_type' => 'additional'],
+            ['name' => 'Beheerder energiegemeenschappen', 'role_code' => 'energy_community_admin', 'role_type' => 'additional'],
         ];
 
         foreach ($roles as $roleData) {

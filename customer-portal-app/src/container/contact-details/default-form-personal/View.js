@@ -21,6 +21,7 @@ function DefaultContactPersonalView({ portalSettings, initialContact, freeFields
         dateDidAgreeAvg,
         number,
         isParticipantPcrProject,
+        isParticipantEnergyCommunityProject,
     } = initialContact;
     return (
         <>
@@ -110,7 +111,7 @@ function DefaultContactPersonalView({ portalSettings, initialContact, freeFields
                             {primaryAddress.country ? primaryAddress.country.name : ''}
                         </TextBlock>
                     </Row>
-                    {isParticipantPcrProject ? (
+                    {isParticipantPcrProject || isParticipantEnergyCommunityProject ? (
                         <>
                             <FormLabel className={'field-label'}>EAN nummer elektriciteit</FormLabel>
                             <Row>
@@ -118,6 +119,16 @@ function DefaultContactPersonalView({ portalSettings, initialContact, freeFields
                                     {primaryAddress.eanElectricity}
                                 </TextBlock>
                             </Row>
+                            {isParticipantEnergyCommunityProject && (
+                                <>
+                                    <FormLabel className={'field-label'}>Type aansluiting</FormLabel>
+                                    <Row>
+                                        <TextBlock className={'col-12 col-sm-8'} placeholder={'Type aansluiting'}>
+                                            {primaryAddress.connectionType}
+                                        </TextBlock>
+                                    </Row>
+                                </>
+                            )}
                             <FormLabel className={'field-label'}>EAN nummer gas</FormLabel>
                             <Row>
                                 <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer gas'}>

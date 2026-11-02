@@ -8,6 +8,7 @@ import ProjectFormViewLoan from './ProjectFormViewLoan';
 import ProjectFormViewObligation from './ProjectFormViewObligation';
 import ProjectFormViewPostalcodeLinkCapital from './ProjectFormViewPostalcodeLinkCapital';
 import ProjectFormViewCapital from './ProjectFormViewCapital';
+import ProjectFormViewEnergyCommunity from './ProjectFormViewEnergyCommunity';
 import RequiredParticipantsHelper from '../../../../../helpers/RequiredParticipantsHelper';
 
 const ProjectFormView = props => {
@@ -67,6 +68,15 @@ const ProjectFormView = props => {
         participationsGranted,
         participationsOptioned,
         participationsInteressed,
+        monitorProviderWithName,
+        energyCommunityExternalCode,
+        energySharing,
+        energySupplierRegistrationRequired,
+        leadingHousingFileApplication,
+        totalParticipationsPowerKwAvailable,
+        totalParticipationsPowerKwhConsumption,
+        totalParticipationsPowerKwAvailableOther,
+        totalParticipationsPowerKwhConsumptionOther,
         amountDefinitive,
         amountGranted,
         amountOptioned,
@@ -271,6 +281,19 @@ const ProjectFormView = props => {
                         eanManager={eanManager}
                         warrantyOrigin={warrantyOrigin}
                         eanSupply={eanSupply}
+                    />
+                ) : null}
+                {projectType && projectType.codeRef === 'energy_community' ? (
+                    <ProjectFormViewEnergyCommunity
+                        monitorProviderWithName={monitorProviderWithName}
+                        energyCommunityExternalCode={energyCommunityExternalCode}
+                        energySharing={energySharing}
+                        energySupplierRegistrationRequired={energySupplierRegistrationRequired}
+                        leadingHousingFileApplication={leadingHousingFileApplication}
+                        totalParticipationsPowerKwAvailable={totalParticipationsPowerKwAvailable}
+                        totalParticipationsPowerKwhConsumption={totalParticipationsPowerKwhConsumption}
+                        totalParticipationsPowerKwAvailableOther={totalParticipationsPowerKwAvailableOther}
+                        totalParticipationsPowerKwhConsumptionOther={totalParticipationsPowerKwhConsumptionOther}
                     />
                 ) : null}
             </section>

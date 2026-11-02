@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Api\Hoomdossier;
 use App\Eco\Contact\Contact;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\HousingFile\HousingFile;
+use App\Eco\HousingFile\HousingFileApplication;
 use App\Eco\Team\Team;
 use App\Eco\User\User;
 use App\Eco\Webform\Webform;
@@ -113,12 +114,20 @@ class EndPointHoomDossierController extends Controller
         }
 
         $housingFile = HousingFile::where('hoom_building_id', $buildingId)->first();
-        if(!$housingFile) {
-            $housingFile = optional($contact->primaryAddress)->housingfile;
+
+        if (!$housingFile) {
+            $housingFile = $contact->primaryAddress
+                ? $contact->primaryAddress->housingFiles()
+                    ->where('origin_application', HousingFileApplication::HOOM)
+                    ->latest('id')
+                    ->first()
+                : null;
+
             if(!$housingFile){
                 if($contact->primaryAddress){
                     $housingFile = new HousingFile();
                     $housingFile->address_id = $contact->primaryAddress->id;
+                    $housingFile->origin_application = HousingFileApplication::HOOM;
                     $housingFile->hoom_building_id = $buildingId;
                     $housingFile->number_of_residents = 0;
                     $housingFile->revenue_solar_panels = 0;

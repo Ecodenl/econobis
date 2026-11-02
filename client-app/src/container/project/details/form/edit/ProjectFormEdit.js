@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
-moment.locale('nl');
 import validator from 'validator';
 import { isEmpty } from 'lodash';
 
@@ -17,10 +15,14 @@ import ProjectFormDefaultLoan from '../../../form-default/ProjectFormDefaultLoan
 import ProjectFormDefaultObligation from '../../../form-default/ProjectFormDefaultObligation';
 import ProjectFormDefaultCapital from '../../../form-default/ProjectFormDefaultCapital';
 import ProjectFormDefaultPostalcodeLinkCapital from '../../../form-default/ProjectFormDefaultPostalcodeLinkCapital';
+import ProjectFormDefaultEnergyCommunity from '../../../form-default/ProjectFormDefaultEnergyCommunity';
 import EmailTemplateAPI from '../../../../../api/email-template/EmailTemplateAPI';
 import DocumentTemplateAPI from '../../../../../api/document-template/DocumentTemplateAPI';
 import PortalSettingsAPI from '../../../../../api/portal-settings/PortalSettingsAPI';
 import RequiredParticipantsHelper from '../../../../../helpers/RequiredParticipantsHelper';
+
+import moment from 'moment';
+moment.locale('nl');
 
 const defaultTextInfoProjectOnlyMembers =
     'Om in te schrijven voor dit project moet u eerst lid worden van onze coöperatie.';
@@ -804,6 +806,15 @@ class ProjectFormEdit extends Component {
             }
         }
 
+        // If energy community, init fields that are not applicable.
+        if (project.projectType.codeRef === 'energy_community') {
+            project.powerKwAvailable = null;
+            project.dateProduction = null;
+            project.dateEntry = null;
+            project.dateInterestBearing = null;
+            project.dateInterestBearingRedemption = null;
+        }
+
         // todo WM: zelfde controle postalcodeLink / addressNumberSeries zit nu ook in ProjectFormEditGeneral
         if (
             (project.checkPostalcodeLink || project.projectType.codeRef === 'postalcode_link_capital') &&
@@ -894,11 +905,21 @@ class ProjectFormEdit extends Component {
 
         if (!hasErrors) {
             this.setState({ isSaving: true });
-            ProjectDetailsAPI.updateProject(project.id, project).then(() => {
-                this.setState({ isSaving: false });
-                this.props.fetchProject(project.id);
-                this.props.switchToView();
-            });
+
+            ProjectDetailsAPI.updateProject(project.id, project)
+                .then(() => {
+                    this.setState({ isSaving: false });
+                    this.props.fetchProject(project.id);
+                    this.props.switchToView();
+                })
+                .catch(error => {
+                    this.setState({ isSaving: false });
+
+                    this.props.setError(
+                        error.response?.status || 500,
+                        error.response?.data?.message || 'Er is een fout opgetreden bij het opslaan van het project.'
+                    );
+                });
         } else if (!this.props.showCustomerPortalSettings) {
             this.props.toggleCustomerPortalSettings();
         }
@@ -1017,6 +1038,16 @@ class ProjectFormEdit extends Component {
             memberGroupId,
             textBecomeNoMember,
             noMemberGroupId,
+            monitorProvider,
+            energyCommunityExternalCode,
+            energySharing,
+            energySupplierRegistrationRequired,
+            hasParticipantsWithoutEnergySupplier,
+            leadingHousingFileApplication,
+            totalParticipationsPowerKwAvailable,
+            totalParticipationsPowerKwhConsumption,
+            totalParticipationsPowerKwAvailableOther,
+            totalParticipationsPowerKwhConsumptionOther,
             textAgreeTerms,
             textLinkAgreeTerms,
             textLinkNameAgreeTerms,
@@ -1243,6 +1274,24 @@ class ProjectFormEdit extends Component {
                         errors={this.state.errors}
                     />
                 ) : null}
+                {projectType && projectType.codeRef === 'energy_community' ? (
+                    <ProjectFormDefaultEnergyCommunity
+                        aultEnergyCommunity
+                        monitorProvider={monitorProvider}
+                        energyCommunityExternalCode={energyCommunityExternalCode}
+                        energySharing={energySharing}
+                        energySupplierRegistrationRequired={energySupplierRegistrationRequired}
+                        hasParticipantsWithoutEnergySupplier={hasParticipantsWithoutEnergySupplier}
+                        leadingHousingFileApplication={leadingHousingFileApplication}
+                        totalParticipationsPowerKwAvailable={totalParticipationsPowerKwAvailable}
+                        totalParticipationsPowerKwhConsumption={totalParticipationsPowerKwhConsumption}
+                        totalParticipationsPowerKwAvailableOther={totalParticipationsPowerKwAvailableOther}
+                        totalParticipationsPowerKwhConsumptionOther={totalParticipationsPowerKwhConsumptionOther}
+                        showTotals={true}
+                        handleInputChange={this.handleInputChange}
+                        monitorProviders={this.props.monitorProviders}
+                    />
+                ) : null}
 
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
@@ -1269,6 +1318,13 @@ const mapDispatchToProps = dispatch => ({
     fetchProject: id => {
         dispatch(fetchProject(id));
     },
+    setError: (httpCode, message) => {
+        dispatch({
+            type: 'SET_ERROR',
+            http_code: httpCode,
+            message: message,
+        });
+    },
 });
 
 const mapStateToProps = state => {
@@ -1277,6 +1333,7 @@ const mapStateToProps = state => {
         projectTypes: state.systemData.projectTypes,
         administrations: state.meDetails.administrations,
         projectLoanTypes: state.systemData.projectLoanTypes,
+        monitorProviders: state.systemData.monitorProviders,
     };
 };
 

@@ -13,6 +13,14 @@ const PermissionWrapper = ({ children, requiredPermission }) => {
         }
     }, [permissions, requiredPermission, navigate]);
 
+    if (!permissions || Object.keys(permissions).length === 0) {
+        return null;
+    }
+
+    if (!permissions[requiredPermission]) {
+        return null;
+    }
+
     return <>{children}</>;
 };
 

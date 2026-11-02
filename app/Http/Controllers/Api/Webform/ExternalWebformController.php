@@ -39,6 +39,7 @@ use App\Eco\HousingFile\BuildingType;
 use App\Eco\HousingFile\EnergyLabel;
 use App\Eco\HousingFile\EnergyLabelStatus;
 use App\Eco\HousingFile\HousingFile;
+use App\Eco\HousingFile\HousingFileApplication;
 use App\Eco\HousingFile\HousingFileHoomHousingStatus;
 use App\Eco\HousingFile\HousingFileSpecification;
 use App\Eco\HousingFile\RoofType;
@@ -2875,7 +2876,10 @@ class ExternalWebformController extends Controller
 
         // init values
         // check of housingfile al bestaat
-        $housingFile = HousingFile::where('address_id', $address->id)->orderBy('id', 'desc')->first();
+        $housingFile = HousingFile::where('address_id', $address->id)
+            ->where('origin_application', HousingFileApplication::ECONOBIS)
+            ->orderBy('id', 'desc')
+            ->first();
 
         // Als woondossier al bestaat en gegeven is niet meegegeven dan bestaande behouden
         if ($housingFile) {
@@ -3067,6 +3071,7 @@ class ExternalWebformController extends Controller
             $this->log('Er is geen woondossier gevonden op adres met postcode: ' . ($address->postal_code . ' nummer: ' . $address->number . ' toevoeging: ' . $address->addition ) .'. woondossier aanmaken.');
             $housingFile = HousingFile::create([
                 'address_id' =>  $address->id,
+                'origin_application' => HousingFileApplication::ECONOBIS,
                 'building_type_id' => $buildingTypeId,
                 'build_year' => $buildYear,
                 'is_house_for_sale' => $isHouseForSale,
@@ -3231,6 +3236,18 @@ class ExternalWebformController extends Controller
             if (!$project) $this->error('Er is een ongeldige waarde voor project meegegeven.');
 
             // Check address
+            if (!$contact->addressForPostalCodeCheck) {
+                $note = "Webformulier " . $this->webform->name . ".\n\n";
+                $note .= "Deelname kan niet worden aangemaakt voor contact "
+                    . $this->contact->full_name . " (" . $this->contact->number . ") "
+                    . "omdat er geen adres beschikbaar is.";
+
+                $this->addTaskCheckContact($this->responsibleIds, $this->contact, $this->webform, $note);
+
+                $this->log('Deelname kan niet worden aangemaakt: geen adres beschikbaar.');
+                return null;
+            }
+
             if($contact->addressForPostalCodeCheck){
                 $addressHelper = new AddressHelper($contact, $contact->addressForPostalCodeCheck);
                 $checkAddressOk = $addressHelper->checkAddress($project->id, false);
@@ -3238,10 +3255,31 @@ class ExternalWebformController extends Controller
                     $note = "Webformulier " . $this->webform->name . ".\n\n";
                     $note .= "Deelname kan niet worden aangemaakt voor contact " . $this->contact->full_name . " (" . $this->contact->number . ")  vanwege volgende fouten:\n";
                     $note .= implode("\n", $addressHelper->messages);
+
                     $this->addTaskCheckContact($this->responsibleIds, $this->contact, $this->webform, $note);
 
                     $this->log('Deelname kan niet worden aangemaakt vanwege volgende fouten:');
                     $this->log(implode(';', $addressHelper->messages));
+                    return null;
+                }
+            }
+
+            if ($project->projectType->code_ref === 'energy_community') {
+                $addressHelper = new AddressHelper($contact, $contact->addressForPostalCodeCheck);
+
+                $duplicateMessage = $addressHelper->checkDuplicateEnergyCommunityParticipation($project);
+
+                if ($duplicateMessage !== null) {
+                    $note = "Webformulier " . $this->webform->name . ".\n\n";
+                    $note .= "Deelname kan niet worden aangemaakt voor contact "
+                        . $this->contact->full_name . " (" . $this->contact->number . ") "
+                        . "vanwege de volgende fout:\n";
+                    $note .= $duplicateMessage;
+
+                    $this->addTaskCheckContact($this->responsibleIds, $this->contact, $this->webform, $note);
+
+                    $this->log('EG-deelname kan niet worden aangemaakt: ' . $duplicateMessage);
+
                     return null;
                 }
             }
@@ -3323,6 +3361,14 @@ class ExternalWebformController extends Controller
             $participation_mutation_amount = $data['participation_mutation_amount'] ?: null;
             $participation_mutation_quantity = $data['participation_mutation_quantity'] ?: null;
 
+            if ($projectTypeCodeRef === 'energy_community') {
+                if ((string) $participation_mutation_quantity !== '1') {
+                    $this->log('EG-deelname: aantal ontbreekt of is ongelijk aan 1, aantal 1 gebruikt.');
+                }
+
+                $participation_mutation_quantity = 1;
+            }
+
             switch($status->code_ref){
                 case 'interest' :
                     $dateInterest = $participation_mutation_date;
@@ -3361,7 +3407,9 @@ class ExternalWebformController extends Controller
             $participantMutation = ParticipantMutation::create([
                 'participation_id' => $participation->id,
                 'created_with' => 'webform',
-                'type_id' => ParticipantMutationType::where('project_type_id', $project->project_type_id)->where('code_ref', 'first_deposit')->value('id'),
+                'type_id' => ParticipantMutationType::where('project_type_id', $project->project_type_id)
+                    ->where('code_ref', $projectTypeCodeRef === 'energy_community' ? 'participation' : 'first_deposit')
+                    ->value('id'),
                 'status_id' => $status->id,
                 'payment_reference' => $data['participation_mutation_payment_reference'],
                 'date_payment' => Carbon::make($data['participation_mutation_date_payment']),

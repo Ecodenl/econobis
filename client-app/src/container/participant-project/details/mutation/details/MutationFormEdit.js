@@ -1,6 +1,4 @@
 import React from 'react';
-import moment from 'moment/moment';
-moment.locale('nl');
 import { connect } from 'react-redux';
 import Panel from '../../../../../components/panel/Panel';
 import MutationFormEditEnergyTaxRefund from './MutationFormEditEnergyTaxRefund';
@@ -8,6 +6,11 @@ import MutationFormEditResult from './MutationFormEditResult';
 import MutationFormEditDeposit from './MutationFormEditDeposit';
 import MutationFormEditWithDrawal from './MutationFormEditWithDrawal';
 import MutationFormEditRedemption from './MutationFormEditRedemption';
+import MutationFormEditParticipation from './MutationFormEditParticipation';
+import { getParticipantMutationStatusName } from '../../../../../helpers/participantMutationStatusHelper';
+import moment from 'moment/moment';
+
+moment.locale('nl');
 
 const MutationFormEdit = ({
     readOnly,
@@ -43,7 +46,10 @@ const MutationFormEdit = ({
                     buttonTextSubmit = 'Status doorzetten naar toegekend';
                     break;
                 case 'granted':
-                    buttonTextSubmit = 'Status doorzetten naar definitief';
+                    buttonTextSubmit =
+                        projectTypeCodeRef === 'energy_community'
+                            ? 'Status doorzetten naar deelnemer'
+                            : 'Status doorzetten naar definitief';
                     break;
                 default:
                     buttonTextSubmit = 'Opslaan';
@@ -73,6 +79,12 @@ const MutationFormEdit = ({
                 break;
         }
     }
+
+    participantMutationStatusesOptions = participantMutationStatusesOptions.map(status => ({
+        ...status,
+        name: getParticipantMutationStatusName(status, projectTypeCodeRef),
+    }));
+
     return (
         <div>
             <form className="form-horizontal" onSubmit={handleSubmit}>
@@ -100,7 +112,7 @@ const MutationFormEdit = ({
                             projectDateInterestBearingKwh={projectDateInterestBearingKwh}
                         />
                     ) : null}
-                    {type.codeRef === 'withDrawal' ? (
+                    {type.codeRef === 'with_drawal' ? (
                         <MutationFormEditWithDrawal
                             participationId={participationId}
                             readOnly={readOnly}
@@ -130,10 +142,26 @@ const MutationFormEdit = ({
                             cancelDetails={cancelDetails}
                         />
                     ) : null}
-                    {type.codeRef === 'energyTaxRefund' ? (
+                    {type.codeRef === 'energy_tax_refund' ? (
                         <MutationFormEditEnergyTaxRefund
                             participantMutationFromProps={participantMutationFromProps}
                             cancelDetails={cancelDetails}
+                        />
+                    ) : null}
+                    {type.codeRef === 'participation' ? (
+                        <MutationFormEditParticipation
+                            readOnly={readOnly}
+                            participantMutationFromState={participantMutationFromState}
+                            participantMutationFromProps={participantMutationFromProps}
+                            participantMutationStatusesOptions={participantMutationStatusesOptions}
+                            errors={errors}
+                            errorMessage={errorMessage}
+                            projectTypeCodeRef={projectTypeCodeRef}
+                            handleInputChange={handleInputChange}
+                            handleInputChangeDate={handleInputChangeDate}
+                            cancelDetails={cancelDetails}
+                            buttonText={buttonTextSubmit}
+                            handleSubmit={handleSubmit}
                         />
                     ) : null}
                 </Panel>

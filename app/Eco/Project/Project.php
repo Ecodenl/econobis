@@ -11,6 +11,7 @@ use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\FinancialOverview\FinancialOverviewProject;
+use App\Eco\HousingFile\HousingFileApplication;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\RevenuesKwh\RevenuesKwh;
@@ -38,6 +39,9 @@ class Project extends Model
 
     protected $casts = [
         'uses_mollie' => 'bool',
+        'energy_sharing' => 'bool',
+        'energy_supplier_registration_required' => 'bool',
+        'leading_housing_file_application' => HousingFileApplication::class,
     ];
 
     public function newEloquentBuilder($query)
@@ -119,6 +123,14 @@ class Project extends Model
         return $this->hasMany(ParticipantProject::class, 'project_id');
     }
 
+    public function hasParticipantsWithoutEnergySupplier(): bool
+    {
+        return $this->participantsProject()
+            ->whereNull('date_terminated')
+            ->whereDoesntHave('address.currentAddressEnergySupplierElectricity')
+            ->exists();
+    }
+
     public function financialOverviewProjects()
     {
         return $this->hasMany(FinancialOverviewProject::class);
@@ -173,6 +185,13 @@ class Project extends Model
         if (!$this->transaction_costs_code_ref) return null;
 
         return TransactionCostsCodeRef::get($this->transaction_costs_code_ref);
+    }
+
+    public function getMonitorProvider()
+    {
+        if (!$this->monitor_provider) return null;
+
+        return MonitorProvider::get($this->monitor_provider);
     }
 
     public function getBaseProjectCodeRef()

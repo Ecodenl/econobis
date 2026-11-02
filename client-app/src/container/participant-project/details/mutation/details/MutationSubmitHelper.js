@@ -12,7 +12,7 @@ export default function(participantMutation, projectTypeCodeRef) {
         if (projectTypeCodeRef === 'loan') {
             values.amountInterest = participantMutation.amountInterest;
             values.amount = participantMutation.amountInterest;
-        } else {
+        } else if (projectTypeCodeRef !== 'energy_community') {
             values.quantityInterest = participantMutation.quantityInterest;
             values.quantity = participantMutation.quantityInterest;
         }
@@ -23,7 +23,7 @@ export default function(participantMutation, projectTypeCodeRef) {
             if (projectTypeCodeRef === 'loan') {
                 values.amountOption = participantMutation.amountOption;
                 values.amount = participantMutation.amountOption;
-            } else {
+            } else if (projectTypeCodeRef !== 'energy_community') {
                 values.quantityOption = participantMutation.quantityOption;
                 values.quantity = participantMutation.quantityOption;
             }
@@ -36,7 +36,7 @@ export default function(participantMutation, projectTypeCodeRef) {
         if (projectTypeCodeRef === 'loan') {
             values.amountOption = participantMutation.amountOption;
             values.amount = participantMutation.amountOption;
-        } else {
+        } else if (projectTypeCodeRef !== 'energy_community') {
             values.quantityOption = participantMutation.quantityOption;
             values.quantity = participantMutation.quantityOption;
         }
@@ -47,7 +47,7 @@ export default function(participantMutation, projectTypeCodeRef) {
             if (projectTypeCodeRef === 'loan') {
                 values.amountGranted = participantMutation.amountGranted;
                 values.amount = participantMutation.amountGranted;
-            } else {
+            } else if (projectTypeCodeRef !== 'energy_community') {
                 values.quantityGranted = participantMutation.quantityGranted;
                 values.quantity = participantMutation.quantityGranted;
             }
@@ -60,7 +60,7 @@ export default function(participantMutation, projectTypeCodeRef) {
         if (projectTypeCodeRef === 'loan') {
             values.amountGranted = participantMutation.amountGranted;
             values.amount = participantMutation.amountGranted;
-        } else {
+        } else if (projectTypeCodeRef !== 'energy_community') {
             values.quantityGranted = participantMutation.quantityGranted;
             values.quantity = participantMutation.quantityGranted;
         }
@@ -71,15 +71,20 @@ export default function(participantMutation, projectTypeCodeRef) {
             if (projectTypeCodeRef === 'loan') {
                 values.amountFinal = participantMutation.amountFinal;
                 values.amount = participantMutation.amountFinal;
-            } else {
+            } else if (projectTypeCodeRef !== 'energy_community') {
                 values.quantityFinal = participantMutation.quantityFinal;
                 values.quantity = participantMutation.quantityFinal;
             }
-            values.dateContractRetour = participantMutation.dateContractRetour;
-            values.datePayment = participantMutation.datePayment;
-            values.paymentReference = participantMutation.paymentReference;
+
+            if (projectTypeCodeRef !== 'energy_community') {
+                values.dateContractRetour = participantMutation.dateContractRetour;
+                values.datePayment = participantMutation.datePayment;
+                values.paymentReference = participantMutation.paymentReference;
+            }
+
             values.dateEntry = participantMutation.dateEntry;
         }
+
         values.differentTransactionCostsAmount = participantMutation.differentTransactionCostsAmount;
     }
 
@@ -87,13 +92,17 @@ export default function(participantMutation, projectTypeCodeRef) {
         if (projectTypeCodeRef === 'loan') {
             values.amountFinal = participantMutation.amountFinal;
             values.amount = participantMutation.amountFinal;
-        } else {
+        } else if (projectTypeCodeRef !== 'energy_community') {
             values.quantityFinal = participantMutation.quantityFinal;
             values.quantity = participantMutation.quantityFinal;
         }
-        values.dateContractRetour = participantMutation.dateContractRetour;
-        values.datePayment = participantMutation.datePayment;
-        values.paymentReference = participantMutation.paymentReference;
+
+        if (projectTypeCodeRef !== 'energy_community') {
+            values.dateContractRetour = participantMutation.dateContractRetour;
+            values.datePayment = participantMutation.datePayment;
+            values.paymentReference = participantMutation.paymentReference;
+        }
+
         values.dateEntry = participantMutation.dateEntry;
         values.statusId = participantMutation.statusId;
         values.differentTransactionCostsAmount = null;
@@ -103,7 +112,7 @@ export default function(participantMutation, projectTypeCodeRef) {
         if (values.amount != participantMutation.amount) {
             values.differentTransactionCostsAmount = null;
         }
-    } else {
+    } else if (projectTypeCodeRef !== 'energy_community') {
         if (values.quantity != participantMutation.quantity) {
             values.differentTransactionCostsAmount = null;
         }

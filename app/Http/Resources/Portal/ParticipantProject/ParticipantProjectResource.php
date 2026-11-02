@@ -232,6 +232,33 @@ class ParticipantProjectResource extends JsonResource
                         ],
                         'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutationsForPortal')),
                     ];
+            case 'energy_community':
+                return [
+                    'basicInformation' => $basicInformation,
+                    'documents' => $documents,
+                    'fields' => [
+                        [
+                            'type' => 'string',
+                            'label' => 'Contact naam',
+                            'value' => $this->contact ? $this->contact->full_name : '',
+                        ],
+                        [
+                            'type' => 'string',
+                            'label' => 'Inschrijving voor',
+                            'value' => $this->project ? $this->project->name : '',
+                        ],
+                        [
+                            'type' => 'string',
+                            'label' => 'Organisatie',
+                            'value' => ($this->project && $this->project->administration)
+                                ? $this->project->administration->name
+                                : '',
+                        ],
+                    ],
+                    'participantMutations' => ParticipantMutationCollection::collection(
+                        $this->whenLoaded('mutationsForPortal')
+                    ),
+                ];
         }
     }
     private function capitalizeFirstLetter(string $text): string

@@ -25,7 +25,7 @@ export default function(participation, errors, hasErrors, statusCodeRef, project
                         errors.amountInterest = true;
                         hasErrors = true;
                     }
-                } else {
+                } else if (projectTypeCodeRef !== 'energy_community') {
                     if (participation.quantityInterest && participation.quantityInterest < 0) {
                         errors.quantityInterest = true;
                         hasErrors = true;
@@ -42,7 +42,7 @@ export default function(participation, errors, hasErrors, statusCodeRef, project
                         errors.amountOption = true;
                         hasErrors = true;
                     }
-                } else {
+                } else if (projectTypeCodeRef !== 'energy_community') {
                     if (!participation.quantityOption || participation.quantityOption < 0) {
                         errors.quantityOption = true;
                         hasErrors = true;
@@ -59,7 +59,7 @@ export default function(participation, errors, hasErrors, statusCodeRef, project
                         errors.amountGranted = true;
                         hasErrors = true;
                     }
-                } else {
+                } else if (projectTypeCodeRef !== 'energy_community') {
                     if (!participation.quantityGranted || participation.quantityGranted < 0) {
                         errors.quantityGranted = true;
                         hasErrors = true;
@@ -85,7 +85,7 @@ export default function(participation, errors, hasErrors, statusCodeRef, project
                         errors.amountFinal = true;
                         hasErrors = true;
                     }
-                } else {
+                } else if (projectTypeCodeRef !== 'energy_community') {
                     if (!participation.quantityFinal || participation.quantityFinal < 0) {
                         errors.quantityFinal = true;
                         hasErrors = true;

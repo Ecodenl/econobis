@@ -7,6 +7,7 @@ import ViewText from '../../../../components/form/ViewText';
 import ParticipantFormViewObligation from './view/ParticipantFormViewObligation';
 import ParticipantFormViewCapital from './view/ParticipantFormViewCapital';
 import ParticipantFormViewPostalcodeLinkCapital from './view/ParticipantFormViewPostalcodeLinkCapital';
+import ParticipantFormViewEnergyCommunity from './view/ParticipantFormViewEnergyCommunity';
 
 const ParticipantFormView = props => {
     const {
@@ -29,6 +30,7 @@ const ParticipantFormView = props => {
         dateRegister,
         dateTerminated,
         powerKwhConsumption,
+        powerKwAvailable,
         participationsReturnsTotal,
         participationsReturnsKwhTotal,
         participationsIndicationOfRestitutionEnergyTaxTotal,
@@ -105,30 +107,39 @@ const ParticipantFormView = props => {
                     }
                 />
             </div>
-            <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Schenker'} value={giftedByContact ? giftedByContact.fullName : ''} />
-                <ViewText label={'IBAN uitkeren'} value={ibanPayout ? ibanPayout : ''} />
-            </div>
-            <div className="row" onClick={props.switchToEdit}>
-                {projectTypeCodeRef === 'obligation' ? <div className="col-md-6" /> : null}
-                {projectTypeCodeRef === 'loan' ? (
-                    <ViewText label={`Huidig saldo lening rekening`} value={moneyPresenter(amountDefinitive)} />
-                ) : null}
-                {projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital' ? (
-                    <ViewText
-                        label={`Huidig saldo kapitaal rekening`}
-                        value={moneyPresenter(participationsCapitalWorth)}
-                    />
-                ) : null}
+            {projectTypeCodeRef !== 'energy_community' ? (
+                <div className="row" onClick={props.switchToEdit}>
+                    <ViewText label={'Schenker'} value={giftedByContact ? giftedByContact.fullName : ''} />
+                    <ViewText label={'IBAN uitkeren'} value={ibanPayout ? ibanPayout : ''} />
+                </div>
+            ) : null}
 
-                <ViewText label={'IBAN uitkeren t.n.v.'} value={ibanPayoutAttn ? ibanPayoutAttn : ''} />
-            </div>
-            <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Totale opbrengsten'} value={moneyPresenter(participationsReturnsTotal)} />
-                {project.typeCodeRef === 'loan' ? (
-                    <ViewText label={'Uitkeren op'} value={type ? type.name : ''} />
-                ) : null}
-            </div>
+            {projectTypeCodeRef !== 'energy_community' ? (
+                <div className="row" onClick={props.switchToEdit}>
+                    {projectTypeCodeRef === 'obligation' ? <div className="col-md-6" /> : null}
+                    {projectTypeCodeRef === 'loan' ? (
+                        <ViewText label={`Huidig saldo lening rekening`} value={moneyPresenter(amountDefinitive)} />
+                    ) : null}
+                    {projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital' ? (
+                        <ViewText
+                            label={`Huidig saldo kapitaal rekening`}
+                            value={moneyPresenter(participationsCapitalWorth)}
+                        />
+                    ) : null}
+
+                    <ViewText label={'IBAN uitkeren t.n.v.'} value={ibanPayoutAttn ? ibanPayoutAttn : ''} />
+                </div>
+            ) : null}
+
+            {projectTypeCodeRef !== 'energy_community' ? (
+                <div className="row" onClick={props.switchToEdit}>
+                    <ViewText label={'Totale opbrengsten'} value={moneyPresenter(participationsReturnsTotal)} />
+                    {project.typeCodeRef === 'loan' ? (
+                        <ViewText label={'Uitkeren op'} value={type ? type.name : ''} />
+                    ) : null}
+                </div>
+            ) : null}
+
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={'Eerste ingangsdatum deelname'}
@@ -174,6 +185,12 @@ const ParticipantFormView = props => {
                         participationsIndicationOfRestitutionEnergyTaxTotal
                     }
                     powerKwhConsumption={powerKwhConsumption}
+                />
+            ) : null}
+            {projectTypeCodeRef === 'energy_community' ? (
+                <ParticipantFormViewEnergyCommunity
+                    powerKwhConsumption={powerKwhConsumption}
+                    powerKwAvailable={powerKwAvailable}
                 />
             ) : null}
         </div>

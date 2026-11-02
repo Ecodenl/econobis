@@ -7,6 +7,7 @@ import InputDate from '../../../components/form/InputDate';
 import InputReactSelectLong from '../../../components/form/InputReactSelectLong';
 import AsyncSelectSet from '../../../components/form/AsyncSelectSet';
 import ContactsAPI from '../../../api/contact/ContactsAPI';
+import { getParticipantMutationStatusName } from '../../../helpers/participantMutationStatusHelper';
 
 function ParticipantNewForm(props) {
     const [searchTermContact, setSearchTermContact] = useState('');
@@ -57,6 +58,11 @@ function ParticipantNewForm(props) {
         participantMutationStatusItem => participantMutationStatusItem.id == statusId
     );
     const statusCodeRef = status ? status.codeRef : null;
+
+    const participantMutationStatusesOptions = participantMutationStatuses.map(status => ({
+        ...status,
+        name: getParticipantMutationStatusName(status, projectTypeCodeRef),
+    }));
 
     const getContactOptions = async () => {
         if (searchTermContact.length <= 1) return [];
@@ -124,7 +130,11 @@ function ParticipantNewForm(props) {
                     value={addressId ? Number(addressId) : null}
                     onChangeAction={handleInputChangeAddressId}
                     required={'required'}
-                    disabled={projectTypeCodeRef !== 'postalcode_link_capital' && !isSceProject}
+                    disabled={
+                        projectTypeCodeRef !== 'postalcode_link_capital' &&
+                        projectTypeCodeRef !== 'energy_community' &&
+                        !isSceProject
+                    }
                     error={errors.addressId}
                     errorMessage={
                         errors.addressId
@@ -138,7 +148,7 @@ function ParticipantNewForm(props) {
                     label={'Status'}
                     name={'statusId'}
                     id={'statusId'}
-                    options={participantMutationStatuses}
+                    options={participantMutationStatusesOptions}
                     value={statusId}
                     onChangeAction={handleInputChange}
                     required={'required'}
@@ -158,7 +168,7 @@ function ParticipantNewForm(props) {
                             onChangeAction={handleInputChange}
                             error={errors.amountInterest}
                         />
-                    ) : (
+                    ) : projectTypeCodeRef !== 'energy_community' ? (
                         <InputText
                             type={'number'}
                             label={'Aantal interesse'}
@@ -168,7 +178,7 @@ function ParticipantNewForm(props) {
                             onChangeAction={handleInputChange}
                             error={errors.quantityInterest}
                         />
-                    )}
+                    ) : null}
 
                     <InputDate
                         label={'Interesse datum'}
@@ -192,7 +202,7 @@ function ParticipantNewForm(props) {
                             required={'required'}
                             error={errors.amountOption}
                         />
-                    ) : (
+                    ) : projectTypeCodeRef !== 'energy_community' ? (
                         <InputText
                             type={'number'}
                             label={'Aantal inschrijving'}
@@ -203,7 +213,7 @@ function ParticipantNewForm(props) {
                             required={'required'}
                             error={errors.quantityOption}
                         />
-                    )}
+                    ) : null}
 
                     <InputDate
                         label={'Inschrijvingsdatum'}
@@ -229,7 +239,7 @@ function ParticipantNewForm(props) {
                             required={'required'}
                             error={errors.amountGranted}
                         />
-                    ) : (
+                    ) : projectTypeCodeRef !== 'energy_community' ? (
                         <InputText
                             type={'number'}
                             label={'Aantal toegekend'}
@@ -240,7 +250,7 @@ function ParticipantNewForm(props) {
                             required={'required'}
                             error={errors.quantityGranted}
                         />
-                    )}
+                    ) : null}
 
                     <InputDate
                         label={'Toewijzingsdatum'}
@@ -267,7 +277,7 @@ function ParticipantNewForm(props) {
                                 required={'required'}
                                 error={errors.amountFinal}
                             />
-                        ) : (
+                        ) : projectTypeCodeRef !== 'energy_community' ? (
                             <InputText
                                 type={'number'}
                                 label={'Aantal definitief'}
@@ -278,7 +288,7 @@ function ParticipantNewForm(props) {
                                 required={'required'}
                                 error={errors.quantityFinal}
                             />
-                        )}
+                        ) : null}
                         <InputDate
                             label={'Toewijzingsdatum'}
                             name={'dateGranted'}
@@ -287,22 +297,24 @@ function ParticipantNewForm(props) {
                             onChangeAction={handleInputChangeDate}
                         />
                     </div>
-                    <div className="row">
-                        <InputDate
-                            label={'Contract retour'}
-                            name={'dateContractRetour'}
-                            id={'dateContractRetour'}
-                            value={dateContractRetour}
-                            onChangeAction={handleInputChangeDate}
-                        />
-                        <InputDate
-                            label={'Betaaldatum'}
-                            name={'datePayment'}
-                            id={'datePayment'}
-                            value={datePayment}
-                            onChangeAction={handleInputChangeDate}
-                        />
-                    </div>
+                    {projectTypeCodeRef !== 'energy_community' ? (
+                        <div className="row">
+                            <InputDate
+                                label={'Contract retour'}
+                                name={'dateContractRetour'}
+                                id={'dateContractRetour'}
+                                value={dateContractRetour}
+                                onChangeAction={handleInputChangeDate}
+                            />
+                            <InputDate
+                                label={'Betaaldatum'}
+                                name={'datePayment'}
+                                id={'datePayment'}
+                                value={datePayment}
+                                onChangeAction={handleInputChangeDate}
+                            />
+                        </div>
+                    ) : null}
                     <div className="row">
                         <InputDate
                             label={'Ingangsdatum'}
@@ -314,13 +326,15 @@ function ParticipantNewForm(props) {
                             required={'required'}
                             error={errors.dateEntry}
                         />
-                        <InputText
-                            label={'Betalingskenmerk'}
-                            id={'paymentReference'}
-                            name={'paymentReference'}
-                            value={paymentReference}
-                            onChangeAction={handleInputChange}
-                        />
+                        {projectTypeCodeRef !== 'energy_community' ? (
+                            <InputText
+                                label={'Betalingskenmerk'}
+                                id={'paymentReference'}
+                                name={'paymentReference'}
+                                value={paymentReference}
+                                onChangeAction={handleInputChange}
+                            />
+                        ) : null}
                     </div>
                 </React.Fragment>
             ) : null}

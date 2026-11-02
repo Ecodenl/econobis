@@ -65,6 +65,20 @@ class FullProject extends JsonResource
                 'eanSupply' => $this->ean_supply,
                 'participationWorth' => $this->participation_worth,
                 'powerKwAvailable' => $this->power_kw_available,
+                'totalParticipationsPowerKwAvailable' => $this->total_participations_power_kw_available,
+                'totalParticipationsPowerKwhConsumption' => $this->total_participations_power_kwh_consumption,
+                'totalParticipationsPowerKwAvailableOther' => $this->total_participations_power_kw_available_other,
+                'totalParticipationsPowerKwhConsumptionOther' => $this->total_participations_power_kwh_consumption_other,
+                'monitorProvider' => $this->monitor_provider,
+                'monitorProviderWithName' => FullEnumWithIdAndName::make($this->getMonitorProvider()),
+                'energyCommunityExternalCode' => $this->energy_community_external_code,
+                'energySharing' => $this->energy_sharing,
+                'energySupplierRegistrationRequired' => $this->energy_supplier_registration_required,
+                'hasParticipantsWithoutEnergySupplier' =>
+                    $this->projectType?->code_ref === 'energy_community'
+                        ? $this->hasParticipantsWithoutEnergySupplier()
+                        : false,
+                'leadingHousingFileApplication' => $this->leading_housing_file_application?->value,
                 'maxParticipations' => $this->max_participations,
                 'taxReferral' => $this->tax_referral,
                 'totalParticipations' => $this->total_participations,

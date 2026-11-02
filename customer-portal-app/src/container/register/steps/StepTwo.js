@@ -20,23 +20,38 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
     let validationSchemaBasic = null;
     let validationSchemaAdditional = null;
     let validationSchemaPcrAdditional = null;
+    let validationSchemaEnergySupplierRequired = null;
+
+    const isEnergySupplierRequired =
+        project.projectType.codeRef === 'energy_community' && project.energySupplierRegistrationRequired;
+
     switch (typeContact) {
         case 'person':
             validationSchemaBasic = ValidationSchemaPersonal.validationSchemaBasic;
             validationSchemaAdditional = ValidationSchemaPersonal.validationSchemaAdditional;
-            validationSchemaPcrAdditional = ValidationSchemaPersonal.validationSchemaPcrAdditional;
             validationSchema = validationSchemaBasic.concat(validationSchemaAdditional);
             if (project.projectType.codeRef === 'postalcode_link_capital') {
+                validationSchemaPcrAdditional = ValidationSchemaPersonal.validationSchemaPcrAdditional;
                 validationSchema = validationSchema.concat(validationSchemaPcrAdditional);
+            }
+            if (isEnergySupplierRequired) {
+                validationSchemaEnergySupplierRequired =
+                    ValidationSchemaPersonal.validationSchemaEnergySupplierRequired;
+                validationSchema = validationSchema.concat(validationSchemaEnergySupplierRequired);
             }
             break;
         case 'organisation':
             validationSchemaBasic = ValidationSchemaOrganisation.validationSchemaBasic;
             validationSchemaAdditional = ValidationSchemaOrganisation.validationSchemaAdditional;
-            validationSchemaPcrAdditional = ValidationSchemaOrganisation.validationSchemaPcrAdditional;
             validationSchema = validationSchemaBasic.concat(validationSchemaAdditional);
             if (project.projectType.codeRef === 'postalcode_link_capital') {
+                validationSchemaPcrAdditional = ValidationSchemaOrganisation.validationSchemaPcrAdditional;
                 validationSchema = validationSchema.concat(validationSchemaPcrAdditional);
+            }
+            if (isEnergySupplierRequired) {
+                validationSchemaEnergySupplierRequired =
+                    ValidationSchemaOrganisation.validationSchemaEnergySupplierRequired;
+                validationSchema = validationSchema.concat(validationSchemaEnergySupplierRequired);
             }
             break;
     }
@@ -55,6 +70,7 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
                 {({
                     errors,
                     touched,
+                    submitCount,
                     setFieldValue,
                     setFieldError,
                     setFieldTouched,
@@ -71,11 +87,36 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
                                     portalSettings={portalSettings}
                                     initialContact={initialContact}
                                     projectTypeCodeRef={project.projectType.codeRef}
+                                    energySupplierRegistrationRequired={isEnergySupplierRequired}
                                     setFieldValue={setFieldValue}
                                     setFieldError={setFieldError}
                                     setFieldTouched={setFieldTouched}
                                     values={values}
-                                    touched={touched}
+                                    touched={
+                                        isEnergySupplierRequired && submitCount > 0
+                                            ? {
+                                                  ...touched,
+                                                  [initialContact.typeId === 'person'
+                                                      ? 'primaryAddress'
+                                                      : 'visitAddress']: {
+                                                      ...(touched[
+                                                          initialContact.typeId === 'person'
+                                                              ? 'primaryAddress'
+                                                              : 'visitAddress'
+                                                      ] || {}),
+                                                      currentAddressEnergySupplierElectricity: {
+                                                          ...(touched[
+                                                              initialContact.typeId === 'person'
+                                                                  ? 'primaryAddress'
+                                                                  : 'visitAddress'
+                                                          ]?.currentAddressEnergySupplierElectricity || {}),
+                                                          energySupplierId: true,
+                                                          memberSince: true,
+                                                      },
+                                                  },
+                                              }
+                                            : touched
+                                    }
                                     errors={errors}
                                     stepTwo={true}
                                 />
@@ -87,11 +128,36 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
                                     portalSettings={portalSettings}
                                     initialContact={initialContact}
                                     projectTypeCodeRef={project.projectType.codeRef}
+                                    energySupplierRegistrationRequired={isEnergySupplierRequired}
                                     setFieldValue={setFieldValue}
                                     setFieldError={setFieldError}
                                     setFieldTouched={setFieldTouched}
                                     values={values}
-                                    touched={touched}
+                                    touched={
+                                        isEnergySupplierRequired && submitCount > 0
+                                            ? {
+                                                  ...touched,
+                                                  [initialContact.typeId === 'person'
+                                                      ? 'primaryAddress'
+                                                      : 'visitAddress']: {
+                                                      ...(touched[
+                                                          initialContact.typeId === 'person'
+                                                              ? 'primaryAddress'
+                                                              : 'visitAddress'
+                                                      ] || {}),
+                                                      currentAddressEnergySupplierElectricity: {
+                                                          ...(touched[
+                                                              initialContact.typeId === 'person'
+                                                                  ? 'primaryAddress'
+                                                                  : 'visitAddress'
+                                                          ]?.currentAddressEnergySupplierElectricity || {}),
+                                                          energySupplierId: true,
+                                                          memberSince: true,
+                                                      },
+                                                  },
+                                              }
+                                            : touched
+                                    }
                                     errors={errors}
                                     stepTwo={true}
                                 />

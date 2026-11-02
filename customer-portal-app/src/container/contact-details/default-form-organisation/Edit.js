@@ -2,6 +2,7 @@ import React from 'react';
 import InputText from '../../../components/form/InputText';
 import { Field } from 'formik';
 import Select from '../../../components/form/Select';
+import AddressConnectionTypes from '../../../data/AddressConnectionTypes';
 import Countries from '../../../data/Countries';
 import EnergySuppliers from '../../../data/EnergySuppliers';
 import Col from 'react-bootstrap/Col';
@@ -22,6 +23,7 @@ const DefaultContactOrganisationEdit = function({
     freeFieldsFieldRecords,
     saveButtonGroup,
     projectTypeCodeRef,
+    energySupplierRegistrationRequired = false,
     setFieldValue,
     values,
     touched,
@@ -508,7 +510,10 @@ const DefaultContactOrganisationEdit = function({
                             </Field>
                         </Col>
                     </Row>
-                    {initialContact.isParticipantPcrProject || projectTypeCodeRef === 'postalcode_link_capital' ? (
+                    {initialContact.isParticipantPcrProject ||
+                    initialContact.isParticipantEnergyCommunityProject ||
+                    projectTypeCodeRef === 'postalcode_link_capital' ||
+                    projectTypeCodeRef === 'energy_community' ? (
                         <>
                             <FormLabel
                                 htmlFor="ean_electricity"
@@ -550,6 +555,31 @@ const DefaultContactOrganisationEdit = function({
                                 </Col>
                             </Row>
 
+                            {(projectTypeCodeRef === 'energy_community' ||
+                                initialContact.isParticipantEnergyCommunityProject) && (
+                                <>
+                                    <FormLabel htmlFor="connectionType" className="field-label">
+                                        Type aansluiting
+                                    </FormLabel>
+                                    <Row>
+                                        <Col xs={12} sm={10} md={6}>
+                                            <Field name="visitAddress.connectionType">
+                                                {({ field }) => (
+                                                    <Select
+                                                        field={field}
+                                                        errors={errors}
+                                                        touched={touched}
+                                                        id="connectionType"
+                                                        placeholder="Selecteer type aansluiting"
+                                                        options={AddressConnectionTypes}
+                                                    />
+                                                )}
+                                            </Field>
+                                        </Col>
+                                    </Row>
+                                </>
+                            )}
+
                             <FormLabel htmlFor="ean_gas" className={'field-label'}>
                                 EAN nummer gas
                             </FormLabel>
@@ -586,13 +616,16 @@ const DefaultContactOrganisationEdit = function({
                     ) : (
                         ''
                     )}
-                    {projectTypeCodeRef === 'postalcode_link_capital' || projectTypeCodeRef === undefined ? (
+                    {projectTypeCodeRef === 'postalcode_link_capital' ||
+                    projectTypeCodeRef === undefined ||
+                    energySupplierRegistrationRequired ? (
                         <>
                             <FormLabel
                                 htmlFor="energy_supplier_id"
                                 className={
                                     initialContact.isParticipantPcrProject ||
-                                    projectTypeCodeRef === 'postalcode_link_capital'
+                                    projectTypeCodeRef === 'postalcode_link_capital' ||
+                                    energySupplierRegistrationRequired
                                         ? 'field-label required'
                                         : 'field-label'
                                 }
@@ -698,7 +731,12 @@ const DefaultContactOrganisationEdit = function({
                                         </Col>
                                     </Row>
 
-                                    <FormLabel htmlFor="member_since" className={'field-label'}>
+                                    <FormLabel
+                                        htmlFor="member_since"
+                                        className={
+                                            energySupplierRegistrationRequired ? 'field-label required' : 'field-label'
+                                        }
+                                    >
                                         Klant bij leverancier sinds
                                     </FormLabel>
                                     <Row>

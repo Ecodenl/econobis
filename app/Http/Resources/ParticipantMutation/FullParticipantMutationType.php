@@ -19,6 +19,7 @@ class FullParticipantMutationType extends JsonResource
             'name' => $this->name,
             'codeRef' => $this->code_ref,
             'projectTypeCodeRef' => $this->projectType->code_ref,
+            'orderPerType' => $this->order_per_type,
         ];
     }
 }

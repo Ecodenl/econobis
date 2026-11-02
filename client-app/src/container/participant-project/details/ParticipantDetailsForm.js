@@ -33,13 +33,12 @@ class ParticipantDetailsForm extends Component {
         ) : (
             <div>
                 <ParticipantFormGeneral />
-                <>
-                    <RevenuesListForm />
-                    {this.props.participantProject.project &&
-                    this.props.participantProject.project.typeCodeRef === 'postalcode_link_capital' ? (
-                        <RevenuesKwhListForm />
-                    ) : null}
-                </>
+                {projectTypeCodeRef !== 'energy_community' ? (
+                    <>
+                        <RevenuesListForm />
+                        {projectTypeCodeRef === 'postalcode_link_capital' ? <RevenuesKwhListForm /> : null}
+                    </>
+                ) : null}
 
                 <MutationForm isTerminated={Boolean(this.props.participantProject.dateTerminated)} />
                 {projectTypeCodeRef === 'obligation' ? <ObligationNumberForm /> : null}

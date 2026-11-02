@@ -20,6 +20,7 @@ import ParticipantFormEditPostalcodeLinkCapital from './edit/ParticipantFormEdit
 import ParticipantFormEditCapital from './edit/ParticipantFormEditCapital';
 import ParticipantFormEditObligation from './edit/ParticipantFormEditObligation';
 import InputDate from '../../../../components/form/InputDate';
+import ParticipantFormEditEnergyCommunity from './edit/ParticipantFormEditEnergyCommunity';
 
 class ParticipantFormEdit extends Component {
     constructor(props) {
@@ -36,6 +37,7 @@ class ParticipantFormEdit extends Component {
             ibanPayoutAttn,
             typeId,
             powerKwhConsumption,
+            powerKwAvailable,
             dateRegister,
             dateTerminated,
         } = props.participation;
@@ -52,7 +54,8 @@ class ParticipantFormEdit extends Component {
                 ibanPayout: ibanPayout ? ibanPayout : '',
                 ibanPayoutAttn: ibanPayoutAttn ? ibanPayoutAttn : '',
                 typeId: typeId ? typeId : '',
-                powerKwhConsumption: powerKwhConsumption ? powerKwhConsumption : '',
+                powerKwhConsumption: powerKwhConsumption ?? '',
+                powerKwAvailable: powerKwAvailable ?? '',
                 dateRegister: dateRegister
                     ? dateRegister
                     : this.props.participation.project.dateEntry
@@ -157,6 +160,7 @@ class ParticipantFormEdit extends Component {
             ibanPayoutAttn,
             typeId,
             powerKwhConsumption,
+            powerKwAvailable,
             dateRegister,
             dateTerminated,
         } = this.state.participation;
@@ -287,73 +291,82 @@ class ParticipantFormEdit extends Component {
                     )}
                 </div>
 
-                <div className="row">
-                    <InputSelect
-                        label={'Schenker'}
-                        name={'giftedByContactId'}
-                        id={'giftedByContactId'}
-                        options={this.state.contacts}
-                        optionName={'fullName'}
-                        value={giftedByContactId}
-                        onChangeAction={this.handleInputChange}
-                    />
-                    <InputText
-                        label={'IBAN uitkeren'}
-                        name={'ibanPayout'}
-                        id={'ibanPayout'}
-                        value={ibanPayout}
-                        onChangeAction={this.handleInputChange}
-                        error={this.state.errors.ibanPayout}
-                    />
-                </div>
-                <div className="row">
-                    {projectTypeCodeRef === 'obligation' ? <div className={'form-group col-md-6'} /> : null}
-                    {projectTypeCodeRef === 'loan' ? (
-                        <ViewText
-                            label={`Huidig saldo lening rekening`}
-                            id={'amountDefinitive'}
-                            value={moneyPresenter(amountDefinitive)}
-                            className={'form-group col-md-6'}
-                        />
-                    ) : null}
-                    {projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital' ? (
-                        <ViewText
-                            label={`Huidig saldo kapitaal rekening`}
-                            id={'amountDefinitive'}
-                            value={moneyPresenter(participationsCapitalWorth)}
-                            className={'form-group col-md-6'}
-                        />
-                    ) : null}
-
-                    <InputText
-                        label={'IBAN uitkeren t.n.v.'}
-                        name={'ibanPayoutAttn'}
-                        id={'ibanPayoutAttn'}
-                        value={ibanPayoutAttn}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-                <div className="row">
-                    <ViewText
-                        label={'Totale opbrengsten'}
-                        id={'totalWorthParticipations'}
-                        className={'col-sm-6 form-group'}
-                        value={moneyPresenter(participationsReturnsTotal)}
-                    />
-
-                    {projectTypeCodeRef === 'loan' ? (
+                {projectTypeCodeRef !== 'energy_community' ? (
+                    <div className="row">
                         <InputSelect
-                            label={'Uitkeren op'}
-                            name={'typeId'}
-                            id={'typeId'}
-                            options={this.props.participantProjectPayoutTypes}
-                            value={typeId}
+                            label={'Schenker'}
+                            name={'giftedByContactId'}
+                            id={'giftedByContactId'}
+                            options={this.state.contacts}
+                            optionName={'fullName'}
+                            value={giftedByContactId}
                             onChangeAction={this.handleInputChange}
-                            required={'required'}
-                            error={this.state.errors.typeId}
                         />
-                    ) : null}
-                </div>
+                        <InputText
+                            label={'IBAN uitkeren'}
+                            name={'ibanPayout'}
+                            id={'ibanPayout'}
+                            value={ibanPayout}
+                            onChangeAction={this.handleInputChange}
+                            error={this.state.errors.ibanPayout}
+                        />
+                    </div>
+                ) : null}
+
+                {projectTypeCodeRef !== 'energy_community' ? (
+                    <div className="row">
+                        {projectTypeCodeRef === 'obligation' ? <div className={'form-group col-md-6'} /> : null}
+                        {projectTypeCodeRef === 'loan' ? (
+                            <ViewText
+                                label={`Huidig saldo lening rekening`}
+                                id={'amountDefinitive'}
+                                value={moneyPresenter(amountDefinitive)}
+                                className={'form-group col-md-6'}
+                            />
+                        ) : null}
+                        {projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital' ? (
+                            <ViewText
+                                label={`Huidig saldo kapitaal rekening`}
+                                id={'amountDefinitive'}
+                                value={moneyPresenter(participationsCapitalWorth)}
+                                className={'form-group col-md-6'}
+                            />
+                        ) : null}
+
+                        <InputText
+                            label={'IBAN uitkeren t.n.v.'}
+                            name={'ibanPayoutAttn'}
+                            id={'ibanPayoutAttn'}
+                            value={ibanPayoutAttn}
+                            onChangeAction={this.handleInputChange}
+                        />
+                    </div>
+                ) : null}
+
+                {projectTypeCodeRef !== 'energy_community' ? (
+                    <div className="row">
+                        <ViewText
+                            label={'Totale opbrengsten'}
+                            id={'totalWorthParticipations'}
+                            className={'col-sm-6 form-group'}
+                            value={moneyPresenter(participationsReturnsTotal)}
+                        />
+
+                        {projectTypeCodeRef === 'loan' ? (
+                            <InputSelect
+                                label={'Uitkeren op'}
+                                name={'typeId'}
+                                id={'typeId'}
+                                options={this.props.participantProjectPayoutTypes}
+                                value={typeId}
+                                onChangeAction={this.handleInputChange}
+                                required={'required'}
+                                error={this.state.errors.typeId}
+                            />
+                        ) : null}
+                    </div>
+                ) : null}
+
                 <div className="row">
                     <ViewText
                         label={'Eerste ingangsdatum deelname'}
@@ -397,6 +410,13 @@ class ParticipantFormEdit extends Component {
                         participationsIndicationOfRestitutionEnergyTaxTotal={
                             participationsIndicationOfRestitutionEnergyTaxTotal
                         }
+                        handleInputChange={this.handleInputChange}
+                    />
+                ) : null}
+                {projectTypeCodeRef === 'energy_community' ? (
+                    <ParticipantFormEditEnergyCommunity
+                        powerKwhConsumption={powerKwhConsumption}
+                        powerKwAvailable={powerKwAvailable}
                         handleInputChange={this.handleInputChange}
                     />
                 ) : null}

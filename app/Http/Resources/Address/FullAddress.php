@@ -59,6 +59,7 @@ class FullAddress extends JsonResource
             'typeAndPrimary' => $this->type_and_primary,
             'eanElectricity' => $this->ean_electricity,
             'eanGas' => $this->ean_gas,
+            'connectionType' => $this->connection_type?->value,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'housingFile' => FullHousingFile::make($this->whenLoaded('housingFile')),

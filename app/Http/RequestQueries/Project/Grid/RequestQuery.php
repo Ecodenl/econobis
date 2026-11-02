@@ -26,8 +26,25 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
 
     protected function baseQuery()
     {
-        $baseQuery =  Project::query()->select('projects.*');
-        $baseQuery->whereAdministrationIds(Auth::user());
+        $user = Auth::user();
+
+        $baseQuery = Project::query()->select('projects.*');
+        $baseQuery->whereAdministrationIds($user);
+
+        $canViewProjects = $user->hasPermissionTo('view_project', 'api');
+        $canViewEnergyCommunities = $user->hasPermissionTo('view_energy_community', 'api');
+
+        if (!$canViewProjects || !$canViewEnergyCommunities) {
+            $baseQuery->whereHas('projectType', function ($query) use ($canViewProjects, $canViewEnergyCommunities) {
+                if ($canViewProjects && !$canViewEnergyCommunities) {
+                    $query->where('code_ref', '!=', 'energy_community');
+                } elseif (!$canViewProjects && $canViewEnergyCommunities) {
+                    $query->where('code_ref', 'energy_community');
+                } else {
+                    $query->whereRaw('1 = 0');
+                }
+            });
+        }
 
         return $baseQuery;
     }

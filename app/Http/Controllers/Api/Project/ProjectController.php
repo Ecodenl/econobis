@@ -9,8 +9,10 @@
 namespace App\Http\Controllers\Api\Project;
 
 use App\Eco\Email\Email;
+use App\Eco\HousingFile\HousingFileApplication;
 use App\Eco\Project\Project;
 use App\Eco\Project\ProjectValueCourse;
+use App\Helpers\Address\AddressHelper;
 use App\Helpers\Delete\Models\DeleteProject;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
@@ -24,13 +26,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class ProjectController extends ApiController
 {
 
     public function grid(RequestQuery $requestQuery)
     {
-        $this->authorize('view', Project::class);
+        abort_unless(
+            Auth::user()->hasAnyPermission(['view_project', 'view_energy_community']),
+            403
+        );
 
         // Check op geauthoriseerde administratie gaat via ProjectBuilder !
         $projects = $requestQuery->get();
@@ -50,7 +56,7 @@ class ProjectController extends ApiController
     {
         set_time_limit(60);
 
-        $this->authorize('view', Project::class);
+        $this->authorize('viewByProjectType', $project);
 
         // todo WM: dit moet wellicht anders
         if (!in_array($project->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) abort(403);
@@ -93,8 +99,6 @@ class ProjectController extends ApiController
 
     public function store(Request $request, RequestInput $requestInput)
     {
-        $this->authorize('manage', Project::class);
-
         $data = $requestInput
             ->string('name')->validate('required')->next()
             ->string('code')->validate('required')->next()
@@ -181,29 +185,36 @@ class ProjectController extends ApiController
             ->double('transactionCostsPercentage2')->validate('nullable|numeric')->whenMissing(null)->alias('transaction_costs_percentage_2')->next()
             ->double('transactionCostsAmount3')->validate('nullable|numeric')->whenMissing(null)->alias('transaction_costs_amount_3')->next()
             ->double('transactionCostsPercentage3')->validate('nullable|numeric')->whenMissing(null)->alias('transaction_costs_percentage_3')->next()
+            ->string('monitorProvider')->validate('nullable|max:191')->onEmpty(null)->alias('monitor_provider')->next()
+            ->string('energyCommunityExternalCode')->validate('nullable|max:191|unique:projects,energy_community_external_code')->onEmpty(null)->alias('energy_community_external_code')->next()
+            ->boolean('energySharing')->alias('energy_sharing')->next()
+            ->boolean('energySupplierRegistrationRequired')->alias('energy_supplier_registration_required')->next()
+            ->string('leadingHousingFileApplication')->validate(['nullable', Rule::enum(HousingFileApplication::class)])->onEmpty(null)->alias('leading_housing_file_application')->next()
             ->get();
 
         $project = new Project();
 
         $project->fill($data);
 
+        $this->authorize('manageByProjectType', $project);
+
         $project->save();
 
-        // Create project valuecourse if participationWorth is > 0
-        // Only if project type is capital or postal code link capital
-        if($project->participation_worth > 0) {
-            if($project->projectType->code_ref != 'loan') {
-                $projectValueCourse = new ProjectValueCourse();
+        // Create project value course if participationWorth is > 0.
+        // Not applicable for loan and energy community projects.
+        if($project->participation_worth > 0
+            && $project->projectType->code_ref != 'loan'
+            && $project->projectType->code_ref != 'energy_community') {
+            $projectValueCourse = new ProjectValueCourse();
 
-                $projectValueCourse->fill([
-                    'project_id' => $project->id,
-                    'date' => Carbon::now(),
-                    'book_worth' => $project->participation_worth,
-                    'active' => true,
-                ]);
+            $projectValueCourse->fill([
+                'project_id' => $project->id,
+                'date' => Carbon::now(),
+                'book_worth' => $project->participation_worth,
+                'active' => true,
+            ]);
 
-                $projectValueCourse->save();
-            }
+            $projectValueCourse->save();
         }
 
         $contactGroupIds = explode(',', $request->contactGroupIds);
@@ -220,7 +231,7 @@ class ProjectController extends ApiController
 
     public function update(Request $request, RequestInput $requestInput, Project $project)
     {
-        $this->authorize('manage', Project::class);
+        $this->authorize('manageByProjectType', $project);
 
         $data = $requestInput
             ->string('name')->validate('required')->next()
@@ -313,9 +324,48 @@ class ProjectController extends ApiController
             ->double('transactionCostsPercentage2')->validate('nullable|numeric')->whenMissing(null)->alias('transaction_costs_percentage_2')->next()
             ->double('transactionCostsAmount3')->validate('nullable|numeric')->whenMissing(null)->alias('transaction_costs_amount_3')->next()
             ->double('transactionCostsPercentage3')->validate('nullable|numeric')->whenMissing(null)->alias('transaction_costs_percentage_3')->next()
+            ->string('monitorProvider')->validate('nullable|max:191')->onEmpty(null)->alias('monitor_provider')->next()
+            ->string('energyCommunityExternalCode')->validate('nullable|max:191|unique:projects,energy_community_external_code,' . $project->id)->onEmpty(null)->alias('energy_community_external_code')->next()
+            ->boolean('energySharing')->alias('energy_sharing')->next()
+            ->boolean('energySupplierRegistrationRequired')->alias('energy_supplier_registration_required')->next()
+            ->string('leadingHousingFileApplication')->validate(['nullable', Rule::enum(HousingFileApplication::class)])->onEmpty(null)->alias('leading_housing_file_application')->next()
             ->get();
 
         $project->fill($data);
+
+        if ($project->isDirty('project_type_id')) {
+            $this->authorize('manageByProjectType', $project);
+        }
+
+        if (
+            $project->projectType->code_ref === 'energy_community'
+            && $project->isDirty('energy_sharing')
+            && $project->energy_sharing
+        ) {
+            $duplicateMessage = AddressHelper::checkEnergyCommunityProjectForDuplicates($project);
+
+            if ($duplicateMessage !== null) {
+                abort(412, $duplicateMessage);
+            }
+        }
+
+        // Voorkom het verplicht stellen van een energieleverancier
+        // wanneer bestaande actieve EG-deelnames geen actuele leverancier hebben.
+        if (
+            $project->projectType?->code_ref === 'energy_community'
+            && $project->isDirty('energy_supplier_registration_required')
+            && $project->energy_supplier_registration_required
+        ) {
+            $hasParticipantsWithoutEnergySupplier = $project->hasParticipantsWithoutEnergySupplier();
+
+            if ($hasParticipantsWithoutEnergySupplier) {
+                abort(
+                    422,
+                    'Registratie energieleverancier kan niet verplicht worden gesteld, '
+                    . 'omdat één of meer actieve deelnemers geen actuele elektriciteitsleverancier hebben.'
+                );
+            }
+        }
 
         DB::transaction(function () use ($request, $project) {
             $participationWorthChanged = $project->isDirty(['participation_worth']);
@@ -326,15 +376,20 @@ class ProjectController extends ApiController
 //         Deze procedure zullen we nog moeten ombouwen naar verwerking in job(s).
                 foreach ($project->participantsProject as $participantProject){
                     $participantProject->participations_definitive_worth = $participantProject->calculator()->participationsDefinitiveWorth();
-                    if($project->projectType->code_ref == 'capital' || $project->projectType->code_ref == 'postalcode_link_capital') {
+                    // Capital worth is only applicable for capital and postal code link capital projects.
+                    if ($project->projectType->code_ref == 'capital'
+                        || $project->projectType->code_ref == 'postalcode_link_capital')
+                    {
                         $participantProject->participations_capital_worth = $participantProject->calculator()->participationsCapitalWorth();
                     }
                     $participantProject->save();
                 }
 
-                // Create project valuecourse if participationWorth changed and no valuecourse with bookworth is filled out
-                // Only if project type is capital or postal code link capital
-                if($project->projectType->code_ref != 'loan') {
+                // Create project valuecourse if participationWorth changed and no value course with bookworth is filled out
+                // Not applicable for loan and energy community projects.
+                if ($project->projectType->code_ref != 'loan'
+                    && $project->projectType->code_ref != 'energy_community')
+                {
                     $projectValueCourseWithBookWorthCount = $project->projectValueCourses->where('book_worth', '>', '0')->count();
 
                     if($projectValueCourseWithBookWorthCount === 0) {
@@ -379,7 +434,7 @@ class ProjectController extends ApiController
 
     public function destroy(Project $project)
     {
-        $this->authorize('manage', Project::class);
+        $this->authorize('manageByProjectType', $project);
 
         // todo WM: dit moet wellicht anders
         if (!in_array($project->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) abort(403);
@@ -405,15 +460,29 @@ class ProjectController extends ApiController
 
     public function peek()
     {
-        if(Auth::user()->hasPermissionTo('view_project', 'api')){
-            $projects = Project::whereIn('administration_id', Auth::user()->administrations()->pluck('administrations.id'))->orderBy('name')->orderBy('id')->get();
-        } else {
-            $projects = new Collection();
+        $user = Auth::user();
+
+        $canViewProjects = $user->hasPermissionTo('view_project', 'api');
+        $canViewEnergyCommunities = $user->hasPermissionTo('view_energy_community', 'api');
+
+        $projects = Project::query()
+            ->whereIn('administration_id', $user->administrations()->pluck('administrations.id'));
+
+        if (!$canViewProjects || !$canViewEnergyCommunities) {
+            $projects->whereHas('projectType', function ($query) use ($canViewProjects, $canViewEnergyCommunities) {
+                if ($canViewProjects && !$canViewEnergyCommunities) {
+                    $query->where('code_ref', '!=', 'energy_community');
+                } elseif (!$canViewProjects && $canViewEnergyCommunities) {
+                    $query->where('code_ref', 'energy_community');
+                } else {
+                    $query->whereRaw('1 = 0');
+                }
+            });
         }
 
-        $projects->load(['projectType']);
-
-        return ProjectPeek::collection($projects);
+        return ProjectPeek::collection(
+            $projects->with('projectType')->orderBy('name')->orderBy('id')->get()
+        );
     }
 
     public function getObligationNumbers(Project $project)
@@ -434,10 +503,15 @@ class ProjectController extends ApiController
 
     public function getRelatedEmails($id, $folder)
     {
-        // todo WM: dit moet wellicht anders
-        if (!in_array(Project::find($id)->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) abort(403);
+        $project = Project::findOrFail($id);
 
-        $this->authorize('view', Project::class);
+        $this->authorize('viewByProjectType', $project);
+
+        // todo WM: dit moet wellicht anders
+        // Controle op toegestane administratie behouden
+        if (!in_array($project->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) {
+            abort(403);
+        }
 
         return Email::where('project_id', $id)->where('folder', $folder)->get();
     }

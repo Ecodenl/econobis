@@ -34,6 +34,11 @@ class ProjectDetailsToolbar extends Component {
     render() {
         const { project, navigate } = this.props;
 
+        const canManageProject =
+            project?.projectType?.codeRef === 'energy_community'
+                ? this.props.permissions.manageEnergyCommunity
+                : this.props.permissions.manageProject;
+
         return (
             <div className="row">
                 <div className="col-sm-12">
@@ -42,7 +47,7 @@ class ProjectDetailsToolbar extends Component {
                             <div className="col-md-2">
                                 <div className="btn-group btn-group-flex margin-small" role="group">
                                     <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
-                                    {this.props.permissions.manageProject && (
+                                    {canManageProject && (
                                         <ButtonIcon iconName={'trash'} onClickAction={this.showDeleteModal} />
                                     )}
                                 </div>

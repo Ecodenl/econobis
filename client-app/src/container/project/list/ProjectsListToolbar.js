@@ -19,7 +19,9 @@ const ProjectsListToolbar = props => {
             <div className="col-md-4">
                 <div className="btn-group" role="group">
                     <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
-                    {permissions.manageProject && <ButtonIcon iconName={'plus'} onClickAction={newProject} />}
+                    {(permissions.manageProject || permissions.manageEnergyCommunity) && (
+                        <ButtonIcon iconName={'plus'} onClickAction={newProject} />
+                    )}
                     <ButtonIcon iconName={'refresh'} onClickAction={props.resetProjectFilters} />
                 </div>
             </div>

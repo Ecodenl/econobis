@@ -61,4 +61,9 @@ trait Encryptable
         }
         return $attributes;
     }
+
+    public function isEncryptable($key): bool
+    {
+        return in_array($key, $this->encryptable, true);
+    }
 }

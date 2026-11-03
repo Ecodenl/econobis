@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import RevenuesKwhdetailsToolbar from './RevenuesKwhdetailsToolbar';
+import RevenuesKwhDetailsToolbar from './RevenuesKwhDetailsToolbar';
 
 import { fetchRevenuesKwh, clearRevenuesKwh } from '../../../../../actions/project/ProjectDetailsActions';
 import Panel from '../../../../../components/panel/Panel';
@@ -36,7 +36,7 @@ class RevenuesKwhDetailsApp extends Component {
             <div className="row">
                 <div className="col-md-9">
                     <div className="col-md-12">
-                        <RevenuesKwhdetailsToolbar />
+                        <RevenuesKwhDetailsToolbar />
                     </div>
 
                     {this.props.revenuesKwh && this.props.revenuesKwh.id ? (

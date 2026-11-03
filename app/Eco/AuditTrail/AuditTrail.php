@@ -5,6 +5,7 @@ namespace App\Eco\AuditTrail;
 use App\Eco\User\User;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Crypt;
 
 class AuditTrail extends Model
@@ -16,63 +17,100 @@ class AuditTrail extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function getOldValueAttribute($value)
+    private const SENSITIVE_FIELDS = [
+        'iban',
+        'iban_payout',
+        'api_key',
+        'mollie_api_key',
+        'password',
+        'alfresco_password',
+        'twinfield_password',
+        'twinfield_client_secret',
+        'client_secret',
+        'token',
+        'secret',
+    ];
+
+    private function isEncryptedField(): bool
     {
-        $decryptedValue = $value;
-        try {
-            if($value) {
-                $decryptedValue = Crypt::decrypt($value);
-            }
-        } catch (DecryptException $e) {
-            $decryptedValue = $value;
+        $modelClass = $this->revisionable_type;
+
+        $modelClass = is_string($modelClass)
+            ? (Relation::getMorphedModel($modelClass) ?? $modelClass)
+            : null;
+
+        if (!is_string($modelClass)
+            || !class_exists($modelClass)
+            || !is_subclass_of($modelClass, Model::class)) {
+
+            // Fallback voor onbekende of verwijderde modellen
+            return in_array(
+                strtolower((string) $this->key),
+                self::SENSITIVE_FIELDS,
+                true
+            );
         }
 
-        // Indien IBAN leeg is, dan niet ge-encrypte waarde tonen
-        if(($this->key == 'iban' || $this->key == 'IBAN' || $this->key == 'api_key' || $this->key == 'mollie_api_key') && trim($decryptedValue) == '' ) {
+        $model = new $modelClass();
+
+        return method_exists($model, 'isEncryptable')
+            && $model->isEncryptable($this->key);
+    }
+
+    private function maskEncryptedValue($value)
+    {
+        if (!$this->isEncryptedField()) {
+            return $value;
+        }
+
+        if ($value === null || $value === '') {
             return '';
         }
 
-        return $value;
+        try {
+            $decryptedValue = Crypt::decrypt($value);
+
+            return trim((string) $decryptedValue) === ''
+                ? ''
+                : '********';
+        } catch (DecryptException $e) {
+            return '********';
+        }
+    }
+
+    public function getOldValueAttribute($value)
+    {
+        return $this->maskEncryptedValue($value);
     }
 
     public function getNewValueAttribute($value)
     {
-        $decryptedValue = $value;
-        try {
-            if($value) {
-                $decryptedValue = Crypt::decrypt($value);
-            }
-        } catch (DecryptException $e) {
-            $decryptedValue = $value;
-        }
-
-        // Indien IBAN of API key leeg is, dan niet ge-encrypte waarde tonen
-        if(($this->key == 'iban' || $this->key == 'IBAN' || $this->key == 'api_key' || $this->key == 'mollie_api_key') && trim($decryptedValue) == '' ) {
-            return '';
-        }
-        return $value;
+        return $this->maskEncryptedValue($value);
     }
 
     public function getValueChangedAttribute()
     {
-        $decryptedOldValue = $this->old_value;
-        $decryptedNewValue = $this->new_value;
+        $oldValue = $this->getRawOriginal('old_value');
+        $newValue = $this->getRawOriginal('new_value');
 
-        try {
-            if($this->old_value) {
-                $decryptedOldValue = Crypt::decrypt($this->old_value);
-            }
-            if($this->old_value) {
-                $decryptedNewValue = Crypt::decrypt($this->new_value);
-            }
-        } catch (DecryptException $e) {
-            $decryptedOldValue = $this->old_value;
-            $decryptedNewValue = $this->new_value;
+        if (!$this->isEncryptedField()) {
+            return $oldValue != $newValue;
         }
 
-        return $decryptedOldValue != $decryptedNewValue;
+        try {
+            if ($oldValue) {
+                $oldValue = Crypt::decrypt($oldValue);
+            }
+
+            if ($newValue) {
+                $newValue = Crypt::decrypt($newValue);
+            }
+        } catch (DecryptException $e) {
+            // Bij mislukte decryptie vergelijken we de oorspronkelijke waarden.
+            return $this->getRawOriginal('old_value')
+                != $this->getRawOriginal('new_value');
+        }
+
+        return $oldValue != $newValue;
     }
-
 }
-
-

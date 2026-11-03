@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import ButtonIcon from '../../../../../components/button/ButtonIcon';
-import RevenuesKwhdetailsDelete from './RevenuesKwhDetailsDelete';
+import RevenuesKwhDetailsDelete from './RevenuesKwhDetailsDelete';
 import { blockUI, unblockUI } from '../../../../../actions/general/BlockUIActions';
 import { bindActionCreators } from 'redux';
 import moment from 'moment/moment';
@@ -13,12 +13,12 @@ import fileDownload from 'js-file-download';
 import RevenuesKwhAPI from '../../../../../api/project/RevenuesKwhAPI';
 
 // Functionele wrapper voor de class component
-const RevenuesKwhdetailsToolbarWrapper = props => {
+const RevenuesKwhDetailsToolbarWrapper = props => {
     const navigate = useNavigate();
-    return <RevenuesKwhdetailsToolbar {...props} navigate={navigate} />;
+    return <RevenuesKwhDetailsToolbar {...props} navigate={navigate} />;
 };
 
-class RevenuesKwhdetailsToolbar extends Component {
+class RevenuesKwhDetailsToolbar extends Component {
     constructor(props) {
         super(props);
 
@@ -95,7 +95,7 @@ class RevenuesKwhdetailsToolbar extends Component {
                 </div>
 
                 {this.state.showDelete && (
-                    <RevenuesKwhdetailsDelete
+                    <RevenuesKwhDetailsDelete
                         closeDeleteItemModal={this.toggleDelete}
                         id={revenuesKwh.id}
                         projectId={revenuesKwh.project.id}
@@ -117,4 +117,4 @@ const mapDispatchToProps = dispatch => {
     return bindActionCreators({ blockUI, unblockUI }, dispatch);
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(RevenuesKwhdetailsToolbarWrapper);
+export default connect(mapStateToProps, mapDispatchToProps)(RevenuesKwhDetailsToolbarWrapper);

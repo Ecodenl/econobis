@@ -29,10 +29,20 @@ class AuditTrail extends Model
         'client_secret',
         'token',
         'secret',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
     ];
 
     private function isEncryptedField(): bool
     {
+        // Fortify 2FA-velden worden buiten de Encryptable-trait versleuteld.
+        if (in_array($this->key, [
+            'two_factor_secret',
+            'two_factor_recovery_codes',
+        ], true)) {
+            return true;
+        }
+
         $modelClass = $this->revisionable_type;
 
         $modelClass = is_string($modelClass)

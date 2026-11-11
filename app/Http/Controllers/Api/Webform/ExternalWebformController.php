@@ -118,6 +118,9 @@ class ExternalWebformController extends Controller
      * @var Contact|null
      */
     protected $contact = null;
+    private bool $isVve = false;
+    private bool $isPerson = false;
+    private bool $isOrganisation = false;
     protected $responsibleIds = [];
     protected $intake = null;
     protected $housingFile = null;
@@ -287,6 +290,16 @@ class ExternalWebformController extends Controller
         } else {
             $this->webform = $webform;
             $this->log('Webform met id ' . $webform->id . ' gevonden bij code ' . $apiKey . '.');
+        }
+
+        if ($this->isVve && $data['contact']['organisation_name'] === '') {
+            $this->error('Organisatienaam is verplicht bij een VvE-aanmelding.', 422);
+        }
+
+
+        // Bij een VvE-aanmelding is een geldig verbindingstype verplicht.
+        if ($this->isVve) {
+            $this->validateOccupationForVve($data);
         }
 
         $this->validateApiTypeForExternalWebform($webform);
@@ -515,6 +528,7 @@ class ExternalWebformController extends Controller
                 'geboortedatum' => 'date_of_birth',
                 // Organisation
                 'organisatienaam' => 'organisation_name',
+                'is_vve' => 'is_vve',
                 'kvk' => 'chamber_of_commerce_number',
                 'btw_nr' => 'vat_number',
                 'website' => 'website',
@@ -760,12 +774,12 @@ class ExternalWebformController extends Controller
         $mapping['task']['taak_opmerkingen'] = 'note';
 
         // geen organisatie, geen voorletters, voornaam en tussenvoegsel maar wel achternaam, dan alleen checks op achternaam.
-        if(empty(trim($request->get('organisatienaam', '')))
-            && !$request->get('voorletters')
-            && !$request->get('voornaam')
-            && !$request->get('tussenvoegsel')
-            && !empty(trim($request->get('achternaam', '')))
-        ){
+        if (($this->isVve || empty(trim($request->input('organisatienaam', ''))))
+            && !$request->input('voorletters')
+            && !$request->input('voornaam')
+            && !$request->input('tussenvoegsel')
+            && !empty(trim($request->input('achternaam', '')))
+        ) {
             $this->onlyCheckLastName = true;
         }
 
@@ -780,12 +794,19 @@ class ExternalWebformController extends Controller
                 // en ook voor woondossier velden
                 // hier moeten we namelijk ook onderscheid maken tussen niet meegegeven (behoud van gegevens) of leeg meegeven (wel wijzigen).
                 if($groupname === 'free_field_contact' || $groupname === 'free_field_address' || $groupname === 'housing_file') {
-                    $data[$groupname][$outputName] = $request->get($inputName);
+                    $data[$groupname][$outputName] = $request->input($inputName);
                 } else {
-                    $data[$groupname][$outputName] = trim($request->get($inputName, ''));
+                    $data[$groupname][$outputName] = trim($request->input($inputName, ''));
                 }
             }
         }
+
+        $this->isVve = $data['contact']['is_vve'] === '1';
+
+        $this->isPerson = $this->isVve
+            || $data['contact']['organisation_name'] === '';
+
+        $this->isOrganisation = !$this->isPerson;
 
         // Sanitize
 
@@ -906,6 +927,13 @@ class ExternalWebformController extends Controller
             $contact = $this->getContactByAddressAndEmail($data);
         }
 
+        if ($this->isVve && $this->contactActie === 'CCT') {
+            $this->log('VvE-aanmelding: onzekere persoonsmatch, nieuw contact met controletaak aanmaken.');
+
+            $contact = null;
+            $this->contactActie = 'NCT';
+        }
+
         $this->log('Actie: ' . $this->contactActie);
         if($contact){
             $this->log('Actie bij contact: ' . $contact->id);
@@ -961,7 +989,9 @@ class ExternalWebformController extends Controller
                     $this->addPhoneNumberToContact($data, $contact);
                     $this->addContactNotesToContact($data, $contact);
                     $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
-                    $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
+                    if (!$this->isVve) {
+                        $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
+                    }
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Nieuw adres toegevoegd aan contact " . $contact->full_name . " (".$contact->number.").\n";
                     $note .= "Adres type : " . AddressType::get($addressTypeId)->getName() . "\n";
@@ -983,7 +1013,9 @@ class ExternalWebformController extends Controller
                     $this->addPhoneNumberToContact($data, $contact);
                     $this->addContactNotesToContact($data, $contact);
                     $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
-                    $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
+                    if (!$this->isVve) {
+                        $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
+                    }
                     $address = $contact->addresses()
                         ->where('postal_code', $data['address_postal_code'])
                         ->where('number', $data['address_number'])
@@ -1061,12 +1093,28 @@ class ExternalWebformController extends Controller
                     break;
                 case 'NCT' :
                     $note = "Webformulier " . $webform->name . ".\n\n";
-                    $note .= "Nieuw contact " . $contact->full_name . " (".$contact->number.") aangemaakt op adres wat al voorkomt bij bestaande contact(en).\n";
+                    if ($this->isVve) {
+                        $note .= "Nieuw contact " . $contact->full_name . " (" . $contact->number . ") aangemaakt voor een VvE-aanmelding met een onzekere persoonsmatch.\n";
+                    } else {
+                        $note .= "Nieuw contact " . $contact->full_name . " (" . $contact->number . ") aangemaakt op adres wat al voorkomt bij bestaande contact(en).\n";
+                    }
                     $note .= "Controleer contactgegevens\n";
                     $this->addTaskCheckContact($responsibleIds, $contact, $webform, $note);
                     break;
             }
         }
+
+            if ($this->isVve && $contact) {
+                $vveContact = $this->findOrCreateVveOrganisation($data, $contact);
+
+                $data['occupation_contact_id'] = $vveContact->id;
+
+                $this->addContactToOccupations(
+                    $data,
+                    $contact,
+                    $ownerAndResponsibleUser
+                );
+            }
 
         return $contact;
     }
@@ -1099,11 +1147,7 @@ class ExternalWebformController extends Controller
 
     protected function getContactByAddressAndEmail(array $data)
     {
-        if ($data['organisation_name']) {
-            $contactTypeId = 'organisation';
-        }else{
-            $contactTypeId = 'person';
-        }
+        $contactTypeId = $this->isPerson ? 'person' : 'organisation';
 
         // Kijken of er een persoon gematcht kan worden op basis van adres (postcode, huisnummer en huisnummer toevoeging)
         if($data['address_postal_code'] && $data['address_number'] && isset($data['address_addition'])) {
@@ -1139,7 +1183,7 @@ class ExternalWebformController extends Controller
                 // Gevonden op adres, check op specifiek contact of anders op email (niet bij organisatie)
             } else {
 
-                if(!$data['organisation_name']){
+                if ($this->isPerson) {
                     $checkContactForBewoner = $contactAddressQuery->first();
                     if($checkContactForBewoner && str_contains( strtolower($checkContactForBewoner->person->last_name), 'bewoner') ){
                         $this->contactActie = "BCB";
@@ -1165,7 +1209,7 @@ class ExternalWebformController extends Controller
                         });
                         $naamForLog = 'achternaam ' . $data['last_name'];
                         $this->log('Check op persoon achternaam ?');
-                    } else if ($data['organisation_name']) {
+                    } else if ($this->isOrganisation) {
                         $contactNameQuery = $contactNameQuery->whereHas('organisation', function ($queryName) use ($data) {
                             $queryName->where('name', 'like', $data['organisation_name']);
                         });
@@ -1194,7 +1238,7 @@ class ExternalWebformController extends Controller
                     } else {
                         // Gevonden op adres, niet op emailcontact en niet op naam (voornaam + achternaam).
                         // Indien geen organisatie en niet expliciet op achternaam: check met voorletter + achternaam
-                        if (empty($data['organisation_name']) && !$this->onlyCheckLastName) {
+                        if ($this->isPerson && !$this->onlyCheckLastName) {
                             $contactNameInitialsQuery = clone($contactAddressQuery);
                             if (!empty($data['initials']) ) {
                                 $contactNameInitialsQuery = $contactNameInitialsQuery->whereHas('person', function ($queryNameInitials) use ($data) {
@@ -1232,7 +1276,7 @@ class ExternalWebformController extends Controller
                             if($this->onlyCheckLastName){
                                 // Organisatie Gevonden op adres maar niet op email of naam.
                                 $this->log('Contact gevonden op basis van adres (postcode, huisnummer en huisnummer toevoeging) maar niet op emailadres of achternaam');
-                            } else if ($data['organisation_name']) {
+                            } else if ($this->isOrganisation) {
                                 // Organisatie Gevonden op adres maar niet op email of naam.
                                 $this->log('Contact (organisatie) gevonden op basis van adres (postcode, huisnummer en huisnummer toevoeging) maar niet op emailadres of naam');
                             } else {
@@ -1254,7 +1298,7 @@ class ExternalWebformController extends Controller
                             $queryName->where('last_name', $data['last_name']);
                         });
                         $naamForLog = 'achternaam ' . $data['last_name'];
-                    } else if ($data['organisation_name']) {
+                    } else if ($this->isOrganisation) {
                         $contactNameQuery = $contactNameQuery->whereHas('organisation', function ($queryName) use ($data) {
                             $queryName->where('name', 'like', $data['organisation_name']);
                         });
@@ -1278,7 +1322,7 @@ class ExternalWebformController extends Controller
                     } else {
                         // Gevonden op adres en emailcontact, niet op naam (voornaam + achternaam).
                         // Indien geen organisatie en niet expliciet op achternaam: check met voorletter + achternaam
-                        if (empty($data['organisation_name']) && !$this->onlyCheckLastName) {
+                        if ($this->isPerson && !$this->onlyCheckLastName) {
                             $contactNameInitialsQuery = clone($contactEmailQuery);
                             if (!empty($data['initials']) ) {
                                 $contactNameInitialsQuery = $contactNameInitialsQuery->whereHas('person', function ($queryNameInitials) use ($data) {
@@ -1310,7 +1354,7 @@ class ExternalWebformController extends Controller
                             if($this->onlyCheckLastName){
                                 // Organisatie Gevonden op adres maar niet op email of naam.
                                 $this->log('Contact gevonden op basis van adres (postcode, huisnummer en huisnummer toevoeging) en emailadres maar niet op achternaam');
-                            } else if ($data['organisation_name']) {
+                            } else if ($this->isOrganisation) {
                                 // Organisatie Gevonden op adres maar niet op email of naam.
                                 $this->log('Contact (organisatie) gevonden op basis van adres (postcode, huisnummer en huisnummer toevoeging) en emailadres maar niet op naam');
                             } else {
@@ -1594,6 +1638,87 @@ class ExternalWebformController extends Controller
         $this->logs[] = $text;
     }
 
+    protected function findOrCreateVveOrganisation(
+        array $data,
+        Contact $personContact
+    ): Contact {
+        $organisationName = trim($data['organisation_name']);
+
+        // Zoek bestaande organisaties op naam.
+        $organisations = Organisation::where('name', $organisationName)
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->get();
+
+        if ($organisations->isNotEmpty()) {
+            $organisation = $organisations->first();
+
+            $this->log(
+                'Bestaande VvE ' . $organisationName .
+                ' gevonden met organisatie-id ' . $organisation->id . '.'
+            );
+
+            if ($organisations->count() > 1) {
+                $note = "Webformulier " . $this->webform->name . ".\n\n";
+                $note .= "Bij VvE-aanmelding zijn meerdere organisaties gevonden met de naam '" . $organisationName . "'.\n";
+                $note .= "Aantal gevonden organisaties: " . $organisations->count() . ".\n";
+                $note .= "Voorlopig gekozen organisatie-id: " . $organisation->id . ".\n";
+                $note .= "Gekoppeld VvE-lid: " . $personContact->full_name . " (" . $personContact->number . ").\n\n";
+                $note .= "Controleer of het VvE-lid aan de juiste organisatie is gekoppeld.\n";
+
+                $this->addTaskCheckContact(
+                    $this->responsibleIds,
+                    $personContact,
+                    $this->webform,
+                    $note
+                );
+
+                $this->log(
+                    'Meerdere VvE-organisaties gevonden met naam ' .
+                    $organisationName . '. Controletaak aangemaakt.'
+                );
+            }
+
+            return Contact::findOrFail($organisation->contact_id);
+        }
+
+        // Geen bestaande VvE gevonden: nieuwe organisatie aanmaken.
+        $organisationContact = Contact::create([
+            'type_id' => 'organisation',
+            'status_id' => 'webform',
+            'created_with' => 'webform',
+            'owner_id' => $personContact->owner_id,
+        ]);
+
+        $organisation = Organisation::create([
+            'contact_id' => $organisationContact->id,
+            'name' => $organisationName,
+            'statutory_name' => '',
+        ]);
+
+        // Het adres van de persoon en dat van de VvE krijgen afzonderlijke
+        // adresrecords (met verschillende ID's), ook al zijn de gegevens gelijk.
+        // Bewaar daarom $this->address: deze verwijst naar het adres van de persoon
+        $personAddress = $this->address;
+
+        $this->addAddressToContact($data, $organisationContact);
+
+        // Herstel het adres van de persoon na het toevoegen van het VvE-adres.
+        // Deze wordt later wellicht nog gebruikt voor onder andere intake en woondossier.
+        $this->address = $personAddress;
+
+        $this->addEmailToContact($data, $organisationContact);
+        $this->addPhoneNumberToContact($data, $organisationContact);
+
+        $this->log(
+            'Nieuwe VvE ' . $organisationName .
+            ' aangemaakt met organisatie-id ' . $organisation->id .
+            ' en contact-id ' . $organisationContact->id . '.'
+        );
+
+        return $organisationContact;
+    }
+
     protected function addContact(array $data, ?array $dataFreeFieldContacts, User $ownerAndResponsibleUser)
     {
         $this->newContactCreated = false;
@@ -1628,7 +1753,7 @@ class ExternalWebformController extends Controller
             }
         }
 
-        if ($data['organisation_name']) {
+        if ($this->isOrganisation) {
             $this->log('Er is een organisatienaam meegegeven; organisatie aanmaken.');
 
             $iban = $this->checkIban($data['iban'], 'organisatie.');
@@ -1704,8 +1829,9 @@ class ExternalWebformController extends Controller
                 // Overige gegevens aan person hangen
                 $this->addEmailToContact($data, $contactPerson);
                 $this->addContactToGroupContactperson($data, $contactPerson, $ownerAndResponsibleUser);
-                $this->addContactToOccupations($data, $contactPerson, $ownerAndResponsibleUser);
-
+                if (!$this->isVve) {
+                    $this->addContactToOccupations($data, $contactPerson, $ownerAndResponsibleUser);
+                }
                 $this->log('Persoon met id ' . $person->id
                     . ' aangemaakt en gekoppeld aan organisatie als medewerker.');
 
@@ -1726,8 +1852,8 @@ class ExternalWebformController extends Controller
             return $contactOrganisation;
         }
 
-        // Als we hier komen is er geen bedrijfsnaam meegegeven, dan maken we alleen een persoon aan
-        $this->log('Er is geen organisatienaam meegegeven; persoon aanmaken.');
+        // Hoofdcontact is een persoon (ook bij een VvE-aanmelding).
+        $this->log('Hoofdcontact is een persoon; persoon aanmaken.');
 
         $lastName = $data['last_name'];
         if (!$lastName) {
@@ -1790,7 +1916,9 @@ class ExternalWebformController extends Controller
         $this->addPhoneNumberToContact($data, $contact);
         $this->addContactNotesToContact($data, $contact);
         $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
-        $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
+        if (!$this->isVve) {
+            $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
+        }
 
         // Indien contact bijlage url meegegeven deze als document opslaan
         if($data['contact_attachment']){
@@ -1869,7 +1997,7 @@ class ExternalWebformController extends Controller
             }
         }
 
-        if ($data['organisation_name']) {
+        if ($this->isOrganisation) {
             $this->log('Er is een organisatienaam meegegeven; organisatie bijwerken.');
 
             $contactUpdateArray = [];
@@ -1915,7 +2043,9 @@ class ExternalWebformController extends Controller
             $this->addPhoneNumberToContact($data, $contact);
             $this->addContactNotesToContact($data, $contact);
             $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
-            $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
+            if (!$this->isVve) {
+                $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
+            }
 
             // Bij UPC bestaande contactpersoon aan opgegeven contactgroep(en) koppelen.
             if ($this->contactActie === 'UPC') {
@@ -1929,9 +2059,8 @@ class ExternalWebformController extends Controller
             return $contact;
         }
 
-        // Als we hier komen is er geen bedrijfsnaam meegegeven, dan werken we alleen een persoon bij
-        $this->log('Er is geen organisatienaam meegegeven; persoon bijwerken.');
-
+        // Hoofdcontact is een persoon (ook bij een VvE-aanmelding).
+        $this->log('Hoofdcontact is een persoon; persoon bijwerken.');
         $contactUpdateArray = [];
 
         if($data['did_agree_avg']){
@@ -2001,7 +2130,9 @@ class ExternalWebformController extends Controller
         $this->addPhoneNumberToContact($data, $contact);
         $this->addContactNotesToContact($data, $contact);
         $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
-        $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
+        if (!$this->isVve) {
+            $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
+        }
 
         // Indien contact bijlage url meegegeven deze als document opslaan
         if($data['contact_attachment']){
@@ -4141,6 +4272,50 @@ class ExternalWebformController extends Controller
         } else {
             $this->log('Er is geen product meegegeven, geen order aanmaken.');
             return null;
+        }
+    }
+
+    /**
+     * Valideer het verbindingstype voor een VvE-aanmelding.
+     * Gebruik standaard 'vve_member' als geen verbindingstype is meegegeven.
+     *
+     * @param array $data
+     * @return void
+     */
+    protected function validateOccupationForVve(array &$data): void
+    {
+        $occupationId = $data['contact']['occupation_id'];
+
+        if ($occupationId === '') {
+            $occupation = Occupation::where('code_ref', 'vve_member')->first();
+
+            if (!$occupation) {
+                $this->error(
+                    'Geen verbindingstype meegegeven en standaardverbindingstype "vve_member" niet gevonden.',
+                    422
+                );
+            }
+
+            $data['contact']['occupation_id'] = $occupation->id;
+
+            $this->log(
+                'Geen verbindingstype meegegeven, standaard VvE lid gebruikt (' .
+                $occupation->id . ').'
+            );
+        } else {
+            $occupation = Occupation::find($occupationId);
+
+            if (!$occupation) {
+                $this->error(
+                    'Ongeldig verbindingstype meegegeven (' . $occupationId . ').',
+                    422
+                );
+            }
+
+            $this->log(
+                'Verbindingstype ingesteld op: ' .
+                $occupation->primary_occupation . ' (' . $occupation->id . ').'
+            );
         }
     }
 

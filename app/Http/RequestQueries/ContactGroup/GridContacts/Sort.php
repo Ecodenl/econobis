@@ -72,11 +72,20 @@ class Sort extends RequestSort
             $order
         );
 
-        // Tiebreaker: veel contacten hebben dezelfde datum (bulk toevoegen / conversie),
-        // zonder vaste volgorde kunnen rijen over pagina's heen dubbel voorkomen of ontbreken.
-        $query->orderBy('contacts.id', $order);
-
         // default sort niet meer uitvoeren
         return false;
+    }
+
+    protected function applyFinalSort($query)
+    {
+        // Tiebreaker: veel contacten hebben dezelfde datum (bulk toevoegen / conversie).
+        // Pas na alle overige sorteervelden sorteren op ID, zodat meervoudige
+        // sortering behouden blijft en paginering stabiel is.
+        foreach ($this->sorts as $sort) {
+            if ($sort['field'] === 'memberToGroupSince') {
+                $query->orderBy('contacts.id', $sort['order']);
+                break;
+            }
+        }
     }
 }

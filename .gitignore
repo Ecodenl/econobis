@@ -14,6 +14,7 @@ npm-debug.log
 yarn-error.log
 .env
 .env.testing
+.env.bak.*
 /.env.development
 config-rest-api.php
 _ide_helper.php

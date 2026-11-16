@@ -177,10 +177,34 @@ class ProjectNewApp extends Component {
         this.handleContactGroupIds = this.handleContactGroupIds.bind(this);
     }
 
+    setEnergyCommunityProjectType = () => {
+        if (!window.location.hash.startsWith('#/energiegemeenschappen/nieuw')) {
+            return;
+        }
+
+        const energyCommunity = this.props.projectTypesActive?.find(
+            projectType => projectType.codeRef === 'energy_community'
+        );
+
+        if (energyCommunity && this.state.project.projectTypeId !== energyCommunity.id) {
+            this.handleInputChangeProjectType({
+                target: { value: energyCommunity.id },
+            });
+        }
+    };
+
     componentDidMount() {
         ContactGroupAPI.peekContactGroups().then(payload => {
             this.setState({ contactGroups: payload });
         });
+
+        this.setEnergyCommunityProjectType();
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.projectTypesActive !== this.props.projectTypesActive) {
+            this.setEnergyCommunityProjectType();
+        }
     }
 
     handleInputChange = event => {

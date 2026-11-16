@@ -65,6 +65,8 @@ const ProjectFormNewGeneral = ({
 
     const isEnergyCommunity = projectTypeCodeRef === 'energy_community';
 
+    const isNewEnergyCommunity = window.location.hash.startsWith('#/energiegemeenschappen/nieuw');
+
     const availableProjectTypes = projectTypesActive.filter(projectType => {
         if (projectType.codeRef === 'energy_community') {
             return permissions?.manageEnergyCommunity === true;
@@ -135,6 +137,7 @@ const ProjectFormNewGeneral = ({
                     required={'required'}
                     error={errors.projectTypeId}
                     errorMessage={errorMessages.projectTypeId}
+                    readOnly={isNewEnergyCommunity}
                 />
                 <InputSelect
                     label={'Status'}

@@ -8,7 +8,9 @@ const ProjectsListToolbar = props => {
     const navigate = useNavigate();
 
     const newProject = () => {
-        navigate('/project/nieuw');
+        const isEnergyCommunity = window.location.hash.startsWith('#/energiegemeenschappen');
+
+        navigate(isEnergyCommunity ? '/energiegemeenschappen/nieuw' : '/project/nieuw');
     };
 
     const { permissions = {} } = props;

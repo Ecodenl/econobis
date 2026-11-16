@@ -577,6 +577,15 @@ const AppRoutes = () => {
                         <Route path="product/:id" element={<ProductDetailsApp />} />
                         /* Project */
                         <Route path="project/nieuw" element={<ProjectNewApp />} />
+                        /* Project EG */
+                        <Route
+                            path="energiegemeenschappen/nieuw"
+                            element={
+                                <PermissionWrapper requiredPermission="menuEnergyCommunities">
+                                    <ProjectNewApp />
+                                </PermissionWrapper>
+                            }
+                        />
                         <Route
                             path="project/opbrengst/nieuw/:projectId/:categoryId"
                             element={<ProjectRevenueNewApp />}

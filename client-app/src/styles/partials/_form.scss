@@ -68,3 +68,8 @@ textarea {
 .Select-menu-outer {
   z-index: 10 !important;
 }
+
+// Type aansluiting: sterretje beter leesbaar dan in Raleway.
+select.connection-type-select {
+  font-family: Arial, sans-serif;
+}

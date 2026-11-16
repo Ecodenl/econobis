@@ -30,7 +30,7 @@ const InputSelect = props => {
             </label>
             <div className={'col-sm-6'}>
                 <select
-                    className={`form-control input-sm ${className}` + (error && ' has-error')}
+                    className={`form-control input-sm ${className}${error ? ' has-error' : ''}`}
                     id={id}
                     name={name}
                     value={value ? value : ''}

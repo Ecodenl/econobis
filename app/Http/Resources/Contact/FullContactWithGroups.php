@@ -21,6 +21,7 @@ use App\Http\Resources\QuotationRequest\GridContactQuotationRequest;
 use App\Http\Resources\Task\GridTask;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class FullContactWithGroups extends JsonResource
 {
@@ -32,6 +33,27 @@ class FullContactWithGroups extends JsonResource
      */
     public function toArray($request)
     {
+        $user = Auth::user();
+
+        $canViewParticipations = $user->hasPermissionTo('view_participation', 'api');
+        $canViewEnergyCommunities = $user->hasPermissionTo('view_energy_community', 'api');
+
+        $participations = $this->resource->relationLoaded('participations')
+            ? $this->resource->getRelation('participations')
+            : collect();
+
+        $regularParticipations = $canViewParticipations
+            ? $participations->filter(
+                fn ($participation) => $participation->project->projectType->code_ref !== 'energy_community'
+            )->values()
+            : collect();
+
+        $energyCommunityParticipations = $canViewEnergyCommunities
+            ? $participations->filter(
+                fn ($participation) => $participation->project->projectType->code_ref === 'energy_community'
+            )->values()
+            : collect();
+
         $organisantionOrCoachCampaigns = null;
         if($this->isCoach()){
             $organisantionOrCoachCampaigns = FullCampaign::collection($this->whenLoaded('coachCampaigns'));
@@ -103,8 +125,10 @@ class FullContactWithGroups extends JsonResource
             'relatedDocuments' => $this->relatedDocuments,
             'opportunityCount' => $this->opportunities()->count(),
             'relatedOpportunities' => $this->opportunities()->with('measureCategory')->get(),
-            'participationCount' => $this->participations()->count(),
-            'relatedParticipations' => RelatedParticipantProjectToContact::collection($this->whenLoaded('participations')),
+            'participationCount' => $regularParticipations->count(),
+            'relatedParticipations' => RelatedParticipantProjectToContact::collection($regularParticipations),
+            'energyCommunityParticipationCount' => $energyCommunityParticipations->count(),
+            'relatedEnergyCommunityParticipations' => RelatedParticipantProjectToContact::collection($energyCommunityParticipations),
             'visibleGroups' => $this->getVisibleGroups(),
             'isCollectMandate' => $this->is_collect_mandate,
             'collectMandateCode' => $this->collect_mandate_code,

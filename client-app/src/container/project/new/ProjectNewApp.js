@@ -177,10 +177,34 @@ class ProjectNewApp extends Component {
         this.handleContactGroupIds = this.handleContactGroupIds.bind(this);
     }
 
+    setEnergyCommunityProjectType = () => {
+        if (!window.location.hash.startsWith('#/energiegemeenschappen/nieuw')) {
+            return;
+        }
+
+        const energyCommunity = this.props.projectTypesActive?.find(
+            projectType => projectType.codeRef === 'energy_community'
+        );
+
+        if (energyCommunity && this.state.project.projectTypeId !== energyCommunity.id) {
+            this.handleInputChangeProjectType({
+                target: { value: energyCommunity.id },
+            });
+        }
+    };
+
     componentDidMount() {
         ContactGroupAPI.peekContactGroups().then(payload => {
             this.setState({ contactGroups: payload });
         });
+
+        this.setEnergyCommunityProjectType();
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.projectTypesActive !== this.props.projectTypesActive) {
+            this.setEnergyCommunityProjectType();
+        }
     }
 
     handleInputChange = event => {
@@ -450,9 +474,12 @@ class ProjectNewApp extends Component {
                     this.props.navigate(`/project/${payload.data.data.id}`);
                 })
                 .catch(error => {
-                    console.log(error);
-                    alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
                     this.setState({ loading: false });
+
+                    this.props.setError(
+                        error.response?.status || 500,
+                        error.response?.data?.message || 'Er is een fout opgetreden bij het aanmaken van het project.'
+                    );
                 });
         }
     };
@@ -734,4 +761,14 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(ProjectNewAppWrapper);
+const mapDispatchToProps = dispatch => ({
+    setError: (httpCode, message) => {
+        dispatch({
+            type: 'SET_ERROR',
+            http_code: httpCode,
+            message: message,
+        });
+    },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectNewAppWrapper);

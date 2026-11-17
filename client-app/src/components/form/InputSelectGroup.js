@@ -27,7 +27,7 @@ const InputSelectGroup = props => {
             </label>
             <div className={`${size}`}>
                 <select
-                    className={`form-control input-sm ${className}` + (error && ' has-error')}
+                    className={`form-control input-sm ${className}${error ? ' has-error' : ''}`}
                     id={id}
                     name={name}
                     value={value}

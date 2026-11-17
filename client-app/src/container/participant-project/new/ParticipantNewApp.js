@@ -98,6 +98,11 @@ export default function ParticipantNewApp() {
     // Helper: bepaal disableBeforeEntryDate (zelfde logica als class versie)
     const getDisableBeforeEntryDate = useCallback(
         (project, contact) => {
+            // Voor energiegemeenschappen gelden geen financiële boekjaarrestricties.
+            if (project?.typeCodeRef === 'energy_community') {
+                return '';
+            }
+
             let lastYearFinancialOverviewDefinitive = 0;
             if (project && project.lastYearFinancialOverviewDefinitive) {
                 lastYearFinancialOverviewDefinitive = project.lastYearFinancialOverviewDefinitive;

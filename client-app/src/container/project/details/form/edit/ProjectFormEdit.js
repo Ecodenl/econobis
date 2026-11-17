@@ -1280,7 +1280,6 @@ class ProjectFormEdit extends Component {
                 ) : null}
                 {projectType && projectType.codeRef === 'energy_community' ? (
                     <ProjectFormDefaultEnergyCommunity
-                        aultEnergyCommunity
                         monitorProvider={monitorProvider}
                         energyCommunityExternalCode={energyCommunityExternalCode}
                         energySharing={energySharing}

@@ -65,6 +65,8 @@ const ProjectFormNewGeneral = ({
 
     const isEnergyCommunity = projectTypeCodeRef === 'energy_community';
 
+    const isNewEnergyCommunity = window.location.hash.startsWith('#/energiegemeenschappen/nieuw');
+
     const availableProjectTypes = projectTypesActive.filter(projectType => {
         if (projectType.codeRef === 'energy_community') {
             return permissions?.manageEnergyCommunity === true;
@@ -135,6 +137,7 @@ const ProjectFormNewGeneral = ({
                     required={'required'}
                     error={errors.projectTypeId}
                     errorMessage={errorMessages.projectTypeId}
+                    readOnly={isNewEnergyCommunity}
                 />
                 <InputSelect
                     label={'Status'}
@@ -343,18 +346,17 @@ const ProjectFormNewGeneral = ({
                 />
             </div>
 
-            {administrations.find(a => a.id == administrationId) &&
-                administrations.find(a => a.id == administrationId).usesMollie && (
-                    <div className="row">
-                        <div className="form-group col-sm-6" />
-                        <InputToggle
-                            label={'Direct elektronisch betalen via Mollie'}
-                            name={'usesMollie'}
-                            value={usesMollie}
-                            onChangeAction={handleInputChange}
-                        />
-                    </div>
-                )}
+            {!isEnergyCommunity && administrations.find(a => a.id == administrationId)?.usesMollie && (
+                <div className="row">
+                    <div className="form-group col-sm-6" />
+                    <InputToggle
+                        label={'Direct elektronisch betalen via Mollie'}
+                        name={'usesMollie'}
+                        value={usesMollie}
+                        onChangeAction={handleInputChange}
+                    />
+                </div>
+            )}
 
             <div className="row">
                 <InputDate

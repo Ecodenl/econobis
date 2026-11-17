@@ -26,6 +26,8 @@ class GridProject extends JsonResource
                 'participationsDefinitive' => $this->participations_definitive,
                 'amountOfLoanNeeded' => $this->amount_of_loan_needed,
                 'amountDefinitive' => $this->amount_definitive,
+                'totalParticipationsPowerKwhConsumption' => $this->total_participations_power_kwh_consumption,
+                'totalParticipationsPowerKwAvailable' => $this->total_participations_power_kw_available,
             ];
     }
 }

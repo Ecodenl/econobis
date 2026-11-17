@@ -99,11 +99,12 @@ return [
     | specify a specific custom language line for a given attribute rule.
     |
     */
-    'custom'               => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+    'custom' => [
+        'energyCommunityExternalCode' => [
+            'unique' => 'Deze externe code is al in gebruik bij een andere energiegemeenschap.',
         ],
     ],
+
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Attributes

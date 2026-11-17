@@ -14,6 +14,23 @@ const ProjectsListHead = props => {
         }, 100);
     };
 
+    if (props.isEnergyCommunity) {
+        return (
+            <tr className="thead-title">
+                <DataTableHeadTitleAndSort
+                    sortColumn={'name'}
+                    title={'Gemeenschap'}
+                    width={'35%'}
+                    setSorts={setSorts}
+                />
+                <DataTableHeadTitle title={'Deelnemers'} width={'15%'} />
+                <DataTableHeadTitle title={'Totaal verbruik'} width={'22%'} />
+                <DataTableHeadTitle title={'Totaal opwek kWp'} width={'22%'} />
+                <th width="6%" />
+            </tr>
+        );
+    }
+
     return (
         <tr className="thead-title">
             <DataTableHeadTitleAndSort sortColumn={'code'} title={'Projectcode'} width={'10%'} setSorts={setSorts} />

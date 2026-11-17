@@ -45,7 +45,7 @@ class ContactController extends Controller
             'financialOverviewContactsSend',
             'documents',
             'opportunities',
-            'participations',
+            'participations.project.projectType',
             'orders',
             'invoices'
         ]);

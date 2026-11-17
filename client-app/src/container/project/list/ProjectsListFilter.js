@@ -26,6 +26,25 @@ const ProjectsListFilter = props => {
         }, 100);
     };
 
+    if (props.isEnergyCommunity) {
+        return (
+            <tr className="thead-filter">
+                <th>
+                    <input
+                        type="text"
+                        className="form-control input-sm"
+                        value={props.filters.name.data}
+                        onChange={onProjectChange}
+                    />
+                </th>
+                <th />
+                <th />
+                <th />
+                <th />
+            </tr>
+        );
+    }
+
     return (
         <tr className="thead-filter">
             <th>

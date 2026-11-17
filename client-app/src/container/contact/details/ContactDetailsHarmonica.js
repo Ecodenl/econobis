@@ -42,6 +42,7 @@ class ContactDetailsHarmonica extends Component {
                 emailsSent: false,
                 documents: false,
                 participations: false,
+                energyCommunityParticipations: false,
             },
             showModalAddGroup: false,
         };
@@ -65,6 +66,7 @@ class ContactDetailsHarmonica extends Component {
                     emailsSent: false,
                     documents: false,
                     participations: false,
+                    energyCommunityParticipations: false,
                 },
             });
         }
@@ -222,10 +224,23 @@ class ContactDetailsHarmonica extends Component {
 
                 {this.props.permissions.viewParticipation ? (
                     <ParticipationHarmonica
+                        title="DEELNAMES"
                         toggleShowList={() => this.toggleShowList('participations')}
                         showParticipationsList={this.state.toggleShowList.participations}
                         participationCount={this.props.contactDetails.participationCount}
+                        relatedParticipations={this.props.contactDetails.relatedParticipations}
                         newParticipation={this.newParticipation}
+                        canManage={this.props.permissions.manageParticipation}
+                    />
+                ) : null}
+
+                {this.props.permissions.viewEnergyCommunity ? (
+                    <ParticipationHarmonica
+                        title="ENERGIEGEMEENSCHAPPEN"
+                        toggleShowList={() => this.toggleShowList('energyCommunityParticipations')}
+                        showParticipationsList={this.state.toggleShowList.energyCommunityParticipations}
+                        participationCount={this.props.contactDetails.energyCommunityParticipationCount}
+                        relatedParticipations={this.props.contactDetails.relatedEnergyCommunityParticipations}
                     />
                 ) : null}
 

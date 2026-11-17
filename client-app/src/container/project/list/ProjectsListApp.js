@@ -141,10 +141,14 @@ class ProjectsListApp extends Component {
                 <div className="panel panel-default col-md-12">
                     <div className="panel-body">
                         <div className="col-md-12 margin-10-top">
-                            <ProjectsListToolbar resetProjectFilters={() => this.resetProjectFilters()} />
+                            <ProjectsListToolbar
+                                isEnergyCommunity={this.props.isEnergyCommunity}
+                                resetProjectFilters={() => this.resetProjectFilters()}
+                            />
                         </div>
                         <div className="col-md-12 margin-10-top">
                             <ProjectsList
+                                isEnergyCommunity={this.props.isEnergyCommunity}
                                 projects={this.props.projects}
                                 projectsPagination={this.props.projectsPagination}
                                 onSubmitFilter={() => this.onSubmitFilter()}

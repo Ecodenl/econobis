@@ -328,6 +328,7 @@ function ContactDetailsFormAddressNew({ toggleShowNew }) {
 
                     <div className="row">
                         <InputSelect
+                            className="connection-type-select"
                             label="Type aansluiting"
                             id="connectionType"
                             name="connectionType"

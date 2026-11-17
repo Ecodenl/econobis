@@ -8,9 +8,7 @@ const ProjectsListToolbar = props => {
     const navigate = useNavigate();
 
     const newProject = () => {
-        const isEnergyCommunity = window.location.hash.startsWith('#/energiegemeenschappen');
-
-        navigate(isEnergyCommunity ? '/energiegemeenschappen/nieuw' : '/project/nieuw');
+        navigate(props.isEnergyCommunity ? '/energiegemeenschappen/nieuw' : '/project/nieuw');
     };
 
     const { permissions = {} } = props;
@@ -28,7 +26,9 @@ const ProjectsListToolbar = props => {
                 </div>
             </div>
             <div className="col-md-4">
-                <h3 className="text-center table-title">Projecten</h3>
+                <h3 className="text-center table-title">
+                    {props.isEnergyCommunity ? 'Energiegemeenschappen' : 'Projecten'}
+                </h3>
             </div>
             <div className="col-md-4">
                 <div className="pull-right">Resultaten: {meta.total || 0}</div>

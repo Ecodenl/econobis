@@ -76,18 +76,25 @@ class ProjectsList extends Component {
                 <form onKeyUp={this.handleKeyUp}>
                     <DataTable>
                         <DataTableHead>
-                            <ProjectsListHead fetchProjectsListData={() => this.props.fetchProjectsListData()} />
-                            <ProjectsListFilter onSubmitFilter={this.props.onSubmitFilter} />
+                            <ProjectsListHead
+                                isEnergyCommunity={this.props.isEnergyCommunity}
+                                fetchProjectsListData={() => this.props.fetchProjectsListData()}
+                            />
+                            <ProjectsListFilter
+                                isEnergyCommunity={this.props.isEnergyCommunity}
+                                onSubmitFilter={this.props.onSubmitFilter}
+                            />
                         </DataTableHead>
                         <DataTableBody>
                             {loading ? (
                                 <tr>
-                                    <td colSpan={11}>{loadingText}</td>
+                                    <td colSpan={this.props.isEnergyCommunity ? 5 : 11}>{loadingText}</td>
                                 </tr>
                             ) : (
                                 data.map(project => (
                                     <ProjectsListItem
                                         key={project.id}
+                                        isEnergyCommunity={this.props.isEnergyCommunity}
                                         {...project}
                                         showDeleteItemModal={this.showDeleteItemModal}
                                     />

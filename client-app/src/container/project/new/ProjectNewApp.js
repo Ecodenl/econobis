@@ -474,9 +474,12 @@ class ProjectNewApp extends Component {
                     this.props.navigate(`/project/${payload.data.data.id}`);
                 })
                 .catch(error => {
-                    console.log(error);
-                    alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
                     this.setState({ loading: false });
+
+                    this.props.setError(
+                        error.response?.status || 500,
+                        error.response?.data?.message || 'Er is een fout opgetreden bij het aanmaken van het project.'
+                    );
                 });
         }
     };
@@ -758,4 +761,14 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(ProjectNewAppWrapper);
+const mapDispatchToProps = dispatch => ({
+    setError: (httpCode, message) => {
+        dispatch({
+            type: 'SET_ERROR',
+            http_code: httpCode,
+            message: message,
+        });
+    },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectNewAppWrapper);

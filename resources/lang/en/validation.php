@@ -100,8 +100,8 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'energyCommunityExternalCode' => [
+            'unique' => 'This external code is already in use by another energy community.',
         ],
     ],
 

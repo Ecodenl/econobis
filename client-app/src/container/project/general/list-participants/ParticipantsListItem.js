@@ -124,7 +124,7 @@ class ParticipantsListItem extends Component {
 
                     <td>{this.props.dongleTypes || ''}</td>
 
-                    <td>{address?.connectionType || ''}</td>
+                    <td className="connection-type-text">{address?.connectionType || ''}</td>
 
                     {/* EnergieID account */}
                     <td />

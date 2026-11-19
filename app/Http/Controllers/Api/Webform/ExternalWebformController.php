@@ -808,6 +808,18 @@ class ExternalWebformController extends Controller
 
         $this->isOrganisation = !$this->isPerson;
 
+        // Bij VvE-aanmeldingen is de persoon het hoofdcontact.
+        // Ondersteun ook de oorspronkelijke contactgroepvelden voor contactpersonen.
+        if ($this->isVve) {
+            if (empty($data['contact']['group_name'])) {
+                $data['contact']['group_name'] = $data['contact']['group_name_contactperson'];
+            }
+
+            if (empty($data['contact']['contact_group_ids'])) {
+                $data['contact']['contact_group_ids'] = $data['contact']['contact_group_ids_contactperson'];
+            }
+        }
+
         // Sanitize
 
         $data['intake']['intake_id'] = $this->decryptValue($data['intake']['intake_id'], 'intake_id');

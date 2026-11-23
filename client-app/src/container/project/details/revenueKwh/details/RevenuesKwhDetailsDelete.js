@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Modal from '../../../../../components/modal/Modal';
 import RevenuesKwhAPI from '../../../../../api/project/RevenuesKwhAPI';
 
-const RevenuesKwhdetailsDelete = props => {
+const RevenuesKwhDetailsDelete = props => {
     const navigate = useNavigate();
 
     const confirmAction = () => {
@@ -26,4 +26,4 @@ const RevenuesKwhdetailsDelete = props => {
     );
 };
 
-export default RevenuesKwhdetailsDelete;
+export default RevenuesKwhDetailsDelete;

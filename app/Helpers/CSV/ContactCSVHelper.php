@@ -16,11 +16,14 @@ use Carbon\Carbon;
 use League\Csv\Reader;
 use Illuminate\Support\Facades\Log;
 use App\Eco\Address\Address;
+use App\EcoShared\SharedPostalCodesHouseNumber\SharedPostalCodesHouseNumber;
+use Illuminate\Support\Facades\DB;
 
 class ContactCSVHelper
 {
     private $csvExporter;
     private $contacts;
+    private $contactGroup;
 
     public function __construct($contacts, $contactGroup = false)
     {
@@ -35,11 +38,18 @@ class ContactCSVHelper
         $csv = '';
         $headers = true;
 
+        // Fetch member_to_group_since in a single query instead of 2 queries per contact
+        $memberToGroupSinceByContactId = $this->contactGroup
+            ? DB::table('contact_groups_pivot')
+                ->where('contact_group_id', $this->contactGroup->id)
+                ->pluck('member_to_group_since', 'contact_id')
+            : collect();
+
         foreach ($this->contacts->chunk(500) as $chunk) {
             $chunk->load([
-                'person',
+                'person.title',
                 'organisation',
-                'addresses',
+                'addresses.country',
                 'primaryEmailAddress',
                 'emailAddresses',
                 'primaryphoneNumber',
@@ -58,15 +68,15 @@ class ContactCSVHelper
                 'primaryOccupations.contact.primaryphoneNumber',
             ]);
 
+            // Fetch district names (shared database) for all addresses in this chunk at once
+            $districtNames = $this->getDistrictNamesForAddresses($chunk->pluck('addresses')->flatten());
+
             foreach ($chunk as $contact) {
-                // Addresses
+                // Addresses (relations are already loaded; addresses is sorted by primary desc, id desc)
                 if ($contact->addresses) {
                     foreach (AddressType::collection() as $type) {
-                        $address = $contact->addresses()->where('type_id', $type->value)->where('primary', true)->first();
-                        if(empty($address))
-                        {
-                            $address = $contact->addresses()->where('type_id', $type->value)->first();
-                        }
+                        $addressesOfType = $contact->addresses->where('type_id', $type->value);
+                        $address = $addressesOfType->firstWhere('primary', true) ?? $addressesOfType->first();
 
                         $addressArr = [];
 
@@ -76,7 +86,7 @@ class ContactCSVHelper
                         $addressArr['postal_code'] = ($address ? $address->postal_code : '');
                         $addressArr['city'] = ($address ? $address->city : '');
                         $addressArr['areaName'] = ($address ? $address->shared_area_name : '');
-                        $addressArr['districtName'] = (($address && $address->getSharedPostalCodesHouseNumber()) ? $address->getSharedPostalCodesHouseNumber()->sharedArea->district_name : '');
+                        $addressArr['districtName'] = ($address ? ($districtNames[$this->postalCodeHouseNumberKey($address->postal_code, $address->number)] ?? '') : '');
                         $addressArr['country'] = (($address && $address->country) ? $address->country->name : '');
 
                         $contact['address_' . $type->value] = $addressArr;
@@ -85,7 +95,7 @@ class ContactCSVHelper
 
                 // Other e-mail addresses
                 if ($contact->emailAddresses) {
-                    $emailAddresses = $contact->emailAddresses()->where('primary', false)->limit(5)->get();
+                    $emailAddresses = $contact->emailAddresses->where('primary', false)->sortBy('id')->take(5)->values();
 
                     $contact['emailAddress_2'] = (isset($emailAddresses[0]) ? $emailAddresses[0]->email : '');
                     $contact['emailAddress_3'] = (isset($emailAddresses[1]) ? $emailAddresses[1]->email : '');
@@ -95,7 +105,7 @@ class ContactCSVHelper
 
                 // Other phonenumbers
                 if ($contact->phoneNumbers) {
-                    $phoneNumbers = $contact->phoneNumbers()->where('primary', false)->limit(2)->get();
+                    $phoneNumbers = $contact->phoneNumbers->where('primary', false)->sortBy('id')->take(2)->values();
 
                     $contact['phonenumber_2'] = (isset($phoneNumbers[0]) ? $phoneNumbers[0]->number : '');
                     $contact['phonenumber_3'] = (isset($phoneNumbers[1]) ? $phoneNumbers[1]->number : '');
@@ -103,7 +113,7 @@ class ContactCSVHelper
 
                 // Latest 2 contactNotes
                 if ($contact->contactNotes) {
-                    $contactNotes = $contact->contactNotes()->limit(2)->orderBy('id', 'desc')->get();
+                    $contactNotes = $contact->contactNotes->sortByDesc('id')->take(2)->values();
 
                     $latestContactNotes = (isset($contactNotes[0]) ? $contactNotes[0]->note : '');
                     $latestContactNotes .= (isset($contactNotes[1]) ? ' | ' . $contactNotes[1]->note : '');
@@ -201,7 +211,7 @@ class ContactCSVHelper
                 }
             }
 
-            $this->csvExporter->beforeEach(function ($contact) {
+            $this->csvExporter->beforeEach(function ($contact) use ($memberToGroupSinceByContactId) {
                 // person/organisation fields
                 if ($contact->type_id === ContactType::PERSON) {
                     $contact->title = $contact->person->title;
@@ -215,11 +225,9 @@ class ContactCSVHelper
 
                 //optional member_to_group_since field if the export is for a specific group
                 if($this->contactGroup) {
-                    if ($this->contactGroup->contacts()->where('id', $contact->id)->count() > 0) {
-                        $contact->member_to_group_since = $this->contactGroup->contacts()->where('id', $contact->id)->first()->pivot->member_to_group_since;
-                    } else {
-                        $contact->member_to_group_since = '';
-                    }
+                    $contact->member_to_group_since = $memberToGroupSinceByContactId->has($contact->id)
+                        ? $memberToGroupSinceByContactId[$contact->id]
+                        : '';
                 }
 
                 // Reformat energy supplier fields
@@ -664,6 +672,50 @@ class ContactCSVHelper
         if (empty($csv)) abort(422, 'Geen gegevens om te downloaden');
 
         return Reader::BOM_UTF8 . $csv->getCsv();
+    }
+
+    /**
+     * Fetches the district names for a set of addresses from the shared database in one query (instead of 2 per address).
+     * Returns a map of postalCodeHouseNumberKey() => district_name.
+     */
+    private function getDistrictNamesForAddresses($addresses): array
+    {
+        $postalCodes = [];
+        $houseNumbers = [];
+        foreach ($addresses as $address) {
+            if ($address->number === null) {
+                continue;
+            }
+            $postalCodes[] = str_replace(' ', '', $address->postal_code);
+            $houseNumbers[] = (int) $address->number;
+        }
+
+        if (empty($postalCodes)) {
+            return [];
+        }
+
+        $districtNames = [];
+        $sharedRecords = SharedPostalCodesHouseNumber::with('sharedArea')
+            ->whereIn('postal_code', array_unique($postalCodes))
+            ->whereIn('house_number', array_unique($houseNumbers))
+            ->orderBy('id')
+            ->get();
+
+        foreach ($sharedRecords as $sharedRecord) {
+            $key = $this->postalCodeHouseNumberKey($sharedRecord->postal_code, $sharedRecord->house_number);
+            // Same as Address::getSharedPostalCodesHouseNumber()->first(): first match wins
+            if (!array_key_exists($key, $districtNames)) {
+                $districtNames[$key] = $sharedRecord->sharedArea ? $sharedRecord->sharedArea->district_name : '';
+            }
+        }
+
+        return $districtNames;
+    }
+
+    private function postalCodeHouseNumberKey($postalCode, $houseNumber): string
+    {
+        // MySQL compares postal codes case-insensitively, so do the same here
+        return strtoupper(str_replace(' ', '', (string) $postalCode)) . '|' . (int) $houseNumber;
     }
 
     private function formatDate($date) {

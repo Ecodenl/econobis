@@ -69,6 +69,8 @@ abstract class RequestSort
         foreach ($this->sorts as $sort) {
             $this->applySingle($query, $sort['field'], $sort['order']);
         }
+
+        $this->applyFinalSort($query);
     }
 
     private function applySingle($query, $field, $order)
@@ -116,5 +118,10 @@ abstract class RequestSort
     protected function applySort($query, $mappedField, $order)
     {
         $query->orderBy($mappedField, $order);
+    }
+
+    protected function applyFinalSort($query)
+    {
+        // Optioneel uitbreidingspunt voor een laatste sortering.
     }
 }

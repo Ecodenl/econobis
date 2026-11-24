@@ -1,46 +1,53 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Beheerder
- * Date: 26-10-2017
- * Time: 11:55
- */
 
 namespace App\Eco\Document;
 
+use App\Support\Enum\HasLegacyEnumHelpers;
 
-use JosKolenberg\Enum\Enum;
-use JosKolenberg\Enum\EnumWithIdAndName;
-
-class DocumentGroup extends EnumWithIdAndName
+enum DocumentGroup: string
 {
+    use HasLegacyEnumHelpers;
 
-    /**
-     * Seed the class with Enum instances
-     *
-     * @return array
-     */
-    protected static function seed()
+    case GENERAL = 'general';
+    case CONTRACT = 'contract';
+    case PARTICIPATION = 'participation';
+    case REGISTRATION = 'registration';
+    case INFRARED = 'infrared';
+    case COST_ESTIMATE = 'cost-estimate';
+    case MEMBERSHIP = 'membership';
+    case INVOICE = 'invoice';
+    case QUOTATION = 'quotation';
+    case REVENUE = 'revenue';
+    case ORDER = 'order';
+    case PRIVACY = 'privacy';
+    case QUICKSCAN = 'quickscan';
+    case CONSULTATION = 'consultation';
+    case BUDGET_REQUEST = 'budget-request';
+    case PRE_REGISTRATION = 'pre-registration';
+    case FINANCIAL_OVERVIEW = 'financial-overview';
+    case DEFAULT_EMAIL_ATTACHMENT = 'default-email-attachment';
+
+    public function getName(): string
     {
-        return [
-            new static('general', 'Algemeen'),
-            new static('contract', 'Contract'),
-            new static('participation', 'Deelname'),
-            new static('registration', 'Inschrijvingsbevestiging'),
-            new static('infrared', 'Infraroodopnames'),
-            new static('cost-estimate', 'Kostenraming'),
-            new static('membership', 'Lidmaatschap'),
-            new static('invoice', 'Nota'),
-            new static('quotation', 'Offerte'),
-            new static('revenue', 'Opbrengst'),
-            new static('order', 'Order'),
-            new static('privacy', 'Privacyverklaring'),
-            new static('quickscan', 'Quickscan'),
-            new static('consultation', 'Rapportage coach'),
-            new static('budget-request', 'Budgetaanvraag'),
-            new static('pre-registration', 'Voorinschrijving'),
-            new static('financial-overview', 'Waardestaat'),
-            new static('default-email-attachment', 'Standaard E-mail bijlage'),
-        ];
+        return match ($this) {
+            self::GENERAL => 'Algemeen',
+            self::CONTRACT => 'Contract',
+            self::PARTICIPATION => 'Deelname',
+            self::REGISTRATION => 'Inschrijvingsbevestiging',
+            self::INFRARED => 'Infraroodopnames',
+            self::COST_ESTIMATE => 'Kostenraming',
+            self::MEMBERSHIP => 'Lidmaatschap',
+            self::INVOICE => 'Nota',
+            self::QUOTATION => 'Kansactie',
+            self::REVENUE => 'Opbrengst',
+            self::ORDER => 'Order',
+            self::PRIVACY => 'Privacyverklaring',
+            self::QUICKSCAN => 'Quickscan',
+            self::CONSULTATION => 'Rapportage coach',
+            self::BUDGET_REQUEST => 'Budgetaanvraag',
+            self::PRE_REGISTRATION => 'Voorinschrijving',
+            self::FINANCIAL_OVERVIEW => 'Waardestaat',
+            self::DEFAULT_EMAIL_ATTACHMENT => 'Standaard E-mail bijlage',
+        };
     }
 }

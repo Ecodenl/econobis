@@ -21,6 +21,7 @@ use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactType;
 use App\Eco\ContactGroup\ContactGroup;
+use App\Eco\ContactGroup\ContactGroupType;
 use App\Eco\ContactNote\ContactNote;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\Country\Country;
@@ -77,11 +78,16 @@ use App\Eco\Team\Team;
 use App\Eco\Title\Title;
 use App\Eco\User\User;
 use App\Eco\Webform\Webform;
+use App\Eco\Webform\WebformActionCode;
+use App\Eco\Webform\WebformActionGuard;
+use App\Eco\Webform\WebformApiType;
 use App\Helpers\Address\AddressHelper;
 use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
+use App\Helpers\Project\RevenuesKwhHelper;
 use App\Helpers\Workflow\IntakeWorkflowHelper;
 use App\Helpers\Workflow\TaskWorkflowHelper;
+use App\Http\Controllers\Api\Address\AddressController;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use App\Http\Controllers\Api\Contact\ContactController;
 use App\Http\Controllers\Api\ParticipantMutation\ParticipantMutationController;
@@ -93,12 +99,12 @@ use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use App\Http\Controllers\Api\Address\AddressController;
 
 class ExternalWebformController extends Controller
 {
@@ -112,6 +118,9 @@ class ExternalWebformController extends Controller
      * @var Contact|null
      */
     protected $contact = null;
+    private bool $isVve = false;
+    private bool $isPerson = false;
+    private bool $isOrganisation = false;
     protected $responsibleIds = [];
     protected $intake = null;
     protected $housingFile = null;
@@ -156,11 +165,12 @@ class ExternalWebformController extends Controller
     private $newContactCreated = false;
     private $contactIdToEmailNewContactToGroup = null;
     private $contactIdToEmailNewContactPersonToGroup = null;
+    private $contactGroupIdsToEmailNewContactPersonToGroup = [];
     private $processEmailNewContactToGroup = false;
     private $processEmailNewContactPersonToGroup = false;
-
     private $newTaskToEmail = [];
     private $processWorkflowEmailNewTask = false;
+    private $createHoomDossier = false;
     private $createOpportunityToEmail = [];
     private $processWorkflowCreateOpportunity = false;
     private $onlyCheckLastName = false;
@@ -169,7 +179,7 @@ class ExternalWebformController extends Controller
     public function post(string $apiKey, Request $request)
     {
         $data = $this->getDataFromRequest($request);
-        $createHoomDossier = (bool)$data['contact']['create_hoom_dossier'];
+        $this->createHoomDossier = (bool)$data['contact']['create_hoom_dossier'];
         $this->responsibleIds = $data['responsible_ids'];
         $this->newTaskToEmail = [];
         $this->processWorkflowEmailNewTask = false;
@@ -217,72 +227,49 @@ class ExternalWebformController extends Controller
             return Response::json($this->logs, 500);
         }
 
-        if($this->contact) {
-            $this->log('Aanroep succesvol afgerond tot nu toe. Eventueel verwerken van deelname, order, taak en aanmaak Hoomdossier volgen nog.');
+        $this->log('Aanroep succesvol afgerond tot nu toe. Eventueel verwerken van deelname, order, taak en aanmaak Hoomdossier volgen nog.');
+        try {
+            \DB::transaction(function () use ( $data ) {
+                $this->doPostMore($data);
+            });
+        } catch (WebformException $e) {
+            // Er is een bewuste fout vanuit het verwerken van de aanroep onstaan
+            // Deze kan worden weergegeven in het log.
+            // Doordat er een fout is ontstaan tijdens deze vervolg-transaction,
+            // worden alleen de wijzigingen uit deze vervolgverwerking teruggedraaid.
+            $this->log('Fout opgetreden verwerking in vervolg verwerking: ' . $e->getMessage());
+            $this->log('API aanroep vervolg is ongedaan gemaakt!');
 
-            $participation = $this->addParticipationToContact($this->contact, $data['participation'], $this->webform);
-            $order = $this->addOrderToContact($this->contact, $data['order']);
-            $this->addTaskToContact($this->contact, $data['responsible_ids'], $data['task'], $this->webform, $this->intake, $this->housingFile, $participation, $order);
+            // Log wegschrijven naar laravel logbestand
+            $this->logInfo();
+
+            // Log emailen naar verantwoordelijke(n)
+            $this->mailLog($request->all(), false, $this->webform);
+
+            // Logregels weegeven ter info voor degene die de functie aanroept
+            return Response::json($this->logs, $e->getStatusCode());
+        } catch (\Exception $e) {
+            // Er is een onbekende fout opgetreden, dit is een systeemfout en willen we dus niet weergeven.
+            // Log dus aanvullen met 'Onbekende fout'
+            // Doordat er een fout is ontstaan tijdens deze vervolg-transaction,
+            // worden alleen de wijzigingen uit deze vervolgverwerking teruggedraaid.
+            $this->log('Onbekende fout opgetreden in vervolg verwerking.');
+            $this->log('API aanroep vervolg is ongedaan gemaakt!');
+
+            // Log wegschrijven naar laravel logbestand
+            $this->logInfo();
+
+            // Exception onderwater raporteren zonder 'er uit te klappen'
+            // Zo is de error terug te vinden in de logs en evt Slack
+            report($e);
+            $this->log('Error is gerapporteerd.');
+
+            // Log emailen naar verantwoordelijke(n)
+            $this->mailLog($request->all(), false, $this->webform);
+
+            // Logregels weegeven ter info voor degene die de functie aanroept
+            return Response::json($this->logs, 500);
         }
-
-        // evt nog Hoomdossier aanmaken indien van toepassing
-        if ($createHoomDossier) {
-            $this->createHoomDossier();
-        }
-
-        // evt nog ProcessEmailNewContactToGroup uitvoeren
-        if ($this->processEmailNewContactToGroup) {
-            $this->doProcessEmailNewContactToGroup($data['contact']);
-        }
-
-        // evt nog ProcessEmailNewContactPersonToGroup uitvoeren
-        if ($this->processEmailNewContactPersonToGroup) {
-            $this->doProcessEmailNewContactPersonToGroup($data['contact']);
-        }
-
-        // evt nog processWorkflowEmailNewTask uitvoeren
-        if ($this->processWorkflowEmailNewTask) {
-            foreach ($this->newTaskToEmail as $newTaskId){
-                $newTask = Task::find($newTaskId);
-                if ($newTask && $newTask->type && $newTask->type->uses_wf_new_task) {
-                    $taskWorkflowHelper = new TaskWorkflowHelper($newTask);
-                    $processed = $taskWorkflowHelper->processWorkflowEmailNewTask();
-                    if($processed)
-                    {
-                        $this->log('Nieuwe taak (id: ' . $newTask->id . ') gemaild aan verantwoordelijke.');
-                        $newTask->date_sent_wf_new_task =  Carbon::now();
-                        $newTask->save();
-                    } else {
-                        $this->log('Nieuwe taak (id: ' . $newTask->id . ') NIET gemaild aan verantwoordelijke.');
-                    }
-                }
-
-            }
-        }
-
-        if($data['quotation_request_visit']['status_id']){
-            $this->updateLatestQuotationRequestVisitStatus($data['quotation_request_visit']);
-        }
-
-        // evt nog processWorkflowCreateOpportunity uitvoeren
-        if ($this->processWorkflowCreateOpportunity) {
-            foreach ($this->createOpportunityToEmail as $measureCategoryId){
-                $measureCategory = MeasureCategory::find($measureCategoryId);
-                if ($this->intake && $measureCategory && $measureCategory->uses_wf_create_opportunity) {
-                    $this->log("Intake interesse (maatregel categorie) '" . $measureCategory->name . "' heeft workflow kans maken. Deze uitvoeren");
-                    $intakeWorkflowHelper = new IntakeWorkflowHelper($this->intake, $measureCategory);
-                    $processed = $intakeWorkflowHelper->processWorkflowCreateOpportunity();
-
-                    if($processed)
-                    {
-                        $this->log('Workflow kans maken uitgevoerd.');
-                    } else {
-                        $this->log('Workflow kans maken NIET uitgevoerd.');
-                    }
-                }
-            }
-        }
-
 
         $this->logInfo();
         return Response::json($this->logs);
@@ -304,6 +291,19 @@ class ExternalWebformController extends Controller
             $this->webform = $webform;
             $this->log('Webform met id ' . $webform->id . ' gevonden bij code ' . $apiKey . '.');
         }
+
+        if ($this->isVve && $data['contact']['organisation_name'] === '') {
+            $this->error('Organisatienaam is verplicht bij een VvE-aanmelding.', 422);
+        }
+
+
+        // Bij een VvE-aanmelding is een geldig verbindingstype verplicht.
+        if ($this->isVve) {
+            $this->validateOccupationForVve($data);
+        }
+
+        $this->validateApiTypeForExternalWebform($webform);
+
         $this->checkMaxRequests($webform);
 
         // Add opportunity to existing intake
@@ -438,6 +438,74 @@ class ExternalWebformController extends Controller
         $this->housingFile = $housingFile;
     }
 
+    /**
+     * @param array $data
+     * @return void
+     */
+    private function doPostMore(array $data): void
+    {
+        if ($this->contact) {
+            $participation = $this->addParticipationToContact($this->contact, $data['participation'], $this->webform);
+            $order = $this->addOrderToContact($this->contact, $data['order']);
+            $this->addTaskToContact($this->contact, $data['responsible_ids'], $data['task'], $this->webform, $this->intake, $this->housingFile, $participation, $order);
+        }
+
+        // evt nog Hoomdossier aanmaken indien van toepassing
+        if ($this->createHoomDossier) {
+            $this->doCreateHoomDossier();
+        }
+
+        // evt nog ProcessEmailNewContactToGroup uitvoeren
+        if ($this->processEmailNewContactToGroup) {
+            $this->doProcessEmailNewContactToGroup($data['contact']);
+        }
+
+        // evt nog ProcessEmailNewContactPersonToGroup uitvoeren
+        if ($this->processEmailNewContactPersonToGroup) {
+            $this->doProcessEmailNewContactPersonToGroup();
+        }
+
+        // evt nog processWorkflowEmailNewTask uitvoeren
+        if ($this->processWorkflowEmailNewTask) {
+            foreach ($this->newTaskToEmail as $newTaskId) {
+                $newTask = Task::find($newTaskId);
+                if ($newTask && $newTask->type && $newTask->type->uses_wf_new_task) {
+                    $taskWorkflowHelper = new TaskWorkflowHelper($newTask);
+                    $processed = $taskWorkflowHelper->processWorkflowEmailNewTask();
+                    if ($processed) {
+                        $this->log('Nieuwe taak (id: ' . $newTask->id . ') gemaild aan verantwoordelijke.');
+                        $newTask->date_sent_wf_new_task = Carbon::now();
+                        $newTask->save();
+                    } else {
+                        $this->log('Nieuwe taak (id: ' . $newTask->id . ') NIET gemaild aan verantwoordelijke.');
+                    }
+                }
+
+            }
+        }
+
+        if ($data['quotation_request_visit']['status_id']) {
+            $this->updateLatestQuotationRequestVisitStatus($data['quotation_request_visit']);
+        }
+
+        // evt nog processWorkflowCreateOpportunity uitvoeren
+        if ($this->processWorkflowCreateOpportunity) {
+            foreach ($this->createOpportunityToEmail as $measureCategoryId) {
+                $measureCategory = MeasureCategory::find($measureCategoryId);
+                if ($this->intake && $measureCategory && $measureCategory->uses_wf_create_opportunity) {
+                    $this->log("Intake interesse (maatregel categorie) '" . $measureCategory->name . "' heeft workflow kans maken. Deze uitvoeren");
+                    $intakeWorkflowHelper = new IntakeWorkflowHelper($this->intake, $measureCategory);
+                    $processed = $intakeWorkflowHelper->processWorkflowCreateOpportunity();
+
+                    if ($processed) {
+                        $this->log('Workflow kans maken uitgevoerd.');
+                    } else {
+                        $this->log('Workflow kans maken NIET uitgevoerd.');
+                    }
+                }
+            }
+        }
+    }
 
     protected function getDataFromRequest(Request $request)
     {
@@ -460,6 +528,7 @@ class ExternalWebformController extends Controller
                 'geboortedatum' => 'date_of_birth',
                 // Organisation
                 'organisatienaam' => 'organisation_name',
+                'is_vve' => 'is_vve',
                 'kvk' => 'chamber_of_commerce_number',
                 'btw_nr' => 'vat_number',
                 'website' => 'website',
@@ -492,6 +561,7 @@ class ExternalWebformController extends Controller
                 // Groep
                 'contact_groep' => 'group_name',
                 'contact_groep_ids' => 'contact_group_ids',
+                'contact_groep_contactpersoon' => 'group_name_contactperson',
                 'contact_groep_ids_contactpersoon' => 'contact_group_ids_contactperson',
                 // Hoomdossier aanmaken
                 'hoomdossier_aanmaken' => 'create_hoom_dossier',
@@ -575,8 +645,8 @@ class ExternalWebformController extends Controller
                 'order_product_id' => 'product_id',
                 'order_variabele_prijs' => 'variable_price',
                 'order_aantal' => 'amount',
-                'order_iban' => 'iban',
-                'order_iban_tnv' => 'iban_attn',
+//                'order_iban' => 'iban',
+//                'order_iban_tnv' => 'iban_attn',
                 'order_betaalwijze_id' => 'payment_type_id',
                 'order_status_id' => 'status_id',
                 'order_nota_frequentie_id' => 'collection_frequency_id',
@@ -704,12 +774,12 @@ class ExternalWebformController extends Controller
         $mapping['task']['taak_opmerkingen'] = 'note';
 
         // geen organisatie, geen voorletters, voornaam en tussenvoegsel maar wel achternaam, dan alleen checks op achternaam.
-        if(empty(trim($request->get('organisatienaam', '')))
-            && !$request->get('voorletters')
-            && !$request->get('voornaam')
-            && !$request->get('tussenvoegsel')
-            && !empty(trim($request->get('achternaam', '')))
-        ){
+        if (($this->isVve || empty(trim($request->input('organisatienaam', ''))))
+            && !$request->input('voorletters')
+            && !$request->input('voornaam')
+            && !$request->input('tussenvoegsel')
+            && !empty(trim($request->input('achternaam', '')))
+        ) {
             $this->onlyCheckLastName = true;
         }
 
@@ -724,10 +794,29 @@ class ExternalWebformController extends Controller
                 // en ook voor woondossier velden
                 // hier moeten we namelijk ook onderscheid maken tussen niet meegegeven (behoud van gegevens) of leeg meegeven (wel wijzigen).
                 if($groupname === 'free_field_contact' || $groupname === 'free_field_address' || $groupname === 'housing_file') {
-                    $data[$groupname][$outputName] = $request->get($inputName);
+                    $data[$groupname][$outputName] = $request->input($inputName);
                 } else {
-                    $data[$groupname][$outputName] = trim($request->get($inputName, ''));
+                    $data[$groupname][$outputName] = trim($request->input($inputName, ''));
                 }
+            }
+        }
+
+        $this->isVve = $data['contact']['is_vve'] === '1';
+
+        $this->isPerson = $this->isVve
+            || $data['contact']['organisation_name'] === '';
+
+        $this->isOrganisation = !$this->isPerson;
+
+        // Bij VvE-aanmeldingen is de persoon het hoofdcontact.
+        // Ondersteun ook de oorspronkelijke contactgroepvelden voor contactpersonen.
+        if ($this->isVve) {
+            if (empty($data['contact']['group_name'])) {
+                $data['contact']['group_name'] = $data['contact']['group_name_contactperson'];
+            }
+
+            if (empty($data['contact']['contact_group_ids'])) {
+                $data['contact']['contact_group_ids'] = $data['contact']['contact_group_ids_contactperson'];
             }
         }
 
@@ -850,6 +939,13 @@ class ExternalWebformController extends Controller
             $contact = $this->getContactByAddressAndEmail($data);
         }
 
+        if ($this->isVve && $this->contactActie === 'CCT') {
+            $this->log('VvE-aanmelding: onzekere persoonsmatch, nieuw contact met controletaak aanmaken.');
+
+            $contact = null;
+            $this->contactActie = 'NCT';
+        }
+
         $this->log('Actie: ' . $this->contactActie);
         if($contact){
             $this->log('Actie bij contact: ' . $contact->id);
@@ -859,7 +955,7 @@ class ExternalWebformController extends Controller
             try {
                 $addressType = AddressType::get($data['address_type_id']);
                 $addressTypeId = $data['address_type_id'];
-                $this->log('Adres type ingesteld op: ' . $addressType->name . ' (' . $addressTypeId . ')');
+                $this->log('Adres type ingesteld op: ' . $addressType->getName() . ' (' . $addressTypeId . ')');
             } catch (\Exception $e) {
                 $addressTypeId = 'postal';
                 $this->log('Ongeldige waarde in adres_type_id (' . $data['address_type_id'] . ') , default naar "Post"');
@@ -878,17 +974,22 @@ class ExternalWebformController extends Controller
             // contactActie = "CCT" -> Controle contact taak
             switch($this->contactActie){
                 case 'UPC' :
-                    $contact = $this->updateContact($contact, $data, $dataFreeFieldContacts, $ownerAndResponsibleUser);
-                    $address = $contact->addresses()
-                        ->where('postal_code', $data['address_postal_code'])
-                        ->where('number', $data['address_number'])
-                        ->where('addition', $data['address_addition'])
-                        ->first();
-                    if($address){
-                        $this->log('Adres gevonden bij meegegeven postcode/huisnummer: ' . $data['address_postal_code'] . ' ' . $data['address_number'] . '-' . $data['address_addition']);
-                        $this->address = $address;
-                    } elseif ($contact->primaryAddress) {
-                        $this->log('Geen adres postcode/huisnummer meegegeven of gevonden, verder met primair adres bij contact met postcode/huisnummer: ' . $contact->primaryAddress->postal_code . ' ' . $contact->primaryAddress->number . '-' . $contact->primaryAddress->addition );
+                    $contact = $this->updateContact(
+                        $contact,
+                        $data,
+                        $dataFreeFieldContacts,
+                        $ownerAndResponsibleUser
+                    );
+
+                    $this->addAddressToContact($data, $contact);
+
+                    if (!$this->address && $contact->primaryAddress) {
+                        $this->log(
+                            'Geen adres postcode/huisnummer meegegeven, verder met primair adres bij contact met postcode/huisnummer: '
+                            . $contact->primaryAddress->postal_code . ' '
+                            . $contact->primaryAddress->number . '-'
+                            . $contact->primaryAddress->addition
+                        );
                         $this->address = $contact->primaryAddress;
                     }
 //                    $this->addPhoneNumberToContact($data, $contact);
@@ -900,10 +1001,12 @@ class ExternalWebformController extends Controller
                     $this->addPhoneNumberToContact($data, $contact);
                     $this->addContactNotesToContact($data, $contact);
                     $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
-                    $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
+                    if (!$this->isVve) {
+                        $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
+                    }
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Nieuw adres toegevoegd aan contact " . $contact->full_name . " (".$contact->number.").\n";
-                    $note .= "Adres type : " . AddressType::get($addressTypeId)->name . "\n";
+                    $note .= "Adres type : " . AddressType::get($addressTypeId)->getName() . "\n";
                     $note .= "Voorletters : " . $data['initials'] . "\n";
                     $note .= "Voornaam : " . $data['first_name'] . "\n";
                     $note .= "Tussenvoegsel : " . $data['last_name_prefix'] . "\n";
@@ -922,7 +1025,9 @@ class ExternalWebformController extends Controller
                     $this->addPhoneNumberToContact($data, $contact);
                     $this->addContactNotesToContact($data, $contact);
                     $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
-                    $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
+                    if (!$this->isVve) {
+                        $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
+                    }
                     $address = $contact->addresses()
                         ->where('postal_code', $data['address_postal_code'])
                         ->where('number', $data['address_number'])
@@ -962,7 +1067,7 @@ class ExternalWebformController extends Controller
                 case 'CCT' :
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Gegevens contact met emailadres " . $data['email_address'] . " (".$contact->number.") gevonden bij op basis van e-mail maar zonder goede match op NAW.\n";
-                    $note .= "Adres type : " . AddressType::get($addressTypeId)->name . "\n";
+                    $note .= "Adres type : " . AddressType::get($addressTypeId)->getName() . "\n";
                     $note .= "Voorletters : " . $data['initials'] . "\n";
                     $note .= "Voornaam : " . $data['first_name'] . "\n";
                     $note .= "Tussenvoegsel : " . $data['last_name_prefix'] . "\n";
@@ -1000,19 +1105,35 @@ class ExternalWebformController extends Controller
                     break;
                 case 'NCT' :
                     $note = "Webformulier " . $webform->name . ".\n\n";
-                    $note .= "Nieuw contact " . $contact->full_name . " (".$contact->number.") aangemaakt op adres wat al voorkomt bij bestaande contact(en).\n";
+                    if ($this->isVve) {
+                        $note .= "Nieuw contact " . $contact->full_name . " (" . $contact->number . ") aangemaakt voor een VvE-aanmelding met een onzekere persoonsmatch.\n";
+                    } else {
+                        $note .= "Nieuw contact " . $contact->full_name . " (" . $contact->number . ") aangemaakt op adres wat al voorkomt bij bestaande contact(en).\n";
+                    }
                     $note .= "Controleer contactgegevens\n";
                     $this->addTaskCheckContact($responsibleIds, $contact, $webform, $note);
                     break;
             }
         }
 
+            if ($this->isVve && $contact) {
+                $vveContact = $this->findOrCreateVveOrganisation($data, $contact);
+
+                $data['occupation_contact_id'] = $vveContact->id;
+
+                $this->addContactToOccupations(
+                    $data,
+                    $contact,
+                    $ownerAndResponsibleUser
+                );
+            }
+
         return $contact;
     }
 
-    protected function error(string $string, int $statusCode = 422)
+    protected function error(string $message, int $statusCode = 422)
     {
-        throw new WebformException($string, $statusCode);
+        throw new WebformException($message, $statusCode);
     }
 
     protected function getContactByNumber(array $dataContact)
@@ -1038,11 +1159,7 @@ class ExternalWebformController extends Controller
 
     protected function getContactByAddressAndEmail(array $data)
     {
-        if ($data['organisation_name']) {
-            $contactTypeId = 'organisation';
-        }else{
-            $contactTypeId = 'person';
-        }
+        $contactTypeId = $this->isPerson ? 'person' : 'organisation';
 
         // Kijken of er een persoon gematcht kan worden op basis van adres (postcode, huisnummer en huisnummer toevoeging)
         if($data['address_postal_code'] && $data['address_number'] && isset($data['address_addition'])) {
@@ -1078,7 +1195,7 @@ class ExternalWebformController extends Controller
                 // Gevonden op adres, check op specifiek contact of anders op email (niet bij organisatie)
             } else {
 
-                if(!$data['organisation_name']){
+                if ($this->isPerson) {
                     $checkContactForBewoner = $contactAddressQuery->first();
                     if($checkContactForBewoner && str_contains( strtolower($checkContactForBewoner->person->last_name), 'bewoner') ){
                         $this->contactActie = "BCB";
@@ -1104,7 +1221,7 @@ class ExternalWebformController extends Controller
                         });
                         $naamForLog = 'achternaam ' . $data['last_name'];
                         $this->log('Check op persoon achternaam ?');
-                    } else if ($data['organisation_name']) {
+                    } else if ($this->isOrganisation) {
                         $contactNameQuery = $contactNameQuery->whereHas('organisation', function ($queryName) use ($data) {
                             $queryName->where('name', 'like', $data['organisation_name']);
                         });
@@ -1133,7 +1250,7 @@ class ExternalWebformController extends Controller
                     } else {
                         // Gevonden op adres, niet op emailcontact en niet op naam (voornaam + achternaam).
                         // Indien geen organisatie en niet expliciet op achternaam: check met voorletter + achternaam
-                        if (empty($data['organisation_name']) && !$this->onlyCheckLastName) {
+                        if ($this->isPerson && !$this->onlyCheckLastName) {
                             $contactNameInitialsQuery = clone($contactAddressQuery);
                             if (!empty($data['initials']) ) {
                                 $contactNameInitialsQuery = $contactNameInitialsQuery->whereHas('person', function ($queryNameInitials) use ($data) {
@@ -1171,7 +1288,7 @@ class ExternalWebformController extends Controller
                             if($this->onlyCheckLastName){
                                 // Organisatie Gevonden op adres maar niet op email of naam.
                                 $this->log('Contact gevonden op basis van adres (postcode, huisnummer en huisnummer toevoeging) maar niet op emailadres of achternaam');
-                            } else if ($data['organisation_name']) {
+                            } else if ($this->isOrganisation) {
                                 // Organisatie Gevonden op adres maar niet op email of naam.
                                 $this->log('Contact (organisatie) gevonden op basis van adres (postcode, huisnummer en huisnummer toevoeging) maar niet op emailadres of naam');
                             } else {
@@ -1193,7 +1310,7 @@ class ExternalWebformController extends Controller
                             $queryName->where('last_name', $data['last_name']);
                         });
                         $naamForLog = 'achternaam ' . $data['last_name'];
-                    } else if ($data['organisation_name']) {
+                    } else if ($this->isOrganisation) {
                         $contactNameQuery = $contactNameQuery->whereHas('organisation', function ($queryName) use ($data) {
                             $queryName->where('name', 'like', $data['organisation_name']);
                         });
@@ -1217,7 +1334,7 @@ class ExternalWebformController extends Controller
                     } else {
                         // Gevonden op adres en emailcontact, niet op naam (voornaam + achternaam).
                         // Indien geen organisatie en niet expliciet op achternaam: check met voorletter + achternaam
-                        if (empty($data['organisation_name']) && !$this->onlyCheckLastName) {
+                        if ($this->isPerson && !$this->onlyCheckLastName) {
                             $contactNameInitialsQuery = clone($contactEmailQuery);
                             if (!empty($data['initials']) ) {
                                 $contactNameInitialsQuery = $contactNameInitialsQuery->whereHas('person', function ($queryNameInitials) use ($data) {
@@ -1249,7 +1366,7 @@ class ExternalWebformController extends Controller
                             if($this->onlyCheckLastName){
                                 // Organisatie Gevonden op adres maar niet op email of naam.
                                 $this->log('Contact gevonden op basis van adres (postcode, huisnummer en huisnummer toevoeging) en emailadres maar niet op achternaam');
-                            } else if ($data['organisation_name']) {
+                            } else if ($this->isOrganisation) {
                                 // Organisatie Gevonden op adres maar niet op email of naam.
                                 $this->log('Contact (organisatie) gevonden op basis van adres (postcode, huisnummer en huisnummer toevoeging) en emailadres maar niet op naam');
                             } else {
@@ -1385,7 +1502,7 @@ class ExternalWebformController extends Controller
                     try {
                         $addressType = AddressType::get($data['address_type_id']);
                         $addressTypeId = $data['address_type_id'];
-                        $this->log('Adres type ingesteld op: ' . $addressType->name . ' (' . $addressTypeId . ')');
+                        $this->log('Adres type ingesteld op: ' . $addressType->getName() . ' (' . $addressTypeId . ')');
                     } catch (\Exception $e) {
                         $addressTypeId = 'postal';
                         $this->log('Ongeldige waarde in adres_type_id (' . $data['address_type_id'] . ') , default naar "Post"');
@@ -1533,6 +1650,87 @@ class ExternalWebformController extends Controller
         $this->logs[] = $text;
     }
 
+    protected function findOrCreateVveOrganisation(
+        array $data,
+        Contact $personContact
+    ): Contact {
+        $organisationName = trim($data['organisation_name']);
+
+        // Zoek bestaande organisaties op naam.
+        $organisations = Organisation::where('name', $organisationName)
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->get();
+
+        if ($organisations->isNotEmpty()) {
+            $organisation = $organisations->first();
+
+            $this->log(
+                'Bestaande VvE ' . $organisationName .
+                ' gevonden met organisatie-id ' . $organisation->id . '.'
+            );
+
+            if ($organisations->count() > 1) {
+                $note = "Webformulier " . $this->webform->name . ".\n\n";
+                $note .= "Bij VvE-aanmelding zijn meerdere organisaties gevonden met de naam '" . $organisationName . "'.\n";
+                $note .= "Aantal gevonden organisaties: " . $organisations->count() . ".\n";
+                $note .= "Voorlopig gekozen organisatie-id: " . $organisation->id . ".\n";
+                $note .= "Gekoppeld VvE-lid: " . $personContact->full_name . " (" . $personContact->number . ").\n\n";
+                $note .= "Controleer of het VvE-lid aan de juiste organisatie is gekoppeld.\n";
+
+                $this->addTaskCheckContact(
+                    $this->responsibleIds,
+                    $personContact,
+                    $this->webform,
+                    $note
+                );
+
+                $this->log(
+                    'Meerdere VvE-organisaties gevonden met naam ' .
+                    $organisationName . '. Controletaak aangemaakt.'
+                );
+            }
+
+            return Contact::findOrFail($organisation->contact_id);
+        }
+
+        // Geen bestaande VvE gevonden: nieuwe organisatie aanmaken.
+        $organisationContact = Contact::create([
+            'type_id' => 'organisation',
+            'status_id' => 'webform',
+            'created_with' => 'webform',
+            'owner_id' => $personContact->owner_id,
+        ]);
+
+        $organisation = Organisation::create([
+            'contact_id' => $organisationContact->id,
+            'name' => $organisationName,
+            'statutory_name' => '',
+        ]);
+
+        // Het adres van de persoon en dat van de VvE krijgen afzonderlijke
+        // adresrecords (met verschillende ID's), ook al zijn de gegevens gelijk.
+        // Bewaar daarom $this->address: deze verwijst naar het adres van de persoon
+        $personAddress = $this->address;
+
+        $this->addAddressToContact($data, $organisationContact);
+
+        // Herstel het adres van de persoon na het toevoegen van het VvE-adres.
+        // Deze wordt later wellicht nog gebruikt voor onder andere intake en woondossier.
+        $this->address = $personAddress;
+
+        $this->addEmailToContact($data, $organisationContact);
+        $this->addPhoneNumberToContact($data, $organisationContact);
+
+        $this->log(
+            'Nieuwe VvE ' . $organisationName .
+            ' aangemaakt met organisatie-id ' . $organisation->id .
+            ' en contact-id ' . $organisationContact->id . '.'
+        );
+
+        return $organisationContact;
+    }
+
     protected function addContact(array $data, ?array $dataFreeFieldContacts, User $ownerAndResponsibleUser)
     {
         $this->newContactCreated = false;
@@ -1567,7 +1765,7 @@ class ExternalWebformController extends Controller
             }
         }
 
-        if ($data['organisation_name']) {
+        if ($this->isOrganisation) {
             $this->log('Er is een organisatienaam meegegeven; organisatie aanmaken.');
 
             $iban = $this->checkIban($data['iban'], 'organisatie.');
@@ -1618,18 +1816,34 @@ class ExternalWebformController extends Controller
                     'date_of_birth' => $data['date_of_birth'] ?: null,
                 ]);
 
-                OccupationContact::create([
-                    'occupation_id' => 14, // Relatie type "medewerker"
-                    'primary_contact_id' => $organisation->contact_id,
-                    'contact_id' => $person->contact_id,
-                    'primary' => true,
-                ]);
+                $occupationId = null;
+                if (!empty($data['occupation_id'])) {
+                    $occupationId = Occupation::whereKey($data['occupation_id'])->value('id');
+                }
+                if (!$occupationId) {
+                    $occupationId = Occupation::where(
+                        'primary_occupation',
+                        'Medewerker'
+                    )->value('id');
+                }
+
+                if(!$occupationId){
+                    $this->log('Verbinding type kon niet bepaald worden, geen verbinding gemaakt.');
+                } else {
+                    OccupationContact::create([
+                        'occupation_id' => $occupationId,
+                        'primary_contact_id' => $organisation->contact_id,
+                        'contact_id' => $person->contact_id,
+                        'primary' => true,
+                    ]);
+                }
 
                 // Overige gegevens aan person hangen
                 $this->addEmailToContact($data, $contactPerson);
                 $this->addContactToGroupContactperson($data, $contactPerson, $ownerAndResponsibleUser);
-                $this->addContactToOccupations($data, $contactPerson, $ownerAndResponsibleUser);
-
+                if (!$this->isVve) {
+                    $this->addContactToOccupations($data, $contactPerson, $ownerAndResponsibleUser);
+                }
                 $this->log('Persoon met id ' . $person->id
                     . ' aangemaakt en gekoppeld aan organisatie als medewerker.');
 
@@ -1650,8 +1864,8 @@ class ExternalWebformController extends Controller
             return $contactOrganisation;
         }
 
-        // Als we hier komen is er geen bedrijfsnaam meegegeven, dan maken we alleen een persoon aan
-        $this->log('Er is geen organisatienaam meegegeven; persoon aanmaken.');
+        // Hoofdcontact is een persoon (ook bij een VvE-aanmelding).
+        $this->log('Hoofdcontact is een persoon; persoon aanmaken.');
 
         $lastName = $data['last_name'];
         if (!$lastName) {
@@ -1714,17 +1928,46 @@ class ExternalWebformController extends Controller
         $this->addPhoneNumberToContact($data, $contact);
         $this->addContactNotesToContact($data, $contact);
         $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
-        $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
+        if (!$this->isVve) {
+            $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
+        }
 
         // Indien contact bijlage url meegegeven deze als document opslaan
         if($data['contact_attachment']){
-            $this->addContactAttachment($contact, $data['contact_attachment']);
+            $this->addAttachment(
+                description: 'Contact bijlage',
+                documentCreatedFromCodeRef: 'contact',
+                contactId: $contact->id,
+                opportunityId: null,
+                intakeId: null,
+                campaignId: null,
+                quotationRequestId: null,
+                attachmentUrl: $data['contact_attachment']
+            );
         }
         if($data['contact_attachment_2']){
-            $this->addContactAttachment($contact, $data['contact_attachment_2']);
+            $this->addAttachment(
+                description: 'Contact bijlage',
+                documentCreatedFromCodeRef: 'contact',
+                contactId: $contact->id,
+                opportunityId: null,
+                intakeId: null,
+                campaignId: null,
+                quotationRequestId: null,
+                attachmentUrl: $data['contact_attachment_2']
+            );
         }
         if($data['contact_attachment_3']){
-            $this->addContactAttachment($contact, $data['contact_attachment_3']);
+            $this->addAttachment(
+                description: 'Contact bijlage',
+                documentCreatedFromCodeRef: 'contact',
+                contactId: $contact->id,
+                opportunityId: null,
+                intakeId: null,
+                campaignId: null,
+                quotationRequestId: null,
+                attachmentUrl: $data['contact_attachment_3']
+            );
         }
 
         //freeFieldsFieldRecords aanmaken
@@ -1766,7 +2009,7 @@ class ExternalWebformController extends Controller
             }
         }
 
-        if ($data['organisation_name']) {
+        if ($this->isOrganisation) {
             $this->log('Er is een organisatienaam meegegeven; organisatie bijwerken.');
 
             $contactUpdateArray = [];
@@ -1812,7 +2055,14 @@ class ExternalWebformController extends Controller
             $this->addPhoneNumberToContact($data, $contact);
             $this->addContactNotesToContact($data, $contact);
             $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
-            $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
+            if (!$this->isVve) {
+                $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
+            }
+
+            // Bij UPC bestaande contactpersoon aan opgegeven contactgroep(en) koppelen.
+            if ($this->contactActie === 'UPC') {
+                $this->addExistingContactpersonToGroup($data, $contact, $ownerAndResponsibleUser);
+            }
 
             //freeFieldsFieldRecords updaten
             $tableId = FreeFieldsTable::where('table', 'contacts')->first()->id;
@@ -1821,9 +2071,8 @@ class ExternalWebformController extends Controller
             return $contact;
         }
 
-        // Als we hier komen is er geen bedrijfsnaam meegegeven, dan werken we alleen een persoon bij
-        $this->log('Er is geen organisatienaam meegegeven; persoon bijwerken.');
-
+        // Hoofdcontact is een persoon (ook bij een VvE-aanmelding).
+        $this->log('Hoofdcontact is een persoon; persoon bijwerken.');
         $contactUpdateArray = [];
 
         if($data['did_agree_avg']){
@@ -1893,17 +2142,46 @@ class ExternalWebformController extends Controller
         $this->addPhoneNumberToContact($data, $contact);
         $this->addContactNotesToContact($data, $contact);
         $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
-        $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
+        if (!$this->isVve) {
+            $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
+        }
 
         // Indien contact bijlage url meegegeven deze als document opslaan
         if($data['contact_attachment']){
-            $this->addContactAttachment($contact, $data['contact_attachment']);
+            $this->addAttachment(
+                description: 'Contact bijlage',
+                documentCreatedFromCodeRef: 'contact',
+                contactId: $contact->id,
+                opportunityId: null,
+                intakeId: null,
+                campaignId: null,
+                quotationRequestId: null,
+                attachmentUrl: $data['contact_attachment']
+            );
         }
         if($data['contact_attachment_2']){
-            $this->addContactAttachment($contact, $data['contact_attachment_2']);
+            $this->addAttachment(
+                description: 'Contact bijlage',
+                documentCreatedFromCodeRef: 'contact',
+                contactId: $contact->id,
+                opportunityId: null,
+                intakeId: null,
+                campaignId: null,
+                quotationRequestId: null,
+                attachmentUrl: $data['contact_attachment_2']
+            );
         }
         if($data['contact_attachment_3']){
-            $this->addContactAttachment($contact, $data['contact_attachment_3']);
+            $this->addAttachment(
+                description: 'Contact bijlage',
+                documentCreatedFromCodeRef: 'contact',
+                contactId: $contact->id,
+                opportunityId: null,
+                intakeId: null,
+                campaignId: null,
+                quotationRequestId: null,
+                attachmentUrl: $data['contact_attachment_3']
+            );
         }
 
         //freeFieldsFieldRecords updaten
@@ -2213,11 +2491,10 @@ class ExternalWebformController extends Controller
 
             $energySupplierStatusId = null;
             if ($data['energy_supplier_id'] != '' && $data['energy_supply_status_id'] != '') {
-                $energySupplierStatus
-                    = EnergySupplierStatus::find($data['energy_supply_status_id']);
+                $energySupplierStatus = EnergySupplierStatus::find($data['energy_supply_status_id']);
                 if (!$energySupplierStatus) {
                     $this->log('Ongeldige waarde voor energie leverancier status meegegeven. Default naar null');
-                }else{
+                } else {
                     $energySupplierStatusId = $energySupplierStatus->id;
                 }
             }
@@ -2227,19 +2504,6 @@ class ExternalWebformController extends Controller
                 return;
             }
 
-//            $addressEnergySupplier = AddressEnergySupplier::create([
-//                'address_id' => $address->id,
-//                'energy_supplier_id' => $energySupplier->id,
-//                'es_number' => $data['es_number'],
-//                'energy_supply_type_id' => $energySupplierType->id,
-//                'member_since' => $data['member_since'] ?: null,
-////                'ean_electricity' => $data['ean_electricity'],
-//                'energy_supply_status_id' => $energySupplierStatusId,
-////                'is_current_supplier' => (bool)$data['is_current_supplier'],
-//            ]);
-//            $addressEnergySupplier->save();
-//            $this->log('Koppeling met energieleverancier ' . $energySupplier->name . ' gemaakt.');
-
             $addressEnergySupplierData = [
                 'address_id' => $address->id,
                 'energy_supplier_id' => $energySupplier->id,
@@ -2248,8 +2512,12 @@ class ExternalWebformController extends Controller
                 'member_since' => $data['member_since'] ?: '2000-01-01',
                 'energy_supply_status_id' => $energySupplierStatusId,
             ];
+
             $addressEnergySupplier = new AddressEnergySupplier();
             $addressEnergySupplier->fill($addressEnergySupplierData);
+
+            $this->syncPreviousAddressEnergySupplierEndDate($addressEnergySupplier);
+
             $addressEnergySupplierController = new AddressEnergySupplierController();
             $response = $addressEnergySupplierController->validateAddressEnergySupplier($addressEnergySupplier, false);
 
@@ -2259,10 +2527,61 @@ class ExternalWebformController extends Controller
             } else {
                 $addressEnergySupplier->save();
                 $this->log('Koppeling met energieleverancier ' . $energySupplier->name . ' gemaakt.');
+
+                $participations = $address->participations;
+                foreach ($participations as $participation) {
+                    $projectType = $participation->project->projectType;
+                    if ($projectType->code_ref === 'postalcode_link_capital') {
+                        $revenuesKwhHelper = new RevenuesKwhHelper();
+
+                        $revenuesKwhHelper->checkAndSplitRevenuePartsKwh(
+                            $participation,
+                            $addressEnergySupplier->member_since,
+                            $addressEnergySupplier
+                        );
+
+                        $revenuesKwhHelper->refreshDistributionPartsKwhEnergySupplierDataForParticipation($participation);
+                    }
+                }
             }
         } else {
             $this->log('Er is geen energie leverancier meegegeven, niet koppelen.');
         }
+    }
+
+    protected function getPreviousRelevantAddressEnergySupplier(AddressEnergySupplier $addressEnergySupplier): ?AddressEnergySupplier
+    {
+        if (!$addressEnergySupplier->member_since) {
+            return null;
+        }
+
+        return AddressEnergySupplier::query()
+            ->where('address_id', $addressEnergySupplier->address_id)
+            ->where('id', '!=', $addressEnergySupplier->id)
+            ->whereIn('energy_supply_type_id', [2, 3])
+            ->whereNotNull('member_since')
+            ->where('member_since', '<', $addressEnergySupplier->member_since)
+            ->orderBy('member_since', 'desc')
+            ->orderBy('id', 'desc')
+            ->first();
+    }
+
+    protected function syncPreviousAddressEnergySupplierEndDate(AddressEnergySupplier $addressEnergySupplier): void
+    {
+        if (!$addressEnergySupplier->member_since) {
+            return;
+        }
+
+        $previousAddressEnergySupplier = $this->getPreviousRelevantAddressEnergySupplier($addressEnergySupplier);
+
+        if (!$previousAddressEnergySupplier) {
+            return;
+        }
+
+        $newEndDate = Carbon::parse($addressEnergySupplier->member_since)->subDay()->format('Y-m-d');
+
+        $previousAddressEnergySupplier->end_date = $newEndDate;
+        $previousAddressEnergySupplier->save();
     }
 
     protected function addEnergyConsumptionGasToAddress(Address $address, $data)
@@ -2494,13 +2813,43 @@ class ExternalWebformController extends Controller
 
             // Indien kans bijlage url meegegeven deze als document opslaan
             if($dataIntake['intake_opportunity_attachment']){
-                $this->addIntakeOpportunityAttachment($intake, $saveOpportunity, $dataIntake['intake_opportunity_attachment']);
+                $documentCreatedFromCodeRef = $saveOpportunity ? 'opportunity' : 'intake';
+                $this->addAttachment(
+                    description: 'Intake kans bijlage',
+                    documentCreatedFromCodeRef: $documentCreatedFromCodeRef,
+                    contactId: $intake->contact_id,
+                    opportunityId: $saveOpportunity ? $saveOpportunity->id : null,
+                    intakeId: $intake->id,
+                    campaignId: null,
+                    quotationRequestId: null,
+                    attachmentUrl: $dataIntake['intake_opportunity_attachment']
+                );
             }
             if($dataIntake['intake_opportunity_attachment_2']){
-                $this->addIntakeOpportunityAttachment($intake, $saveOpportunity, $dataIntake['intake_opportunity_attachment_2']);
+                $documentCreatedFromCodeRef = $saveOpportunity ? 'opportunity' : 'intake';
+                $this->addAttachment(
+                    description: 'Intake kans bijlage',
+                    documentCreatedFromCodeRef: $documentCreatedFromCodeRef,
+                    contactId: $intake->contact_id,
+                    opportunityId: $saveOpportunity ? $saveOpportunity->id : null,
+                    intakeId: $intake->id,
+                    campaignId: null,
+                    quotationRequestId: null,
+                    attachmentUrl: $dataIntake['intake_opportunity_attachment_2']
+                );
             }
             if($dataIntake['intake_opportunity_attachment_3']){
-                $this->addIntakeOpportunityAttachment($intake, $saveOpportunity, $dataIntake['intake_opportunity_attachment_3']);
+                $documentCreatedFromCodeRef = $saveOpportunity ? 'opportunity' : 'intake';
+                $this->addAttachment(
+                    description: 'Intake kans bijlage',
+                    documentCreatedFromCodeRef: $documentCreatedFromCodeRef,
+                    contactId: $intake->contact_id,
+                    opportunityId: $saveOpportunity ? $saveOpportunity->id : null,
+                    intakeId: $intake->id,
+                    campaignId: null,
+                    quotationRequestId: null,
+                    attachmentUrl: $dataIntake['intake_opportunity_attachment_3']
+                );
             }
 
             return $intake;
@@ -2580,80 +2929,6 @@ class ExternalWebformController extends Controller
         }
     }
 
-    protected function addIntakeOpportunityAttachment($intake, $opportunity, $intakeOpportunityAttachmentUrl) {
-        $fileName = basename($intakeOpportunityAttachmentUrl);
-
-        $document = new Document();
-        $document->description = 'Intake kans bijlage';
-        $document->document_type = 'upload';
-        $document->document_group = 'general';
-        $document->filename = $fileName;
-        $document->contact_id = $intake->contact_id;
-        $document->intake_id = $intake->id;
-
-        if($opportunity){
-            $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'opportunity')->first()->id;
-            $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'opportunity')->first()->name;
-            $document->opportunity_id = $opportunity->id;
-        } else {
-            $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'intake')->first()->id;
-            $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'intake')->first()->name;
-        }
-        $document->document_created_from_id = $documentCreatedFromId;
-
-        $document->save();
-
-        $contents = file_get_contents($intakeOpportunityAttachmentUrl);
-        $uniqueName = Str::uuid() . '.' . pathinfo($document->filename, PATHINFO_EXTENSION);;
-        $filePathAndName = "{$document->document_group}/" .
-            Carbon::parse($document->created_at)->year .
-            "/{$uniqueName}";
-        Storage::disk('documents')->put($filePathAndName, $contents);
-        $this->log('Intake kans bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Bigstorage');
-
-        $document->file_path_and_name = $filePathAndName;
-
-        $document->save();
-    }
-
-
-    protected function addContactAttachment($contact, $contactAttachmentUrl) {
-        $allowedFileTypes = ['png','jpg','jpeg','pdf'];
-        $fileType = strtolower(pathinfo($contactAttachmentUrl, PATHINFO_EXTENSION));
-
-        if(in_array($fileType, $allowedFileTypes)) {
-            $fileName = basename($contactAttachmentUrl);
-
-            $document = new Document();
-            $document->description = 'Contact bijlage';
-            $document->document_type = 'upload';
-            $document->document_group = 'general';
-            $document->filename = $fileName;
-            $document->contact_id = $contact->id;
-
-            $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'contact')->first()->id;
-            $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'contact')->first()->name;
-
-            $document->document_created_from_id = $documentCreatedFromId;
-
-            $document->save();
-
-            $contents = file_get_contents($contactAttachmentUrl);
-            $uniqueName = Str::uuid() . '.' . pathinfo($document->filename, PATHINFO_EXTENSION);;
-            $filePathAndName = "{$document->document_group}/" .
-                Carbon::parse($document->created_at)->year .
-                "/{$uniqueName}";
-            Storage::disk('documents')->put($filePathAndName, $contents);
-            $this->log('Contact bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Bigstorage');
-
-            $document->file_path_and_name = $filePathAndName;
-
-            $document->save();
-        } else {
-            $this->log('Contact bijlage is van een niet toegestaan formaat: ' . implode(',', $allowedFileTypes));
-        }
-    }
-
     /**
      * @param $measure
      * @param $intake
@@ -2664,7 +2939,7 @@ class ExternalWebformController extends Controller
         // Als kans_code is meegegeven, dan werken we die bij
         $opportunityCode = null;
         if ($dataOpportunity['opportunity_code']) {
-                $opportunityCode = $dataOpportunity['opportunity_code'];
+            $opportunityCode = $dataOpportunity['opportunity_code'];
         }
 
         $opportunity = null;
@@ -3084,6 +3359,15 @@ class ExternalWebformController extends Controller
 
     protected function addParticipationToContact(Contact $contact, array $data, Webform $webform )
     {
+        if (!$data['project_id']) {
+            return null;
+        }
+
+        $guard = new WebformActionGuard();
+        $guard->assertAllowed($webform, WebformActionCode::PARTICIPATION_CREATE, [
+            'status_id' => $data['participation_mutation_status_id'],
+        ]);
+
         if ($data['project_id']) {
             $this->log('Er is een project meegegeven, participatie aanmaken.');
             $project = Project::find($data['project_id']);
@@ -3276,7 +3560,7 @@ class ExternalWebformController extends Controller
                 return;
             }
 
-            if ($contactGroup->type_id != 'static') {
+            if ($contactGroup->type_id !== ContactGroupType::STATIC) {
                 $this->log('Een contact kan alleen aan een statische groep worden gekoppeld, geen groep gekoppeld.');
                 return;
             }
@@ -3314,7 +3598,7 @@ class ExternalWebformController extends Controller
                 $this->log('Er is/zijn 1 of meerdere contactgroep(en) meegegeven, groep(en) koppelen.');
 
                 foreach ($contactGroups as $contactGroup) {
-                    if ($contactGroup->type_id != 'static') {
+                    if ($contactGroup->type_id !== ContactGroupType::STATIC) {
                         $this->log('Een contact kan alleen aan een statische groep worden gekoppeld, groep ' . $contactGroup->name . ' niet gekoppeld aan contact ' . $contact->id . '.');
                     } else {
                         if ($contactGroup->contacts()->where('contact_id', $contact->id)->exists()) {
@@ -3354,21 +3638,185 @@ class ExternalWebformController extends Controller
     }
 
 
+    protected function addExistingContactpersonToGroup(
+        array $data,
+        Contact $organisationContact,
+        User $ownerAndResponsibleUser
+    ) {
+        // Alleen verwerken als er contactgroepen voor de contactpersoon zijn opgegeven.
+        if (
+            empty($data['group_name_contactperson']) &&
+            empty($data['contact_group_ids_contactperson'])
+        ) {
+            return;
+        }
+
+        $emailAddress = trim($data['email_address'] ?? '');
+
+        $this->log(
+            'Contactgroep(en) contactpersoon meegegeven bij bestaande organisatie '
+            . $organisationContact->id . '.'
+        );
+
+        $reason = null;
+        $matchingContactIds = collect();
+
+        if ($emailAddress === '') {
+            $reason = 'Er is geen e-mailadres meegegeven.';
+        } else {
+            // Zoek personen die via een actieve occupation aan deze organisatie gekoppeld zijn.
+            $linkedContactIds = OccupationContact::where(
+                'primary_contact_id',
+                $organisationContact->id
+            )
+                ->where(function ($query) {
+                    $query->whereNull('start_date')
+                        ->orWhereDate('start_date', '<=', Carbon::today());
+                })
+                ->where(function ($query) {
+                    $query->whereNull('end_date')
+                        ->orWhereDate('end_date', '>=', Carbon::today());
+                })
+                ->pluck('contact_id')
+                ->unique();
+
+            if ($linkedContactIds->isEmpty()) {
+                $reason = 'Er zijn geen actieve personen aan deze organisatie gekoppeld.';
+            } else {
+                // Match uitsluitend op e-mailadres en voorkom dubbele personen.
+                $matchingContactIds = Contact::whereIn('id', $linkedContactIds)
+                    ->whereHas('person')
+                    ->whereHas('emailAddresses', function ($query) use ($emailAddress) {
+                        $query->whereRaw('LOWER(TRIM(email)) = ?', [mb_strtolower($emailAddress)]);
+                    })
+                    ->pluck('id')
+                    ->unique();
+
+                if ($matchingContactIds->isEmpty()) {
+                    $reason = 'Geen gekoppelde persoon gevonden met dit e-mailadres.';
+                } elseif ($matchingContactIds->count() > 1) {
+                    $reason = 'Meerdere gekoppelde personen gevonden met dit e-mailadres.';
+                }
+            }
+        }
+
+        // Precies één bestaande contactpersoon gevonden.
+        if ($reason === null) {
+            $contactPerson = Contact::find($matchingContactIds->first());
+
+            $this->log(
+                'Bestaande contactpersoon gevonden: contact '
+                . $contactPerson->id . '.'
+            );
+
+            $this->addContactToGroupContactperson(
+                $data,
+                $contactPerson,
+                $ownerAndResponsibleUser
+            );
+
+            return;
+        }
+
+        // Geen eenduidige match: controletaak aanmaken.
+        $this->log('Controle contactpersoon noodzakelijk: ' . $reason);
+
+        $name = trim(
+            ($data['first_name'] ?? '') . ' '
+            . ($data['last_name_prefix'] ?? '') . ' '
+            . ($data['last_name'] ?? '')
+        );
+
+        $note = 'Controle contactpersoon webformulier.' . "\n"
+            . 'Reden: ' . $reason . "\n"
+            . 'Organisatie contact-ID: ' . $organisationContact->id . "\n"
+            . 'Naam contactpersoon: ' . $name . "\n"
+            . 'E-mailadres: ' . $emailAddress . "\n"
+            . 'Groepnaam: ' . ($data['group_name_contactperson'] ?? '') . "\n"
+            . 'Groep-ID(s): ' . ($data['contact_group_ids_contactperson'] ?? '');
+
+        $this->addTaskCheckContact(
+            $this->responsibleIds,
+            $organisationContact,
+            $this->webform,
+            $note
+        );
+    }
+
     protected function addContactToGroupContactperson(array $data, Contact $contact, $ownerAndResponsibleUser)
     {
+        if ($data['group_name_contactperson']) {
+            $this->log('Er is een contact groep contactpersoon meegegeven, groep koppelen aan de persoon.');
+
+            $contactGroup = ContactGroup::where('name', $data['group_name_contactperson'])->first();
+
+            if (!$contactGroup) {
+                $this->log('Groep met naam ' . $data['group_name_contactperson'] . ' is niet gevonden, geen groep gekoppeld.');
+            } elseif ($contactGroup->type_id !== ContactGroupType::STATIC) {
+                $this->log('Een contact kan alleen aan een statische groep worden gekoppeld, geen groep gekoppeld.');
+            } elseif ($contactGroup->contacts()->where('contact_id', $contact->id)->exists()) {
+                $this->log('Groep ' . $data['group_name_contactperson'] . ' al gekoppeld aan: ' . $contact->id);
+            } else {
+                $contactGroup->contacts()->syncWithoutDetaching([
+                    $contact->id => [
+                        'member_created_at' => \Illuminate\Support\Carbon::now(),
+                        'member_to_group_since' => Carbon::now()
+                    ]
+                ]);
+
+                $this->contactGroup = $contactGroup;
+                $this->log('Contact ' . $contact->id . ' aan groep ' . $data['group_name_contactperson'] . ' gekoppeld.');
+
+                if ($contactGroup->laposta_list_id) {
+                    Auth::setUser($ownerAndResponsibleUser);
+                    $this->log('Laposta contact groep verantwoordelijke gebruiker (zelfde als eigenaar) : ' . $ownerAndResponsibleUser->id);
+                    $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact, false);
+                    $lapostaMemberId = $lapostaMemberHelper->createMember();
+                    $this->log('Contact ' . $contact->id . ' als laposta relatie ' . $lapostaMemberId . ' aangemaakt.');
+                }
+
+                if ($contactGroup->send_email_new_contact_link) {
+                    $this->contactIdToEmailNewContactPersonToGroup = $contact->id;
+                    $this->contactGroupIdsToEmailNewContactPersonToGroup[$contactGroup->id] = $contactGroup->id;
+                    $this->processEmailNewContactPersonToGroup = true;
+                }
+
+                if ($contactGroup->inspection_person_type_id != null) {
+                    $contact->inspection_person_type_id = $contactGroup->inspection_person_type_id;
+                    $contact->save();
+                }
+            }
+        }
+
         if ($data['contact_group_ids_contactperson']) {
-            $contactGroups = ContactGroup::whereIn('id', explode(',', $data['contact_group_ids_contactperson']))->get();
+            $contactGroups = ContactGroup::whereIn(
+                'id',
+                explode(',', $data['contact_group_ids_contactperson'])
+            )->get();
+
             if ($contactGroups->count() > 0) {
                 $this->log('Er is/zijn 1 of meerdere contactgroep(en) contactpersoon meegegeven, groep(en) koppelen aan de persoon.');
 
                 foreach ($contactGroups as $contactGroup) {
-                    if ($contactGroup->type_id != 'static') {
-                        $this->log('Een contact kan alleen aan een statische groep worden gekoppeld, groep ' . $contactGroup->name . ' niet gekoppeld aan contact ' . $contact->id . '.');
+                    if ($contactGroup->type_id !== ContactGroupType::STATIC) {
+                        $this->log(
+                            'Een contact kan alleen aan een statische groep worden gekoppeld, groep '
+                            . $contactGroup->name
+                            . ' niet gekoppeld aan contact '
+                            . $contact->id
+                            . '.'
+                        );
                     } else {
                         if ($contactGroup->contacts()->where('contact_id', $contact->id)->exists()) {
                             $this->log('Groep ' . $contactGroup->name . ' al gekoppeld aan: ' . $contact->id);
                         } else {
-                            $contactGroup->contacts()->syncWithoutDetaching([$contact->id => ['member_created_at' => \Illuminate\Support\Carbon::now(), 'member_to_group_since' => Carbon::now()]]);
+                            $contactGroup->contacts()->syncWithoutDetaching([
+                                $contact->id => [
+                                    'member_created_at' => \Illuminate\Support\Carbon::now(),
+                                    'member_to_group_since' => Carbon::now()
+                                ]
+                            ]);
+
                             $this->log('Contact ' . $contact->id . ' aan groep ' . $contactGroup->name . ' gekoppeld.');
 
                             if ($contactGroup->laposta_list_id) {
@@ -3381,8 +3829,10 @@ class ExternalWebformController extends Controller
 
                             if ($contactGroup->send_email_new_contact_link) {
                                 $this->contactIdToEmailNewContactPersonToGroup = $contact->id;
+                                $this->contactGroupIdsToEmailNewContactPersonToGroup[$contactGroup->id] = $contactGroup->id;
                                 $this->processEmailNewContactPersonToGroup = true;
                             }
+
                             if ($contactGroup->inspection_person_type_id != null) {
                                 $contact->inspection_person_type_id = $contactGroup->inspection_person_type_id;
                                 $contact->save();
@@ -3390,11 +3840,12 @@ class ExternalWebformController extends Controller
                         }
                     }
                 }
+
                 $this->contactGroups = $contactGroups;
-            } else {
-                $this->log('Er is geen contact groep contactpersoon meegegeven, geen groep koppelen aan de persoon.');
             }
-        } else {
+        }
+
+        if (!$data['group_name_contactperson'] && !$data['contact_group_ids_contactperson']) {
             $this->log('Er is geen contact groep contactpersoon meegegeven, geen groep koppelen aan de persoon.');
         }
     }
@@ -3422,7 +3873,7 @@ class ExternalWebformController extends Controller
         }
 
         // indien contact organisatie is en verbinding met contact is persoon, dan switchen primary en secondary contact
-        if ($contact->type_id == ContactType::ORGANISATION && $occupationContact->type_id == ContactType::PERSON) {
+        if ($contact->type_id === ContactType::ORGANISATION && $occupationContact->type_id === ContactType::PERSON) {
             $primaryContact = $contact;
             $secondaryContact = $occupationContact;
         } else {
@@ -3481,20 +3932,35 @@ class ExternalWebformController extends Controller
         }
     }
 
-    protected function doProcessEmailNewContactPersonToGroup(array $data)
+    protected function doProcessEmailNewContactPersonToGroup()
     {
-        $contactPersonToEmailNewContactGroup = Contact::find($this->contactIdToEmailNewContactPersonToGroup);
-        if($data['contact_group_ids_contactperson']){
-            $contactGroups = ContactGroup::whereIn('id', explode(',', $data['contact_group_ids_contactperson']))->get();
-            foreach ($contactGroups as $contactGroup)
-            {
-                if ($contactGroup->send_email_new_contact_link) {
-                    $contactGroupHelper = new ContactGroupHelper($contactGroup, $contactPersonToEmailNewContactGroup);
-                    $processed = $contactGroupHelper->processEmailNewContactToGroup();
-                    if ($processed) {
-                        $this->log('Email verzonden naar ' . $this->contactIdToEmailNewContactPersonToGroup);
-                    }
-                }
+        $contactPersonToEmailNewContactGroup = Contact::find(
+            $this->contactIdToEmailNewContactPersonToGroup
+        );
+
+        if (!$contactPersonToEmailNewContactGroup) {
+            return;
+        }
+
+        foreach ($this->contactGroupIdsToEmailNewContactPersonToGroup as $contactGroupId) {
+            $contactGroup = ContactGroup::find($contactGroupId);
+
+            if (!$contactGroup || !$contactGroup->send_email_new_contact_link) {
+                continue;
+            }
+
+            $contactGroupHelper = new ContactGroupHelper(
+                $contactGroup,
+                $contactPersonToEmailNewContactGroup
+            );
+
+            $processed = $contactGroupHelper->processEmailNewContactToGroup();
+
+            if ($processed) {
+                $this->log(
+                    'Email verzonden naar '
+                    . $this->contactIdToEmailNewContactPersonToGroup
+                );
             }
         }
     }
@@ -3650,7 +4116,7 @@ class ExternalWebformController extends Controller
             $finished_by_user = User::find($responsibleIds['responsible_user_id'] ? $responsibleIds['responsible_user_id'] : $webform->responsible_user_id );
             $task->finished_by_id = $finished_by_user ? $finished_by_user->id : null;
             $task->save();
-            $this->log('Taak met id ' . $task->id . ' automatisch gereed op ' . Carbon::parse($task->date_finished)->format('d-m-Y') . ' door verantwoordelijke: ' . $finished_by_user->fullname);
+            $this->log('Taak met id ' . $task->id . ' automatisch gereed op ' . Carbon::parse($task->date_finished)->format('d-m-Y') . ' door verantwoordelijke: ' . ($finished_by_user?->fullname ?? 'geen verantwoordelijke gebruiker') );
         }
 
         $this->log('Taak met id ' . $task->id . ' aangemaakt.');
@@ -3710,6 +4176,13 @@ class ExternalWebformController extends Controller
 
     protected function addOrderToContact(Contact $contact, array $data)
     {
+        if (!$data['product_id']) {
+            return null;
+        }
+
+        $guard = new WebformActionGuard();
+        $guard->assertAllowed($this->webform, WebformActionCode::ORDER_CREATE, []);
+
         if ($data['product_id']) {
             $this->log('Er is een product meegegeven, order aanmaken.');
 
@@ -3788,8 +4261,8 @@ class ExternalWebformController extends Controller
                 'date_next_invoice' => $dateNextInvoice,
                 'collection_frequency_id' => $collectionFrequencyId,
                 'invoice_text' => ( isset($data['invoice_text']) && !empty($data['invoice_text']) ) ? $data['invoice_text'] : null,
-                'IBAN' => '',
-                'iban_attn' => '',
+//                'IBAN' => '',
+//                'iban_attn' => '',
             ]);
 
             $this->log('Order met id ' . $order->id . ' aangemaakt.');
@@ -3812,6 +4285,103 @@ class ExternalWebformController extends Controller
             $this->log('Er is geen product meegegeven, geen order aanmaken.');
             return null;
         }
+    }
+
+    /**
+     * Valideer het verbindingstype voor een VvE-aanmelding.
+     * Gebruik standaard 'vve_member' als geen verbindingstype is meegegeven.
+     *
+     * @param array $data
+     * @return void
+     */
+    protected function validateOccupationForVve(array &$data): void
+    {
+        $occupationId = $data['contact']['occupation_id'];
+
+        if ($occupationId === '') {
+            $occupation = Occupation::where('code_ref', 'vve_member')->first();
+
+            if (!$occupation) {
+                $this->error(
+                    'Geen verbindingstype meegegeven en standaardverbindingstype "vve_member" niet gevonden.',
+                    422
+                );
+            }
+
+            $data['contact']['occupation_id'] = $occupation->id;
+
+            $this->log(
+                'Geen verbindingstype meegegeven, standaard VvE lid gebruikt (' .
+                $occupation->id . ').'
+            );
+        } else {
+            $occupation = Occupation::find($occupationId);
+
+            if (!$occupation) {
+                $this->error(
+                    'Ongeldig verbindingstype meegegeven (' . $occupationId . ').',
+                    422
+                );
+            }
+
+            $this->log(
+                'Verbindingstype ingesteld op: ' .
+                $occupation->primary_occupation . ' (' . $occupation->id . ').'
+            );
+        }
+    }
+
+    private function validateApiTypeForExternalWebform(Webform $webform): void
+    {
+        if ($webform->api_type === WebformApiType::HOOMDOSSIER_API) {
+            $this->log('Webform met id ' . $webform->id . ' hoort bij Hoomdossier API en mag niet gebruikt worden voor Webform API.');
+            $this->error('Webform not found', 404);
+        }
+
+        if ($webform->api_type === null) {
+            $webform->api_type = WebformApiType::WEBFORM_API;
+            $webform->save();
+
+            $this->initializeActionsForLegacyWebform($webform);
+
+            $this->log('Api type bij webform met id ' . $webform->id . ' automatisch ingesteld op webform_api.');
+        }
+    }
+
+    private function initializeActionsForLegacyWebform(Webform $webform): void
+    {
+        $allowedParticipationStatusIds = ParticipantMutationStatus::query()
+            ->orderBy('id')
+            ->pluck('id')
+            ->toArray();
+
+        $participationAction = $webform->actions()->firstOrCreate(
+            [
+                'action_code' => WebformActionCode::PARTICIPATION_CREATE,
+            ],
+            [
+                'enabled' => true,
+            ]
+        );
+
+        $participationAction->filters()->updateOrCreate(
+            [
+                'field' => 'status_id',
+                'operator' => 'in',
+            ],
+            [
+                'value' => json_encode($allowedParticipationStatusIds),
+            ]
+        );
+
+        $webform->actions()->firstOrCreate(
+            [
+                'action_code' => WebformActionCode::ORDER_CREATE,
+            ],
+            [
+                'enabled' => true,
+            ]
+        );
     }
 
     protected function checkMaxRequests($webform)
@@ -3910,10 +4480,7 @@ class ExternalWebformController extends Controller
         $this->taskErrors[] = $error;
     }
 
-    /**
-     * @return bool
-     */
-    private function createHoomDossier()
+    private function doCreateHoomDossier()
     {
         $cooperation = Cooperation::first();
         $this->log("Aanmaken hoomdossier contact");
@@ -4178,13 +4745,40 @@ class ExternalWebformController extends Controller
 
             // Indien kansactie bijlage url meegegeven deze als document opslaan
             if($dataQuotationRequest['quotation_request_attachment']){
-                $this->addQuotationRequestAttachment($quotationRequest, $dataQuotationRequest['quotation_request_attachment']);
+                $this->addAttachment(
+                    description: 'Kansactie bijlage',
+                    documentCreatedFromCodeRef: 'quotationrequest',
+                    contactId: $quotationRequest->opportunity->intake->contact_id,
+                    opportunityId: $quotationRequest->opportunity_id,
+                    intakeId: $quotationRequest->opportunity->intake->id,
+                    campaignId: $quotationRequest->opportunity->intake->campaign_id,
+                    quotationRequestId: $quotationRequest->id,
+                    attachmentUrl: $dataQuotationRequest['quotation_request_attachment']
+                );
             }
             if($dataQuotationRequest['quotation_request_attachment_2']){
-                $this->addQuotationRequestAttachment($quotationRequest, $dataQuotationRequest['quotation_request_attachment_2']);
+                $this->addAttachment(
+                    description: 'Kansactie bijlage',
+                    documentCreatedFromCodeRef: 'quotationrequest',
+                    contactId: $quotationRequest->opportunity->intake->contact_id,
+                    opportunityId: $quotationRequest->opportunity_id,
+                    intakeId: $quotationRequest->opportunity->intake->id,
+                    campaignId: $quotationRequest->opportunity->intake->campaign_id,
+                    quotationRequestId: $quotationRequest->id,
+                    attachmentUrl: $dataQuotationRequest['quotation_request_attachment_2']
+                );
             }
             if($dataQuotationRequest['quotation_request_attachment_3']){
-                $this->addQuotationRequestAttachment($quotationRequest, $dataQuotationRequest['quotation_request_attachment_3']);
+                $this->addAttachment(
+                    description: 'Kansactie bijlage',
+                    documentCreatedFromCodeRef: 'quotationrequest',
+                    contactId: $quotationRequest->opportunity->intake->contact_id,
+                    opportunityId: $quotationRequest->opportunity_id,
+                    intakeId: $quotationRequest->opportunity->intake->id,
+                    campaignId: $quotationRequest->opportunity->intake->campaign_id,
+                    quotationRequestId: $quotationRequest->id,
+                    attachmentUrl: $dataQuotationRequest['quotation_request_attachment_3']
+                );
             }
 
             $this->log("Kansactie " . $opportunityAction->name . " met id " . $quotationRequest->id . " aangemaakt voor kans '" . $opportunity->number . "' en coach/organisatie '" . ($coachOrOrganisation ? $coachOrOrganisation->full_name : 'geen') . "'.");
@@ -4372,51 +4966,245 @@ class ExternalWebformController extends Controller
 
         // Indien kansactie bijlage url meegegeven deze als document opslaan
         if($dataQuotationRequest['quotation_request_attachment']){
-            $this->addQuotationRequestAttachment($quotationRequest, $dataQuotationRequest['quotation_request_attachment']);
+            $this->addAttachment(
+                description: 'Kansactie bijlage',
+                documentCreatedFromCodeRef: 'quotationrequest',
+                contactId: $quotationRequest->opportunity->intake->contact_id,
+                opportunityId: $quotationRequest->opportunity_id,
+                intakeId: $quotationRequest->opportunity->intake->id,
+                campaignId: $quotationRequest->opportunity->intake->campaign_id,
+                quotationRequestId: $quotationRequest->id,
+                attachmentUrl: $dataQuotationRequest['quotation_request_attachment']
+            );
         }
         if($dataQuotationRequest['quotation_request_attachment_2']){
-            $this->addQuotationRequestAttachment($quotationRequest, $dataQuotationRequest['quotation_request_attachment_2']);
+            $this->addAttachment(
+                description: 'Kansactie bijlage',
+                documentCreatedFromCodeRef: 'quotationrequest',
+                contactId: $quotationRequest->opportunity->intake->contact_id,
+                opportunityId: $quotationRequest->opportunity_id,
+                intakeId: $quotationRequest->opportunity->intake->id,
+                campaignId: $quotationRequest->opportunity->intake->campaign_id,
+                quotationRequestId: $quotationRequest->id,
+                attachmentUrl: $dataQuotationRequest['quotation_request_attachment_2']
+            );
         }
         if($dataQuotationRequest['quotation_request_attachment_3']){
-            $this->addQuotationRequestAttachment($quotationRequest, $dataQuotationRequest['quotation_request_attachment_3']);
+            $this->addAttachment(
+                description: 'Kansactie bijlage',
+                documentCreatedFromCodeRef: 'quotationrequest',
+                contactId: $quotationRequest->opportunity->intake->contact_id,
+                opportunityId: $quotationRequest->opportunity_id,
+                intakeId: $quotationRequest->opportunity->intake->id,
+                campaignId: $quotationRequest->opportunity->intake->campaign_id,
+                quotationRequestId: $quotationRequest->id,
+                attachmentUrl: $dataQuotationRequest['quotation_request_attachment_3']
+            );
         }
 
         $this->log("Kansactie " . $quotationRequest->opportunityAction->name . " met id " . $quotationRequest->id . " bijgewerkt bij kans: " . $quotationRequest->opportunity->number . ") en coach/organisatie '" . ($coachOrOrganisation ? $coachOrOrganisation->full_name : 'geen') . "'.");
     }
 
-    protected function addQuotationRequestAttachment($quotationRequest, $quotationRequestAttachmentUrl) {
-        $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'quotationrequest')->first()->id;
-        $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'quotationrequest')->first()->name;
+    protected function addAttachment($description, $documentCreatedFromCodeRef, $contactId, $opportunityId, $intakeId, $campaignId, $quotationRequestId, $attachmentUrl)
+    {
+        $allowedFileTypes = ['png', 'jpg', 'jpeg', 'pdf'];
 
-        $fileName = basename($quotationRequestAttachmentUrl);
+        /*
+         * Haal alleen het pad uit de URL.
+         * Hierdoor hebben queryparameters geen invloed op de extensie
+         * of de eventuele bestandsnaam.
+         */
+        $urlPath = parse_url($attachmentUrl, PHP_URL_PATH);
 
-        $document = new Document();
-        $document->description = 'Kansactie bijlage';
-        $document->document_type = 'upload';
-        $document->document_group = 'general';
-        $document->filename = $fileName;
-        $document->document_created_from_id = $documentCreatedFromId;
-        $document->contact_id = $quotationRequest->opportunity->intake->contact_id;
-        $document->opportunity_id = $quotationRequest->opportunity_id;
-        $document->intake_id = $quotationRequest->opportunity->intake_id;
-        $document->campaign_id = $quotationRequest->opportunity->intake->campaign_id;
-        $document->quotation_request_id = $quotationRequest->id;
+        if (!$urlPath) {
+            $this->log($description . ' bevat geen geldige URL.');
 
-        $document->document_created_from_id = $documentCreatedFromId;
+            return;
+        }
 
-        $document->save();
+        $urlFileName = basename($urlPath);
+        $fileType = strtolower(pathinfo($urlPath, PATHINFO_EXTENSION));
 
-        $contents = file_get_contents($quotationRequestAttachmentUrl);
-        $uniqueName = Str::uuid() . '.' . pathinfo($document->filename, PATHINFO_EXTENSION);;
-        $filePathAndName = "{$document->document_group}/" .
-            Carbon::parse($document->created_at)->year .
-            "/{$uniqueName}";
-        Storage::disk('documents')->put($filePathAndName, $contents);
-        $this->log('Kansactie bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Bigstorage');
+        /*
+         * Bestaande functionaliteit:
+         * URL bevat een toegestane bestandsextensie.
+         */
+        $isExistingAttachmentUrl = in_array(
+            $fileType,
+            $allowedFileTypes,
+            true
+        );
 
-        $document->file_path_and_name = $filePathAndName;
+        /*
+         * Nieuwe functionaliteit:
+         * URL zonder bestandsextensie, maar wel een signed PDF-URL.
+         *
+         * Hiervoor moeten beide voorwaarden gelden:
+         * - het URL-pad bevat /pdf/;
+         * - de queryparameter signature bestaat en is niet leeg.
+         */
+        parse_str(
+            parse_url($attachmentUrl, PHP_URL_QUERY) ?? '',
+            $queryParameters
+        );
 
-        $document->save();
+        $isSignedPdfUrl =
+            str_contains($urlPath, '/pdf/')
+            && isset($queryParameters['signature'])
+            && trim((string)$queryParameters['signature']) !== '';
+
+        /*
+         * Voorkom dat een willekeurige URL wordt opgehaald.
+         */
+        if (!$isExistingAttachmentUrl && !$isSignedPdfUrl) {
+            $this->log(
+                $description . '  URL heeft geen toegestaan formaat '
+                . 'en is geen geldige signed PDF URL.'
+            );
+
+            return;
+        }
+
+        try {
+            $response = Http::connectTimeout(10)
+                ->timeout(30)
+                ->get($attachmentUrl);
+
+            if (!$response->successful()) {
+                $this->log(
+                    $description . '  kon niet worden opgehaald. '
+                    . 'HTTP-status: ' . $response->status()
+                );
+
+                return;
+            }
+
+            if ($isExistingAttachmentUrl) {
+                /*
+                 * Bestaande URL met bestandsnaam:
+                 * behoud de huidige bestandsnaam en extensie.
+                 */
+                $fileName = $urlFileName;
+            } else {
+                /*
+                 * Signed PDF-URL zonder bestandsnaam.
+                 *
+                 * Controleer na het ophalen of het daadwerkelijk een PDF is.
+                 */
+                $contentType = strtolower(
+                    trim(
+                        explode(
+                            ';',
+                            $response->header('Content-Type', '')
+                        )[0]
+                    )
+                );
+
+                if ($contentType !== 'application/pdf') {
+                    $this->log(
+                        $description . '  via signed PDF URL is geen PDF. '
+                        . 'Ontvangen Content-Type: '
+                        . ($contentType ?: 'onbekend')
+                    );
+
+                    return;
+                }
+
+                $fileType = 'pdf';
+                $contentDisposition = $response->header('Content-Disposition');
+
+                $fileName = null;
+
+                if ($contentDisposition) {
+                    if (preg_match('/filename\*=UTF-8\'\'([^;]+)/i', $contentDisposition, $matches)) {
+                        $fileName = rawurldecode(trim($matches[1]));
+                    } elseif (preg_match('/filename="?([^";]+)"?/i', $contentDisposition, $matches)) {
+                        $fileName = trim($matches[1]);
+                    }
+                }
+
+                if ($fileName) {
+                    $fileName = basename(
+                        str_replace('\\', '/', trim($fileName, "\"' "))
+                    );
+                }
+
+                if (!$fileName) {
+                    $fileName = Str::slug($description) . '.pdf';
+                }
+            }
+
+            $documentCreatedFrom = DocumentCreatedFrom::where(
+                'code_ref',
+                $documentCreatedFromCodeRef
+            )->first();
+
+            if (!$documentCreatedFrom) {
+                $this->log(
+                    $description . '  kon niet worden opgeslagen: '
+                    . 'DocumentCreatedFrom met code_ref ' . $documentCreatedFromCodeRef . ' ontbreekt.'
+                );
+
+                return;
+            }
+
+            $document = new Document();
+            $document->description = $description;
+            $document->document_type = 'upload';
+            $document->document_group = 'general';
+            $document->filename = $fileName;
+
+            $document->contact_id = $contactId;
+            $document->opportunity_id = $opportunityId;
+            $document->intake_id = $intakeId;
+            $document->campaign_id = $campaignId;
+            $document->quotation_request_id = $quotationRequestId;
+            $document->document_created_from_id = $documentCreatedFrom->id;
+
+            $document->save();
+
+            /*
+             * De fysieke bestandsnaam in Bigstorage blijft altijd uniek.
+             */
+            $uniqueName = Str::uuid() . '.' . $fileType;
+
+            $filePathAndName = "{$document->document_group}/"
+                . Carbon::parse($document->created_at)->year
+                . "/{$uniqueName}";
+
+            $stored = Storage::disk('documents')->put(
+                $filePathAndName,
+                $response->body()
+            );
+
+            if (!$stored) {
+                /*
+                 * Voorkom een Document-record zonder fysiek bestand.
+                 */
+                $document->delete();
+
+                $this->log(
+                    $description . '  ' . $fileName
+                    . ' kon niet worden opgeslagen in Bigstorage.'
+                );
+
+                return;
+            }
+
+            $document->file_path_and_name = $filePathAndName;
+            $document->save();
+
+            $this->log(
+                $description . '  ' . $fileName
+                . ' opgeslagen als ' . $documentCreatedFrom->name
+                . ' document in Bigstorage'
+            );
+        } catch (\Throwable $exception) {
+            $this->log(
+                'Fout bij ophalen of opslaan ' . $description . ': '
+                . $exception->getMessage()
+            );
+        }
     }
 
     /**
@@ -4497,4 +5285,5 @@ class ExternalWebformController extends Controller
             }
         }
     }
+
 }

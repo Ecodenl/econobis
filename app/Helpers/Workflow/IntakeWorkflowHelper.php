@@ -2,6 +2,7 @@
 
 namespace App\Helpers\Workflow;
 
+use App\Eco\Contact\ContactType;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Intake\Intake;
 use App\Eco\Intake\IntakeStatus;
@@ -110,7 +111,7 @@ class IntakeWorkflowHelper
 
         $organisation = Organisation::find($this->measureCategory->organisation_id_wf_create_quotation_request);
         $organisationContactperson = null;
-        if(optional(optional($organisation->contact->contactPerson)->contact)->type_id == 'person'){
+        if(optional(optional($organisation->contact->contactPerson)->contact)->type_id === ContactType::PERSON){
             $organisationContactperson = optional($organisation->contact->contactPerson)->contact;
         }
         if(!$organisationContactperson || !$organisationContactperson->primaryEmailAddress)

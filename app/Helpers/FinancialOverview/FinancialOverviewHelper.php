@@ -2,6 +2,7 @@
 
 namespace App\Helpers\FinancialOverview;
 
+use App\Eco\Contact\ContactType;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\FinancialOverview\FinancialOverviewContact;
@@ -65,7 +66,7 @@ class FinancialOverviewHelper
         $contactPerson = $financialOverviewContactController->getContactInfoForFinancialOverview($financialOverviewContact->contact)['contactPerson'];
         $contactName = null;
 
-        if ($financialOverviewContact->contact->type_id == 'person') {
+        if ($financialOverviewContact->contact->type_id === ContactType::PERSON) {
             $titleAddress = $financialOverviewContact->contact?->person?->title?->address;
             $initials = $financialOverviewContact->contact?->person?->initials ? $financialOverviewContact->contact?->person?->initials : ($financialOverviewContact->contact?->person?->first_name ? substr($financialOverviewContact->contact?->person?->first_name, 0, 1) . "." : "");
             $prefix = $financialOverviewContact->contact?->person->last_name_prefix;
@@ -84,7 +85,7 @@ class FinancialOverviewHelper
             // Tenslotte voegen we toe: last_name
             $contactName .= $financialOverviewContact->contact?->person->last_name;
 
-        } elseif ($financialOverviewContact->contact->type_id == 'organisation') {
+        } elseif ($financialOverviewContact->contact->type_id === ContactType::ORGANISATION) {
             $contactName = optional($financialOverviewContact->contact->organisation)->statutory_name ? $financialOverviewContact->contact->organisation->statutory_name : $financialOverviewContact->contact->full_name;
         }
 
@@ -205,10 +206,10 @@ class FinancialOverviewHelper
         }
         $contactName = null;
 
-        if ($financialOverviewContact->contact->type_id == 'person') {
+        if ($financialOverviewContact->contact->type_id === ContactType::PERSON) {
             $prefix = $financialOverviewContact->contact->person->last_name_prefix;
             $contactName = $prefix ? $financialOverviewContact->contact->person->first_name . ' ' . $prefix . ' ' . $financialOverviewContact->contact->person->last_name : $financialOverviewContact->contact->person->first_name . ' ' . $financialOverviewContact->contact->person->last_name;
-        } elseif ($financialOverviewContact->contact->type_id == 'organisation') {
+        } elseif ($financialOverviewContact->contact->type_id === ContactType::ORGANISATION) {
             $contactName = optional($financialOverviewContact->contact->organisation)->statutory_name ? $financialOverviewContact->contact->organisation->statutory_name : $financialOverviewContact->contact->full_name;
         }
 

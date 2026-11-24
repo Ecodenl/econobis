@@ -17,6 +17,7 @@ class PhoneNumber extends Model
 
     protected $casts = [
         'primary' => 'boolean',
+        'type_id' => PhoneNumberType::class,
     ];
 
     public function contact()
@@ -24,9 +25,15 @@ class PhoneNumber extends Model
         return $this->belongsTo(Contact::class);
     }
 
-    public function getType()
+    public function getType(): ?PhoneNumberType
     {
-        if(!$this->type_id) return null;
+        if (!$this->type_id) {
+            return null;
+        }
+
+        if ($this->type_id instanceof PhoneNumberType) {
+            return $this->type_id;
+        }
 
         return PhoneNumberType::get($this->type_id);
     }

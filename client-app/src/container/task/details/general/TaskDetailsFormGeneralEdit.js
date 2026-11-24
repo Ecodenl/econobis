@@ -476,7 +476,6 @@ const mapStateToProps = state => {
     return {
         taskDetails: state.taskDetails,
         meDetails: state.meDetails,
-        permissions: state.systemData.permissions,
         taskTypes: state.systemData.taskTypes,
         teams: state.systemData.teams,
         users: state.systemData.users,

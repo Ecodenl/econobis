@@ -49,6 +49,7 @@ class OrderProductsFormNewProductOneTime extends Component {
                 ledgerId: '',
                 costCenterId: '',
                 isOneTime: true,
+                cleanupException: true,
             },
             errors: {
                 amount: false,

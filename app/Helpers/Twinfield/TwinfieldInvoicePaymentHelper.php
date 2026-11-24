@@ -5,6 +5,7 @@ namespace App\Helpers\Twinfield;
 use App\Eco\Administration\Administration;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Invoice\InvoicePayment;
+use App\Eco\Twinfield\TwinfieldConnectionType;
 use App\Eco\Twinfield\TwinfieldLog;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -84,7 +85,7 @@ class TwinfieldInvoicePaymentHelper
 
     private function initializeConnection()
     {
-        if ($this->administration->twinfield_connection_type === "openid") {
+        if ($this->administration->twinfield_connection_type === TwinfieldConnectionType::OPENID) {
             $provider = new OAuthProvider([
                 'clientId'     => $this->administration->twinfield_client_id,
                 'clientSecret' => $this->administration->twinfield_client_secret,

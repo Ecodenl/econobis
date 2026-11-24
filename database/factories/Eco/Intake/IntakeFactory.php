@@ -16,7 +16,7 @@ class IntakeFactory extends Factory
 
         return [
             'address_id' => function(){
-                return Intake::random()->id;
+                return Intake::random()->value;
             },
             'campaign_id' => function() use ($faker){
                 if($faker->boolean(50)) return Campaign::inRandomOrder()->first()->id;

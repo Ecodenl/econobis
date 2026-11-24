@@ -40,7 +40,7 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\SecurityHeaders::class,
             \App\Http\Middleware\RestrictRestApiOauth::class,
-            ],
+        ],
         'api' => [
             'throttle:60,1',
             'bindings',
@@ -55,7 +55,6 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'passport-portal' => \App\Http\Middleware\SetPassportPortalProvider::class,
         'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'restrict-rest-api-oauth' => \App\Http\Middleware\RestrictRestApiOauth::class,
@@ -63,8 +62,9 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'client' => \Laravel\Passport\Http\Middleware\CheckClientCredentials::class,
-        'scopes' => \Laravel\Passport\Http\Middleware\CheckScopes::class,
+//        'client' => \Laravel\Passport\Http\Middleware\CheckClientCredentials::class,
+        'scope' => \Laravel\Passport\Http\Middleware\CheckTokenForAnyScope::class,
+        'scopes' => \Laravel\Passport\Http\Middleware\CheckToken::class,
         'econobis.scope' => \App\Http\Middleware\EnsureTokenHasScope::class,
         'scope.app' => SetAppScope::class,
         'scope.portal' => SetPortalScope::class,

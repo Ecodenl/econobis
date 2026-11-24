@@ -2,19 +2,22 @@
 
 namespace App\Eco\InspectionPersonType;
 
-use JosKolenberg\Enum\EnumWithIdAndName;
+use App\Support\Enum\HasLegacyEnumHelpers;
 
-class InspectionPersonType extends EnumWithIdAndName
+enum InspectionPersonType: string
 {
+    use HasLegacyEnumHelpers;
 
-    static $all;
+    case COACH = 'coach';
+    case PROJECT_MANAGER = 'projectmanager';
+    case EXTERNAL_PARTY = 'externalparty';
 
-    protected static function seed()
+    public function getName(): string
     {
-        return [
-            new static('coach', 'Is coach'),
-            new static('projectmanager', 'Is Projectleider'),
-            new static('externalparty', 'Is Externe partij'),
-        ];
+        return match ($this) {
+            self::COACH => 'Is coach',
+            self::PROJECT_MANAGER => 'Is Projectleider',
+            self::EXTERNAL_PARTY => 'Is Externe partij',
+        };
     }
 }

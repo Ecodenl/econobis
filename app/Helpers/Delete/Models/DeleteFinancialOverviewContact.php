@@ -1,95 +1,269 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: StagiarSoftware
- * Date: 10-8-2018
- * Time: 14:37
- */
 
 namespace App\Helpers\Delete\Models;
 
-
+use App\Eco\Cooperation\Cooperation;
+use App\Eco\DataCleanup\CleanupRegistry;
+use App\Eco\FinancialOverview\FinancialOverviewContactStatus;
+use App\Eco\FinancialOverview\FinancialOverviewParticipantProject;
 use App\Helpers\Delete\DeleteInterface;
+use App\Helpers\Delete\Traits\ChecksExcludedCleanupContacts;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class DeleteFinancialOverviewContact
- *
- * Relation: 1-n Emails. Action: dissociate
- * Relation: 1-n Documents. Action: dissociate
- * Relation: 1-n Tasks & notes. Action: call DeleteTask
- * Relation: 1-n Quotation requests. Action: call DeleteQuotationRequest
  *
  * @package App\Helpers\Delete\Models
  */
 class DeleteFinancialOverviewContact implements DeleteInterface
 {
-    private $errorMessage = [];
+    use ChecksExcludedCleanupContacts;
+
+    private bool $isCleanup = false;
+    private bool $force = false; // default softdelete
+    private array $errorMessage = [];
     private $financialOverviewContact;
 
-    /** Sets the model to delete
-     *
-     * @param Model $financialOverviewContact the model to delete
-     */
+    private $yearsForDelete;
+//    private Carbon $cutoffDate;
+    private $cooperation;
+    private string $cleanupCodeRef = 'financialOverviewContacts';
 
     public function __construct(Model $financialOverviewContact)
     {
         $this->financialOverviewContact = $financialOverviewContact;
+
+        $this->cooperation = Cooperation::first();
+
+        $cleanupItem = $this->cooperation?->cleanupItems()->where('code_ref', $this->cleanupCodeRef)->first();
+        $this->yearsForDelete = (int)($cleanupItem?->years_for_delete ?? 99);
+
+//        $this->cutoffDate = $this->buildCutoffDate($this->yearsForDelete);
     }
 
-    /** Main method for deleting this model and all it's relations
-     *
-     * @return array
-     * @throws
-     */
+    public function cleanup()
+    {
+        try {
+            $this->isCleanup = true;
+            $this->force = false;
+
+            if (! $this->canCleanup()) {
+                return $this->errorMessage;
+            }
+
+            return $this->delete();
+        } catch (\Exception $exception) {
+            Log::error('Fout bij opschonen Waardestaat contacten', [
+                'exception' => $exception->getMessage(),
+                'errormessages' => implode(' | ', $this->errorMessage),
+            ]);
+
+            $this->errorMessage[] =
+                "Fout bij opschonen Waardestaat contacten. "
+                . "(meld dit bij Econobis support)";
+
+            return $this->errorMessage;
+        }
+    }
+
+    public function canCleanup(): bool
+    {
+        $contactId = $this->financialOverviewContact->contact_id;
+
+        if ($this->isContactExcludedFromCleanup($contactId)) {
+            $foDescription =
+                $this->financialOverviewContact->financialOverview?->description
+                ?? '*onbekend*';
+
+            $focFullname =
+                $this->financialOverviewContact->contact?->full_name_fnf
+                ?? '*onbekend*';
+
+            $focId =
+                $this->financialOverviewContact->contact?->id
+                ?? '?';
+
+            $this->errorMessage[] =
+                "Waardestaat {$foDescription}, contact {$focFullname} ({$focId}) "
+                . "kan niet worden opgeschoond: het gekoppelde contact valt "
+                . "in een uitzonderingsgroep.";
+
+            return false;
+        }
+
+        return true;
+    }
+
     public function delete()
     {
-        $this->canDelete();
+        if (! $this->canDelete()) {
+            return $this->errorMessage;
+        }
+
         $this->deleteModels();
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->financialOverviewContact->delete();
+
+        if (count($this->errorMessage) === 0) {
+            $this->force ? $this->financialOverviewContact->forceDelete()
+                : $this->financialOverviewContact->delete();
+        }
 
         return $this->errorMessage;
     }
 
-    /** Checks if the model can be deleted and sets error messages
-     */
-    public function canDelete()
+    public function canDelete(): bool
     {
-        if($this->financialOverviewContact->status_id != 'concept'){
-            array_push($this->errorMessage, "Waardestaat voor contact " . $this->financialOverviewContact->contact->full_name. " is al in behandeling. Status: " . $this->financialOverviewContact->status_id . "." );
+        $fo = $this->financialOverviewContact->financialOverview;
+        $foDescription = $this->financialOverviewContact->financialOverview?->description ?? '*onbekend*';
+        $focFullname = $this->financialOverviewContact?->contact?->full_name_fnf ?? '*onbekend*';
+        $focId = $this->financialOverviewContact?->contact?->id ?? '?';
+
+        if ($this->financialOverviewContact->financialOverviewsToSend()->exists()) {
+            $this->errorMessage[] =
+                "Waardestaat " . $foDescription . ", contact " . $focFullname . " (" . $focId . ") kan nu niet worden verwijderd: er staat nog een verzendproces open.";
+            return false;
         }
+
+        $isDraft = $this->financialOverviewContact->status_id === 'concept';
+
+        if ($isDraft) {
+            // Conceptgegevens hebben geen bewaarplicht en mogen ook vanuit cleanup
+            // definitief worden verwijderd.
+            $this->force = true;
+
+            return true;
+        }
+
+        // Status guard: tijdens verstuur/maak-proces nooit verwijderen
+        $statusCode = $this->financialOverviewContact->status_id ?? '';
+        $statusName = $this->financialOverviewContact->status ?? '*onbekend*';
+        $conceptSatusName = FinancialOverviewContactStatus::get('concept')?->getName() ?? '*onbekend*';
+        $sendSatusName = FinancialOverviewContactStatus::get('sent')?->getName() ?? '*onbekend*';
+
+
+        // UI: alleen concept toegestaan
+        if (! $this->isCleanup) {
+            $this->errorMessage[] =
+                "Waardestaat " . $foDescription . ", contact " . $focFullname . " (" . $focId . ") kan niet worden verwijderd. "
+                . "Verwijderen is alleen toegestaan bij status '{$conceptSatusName}'.";
+            return false;
+        }
+
+        // Cleanup: alleen 'sent' toegestaan (na proces)
+        if ($statusCode !== 'sent') {
+            $this->errorMessage[] =
+                "Waardestaat " . $foDescription . ", contact " . $focFullname . " (" . $focId . ") kan niet worden opgeschoond (status: {$statusName}). "
+                . "Opschonen is alleen toegestaan bij status '{$sendSatusName}'.";
+            return false;
+        }
+
+        // Bij fiscale bewaarplicht mag een definitieve waardestaat van een contact
+        // in een uitzonderingsgroep ook niet los worden verwijderd.
+        if ($this->isFiscalRetention()) {
+            if ($this->isContactExcludedFromCleanup(
+                $this->financialOverviewContact->contact_id
+            )) {
+                $this->errorMessage[] =
+                    "Waardestaat {$foDescription}, contact {$focFullname} ({$focId}) "
+                    . "kan niet worden verwijderd: het gekoppelde contact valt "
+                    . "in een uitzonderingsgroep.";
+
+                return false;
+            }
+        }
+
+        // Bewaarplicht voor definitieve waardestaten: year < cutoffYear
+        $year = (int) ($fo?->year ?? -1);
+
+        if ($year <= 0) {
+            $this->errorMessage[] = "Waardestaat " . $foDescription . ", contact " . $focFullname . " (" . $focId . ") kan niet worden verwijderd: jaar ontbreekt (bewaarde waardestaat).";
+            return false;
+        }
+
+        if ($year < $this->cutoffYear()) {
+            return true;
+        }
+
+        $this->errorMessage[] =
+            "Deze waardestaat " . $foDescription . " is al definitief. Waardestaat contact kan niet worden verwijderd vanwege de bewaarplicht: "
+            . $this->yearsForDelete
+            . " jaar (peiljaar: "
+            . $this->cutoffYear()
+            . ").";
+        return false;
     }
 
-    /** Deletes models recursive
-     */
     public function deleteModels()
     {
-
+        $this->deleteLinkedFinancialOverviewParticipantProjects();
     }
 
-    /** The relations which should be dissociated
-     */
-    public function dissociateRelations()
+    public function dissociateRelations(): void
     {
+    }
 
+    public function deleteRelations(): void
+    {
+        // financial_overviews_to_send is niet softdeletable → altijd hard delete
+//        $this->financialOverviewContact->financialOverviewsToSend()->delete();
+    }
+
+    public function customDeleteActions(): void
+    {
+    }
+
+    private function cutoffYear(): int
+    {
+        return Carbon::now()->year - $this->yearsForDelete;
+    }
+
+    private function isFiscalRetention(): bool
+    {
+        return CleanupRegistry::retentionModeFor($this->cleanupCodeRef) === CleanupRegistry::RETENTION_FISCAL_DATE;
     }
 
     /**
-     * Delete relations who dont need their own Delete class
+     * Verwijder (soft/hard) alle FinancialOverviewParticipantProject records
+     * die horen bij:
+     * - dezelfde FinancialOverview (via financial_overview_project_id -> FOProject -> financial_overview_id)
+     * - participant_project waarvan contact_id == deze contact_id
      */
-    public function deleteRelations()
+    private function deleteLinkedFinancialOverviewParticipantProjects(): void
     {
+        $fo = $this->financialOverviewContact->financialOverview;
+        $contactId = $this->financialOverviewContact->contact_id;
 
-    }
+        if (! $fo || ! $contactId) {
+            return;
+        }
 
-    /** Model specific delete actions e.g. delete files from server
-     */
-    public function customDeleteActions()
-    {
+        // Haal alle FOProject ids van deze waardestaat op
+        $foProjectIds = $fo->financialOverviewProjects()->pluck('id')->all();
 
+        if (empty($foProjectIds)) {
+            return;
+        }
+
+        // Selecteer alle FOPP records die:
+        // - bij 1 van deze FOProjecten horen
+        // - en een participant_project hebben met dit contact_id
+        $query = FinancialOverviewParticipantProject::query()
+            ->whereIn('financial_overview_project_id', $foProjectIds)
+            ->whereHas('participantProject', function ($q) use ($contactId) {
+                $q->where('contact_id', $contactId);
+            });
+
+        if ($this->force) {
+            // force-delete: ook eventueel reeds softdeleted meepakken
+            $query->withTrashed()->get()->each->forceDelete();
+        } else {
+            // soft-delete
+            $query->get()->each->delete();
+        }
     }
 
 }

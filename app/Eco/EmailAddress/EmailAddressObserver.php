@@ -89,6 +89,10 @@ class EmailAddressObserver
         // Check if any contactgroup contacts are present
         // If so, then delete emailaddress for every contactgroup that is linked to laposta
         if($emailAddress->primary == true) {
+            $contact = $emailAddress->contact;
+            if (!$contact){
+                return;
+            }
             foreach ($emailAddress->contact->groups as $contactGroup) {
                 if ($contactGroup->laposta_list_id) {
                     $contactGroupsPivot = $contactGroup->pivot;

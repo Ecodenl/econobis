@@ -10,6 +10,7 @@ use App\Eco\User\User;
 use App\Helpers\Mail\MailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMail;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class SendSingleMailToContact extends SendSingleMail
@@ -25,6 +26,8 @@ class SendSingleMailToContact extends SendSingleMail
 
     public function handle(): Email
     {
+        Auth::setUser($this->user->fresh());
+
         $email = $this->getUpdatedEmail();
 
         try {

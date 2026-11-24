@@ -20,7 +20,7 @@ class PhoneNumberFactory extends Factory
                 return factory('App\Eco\Contact\Contact')->create()->id;
             },
             'type_id' => function(){
-                return PhoneNumberType::random()->id;
+                return PhoneNumberType::random()->value;
             },
         ];
     }

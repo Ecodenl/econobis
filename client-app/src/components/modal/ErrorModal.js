@@ -51,6 +51,8 @@ class ErrorModal extends Component {
     }
 
     render() {
+        // console.log('ErrorModal props:', this.props);
+
         const bounds = {
             left: this.state.offsetLeft,
             top: this.state.offsetTop,
@@ -61,13 +63,19 @@ class ErrorModal extends Component {
         const { title, closeModal, buttonText, error } = this.props;
         let { errorMessage } = this.props;
 
-        if (error.message) {
-            if (error.message.includes(';')) {
-                error.message = error.message.split(';');
-            }
-            errorMessage = error.message;
-        } else if (error.httpCode) {
-            switch (error.httpCode) {
+        const httpCode = error.http_code ?? error.httpCode ?? this.props.httpCode;
+        const suppliedMessage = error.message ?? errorMessage;
+
+        const isTooManyRequests =
+            httpCode === 429 || suppliedMessage === 'Too Many Attempts.' || suppliedMessage === 'Too Many Attempts';
+
+        if (isTooManyRequests) {
+            errorMessage =
+                'Er zijn te veel verzoeken kort na elkaar uitgevoerd. Wacht ongeveer één minuut en probeer het daarna opnieuw.';
+        } else if (error.message) {
+            errorMessage = error.message.includes(';') ? error.message.split(';') : error.message;
+        } else if (httpCode) {
+            switch (httpCode) {
                 case 400:
                     errorMessage = 'Foute aanvraag';
                     break;
@@ -135,7 +143,8 @@ class ErrorModal extends Component {
                     errorMessage = 'Voorwaarde nodig';
                     break;
                 case 429:
-                    errorMessage = 'Te veel requests';
+                    errorMessage =
+                        'Er zijn te veel verzoeken kort na elkaar uitgevoerd. Wacht ongeveer één minuut en probeer het daarna opnieuw.';
                     break;
                 case 431:
                     errorMessage = 'Headers van de aanvraag te lang';

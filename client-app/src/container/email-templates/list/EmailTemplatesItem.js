@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
+import { eye } from 'react-icons-kit/fa/eye';
 
 // Functionele wrapper voor de class component
 const EmailTemplatesItemWrapper = props => {
@@ -39,7 +41,8 @@ class EmailTemplatesItem extends Component {
     }
 
     render() {
-        const { id, name, subject, createdBy } = this.props;
+        const { id, name, subject, createdBy, permissions } = this.props;
+        const canManage = permissions && permissions.manageEmailTemplate;
 
         return (
             <tr
@@ -53,8 +56,12 @@ class EmailTemplatesItem extends Component {
                 <td>{createdBy ? createdBy.fullName : ''}</td>
                 <td>
                     {this.state.showActionButtons ? (
-                        <a role="button" onClick={() => this.openItem(id)}>
-                            <Icon className="mybtn-success" size={14} icon={pencil} />
+                        <a
+                            role="button"
+                            onClick={() => this.openItem(id)}
+                            title={canManage ? 'Openen en wijzigen' : 'Bekijken'}
+                        >
+                            <Icon className="mybtn-success" size={14} icon={canManage ? pencil : eye} />
                         </a>
                     ) : (
                         ''
@@ -65,4 +72,10 @@ class EmailTemplatesItem extends Component {
     }
 }
 
-export default EmailTemplatesItemWrapper;
+const mapStateToProps = state => {
+    return {
+        permissions: state.meDetails.permissions,
+    };
+};
+
+export default connect(mapStateToProps)(EmailTemplatesItemWrapper);

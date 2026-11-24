@@ -1,28 +1,21 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Beheerder
- * Date: 26-10-2017
- * Time: 11:55
- */
 
 namespace App\Eco\Administration;
 
-use JosKolenberg\Enum\EnumWithIdAndName;
+use App\Support\Enum\HasLegacyEnumHelpers;
 
-class SepaType extends EnumWithIdAndName
+enum SepaType: string
 {
+    use HasLegacyEnumHelpers;
 
-    /**
-     * Seed the class with Enum instances
-     *
-     * @return array
-     */
-    protected static function seed()
+    case CREDIT = 'credit';
+    case PAYMENT = 'payment';
+
+    public function getName(): string
     {
-        return [
-            new static('credit', 'Credit'),
-            new static('payment', 'Uitkering'),
-        ];
+        return match ($this) {
+            self::CREDIT => 'Credit',
+            self::PAYMENT => 'Uitkering',
+        };
     }
 }

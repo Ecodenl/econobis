@@ -7,8 +7,9 @@ const ContactDetailsFormOccupationsList = props => {
     return (
         <div>
             <div className="row border header">
+                <div className="col-sm-2">Verbindingsrol</div>
                 <div className="col-sm-3">Verbonden met</div>
-                <div className="col-sm-2">Verbinding</div>
+
                 <div className="col-sm-2">Begindatum</div>
                 <div className="col-sm-2">Einddatum</div>
                 <div className="col-sm-1">

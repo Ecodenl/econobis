@@ -52,6 +52,6 @@ class TwinfieldLog extends Model
     {
         if (!$this->message_type) return '';
 
-        return TwinfieldLogMessageType::get($this->message_type)->name;
+        return TwinfieldLogMessageType::get($this->message_type)?->getName() ?? '';
     }
 }

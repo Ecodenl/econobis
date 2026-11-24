@@ -3,6 +3,7 @@
 namespace App\Eco\ContactGroup;
 
 use App\Eco\Contact\Contact;
+use App\Eco\Cooperation\CooperationCleanupContactsExcludedGroup;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
@@ -30,7 +31,9 @@ class ContactGroup extends Model
         'closed' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
-    ];
+        'type_id' => ContactGroupType::class,
+        'inspection_person_type_id' => InspectionPersonType::class,
+        ];
 
     //gebruikt om infinite loop te checken bij samengestelde groepen
     private $hasComposedIds = [];
@@ -99,18 +102,33 @@ class ContactGroup extends Model
         return $this->hasMany(Document::class)->orderBy('documents.id', 'desc');
     }
 
-    public function getType()
+    public function cleanupContactsExcludedGroups()
+    {
+        return $this->hasMany(CooperationCleanupContactsExcludedGroup::class);
+    }
+
+    public function getType(): ?ContactGroupType
     {
         if (!$this->type_id) {
             return null;
         }
 
+        if ($this->type_id instanceof ContactGroupType) {
+            return $this->type_id;
+        }
+
         return ContactGroupType::get($this->type_id);
     }
 
-    public function getInspectionPersonType()
+    public function getInspectionPersonType(): ?InspectionPersonType
     {
-        if(!$this->inspection_person_type_id) return null;
+        if (!$this->inspection_person_type_id) {
+            return null;
+        }
+
+        if ($this->inspection_person_type_id instanceof InspectionPersonType) {
+            return $this->inspection_person_type_id;
+        }
 
         return InspectionPersonType::get($this->inspection_person_type_id);
     }
@@ -148,8 +166,6 @@ class ContactGroup extends Model
     {
         $requestQuery = '';
 
-//        $filters = $this->filters;
-//        $extraFilters = $this->extraFilters;
         $filters = $this->filters()->get();
         $extraFilters = $this->extraFilters()->get();
 
@@ -181,13 +197,6 @@ class ContactGroup extends Model
                 new \App\Http\RequestQueries\ParticipantProject\Grid\ExtraFilter($request));
         }
 
-        //todo WM: Tijdelijke log regel voor testen in Valleienergie, later weer weghalen !!!
-//        if ($this->id === 78) {
-//            Log::info('debug sql');
-//            $sql = str_replace(array('?'), array('\'%s\''), $requestQuery->getQuery()->toSql());
-//            $sql = vsprintf($sql, $requestQuery->getQuery()->getBindings());
-//            Log::info($sql);
-//        }
         return $requestQuery;
     }
 
@@ -347,7 +356,9 @@ class ContactGroup extends Model
         // default: lege array of geen resultaat
         $result = $onlyIds ? [] : false;
 
-        if ($this->type_id === 'static' || $this->type_id === 'simulated') {
+        $contactGroupType = $this->getType();
+
+        if ($contactGroupType === ContactGroupType::STATIC || $contactGroupType === ContactGroupType::SIMULATED) {
             if ($this->composed_of === 'contacts') {
                 if($onlyIds){
                     $result = $this->contacts()->get()->pluck('id')->toArray();
@@ -378,38 +389,47 @@ class ContactGroup extends Model
                     }
                 }
             }
-        } elseif ($this->type_id === 'dynamic') {
+        } elseif ($contactGroupType === ContactGroupType::DYNAMIC) {
+            if ($doLog) {
+                Log::info('getAllContacts dynamic start', [
+                    'composed_of' => $this->composed_of,
+                    'group_id' => $this->id,
+                    'group_name' => $this->name,
+                    'onlyIds' => $onlyIds,
+                    'doLog' => $doLog,
+                    'auth_check' => auth()->check(),
+                    'auth_user_id' => auth()->id(),
+                    'running_in_console' => app()->runningInConsole(),
+                    'db_database' => config('database.connections.' . config('database.default') . '.database'),
+                ]);
+            }
             if ($this->composed_of === 'contacts') {
                 if($onlyIds){
                     $result = $this->getDynamicContacts()->get()->pluck('id')->toArray();
                 } else {
                     $result = $this->getDynamicContacts()->get();
                 }
+
+                if ($doLog) {
+                    Log::info('getAllContacts dynamic contacts result', [
+                        'group_id' => $this->id,
+                        'contacts_count' => $result->count(),
+                        'contact_ids_count' => $result->pluck('id')->filter()->unique()->count(),
+                        'first_contact_ids' => $result->pluck('id')->filter()->take(10)->values()->toArray(),
+                    ]);
+                }
             } else {
                 if ($this->composed_of === 'participants') {
-//                    if ($doLog) {
-//                        Log::info('getAllContacts dynamic participants start', [
-//                            'group_id' => $this->id,
-//                            'group_name' => $this->name,
-//                            'onlyIds' => $onlyIds,
-//                            'doLog' => $doLog,
-//                            'auth_check' => auth()->check(),
-//                            'auth_user_id' => auth()->id(),
-//                            'running_in_console' => app()->runningInConsole(),
-//                            'db_database' => config('database.connections.' . config('database.default') . '.database'),
-//                        ]);
-//                    }
-
                     $participants = $this->getDynamicContacts()->get();
 
-//                    if ($doLog) {
-//                        Log::info('getAllContacts dynamic participants result', [
-//                            'group_id' => $this->id,
-//                            'participants_count' => $participants->count(),
-//                            'contact_ids_count' => $participants->pluck('contact_id')->filter()->unique()->count(),
-//                            'first_contact_ids' => $participants->pluck('contact_id')->filter()->take(10)->values()->toArray(),
-//                        ]);
-//                    }
+                    if ($doLog) {
+                        Log::info('getAllContacts dynamic participants result', [
+                            'group_id' => $this->id,
+                            'participants_count' => $participants->count(),
+                            'contact_ids_count' => $participants->pluck('contact_id')->filter()->unique()->count(),
+                            'first_contact_ids' => $participants->pluck('contact_id')->filter()->take(10)->values()->toArray(),
+                        ]);
+                    }
 
                     $participants->load(['contact']);
 
@@ -431,7 +451,7 @@ class ContactGroup extends Model
                     }
                 }
             }
-        } elseif ($this->type_id === 'composed') {
+        } elseif ($contactGroupType === ContactGroupType::COMPOSED) {
             $contactCollections = $this->composed_contacts->diff($this->composed_except_contacts);
             if($onlyIds){
                 $result = $contactCollections->pluck('id')->toArray();
@@ -448,7 +468,7 @@ class ContactGroup extends Model
 
     //prevents deleting in grid
     public function getIsUsedInComposedGroupAttribute(){
-        $composedGroups = ContactGroup::where('type_id', 'composed')->get();
+        $composedGroups = ContactGroup::where('type_id', ContactGroupType::COMPOSED)->get();
 
         foreach ($composedGroups as $composedGroup){
             foreach ($composedGroup->contactGroups as $contactGroup){
@@ -465,7 +485,7 @@ class ContactGroup extends Model
     }
 
     public function getParentGroupsArrayAttribute(){
-        $composedGroups = ContactGroup::where('type_id', 'composed')->get();
+        $composedGroups = ContactGroup::where('type_id', ContactGroupType::COMPOSED)->get();
 
         $parentGroups = [];
 
@@ -481,7 +501,7 @@ class ContactGroup extends Model
     }
 
     public function getParentGroupsExceptedArrayAttribute(){
-        $composedGroups = ContactGroup::where('type_id', 'composed')->get();
+        $composedGroups = ContactGroup::where('type_id', ContactGroupType::COMPOSED)->get();
 
         $parentGroups = [];
 
@@ -499,8 +519,9 @@ class ContactGroup extends Model
     // syncronized with lapasta
     public function getIsUsedInLapostaAttribute(){
 
+        $contactGroupType = $this->getType();
         // Dynamic of Composed groups worden met simulated group gesyncroniseerd met laposta.
-        if($this->type_id === 'dynamic' || $this->type_id === 'composed' ){
+        if($contactGroupType === ContactGroupType::DYNAMIC || $contactGroupType === ContactGroupType::COMPOSED ){
             if($this->simulatedGroup){
                 return ContactGroup::where('id', $this->simulatedGroup->id)->whereNotNull('laposta_list_id')->exists();
             }

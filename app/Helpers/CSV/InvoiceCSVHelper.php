@@ -8,6 +8,7 @@
 
 namespace App\Helpers\CSV;
 
+use App\Eco\Contact\ContactType;
 use App\Eco\Invoice\InvoiceProduct;
 use Carbon\Carbon;
 use League\Csv\Reader;
@@ -40,13 +41,13 @@ class InvoiceCSVHelper
 
             $this->csvExporter->beforeEach(function ($invoice) {
                 // person/organisation fields
-                if($invoice->order->contact->type_id === 'person'){
+                if($invoice->order->contact->type_id === ContactType::PERSON){
                     $invoice->initials = $invoice->order->contact->person->initials;
                     $invoice->first_name = $invoice->order->contact->person->first_name;
                     $invoice->last_name_prefix = $invoice->order->contact->person->last_name_prefix ? $invoice->order->contact->person->last_name_prefix : '';
                     $invoice->last_name = $invoice->order->contact->person->last_name;
                 }
-                else if($invoice->order->contact->type_id === 'organisation'){
+                else if($invoice->order->contact->type_id === ContactType::ORGANISATION){
                     $invoice->initials = '';
                     $invoice->first_name = '';
                     $invoice->organisation = $invoice->order->contact->organisation->name;
@@ -68,8 +69,8 @@ class InvoiceCSVHelper
                 $invoice->date_reminder_3_formatted = $this->formatDate($invoice->date_reminder_3);
                 $invoice->date_exhortation_formatted = $this->formatDate($invoice->date_exhortation);
 
-                $invoice->status = $invoice->getStatus()->name;
-                $invoice->payment_type = $invoice->getPaymentType()->name;
+                $invoice->status = $invoice->getStatus()->getName();
+                $invoice->payment_type = $invoice->getPaymentType()->getName();
 
                 if($invoice->payment_type_id === 'collection'){
                     $invoice->date_collection_formatted = $this->formatDate($invoice->date_collection);
@@ -173,13 +174,13 @@ class InvoiceCSVHelper
 
             $this->csvExporter->beforeEach(function ($invoicesProduct) {
                 // person/organisation fields
-                if($invoicesProduct->invoice->order->contact->type_id === 'person'){
+                if($invoicesProduct->invoice->order->contact->type_id === ContactType::PERSON){
                     $invoicesProduct->invoice->initials = $invoicesProduct->invoice->order->contact->person->initials;
                     $invoicesProduct->invoice->first_name = $invoicesProduct->invoice->order->contact->person->first_name;
                     $invoicesProduct->invoice->last_name_prefix = $invoicesProduct->invoice->order->contact->person->last_name_prefix ? $invoicesProduct->invoice->order->contact->person->last_name_prefix : '';
                     $invoicesProduct->invoice->last_name = $invoicesProduct->invoice->order->contact->person->last_name;
                 }
-                else if($invoicesProduct->invoice->order->contact->type_id === 'organisation'){
+                else if($invoicesProduct->invoice->order->contact->type_id === ContactType::ORGANISATION){
                     $invoicesProduct->invoice->initials = '';
                     $invoicesProduct->invoice->first_name = '';
                     $invoicesProduct->invoice->organisation = $invoicesProduct->invoice->order->contact->organisation->name;
@@ -201,8 +202,8 @@ class InvoiceCSVHelper
                 $invoicesProduct->invoice->date_reminder_3_formatted = $this->formatDate($invoicesProduct->invoice->date_reminder_3);
                 $invoicesProduct->invoice->date_exhortation_formatted = $this->formatDate($invoicesProduct->invoice->date_exhortation);
 
-                $invoicesProduct->invoice->status = $invoicesProduct->invoice->getStatus()->name;
-                $invoicesProduct->invoice->payment_type = $invoicesProduct->invoice->getPaymentType()->name;
+                $invoicesProduct->invoice->status = $invoicesProduct->invoice->getStatus()->getName();
+                $invoicesProduct->invoice->payment_type = $invoicesProduct->invoice->getPaymentType()->getName();
 
                 if($invoicesProduct->invoice->payment_type_id === 'collection'){
                     $invoicesProduct->invoice->date_collection_formatted = $this->formatDate($invoicesProduct->invoice->date_collection);

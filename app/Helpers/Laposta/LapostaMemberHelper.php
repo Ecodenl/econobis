@@ -6,6 +6,7 @@ namespace App\Helpers\Laposta;
 
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
+use App\Eco\ContactGroup\ContactGroupType;
 use App\Eco\Cooperation\Cooperation;
 use App\Jobs\Laposta\CreateMemberToLaposta;
 use App\Jobs\Laposta\DeleteMemberToLaposta;
@@ -14,7 +15,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Laposta;
-use Laposta_Member;
 
 class LapostaMemberHelper
 {
@@ -30,7 +30,7 @@ class LapostaMemberHelper
     {
         $this->contactGroup = null;
         // Dynamic of Composed groups worden met simulated group gesyncroniseerd met laposta.
-        if($contactGroup->type_id === 'dynamic' || $contactGroup->type_id === 'composed' ){
+        if($contactGroup->type_id === ContactGroupType::DYNAMIC || $contactGroup->type_id === ContactGroupType::COMPOSED ){
             $this->contactGroup = $contactGroup->simulatedGroup;
         }else{
             $this->contactGroup = $contactGroup;
@@ -93,18 +93,27 @@ class LapostaMemberHelper
         UpdateMemberToLaposta::dispatch($this->cooperation->laposta_key, $this->contactGroup, $this->contact, $this->contactGroupsPivot->laposta_member_id, Auth::id());
     }
 
-    public function deleteMember() {
+    public function deleteMember($afterCommit = false) {
 
         // General checks before API call
         $dataOk = $this->validateGeneral();
-        if(!$dataOk){
+        if (!$dataOk) {
             return null;
         }
 
-        // update member to Laposta
-        // (unset relation contact->groups first, gives an error on function getTeamContactGroupIds() when busy with load model in job
-        unset($this->contact['groups']);
-        DeleteMemberToLaposta::dispatch($this->cooperation->laposta_key, $this->contactGroup, $this->contact, $this->contactGroupsPivot->laposta_member_id, Auth::id());
+        // delete member from Laposta
+        $pendingDispatch = DeleteMemberToLaposta::dispatch(
+            $this->cooperation->laposta_key,
+            $this->contactGroup->id,
+            $this->contactGroup->laposta_list_id,
+            $this->contact->id,
+            $this->contactGroupsPivot->laposta_member_id,
+            Auth::id()
+        );
+
+        if ($afterCommit) {
+            $pendingDispatch->afterCommit();
+        }
     }
 
     private function validateGeneral()

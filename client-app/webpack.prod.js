@@ -1,8 +1,12 @@
+process.env.NODE_ENV = 'production';
+
 const webpack = require('webpack');
 const { merge } = require('webpack-merge');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const common = require('./webpack.common.js');
+
 const path = require('path');
 
 require('dotenv').config({ path: '.env.production' });
@@ -18,6 +22,10 @@ module.exports = merge(common, {
         new HtmlWebpackPlugin({
             template: './src/welcome.blade.php',
             filename: '../../resources/views/welcome.blade.php',
+        }),
+        new MiniCssExtractPlugin({
+            filename: '[name].[contenthash].css',
+            chunkFilename: '[id].[contenthash].css',
         }),
         new webpack.DefinePlugin({
             'process.env.GRANT_TYPE': JSON.stringify(process.env.GRANT_TYPE),

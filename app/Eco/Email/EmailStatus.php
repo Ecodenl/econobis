@@ -1,32 +1,27 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Beheerder
- * Date: 26-10-2017
- * Time: 11:55
- */
 
 namespace App\Eco\Email;
 
+use App\Support\Enum\HasLegacyEnumHelpers;
 
-use JosKolenberg\Enum\EnumWithIdAndName;
-
-class EmailStatus extends EnumWithIdAndName
+enum EmailStatus: string
 {
+    use HasLegacyEnumHelpers;
 
-    /**
-     * Seed the class with Enum instances
-     *
-     * @return array
-     */
-    protected static function seed()
+    case UNREAD = 'unread';
+    case READ = 'read';
+    case IN_PROGRESS = 'in_progress';
+    case URGENT = 'urgent';
+    case CLOSED = 'closed';
+
+    public function getName(): string
     {
-        return [
-            new static('unread', 'Ongelezen'),
-            new static('read', 'Gelezen'),
-            new static('in_progress', 'In behandeling'),
-            new static('urgent', 'Urgent'),
-            new static('closed', 'Afgehandeld'),
-        ];
+        return match ($this) {
+            self::UNREAD => 'Ongelezen',
+            self::READ => 'Gelezen',
+            self::IN_PROGRESS => 'In behandeling',
+            self::URGENT => 'Urgent',
+            self::CLOSED => 'Afgehandeld',
+        };
     }
 }

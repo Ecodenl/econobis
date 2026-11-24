@@ -16,7 +16,10 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import InputDate from '../../../../components/form/InputDate';
 import InputSelectGroup from '../../../../components/form/InputSelectGroup';
-import InputCheckbox from "../../../../components/form/InputCheckbox";
+import InputToggle from '../../../../components/form/InputToggle';
+import InputReactSelectMulti from '../../../../components/form/InputReactSelectMulti';
+import ViewText from '../../../../components/form/ViewText';
+import InputSelect from '../../../../components/form/InputSelect';
 
 class WebformDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -31,9 +34,31 @@ class WebformDetailsFormGeneralEdit extends Component {
                 dateStart: props.webformDetails.dateStart ? props.webformDetails.dateStart : '',
                 dateEnd: props.webformDetails.dateEnd ? props.webformDetails.dateEnd : '',
                 apiKeyDate: props.webformDetails.apiKeyDate ? props.webformDetails.apiKeyDate : '',
+                canCreateParticipations: props.webformDetails.canCreateParticipations
+                    ? props.webformDetails.canCreateParticipations
+                    : false,
+                allowedParticipationStatusIds: props.webformDetails.allowedParticipationStatusIds
+                    ? props.webformDetails.allowedParticipationStatusIds
+                    : [],
+                canCreateOrders: props.webformDetails.canCreateOrders ? props.webformDetails.canCreateOrders : false,
             },
             errors: {
+                apiType: false,
                 name: false,
+                maxRequestsPerMinute: false,
+                responsible: false,
+                emailAddressErrorReport: false,
+                mailErrorReport: false,
+                allowedParticipationStatusIds: false,
+            },
+            errorMessages: {
+                apiType: '',
+                name: '',
+                maxRequestsPerMinute: '',
+                responsible: '',
+                emailAddressErrorReport: '',
+                mailErrorReport: '',
+                allowedParticipationStatusIds: '',
             },
         };
 
@@ -78,6 +103,15 @@ class WebformDetailsFormGeneralEdit extends Component {
         });
     }
 
+    handleInputChangeMultiSelect = selectedOptions => {
+        this.setState({
+            ...this.state,
+            webform: {
+                ...this.state.webform,
+                allowedParticipationStatusIds: selectedOptions ? selectedOptions.map(option => option.id) : [],
+            },
+        });
+    };
     handleSubmit(event) {
         event.preventDefault();
 
@@ -85,20 +119,36 @@ class WebformDetailsFormGeneralEdit extends Component {
 
         // Validation
         let errors = {};
+        let errorMessages = {};
         let hasErrors = false;
+
+        if (!webform.apiType || validator.isEmpty(webform.apiType)) {
+            errors.apiType = true;
+            errorMessages.apiType = 'Api type is verplicht';
+            hasErrors = true;
+        }
 
         if (validator.isEmpty(webform.name)) {
             errors.name = true;
+            errorMessages.name = 'Naam is verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty(webform.maxRequestsPerMinute.toString())) {
             errors.maxRequestsPerMinute = true;
+            errorMessages.maxRequestsPerMinute = 'Aanvragen per minuut is verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty(webform.responsible)) {
             errors.responsible = true;
+            errorMessages.responsible = 'Verantwoordelijke is verplicht';
+            hasErrors = true;
+        }
+
+        if (webform.canCreateParticipations && webform.allowedParticipationStatusIds.length === 0) {
+            errors.allowedParticipationStatusIds = true;
+            errorMessages.allowedParticipationStatusIds = 'Selecteer minimaal 1 status';
             hasErrors = true;
         }
 
@@ -112,19 +162,69 @@ class WebformDetailsFormGeneralEdit extends Component {
             webform.responsibleTeamId = webform.responsible.replace('team', '');
         }
 
-        this.setState({ ...this.state, errors: errors });
+        if (webform.apiType !== 'webform_api') {
+            webform.canCreateParticipations = false;
+            webform.allowedParticipationStatusIds = [];
+            webform.canCreateOrders = false;
+        }
+
+        this.setState({ ...this.state, errors: errors, errorMessages: errorMessages });
 
         // If no errors send form
         !hasErrors && this.props.updateWebform(webform, this.props.switchToView);
     }
 
     render() {
-        const { name, apiKey, apiKeyDate, emailAddressErrorReport, mailErrorReport, maxRequestsPerMinute, dateStart, dateEnd, responsible } = this.state.webform;
+        const {
+            apiType,
+            apiTypeName,
+            name,
+            apiKey,
+            apiKeyDate,
+            emailAddressErrorReport,
+            mailErrorReport,
+            maxRequestsPerMinute,
+            dateStart,
+            dateEnd,
+            responsible,
+            canCreateParticipations,
+            allowedParticipationStatusIds,
+            canCreateOrders,
+        } = this.state.webform;
+
+        const allowedParticipationStatusOptions = this.props.participantMutationStatuses.filter(status =>
+            (allowedParticipationStatusIds || []).map(Number).includes(Number(status.id))
+        );
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel>
                     <PanelBody>
+                        <div className="row">
+                            {/* zolang niet alle webform api_type's gezet zijn, moeten we bij wijzigen wel gezet kunnen worden (verplicht). */}
+
+                            {!this.props.apiType ? (
+                                <InputSelect
+                                    label="Api type"
+                                    id="type"
+                                    size="col-sm-6"
+                                    name="apiType"
+                                    options={this.props.webformApiTypes}
+                                    value={apiType}
+                                    onChangeAction={this.handleInputChange}
+                                    required={'required'}
+                                    error={this.state.errors.apiType}
+                                    errorMessage={this.state.errorMessages.apiType}
+                                />
+                            ) : (
+                                <ViewText
+                                    label={'Api type'}
+                                    value={apiTypeName}
+                                    className={'col-sm-6 form-group'}
+                                    size={'col-sm-6'}
+                                />
+                            )}
+                        </div>
                         <div className="row">
                             <InputText
                                 label="Naam"
@@ -133,6 +233,7 @@ class WebformDetailsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
                                 error={this.state.errors.name}
+                                errorMessage={this.state.errorMessages.name}
                             />
                             <InputText
                                 label="Sleutel"
@@ -141,8 +242,15 @@ class WebformDetailsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleInputChange}
                                 readOnly={true}
                             />
-                            <Icon className="mybtn-success" size={14} icon={refresh} style={{ 'margin-left': '15px' }} role="button" onClick={this.refreshKey} title={'Ververs sleutel'} />
-
+                            <Icon
+                                className="mybtn-success"
+                                size={14}
+                                icon={refresh}
+                                style={{ marginLeft: '15px' }}
+                                role="button"
+                                onClick={this.refreshKey}
+                                title={'Ververs sleutel'}
+                            />
                         </div>
                         <div className="row">
                             <InputText
@@ -153,6 +261,7 @@ class WebformDetailsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
                                 error={this.state.errors.maxRequestsPerMinute}
+                                errorMessage={this.state.errorMessages.maxRequestsPerMinute}
                             />
                             <InputText
                                 label="Datum sleutel"
@@ -194,6 +303,7 @@ class WebformDetailsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
                                 error={this.state.errors.responsible}
+                                errorMessage={this.state.errorMessages.responsible}
                             />
                         </div>
                         <div className="row">
@@ -203,15 +313,66 @@ class WebformDetailsFormGeneralEdit extends Component {
                                 value={emailAddressErrorReport}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.emailAddressErrorReport}
+                                errorMessage={this.state.errorMessages.emailAddressErrorReport}
                             />
-                            <InputCheckbox
+                            {/*<InputCheckbox*/}
+                            {/*    label="Mailen foutrapportage"*/}
+                            {/*    name={'mailErrorReport'}*/}
+                            {/*    checked={mailErrorReport}*/}
+                            {/*    onChangeAction={this.handleInputChange}*/}
+                            {/*    error={this.state.errors.mailErrorReport}*/}
+                            {/*    errorMessage={this.state.errorMessages.mailErrorReport}*/}
+                            {/*/>*/}
+                            <InputToggle
                                 label="Mailen foutrapportage"
                                 name={'mailErrorReport'}
-                                checked={mailErrorReport}
+                                value={mailErrorReport}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.mailErrorReport}
+                                errorMessage={this.state.errorMessages.mailErrorReport}
+                                // size={'col-sm-5'}
+                                // textToolTip={`...`}
                             />
                         </div>
+                        {apiType === 'webform_api' && (
+                            <>
+                                <hr />
+                                <div className="row">
+                                    <InputToggle
+                                        label="Kan deelnames aanmaken"
+                                        name={'canCreateParticipations'}
+                                        value={canCreateParticipations}
+                                        onChangeAction={this.handleInputChange}
+                                        // size={'col-sm-5'}
+                                        // textToolTip={`...`}
+                                    />
+                                    {canCreateParticipations && (
+                                        <InputReactSelectMulti
+                                            label="Toegestane deelnamestatussen"
+                                            name="allowedParticipationStatusIds"
+                                            options={this.props.participantMutationStatuses}
+                                            value={allowedParticipationStatusOptions}
+                                            onChangeAction={this.handleInputChangeMultiSelect}
+                                            optionId="id"
+                                            optionName="name"
+                                            multi={true}
+                                            error={this.state.errors.allowedParticipationStatusIds}
+                                            errorMessage={this.state.errorMessages.allowedParticipationStatusIds}
+                                        />
+                                    )}
+                                </div>
+                                <div className="row">
+                                    <InputToggle
+                                        label="Kan orders aanmaken"
+                                        name={'canCreateOrders'}
+                                        value={canCreateOrders}
+                                        onChangeAction={this.handleInputChange}
+                                        // size={'col-sm-5'}
+                                        // textToolTip={`...`}
+                                    />
+                                </div>
+                            </>
+                        )}
                     </PanelBody>
 
                     <PanelBody>
@@ -238,6 +399,8 @@ class WebformDetailsFormGeneralEdit extends Component {
 const mapStateToProps = state => {
     return {
         webformDetails: state.webformDetails,
+        participantMutationStatuses: state.systemData.participantMutationStatuses,
+        webformApiTypes: state.systemData.webformApiTypes,
         teams: state.systemData.teams,
         users: state.systemData.users,
     };

@@ -8,6 +8,7 @@
 
 namespace App\Helpers\CSV;
 
+use App\Eco\Contact\ContactType;
 use Carbon\Carbon;
 use League\Csv\Reader;
 
@@ -81,7 +82,7 @@ class OpportunityCSVHelper
                 $opportunity->contact_number = $opportunity->intake->contact->number;
 
                 // person/organisation fields
-                if ($opportunity->intake->contact->type_id === 'person') {
+                if ($opportunity->intake->contact->type_id === ContactType::PERSON) {
                     $opportunity->title = $opportunity->intake->contact->person->title;
                     $opportunity->initials = $opportunity->intake->contact->person->initials;
                     $opportunity->first_name = $opportunity->intake->contact->person->first_name;

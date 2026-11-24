@@ -201,17 +201,15 @@ export default function(state = {}, action) {
                 ),
             };
 
-        case 'DELETE_ADDRESS_ENERGY_SUPPLIER':
+        case 'DELETE_ADDRESS_ENERGY_SUPPLIER_SUCCESS':
             return {
                 ...state,
-                addresses: state.addresses.map(address => {
-                    return {
-                        ...address,
-                        addressEnergySuppliers: address.addressEnergySuppliers.filter(
-                            addressEnergySupplier => addressEnergySupplier.id !== action.id
-                        ),
-                    };
-                }),
+                addresses: state.addresses.map(address => ({
+                    ...address,
+                    addressEnergySuppliers: address.addressEnergySuppliers.filter(
+                        addressEnergySupplier => addressEnergySupplier.id !== action.id
+                    ),
+                })),
             };
 
         case 'NEW_ADDRESS_DONGLE':

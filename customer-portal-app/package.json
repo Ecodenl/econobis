@@ -1,6 +1,6 @@
 {
   "name": "customer-portal-app",
-  "version": "5.3.6",
+  "version": "5.5.0",
   "homepage": ".",
   "private": true,
   "dependencies": {

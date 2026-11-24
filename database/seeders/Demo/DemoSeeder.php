@@ -5,9 +5,11 @@ namespace Database\Seeders\Demo;
 use Illuminate\Database\Seeder;
 
 /**
- * Demo seeder – alleen voor local/testing
+ * Seeder voor demo gegevens - alleen voor local/testing
+ *
+ * Uitvoeren:
+ * php artisan db:seed --class="Database\\Seeders\\Demo\\DemoSeeder"
  */
-
 class DemoSeeder extends Seeder
 {
     /**

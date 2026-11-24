@@ -9,6 +9,8 @@ class DocumentCreatedFrom extends Model
 {
     protected $table = 'document_created_froms';
 
+    public $timestamps = false;
+
     /**
      * The attributes that are mass assignable.
      *

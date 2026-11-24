@@ -21,11 +21,8 @@ const Forgot = props => {
                 actions.setSubmitting(false);
             })
             .catch(error => {
-                // If forgot API fails show error and then set submitting back to false
-                // toggleError(true);
-                // If forgot API fails show succesmessage anyway
-                toggleError(false);
-                toggleSuccessMessage(true);
+                toggleError(true);
+                toggleSuccessMessage(false);
                 actions.setSubmitting(false);
             });
     }
@@ -64,7 +61,11 @@ const Forgot = props => {
                             </Row>
                             <Row className={'justify-content-center '}>
                                 <p className={'authorization-text'}>
-                                    Vul het e-mailadres in waarmee je inlogt en dat bij ons bekend is. Je ontvangt van ons een e-mail waarmee je een nieuw wachtwoord kunt instellen. Let op: dit werkt alleen als jouw online portal geactiveerd. Is deze nog niet geactiveerd? Ga dan terug naar de inlog pagina en kies voor het aanmaken van een nieuw account, als dit niet lukt neem dan contact met ons op.
+                                    Vul het e-mailadres in waarmee je inlogt en dat bij ons bekend is. Je ontvangt van
+                                    ons een e-mail waarmee je een nieuw wachtwoord kunt instellen. Let op: dit werkt
+                                    alleen als jouw online portal geactiveerd. Is deze nog niet geactiveerd? Ga dan
+                                    terug naar de inlog pagina en kies voor het aanmaken van een nieuw account, als dit
+                                    niet lukt neem dan contact met ons op.
                                 </p>
                             </Row>
                             <Row className={'justify-content-center '}>
@@ -72,7 +73,7 @@ const Forgot = props => {
                                     <ForgotForm handleSubmit={handleSubmit} showSuccessMessage={showSuccessMessage} />
                                     {showError ? (
                                         <Alert className={'p-1 m-1 text-danger'} variant={'danger'}>
-                                            E-mailadres is niet bekend!
+                                            Er is iets misgegaan. Probeer het later opnieuw.
                                         </Alert>
                                     ) : null}
                                 </Col>

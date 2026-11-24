@@ -1,31 +1,27 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Beheerder
- * Date: 26-10-2017
- * Time: 11:55
- */
 
 namespace App\Eco\Product;
 
-use JosKolenberg\Enum\EnumWithIdAndName;
+use App\Support\Enum\HasLegacyEnumHelpers;
 
-class ProductInvoiceFrequency extends EnumWithIdAndName
+enum ProductInvoiceFrequency: string
 {
+    use HasLegacyEnumHelpers;
 
-    /**
-     * Seed the class with Enum instances
-     *
-     * @return array
-     */
-    protected static function seed()
+    case ONCE = 'once';
+    case MONTHLY = 'monthly';
+    case QUARTERLY = 'quarterly';
+    case HALF_YEAR = 'half-year';
+    case YEARLY = 'yearly';
+
+    public function getName(): string
     {
-        return [
-            new static('once', 'Eenmalig'),
-            new static('monthly', 'Maand'),
-            new static('quarterly', 'Kwartaal'),
-            new static('half-year', 'Half jaar'),
-            new static('yearly', 'Jaar'),
-        ];
+        return match ($this) {
+            self::ONCE => 'Eenmalig',
+            self::MONTHLY => 'Maand',
+            self::QUARTERLY => 'Kwartaal',
+            self::HALF_YEAR => 'Half jaar',
+            self::YEARLY => 'Jaar',
+        };
     }
 }

@@ -2,18 +2,20 @@
 
 namespace App\Eco\HousingFile;
 
-use JosKolenberg\Enum\EnumWithIdAndName;
+use App\Support\Enum\HasLegacyEnumHelpers;
 
-class HousingFileLogMessageType extends EnumWithIdAndName
+enum HousingFileLogMessageType: string
 {
-    static $all;
+    use HasLegacyEnumHelpers;
 
-    protected static function seed()
+    case GEBRUIK = 'gebruik';
+    CASE WOONPLAN = 'woonplan';
+
+    public function getName(): string
     {
-        return [
-            new static('gebruik', 'Gebruik/woningdossier synchronisatie'),
-            new static('woonplan', 'Woonplan/specificaties synchronisatie'),
-        ];
-
+        return match ($this) {
+            self::GEBRUIK => 'Gebruik/woningdossier synchronisatie',
+            self::WOONPLAN => 'Woonplan/specificaties synchronisatie',
+        };
     }
 }

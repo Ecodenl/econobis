@@ -132,8 +132,10 @@ class Address extends Model
         return $streetPostalCodeCity;
     }
     public function getTypeAndPrimaryAttribute(){
-        $typeAndPrimary = $this->getType() ? $this->getType()->name : '';
-        $typeAndPrimary .= $this->primary ? ($this->getType() ? ' - ' : '') . 'primair' : '';
+        $type = $this->getType();
+
+        $typeAndPrimary = $type?->getName() ?? '';
+        $typeAndPrimary .= $this->primary ? ($type ? ' - ' : '') . 'primair' : '';
         return $typeAndPrimary;
     }
 

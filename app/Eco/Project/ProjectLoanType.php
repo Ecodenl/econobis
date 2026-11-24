@@ -8,6 +8,8 @@ class ProjectLoanType extends Model
 {
     protected $table = 'project_loan_types';
 
+    public $timestamps = false;
+
     /**
      * The attributes that are mass assignable.
      *

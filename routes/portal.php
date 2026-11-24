@@ -15,7 +15,7 @@ Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 Route::post('register', 'Auth\RegisterController@register');
 Route::post('new-account', 'Auth\NewAccountController@createNewAccount');
 
-Route::middleware(['auth:api', 'scopes:use-portal', 'two-factor-portal'])
+Route::middleware(['auth:portal-api', 'scopes:use-portal', 'two-factor-portal'])
     ->group(function () {
         Route::get('/me', 'PortalUser\PortalUserController@me');
 
@@ -42,7 +42,6 @@ Route::middleware(['auth:api', 'scopes:use-portal', 'two-factor-portal'])
         Route::get('/financial-overview-contact/{financialOverviewContact}/download', 'FinancialOverview\FinancialOverviewContactController@download');
 
         Route::get('/contact-groups', 'ContactGroup\ContactGroupController@index');
-
 
         Route::post('/contact/{contact}/{project}/preview-document', 'Contact\ContactController@previewDocument');
         Route::post('/contact/{contact}/{project}/{participantProject}/preview-increase-document', 'Contact\ContactController@previewIncreaseDocument');
@@ -95,7 +94,7 @@ Route::middleware(['auth:api', 'scopes:use-portal', 'two-factor-portal'])
         Route::get('jory/{uri}', '\\' . JoryController::class . '@get');
     });
 
-Route::middleware(['auth:api', 'scopes:use-portal'])
+Route::middleware(['auth:portal-api', 'scopes:use-portal'])
     ->group(function () {
         Route::get('me/two-factor-status', [\App\Http\Controllers\Portal\Auth\TwoFactorAuthenticationController::class, 'status']);
         Route::post('me/confirmed-two-factor-authentication', [\App\Http\Controllers\Portal\Auth\ConfirmedTwoFactorAuthenticationController::class, 'store']);

@@ -6,6 +6,7 @@ import { ic_aspect_ratio } from 'react-icons-kit/md/ic_aspect_ratio';
 import { ic_dashboard } from 'react-icons-kit/md/ic_dashboard';
 import { ic_business } from 'react-icons-kit/md/ic_business';
 import { ic_contacts } from 'react-icons-kit/md/ic_contacts';
+import { ic_delete } from 'react-icons-kit/md/ic_delete';
 import { ic_contacts_outline } from 'react-icons-kit/md/ic_contacts_outline';
 import { ic_email } from 'react-icons-kit/md/ic_email';
 import { ic_fiber_new } from 'react-icons-kit/md/ic_fiber_new';
@@ -35,6 +36,12 @@ const SidebarMenuSmall = ({ permissions, administrations }) => (
         {permissions.menuContacts && (
             <div className="sidebar-menu-small-item">
                 <SvgIcon size={20} icon={ic_contacts_outline} />
+            </div>
+        )}
+        {/* Data cleanup */}
+        {permissions.menuDataCleanup && (
+            <div className="sidebar-menu-small-item">
+                <SvgIcon size={20} icon={ic_delete} />
             </div>
         )}
         {/* Projects */}

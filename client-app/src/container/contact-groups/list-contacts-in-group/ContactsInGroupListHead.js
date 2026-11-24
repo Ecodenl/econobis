@@ -36,10 +36,12 @@ const ContactsInGroupListHead = props => {
                         sortColumn={'emailAddress'}
                     />
                     <DataTableHeadTitle RowClassName={'hidden-xs'} title={'Laposta status'} width={'10%'} />
-                    <DataTableHeadTitle
+                    <DataTableHeadTitleAndSort
                         RowClassName={'hidden-xs hidden-sm'}
                         title={'Toegevoegd aan groep op'}
                         width={'10%'}
+                        setSorts={props.handleChangeSort}
+                        sortColumn={'memberToGroupSince'}
                     />
                     <th width="10%" />
                 </>
@@ -72,10 +74,12 @@ const ContactsInGroupListHead = props => {
                         setSorts={props.handleChangeSort}
                         sortColumn={'emailAddress'}
                     />
-                    <DataTableHeadTitle
+                    <DataTableHeadTitleAndSort
                         RowClassName={'hidden-xs hidden-sm'}
                         title={'Toegevoegd aan groep op'}
                         width={'10%'}
+                        setSorts={props.handleChangeSort}
+                        sortColumn={'memberToGroupSince'}
                     />
                     <th width="10%" />
                 </>

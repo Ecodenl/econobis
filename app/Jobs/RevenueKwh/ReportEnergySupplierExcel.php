@@ -96,7 +96,6 @@ class ReportEnergySupplierExcel implements ShouldQueue
 
     public function handle()
     {
-        //user voor observer
         Auth::setUser(User::find($this->userId));
 
         $upToRevenuePartsKwh = RevenuePartsKwh::where('revenue_id', $this->revenuePartsKwh->revenue_id)->where('date_end', '<=', $this->revenuePartsKwh->date_end)->orderBy('date_begin')->get();

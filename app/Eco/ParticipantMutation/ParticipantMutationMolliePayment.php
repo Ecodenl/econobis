@@ -15,10 +15,6 @@ class ParticipantMutationMolliePayment extends Model
         'iban'
     ];
 
-//    protected $casts = [
-//        'date_activated' => 'date:Y-m-d H:i:s',
-//        'date_paid' => 'date:Y-m-d H:i:s',
-//    ];
     protected $casts = [
         'date_activated' => 'datetime',
         'date_paid' => 'datetime',

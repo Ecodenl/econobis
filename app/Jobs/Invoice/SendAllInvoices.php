@@ -62,7 +62,6 @@ class SendAllInvoices implements ShouldQueue
 
     public function handle()
     {
-        //user voor observer
         Auth::setUser(User::find($this->userId));
         $orderController = new OrderController();
 

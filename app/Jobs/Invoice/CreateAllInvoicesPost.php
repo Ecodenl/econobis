@@ -67,7 +67,6 @@ class CreateAllInvoicesPost implements ShouldQueue
 
     public function handle()
     {
-        //user voor observer
         Auth::setUser(User::find($this->userId));
 
         foreach ($this->validatedInvoicesSet as $validatedInvoice) {

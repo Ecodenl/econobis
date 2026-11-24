@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import InputSelect from '../../../components/form/InputSelect';
 import AdministrationsAPI from '../../../api/administration/AdministrationsAPI';
 import InputReactSelect from '../../../components/form/InputReactSelect';
+import InputToggle from '../../../components/form/InputToggle';
 
 // Functionele wrapper voor de class component
 const ProductNewFormWrapper = props => {
@@ -36,6 +37,7 @@ class ProductNewForm extends Component {
                 administrationId: '',
                 ledgerId: '',
                 costCenterId: '',
+                cleanupException: false,
             },
             errors: {
                 code: false,
@@ -227,6 +229,7 @@ class ProductNewForm extends Component {
             administrationId,
             ledgerId,
             costCenterId,
+            cleanupException,
         } = this.state.product;
 
         return (
@@ -336,6 +339,28 @@ class ProductNewForm extends Component {
                             />
                         </div>
 
+                        <div className={'row'}>
+                            {this.props.permissions.manageCleanupExceptionProducts ? (
+                                <InputToggle
+                                    label={'Uitzondering bij data opschonen'}
+                                    name={'cleanupException'}
+                                    value={cleanupException}
+                                    onChangeAction={event => {
+                                        event.persist();
+                                        this.handleInputChange(event);
+                                    }}
+                                />
+                            ) : (
+                                <InputToggle
+                                    label={'Uitzondering bij data opschonen'}
+                                    name={cleanupException}
+                                    value={cleanupException}
+                                    readOnly={true}
+                                    disabled={true}
+                                />
+                            )}
+                        </div>
+
                         {this.state.errorMessage && (
                             <div className="col-sm-10 col-md-offset-1 alert alert-danger">
                                 {this.state.errorMessage}
@@ -368,6 +393,7 @@ const mapStateToProps = state => {
         ledgers: state.systemData.ledgers,
         costCenters: state.systemData.costCenters,
         usesTwinfield: state.systemData.usesTwinfield,
+        permissions: state.meDetails.permissions,
     };
 };
 

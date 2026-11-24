@@ -78,12 +78,12 @@ class DeleteAdministration implements DeleteInterface
     {
         foreach ($this->administration->invoices as $invoice) {
             $deleteInvoice = new DeleteInvoice($invoice);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteInvoice->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteInvoice->delete() ?? [] ) );
         }
 
         foreach ($this->administration->orders as $order) {
             $deleteOrder = new DeleteOrder($order);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteOrder->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteOrder->delete() ?? [] ) );
         }
     }
 

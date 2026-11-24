@@ -154,10 +154,7 @@ function QuotationRequestsList({
 
                 <DataTable>
                     <DataTableHead>
-                        <QuotationRequestsListHead
-                            refreshQuotationRequestsData={refreshQuotationRequestsData}
-                            multiSelectEnabled={multiSelectEnabled}
-                        />
+                        <QuotationRequestsListHead multiSelectEnabled={multiSelectEnabled} />
                         <QuotationRequestsListFilter
                             onSubmitFilter={onSubmitFilter}
                             multiSelectEnabled={multiSelectEnabled}

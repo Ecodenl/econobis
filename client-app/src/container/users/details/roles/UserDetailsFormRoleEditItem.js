@@ -15,8 +15,17 @@ class UserDetailsFormRoleListItem extends Component {
         };
     }
 
+    getErrorMessage = error => {
+        return (
+            error.response?.data?.message ||
+            error.response?.data?.error ||
+            'Je hebt niet de rechten om deze rol toe te kennen'
+        );
+    };
+
     handleInputChange = event => {
         const target = event.target;
+
         if (!target.checked) {
             UserAPI.removeRole(this.props.id, this.state.id)
                 .then(() => {
@@ -26,8 +35,8 @@ class UserDetailsFormRoleListItem extends Component {
                     });
                     this.props.updateRole(target.id, false);
                 })
-                .catch(function() {
-                    alert('Je hebt niet de rechten om deze rol toe te kennen');
+                .catch(error => {
+                    alert(this.getErrorMessage(error));
                 });
         } else {
             UserAPI.addRole(this.props.id, this.state.id)
@@ -38,8 +47,8 @@ class UserDetailsFormRoleListItem extends Component {
                     });
                     this.props.updateRole(target.id, true);
                 })
-                .catch(function() {
-                    alert('Je hebt niet de rechten om deze rol toe te kennen');
+                .catch(error => {
+                    alert(this.getErrorMessage(error));
                 });
         }
     };
@@ -91,6 +100,10 @@ class UserDetailsFormRoleListItem extends Component {
                 {...(name === 'Financieel controller' && {
                     textToolTip:
                         'Als deze rol wordt toegewezen krijgt de gebruiker in het linkermenu de optie Financieel en in het rechtermenu op de contactpagina de opties Orders en Nota’s te zien . De rol Financieel medewerker mag contacten, orders en nota;s wijzigingen en verwijderen. De financieel controller mag ook projecten wijzigen.',
+                })}
+                {...(name === 'Beheerder e-mail templates' && {
+                    textToolTip:
+                        'Alleen een gebruiker met deze rol of de rol "beheerder" mag nieuwe e-mail templates aanmaken, dupliceren, wijzigen of verwijderen',
                 })}
             />
         );

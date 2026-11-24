@@ -44,6 +44,37 @@ class AddressEnergySupplier extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function getPreviousRelevantMemberSinceAttribute()
+    {
+        if (!$this->member_since) {
+            return '1900-01-01';
+        }
+
+        $filterTypeIdArray = [1, 2, 3];
+        if ($this->energy_supply_type_id == 1) {
+            $filterTypeIdArray = [1, 3];
+        }
+        if ($this->energy_supply_type_id == 2) {
+            $filterTypeIdArray = [2, 3];
+        }
+
+        $previousAddressEnergySupplier = self::query()
+            ->where('address_id', $this->address_id)
+            ->where('id', '!=', $this->id)
+            ->whereIn('energy_supply_type_id', $filterTypeIdArray)
+            ->whereNotNull('member_since')
+            ->where('member_since', '<', $this->member_since)
+            ->orderBy('member_since', 'desc')
+            ->orderBy('id', 'desc')
+            ->first();
+
+        if ($previousAddressEnergySupplier) {
+            return Carbon::parse($previousAddressEnergySupplier->member_since)->format('Y-m-d');
+        }
+
+        return '1900-01-01';
+    }
+
     public function getEndDatePreviousAttribute()
     {
         $filterTypeIdArray = [1, 2, 3];

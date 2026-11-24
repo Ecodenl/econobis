@@ -261,6 +261,8 @@ const TwoFactorRecover = React.lazy(() => import('./container/auth/TwoFactorReco
 const EmailSplitView = React.lazy(() => import('./container/email/splitview/EmailSplitView'));
 const OpenEmailModal = React.lazy(() => import('./container/email/OpenEmailModalView'));
 
+const DataCleanupItemsApp = React.lazy(() => import('./container/data-cleanup/items/DataCleanupItemsApp'));
+
 const ScrollToTop = () => {
     const location = useLocation();
 
@@ -343,6 +345,15 @@ const AppRoutes = () => {
                         <Route path="contact-groep/:id/:mode" element={<ContactGroupDetailsApp />} />
                         <Route path="contact-groep/:id" element={<ContactGroupDetailsApp />} />
                         <Route path="contacten-in-groep/:contactGroup" element={<ContactsInGroupListApp />} />
+                        /* Data opschonen */
+                        <Route
+                            path="data-opschonen-items"
+                            element={
+                                <PermissionWrapper requiredPermission="menuDataCleanup">
+                                    <DataCleanupItemsApp />
+                                </PermissionWrapper>
+                            }
+                        />
                         /* Campaign */
                         <Route path="campagne/nieuw" element={<CampaignNewApp />} />
                         <Route path="campagne/nieuw/maatregel/:measureId" element={<CampaignNewApp />} />

@@ -39,7 +39,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
 
         this.state = {
             showConfirmValidatePeriodOverlap: false,
-            contactsWithPermission: [],
+            contactsWithPermissionManageGroup: [],
             contactGroups: [],
             emailTemplates: [],
             oldName: props.contactGroupDetails.name ? props.contactGroupDetails.name : '',
@@ -73,12 +73,9 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
     }
 
     componentDidMount() {
-        const { permissions } = this.props;
-        UsersAPI.fetchUsersWithPermission(permissions.find(permission => permission.name === 'manage_group').id).then(
-            payload => {
-                this.setState({ contactsWithPermission: payload });
-            }
-        );
+        UsersAPI.fetchUsersWithPermissionManageGroup().then(payload => {
+            this.setState({ contactsWithPermissionManageGroup: payload });
+        });
 
         ContactGroupAPI.peekContactGroups().then(payload => {
             this.setState({ contactGroups: payload });
@@ -371,7 +368,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                                 onChange={this.handleInputChange}
                             >
                                 <option value="" />
-                                {this.state.contactsWithPermission.map(option => {
+                                {this.state.contactsWithPermissionManageGroup.map(option => {
                                     return (
                                         <option key={option.id} value={option.id}>
                                             {option.fullName}
@@ -582,7 +579,6 @@ const mapStateToProps = state => {
     return {
         meDetails: state.meDetails,
         contactGroupDetails: state.contactGroupDetails,
-        permissions: state.systemData.permissions,
         inspectionPersonTypes: state.systemData.inspectionPersonTypes,
     };
 };

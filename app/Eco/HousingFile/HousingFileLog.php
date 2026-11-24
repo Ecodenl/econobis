@@ -45,6 +45,6 @@ class HousingFileLog extends Model
     {
         if (!$this->message_type) return '';
 
-        return HousingFileLogMessageType::get($this->message_type)->name;
+        return HousingFileLogMessageType::get($this->message_type)?->getName() ?? '';
     }
 }

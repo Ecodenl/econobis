@@ -46,8 +46,15 @@ class WebformRequestProcessed extends Notification
 
         $mail->line('&nbsp;');
         $mail->line('Aangeleverde data:');
+//        foreach ($this->data as $key => $value) {
+//            $mail->line($key . ": " . $value);
+//        }
         foreach ($this->data as $key => $value) {
-            $mail->line($key . ": " . $value);
+            if (is_array($value) || is_object($value)) {
+                $value = json_encode($value, JSON_UNESCAPED_UNICODE);
+            }
+
+            $mail->line($key . ': ' . $value);
         }
         $mail->line('&nbsp;');
         $mail->line('Log:');

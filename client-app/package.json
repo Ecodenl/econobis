@@ -4,7 +4,6 @@
   "description": "Econobis react",
   "main": "index.js",
   "scripts": {
-    "prestart": "nvm use 18.13.0",
     "format": "prettier --write \"src/**/*.{js,jsx}\"",
     "lint": "eslint **/*.{js,jsx} --quiet",
     "serve": "webpack serve --open --config webpack.dev.js",
@@ -62,7 +61,6 @@
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "moment-business-days": "^1.2.0",
-    "node-sass": "^8.0.0",
     "password-validator": "^4.1.1",
     "pdfjs-dist": "^3.11.174",
     "prettier": "^1.15.3",
@@ -111,7 +109,7 @@
     "util": "^0.12.5",
     "uuid": "^3.3.2",
     "validator": "^13.7.0",
-    "webpack-dev-server": "^4.11.1",
+    "webpack-dev-server": "^6.0.0",
     "webpack-merge": "^5.8.0",
     "yup": "^0.32.11"
   },
@@ -120,7 +118,8 @@
     "copy-webpack-plugin": "^12.0.2",
     "html-webpack-plugin": "^5.5.0",
     "mini-css-extract-plugin": "^2.7.2",
-    "webpack": "^5.75.0",
+    "sass": "^1.99.0",
+    "webpack": "^5.110.3",
     "webpack-cli": "^5.0.1"
   }
 }

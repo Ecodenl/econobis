@@ -21,7 +21,7 @@ class EmailAddressFactory extends Factory
                 return Contact::factory()->create()->id;
             },
             'type_id' => function(){
-                return EmailAddressType::random()->id;
+                return EmailAddressType::random()->value;
             },
         ];
     }

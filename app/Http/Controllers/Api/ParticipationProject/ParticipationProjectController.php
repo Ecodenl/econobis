@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Api\ParticipationProject;
 use App\Eco\Address\Address;
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
+use App\Eco\ContactGroup\ContactGroupType;
 use App\Eco\ContactGroup\DynamicContactGroupFilter;
 use App\Eco\Document\Document;
 use App\Eco\Document\DocumentCreatedFrom;
@@ -94,7 +95,7 @@ class ParticipationProjectController extends ApiController
         $extraFilters = json_decode($request->input('extraFilters'));
 
         $contactGroup = new ContactGroup();
-        $contactGroup->type_id = 'dynamic';
+        $contactGroup->type_id = ContactGroupType::DYNAMIC;
         $contactGroup->composed_of = 'participants';
         $contactGroup->name =  ContactGroup::getAutoIncrementedName('Dynamische groep');
         $contactGroup->description = '';
@@ -571,6 +572,9 @@ class ParticipationProjectController extends ApiController
             if($projectType->code_ref === 'postalcode_link_capital') {
                 $revenuesKwhHelper = new RevenuesKwhHelper();
                 $revenuesKwhPart = $revenuesKwhHelper->checkAndSplitRevenuePartsKwh($participantProject, Carbon::parse($participantProject->date_terminated)->addDay(), null);
+// Hier is bijwerken distributionParts niet nodig volgens mij.
+// Bij beeindigen deelname wijzigen energieleverancier gegevens niet. RevenuePart wordt alleen gesplitst.
+//                $revenuesKwhHelper->refreshDistributionPartsKwhEnergySupplierDataForParticipation($participantProject);
 
                 if($revenuesKwhPart){
                     $revenuePartsKwhRedirect = null;
@@ -580,9 +584,16 @@ class ParticipationProjectController extends ApiController
                     if($revenuesKwhPart['success'] && !$revenuesKwhPart['newRevenue'] ){
                         $revenuePartsKwhRedirect = '/project/opbrengst-kwh/' . $revenuesKwhPart['revenuesId']  . '/deelperiode/' . $revenuesKwhPart['revenuePartsId'];
                     }
-                    $responseParticipations = ['hasParticipations' => true, 'revenuePartsKwhRedirect' => $revenuePartsKwhRedirect,  'projectsArray' => $revenuesKwhPart];
+                    $responseParticipations = [
+                        'hasParticipations' => true,
+                        'revenuePartsKwhRedirect' => $revenuePartsKwhRedirect,
+                        'projectsArray' => $revenuesKwhPart];
                 }else{
-                    $responseParticipations = ['hasParticipations' => false, null, 'projectsArray' => []];
+                    $responseParticipations = [
+                        'hasParticipations' => false,
+                        'revenuePartsKwhRedirect' => null,
+                        'projectsArray' => []
+                    ];
                 }
 
                 return $responseParticipations;
@@ -1027,7 +1038,7 @@ class ParticipationProjectController extends ApiController
                 $fileName = str_replace(' ', '', $this->translateToValidCharacterSet($project->code)) . '_' . str_replace(' ', '', $this->translateToValidCharacterSet($contact->full_name));
                 //max length name 25 tot nu toe
                 $fileName = substr($fileName, 0, 25);
-                $fileName = $fileName . substr($document->getDocumentGroup()->name, 0, 1) . (Document::where('document_group', 'revenue')->count() + 1) . '_' .  $time->format('Ymd') . '.pdf';
+                $fileName = $fileName . substr($document->getDocumentGroup()->getName(), 0, 1) . (Document::where('document_group', 'revenue')->count() + 1) . '_' .  $time->format('Ymd') . '.pdf';
                 $document->filename = $fileName;
 
                 $document->save();

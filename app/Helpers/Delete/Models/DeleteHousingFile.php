@@ -9,18 +9,19 @@
 namespace App\Helpers\Delete\Models;
 
 use App\Helpers\Delete\DeleteInterface;
+use App\Helpers\Delete\Traits\ChecksExcludedCleanupContacts;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class DeleteHousingFile
- *
- * Relation: 1-n Documents. Action: dissociate
- * Relation: 1-n Tasks & notes. Action: call DeleteTask
  *
  * @package App\Helpers\Delete
  */
 class DeleteHousingFile implements DeleteInterface
 {
+    use ChecksExcludedCleanupContacts;
+
     private $errorMessage = [];
     private $housingFile;
 
@@ -34,19 +35,90 @@ class DeleteHousingFile implements DeleteInterface
         $this->housingFile = $housingFile;
     }
 
-    /** Main method for deleting this model and all it's relations
+    /** If it's called by the cleanup functionality, we land on this function, else on the delete function
      *
      * @return array
      * @throws
      */
+    public function cleanup()
+    {
+        try {
+            if (! $this->canCleanup()) {
+                return $this->errorMessage;
+            }
+
+            return $this->delete();
+        } catch (\Exception $exception) {
+            Log::error('Fout bij opschonen Woningdossiers', [
+                'exception' => $exception->getMessage(),
+                'errormessages' => implode(' | ', $this->errorMessage),
+            ]);
+
+            $this->errorMessage[] =
+                "Fout bij opschonen Woningdossiers. (meld dit bij Econobis support)";
+
+            return $this->errorMessage;
+        }
+    }
+
+    public function canCleanup(): bool
+    {
+        $contactId = $this->housingFile->address?->contact_id;
+
+        if ($this->isContactExcludedFromCleanup($contactId)) {
+            $this->errorMessage[] =
+                "Woningdossier {$this->housingFile->id} kan niet worden opgeschoond: "
+                . "het gekoppelde contact valt in een uitzonderingsgroep.";
+
+            return false;
+        }
+
+        foreach ($this->housingFile->tasks as $task) {
+            $deleteTask = new DeleteTask($task);
+
+            if (! $deleteTask->canCleanup()) {
+                $this->errorMessage[] =
+                    "Woningdossier {$this->housingFile->id} kan niet worden opgeschoond: "
+                    . "een gekoppelde taak hoort bij een contact dat in een "
+                    . "uitzonderingsgroep valt.";
+
+                return false;
+            }
+        }
+
+        foreach ($this->housingFile->notes as $note) {
+            $deleteTask = new DeleteTask($note);
+
+            if (! $deleteTask->canCleanup()) {
+                $this->errorMessage[] =
+                    "Woningdossier {$this->housingFile->id} kan niet worden opgeschoond: "
+                    . "een gekoppelde notitie hoort bij een contact dat in een "
+                    . "uitzonderingsgroep valt.";
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /** Main method for deleting this model and all it's relations
+     *
+     * @return array errorMessage array
+     * @throws
+     */
     public function delete()
     {
-        $this->canDelete();
+        if (! $this->canDelete()) {
+            return $this->errorMessage;
+        }
         $this->deleteModels();
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->housingFile->delete();
+        if( count($this->errorMessage) === 0 ) {
+            $this->housingFile->delete();
+        }
 
         return $this->errorMessage;
     }
@@ -54,9 +126,10 @@ class DeleteHousingFile implements DeleteInterface
     /** Checks if the model can be deleted
      *
      */
-    public function canDelete()
+    public function canDelete(): bool
     {
-
+        // van hier uit altijd true
+        return true;
     }
 
     /** Deletes models recursive
@@ -65,16 +138,16 @@ class DeleteHousingFile implements DeleteInterface
     public function deleteModels()
     {
         foreach ($this->housingFile->housingFileSpecifications as $specification) {
-            $deleteSpecifiction = new DeleteHousingFileSpecification($specification);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteSpecifiction->delete());
+            $deleteSpecification = new DeleteHousingFileSpecification($specification);
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteSpecification->delete() ?? [] ) );
         }
         foreach ($this->housingFile->tasks as $task) {
             $deleteTask = new DeleteTask($task);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteTask->delete() ?? [] ) );
         }
-        foreach ($this->housingFile->notes as $task) {
-            $deleteTask = new DeleteTask($task);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
+        foreach ($this->housingFile->notes as $note) {
+            $deleteTask = new DeleteTask($note);
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteTask->delete() ?? [] ) );
         }
     }
 

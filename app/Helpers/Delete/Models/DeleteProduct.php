@@ -73,14 +73,14 @@ class DeleteProduct implements DeleteInterface
         foreach ($this->product->invoiceProducts as $invoiceProduct) {
             if($invoiceProduct->invoice) {
                 $deleteInvoice = new DeleteInvoice($invoiceProduct->invoice);
-                $this->errorMessage = array_merge($this->errorMessage, $deleteInvoice->delete());
+                $this->errorMessage = array_merge($this->errorMessage, ( $deleteInvoice->delete() ?? [] ) );
             }
         }
 
         foreach ($this->product->orderProducts as $orderProduct) {
             if($orderProduct->order) {
                 $deleteOrder = new DeleteOrder($orderProduct->order);
-                $this->errorMessage = array_merge($this->errorMessage, $deleteOrder->delete());
+                $this->errorMessage = array_merge($this->errorMessage, ( $deleteOrder->delete() ?? [] ) );
             }
         }
     }

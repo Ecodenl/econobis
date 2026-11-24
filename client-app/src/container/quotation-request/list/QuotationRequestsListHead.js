@@ -7,15 +7,12 @@ import { setQuotationRequestsSortsFilter } from '../../../actions/quotation-requ
 const QuotationRequestsListHead = props => {
     const setSorts = (field, order) => {
         props.setQuotationRequestsSortsFilter(field, order);
-
-        setTimeout(() => {
-            props.refreshQuotationRequestsData();
-        }, 100);
     };
 
     return (
         <tr className="thead-title">
             {props.multiSelectEnabled && <th width="5%" />}
+
             <DataTableHeadTitleAndSort
                 sortColumn={'organisationOrCoach'}
                 title={'Organisatie/Coach'}
@@ -26,7 +23,6 @@ const QuotationRequestsListHead = props => {
             <DataTableHeadTitleAndSort
                 sortColumn={'address'}
                 title={'Adres'}
-                width={'14%'}
                 setSorts={setSorts}
                 width={props.multiSelectEnabled ? '9%' : '14%'}
             />

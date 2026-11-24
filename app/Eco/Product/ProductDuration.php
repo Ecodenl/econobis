@@ -1,32 +1,29 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Beheerder
- * Date: 26-10-2017
- * Time: 11:55
- */
 
 namespace App\Eco\Product;
 
-use JosKolenberg\Enum\EnumWithIdAndName;
+use App\Support\Enum\HasLegacyEnumHelpers;
 
-class ProductDuration extends EnumWithIdAndName
+enum ProductDuration: string
 {
+    use HasLegacyEnumHelpers;
 
-    /**
-     * Seed the class with Enum instances
-     *
-     * @return array
-     */
-    protected static function seed()
+    case NONE = 'none';
+    case MONTH = 'month';
+    case QUARTER = 'quarter';
+    case HALF_YEAR = 'half_year';
+    case YEAR = 'year';
+    case UNTIL_CANCELLATION = 'until_cancellation';
+
+    public function getName(): string
     {
-        return [
-            new static('none', 'Geen'),
-            new static('month', 'Maand'),
-            new static('quarter', 'Kwartaal'),
-            new static('half_year', 'Half jaar'),
-            new static('year', 'Jaar'),
-            new static('until_cancellation', 'Tot opzegging'),
-        ];
+        return match ($this) {
+            self::NONE => 'Geen',
+            self::MONTH => 'Maand',
+            self::QUARTER => 'Kwartaal',
+            self::HALF_YEAR => 'Half jaar',
+            self::YEAR => 'Jaar',
+            self::UNTIL_CANCELLATION => 'Tot opzegging',
+        };
     }
 }

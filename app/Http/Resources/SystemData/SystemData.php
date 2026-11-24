@@ -81,9 +81,9 @@ use App\Eco\Task\TaskProperty;
 use App\Eco\Task\TaskType;
 use App\Eco\Team\Team;
 use App\Eco\Title\Title;
-//use App\Eco\Twinfield\TwinfieldConnectionTypeWithIdAndName;
 use App\Eco\User\User;
 use App\Eco\VatCode\VatCode;
+use App\Eco\Webform\WebformApiType;
 use App\Http\Resources\Administration\AdministrationPeek;
 use App\Http\Resources\CostCenter\FullCostCenter;
 use App\Http\Resources\Document\FullDocumentCreatedFrom;
@@ -111,7 +111,6 @@ use App\Http\Resources\User\UserPeek;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class SystemData extends JsonResource
@@ -241,7 +240,6 @@ class SystemData extends JsonResource
             'participantMutationTypes' => FullParticipantMutationType::collection(ParticipantMutationType::all()),
             'participantProjectPayoutTypes' => GenericResource::collection(ParticipantProjectPayoutType::all()),
             'paymentInvoiceStatuses' => FullEnumWithIdAndName::collection(PaymentInvoiceStatus::collection()),
-            'permissions' => FullEnumWithIdAndName::collection(Permission::all()),
             'personTypes' => FullPersonType::collection(PersonType::all()),
             'phoneNumberTypes' => FullEnumWithIdAndName::collection(PhoneNumberType::collection()),
             'portalSettings' => FullPortalSettings::collection(PortalSettings::all())->first(),
@@ -267,13 +265,14 @@ class SystemData extends JsonResource
             'teams' => FullTeam::collection(Team::orderBy('name', 'asc')->get()),
             'titles' => FullTitle::collection(Title::all()),
             'transactionCostsCodeRefs' => FullEnumWithIdAndName::collection(TransactionCostsCodeRef::collection()),
-//            'twinfieldConnectionTypes' => FullEnumWithIdAndName::collection(TwinfieldConnectionTypeWithIdAndName::collection()),
+//            'twinfieldConnectionTypes' => FullEnumWithIdAndName::collection(TwinfieldConnectionType::collection()),
             'users' => $users,
             'usersAll' => $usersWithInactive,
             'usersExtraAdministration' => $usersExtraAdministration,
             'usesTwinfield' => Administration::whereUsesTwinfield(1)->count() > 0 ? true : false,
             'vatCodes' => VatCode::select(['id', 'description', 'percentage'])->get(),
             'versionNumber' => 'Versie: ' . config('app.version_major') . '.' . config('app.version_minor') . '.' . config('app.version_fix'),
+            'webformApiTypes' => FullEnumWithIdAndName::collection(WebformApiType::collection()),
         ];
     }
 }

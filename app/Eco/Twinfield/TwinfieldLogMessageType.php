@@ -2,19 +2,22 @@
 
 namespace App\Eco\Twinfield;
 
-use JosKolenberg\Enum\EnumWithIdAndName;
+use App\Support\Enum\HasLegacyEnumHelpers;
 
-class TwinfieldLogMessageType extends EnumWithIdAndName
+enum TwinfieldLogMessageType: string
 {
-    static $all;
+    use HasLegacyEnumHelpers;
 
-    protected static function seed()
+    case CONTACT = 'contact';
+    case INVOICE = 'invoice';
+    case PAYMENT = 'payment';
+
+    public function getName(): string
     {
-        return [
-            new static('contact', 'Contacten synchronisatie'),
-            new static('invoice', 'Nota\'s synchronisatie'),
-            new static('payment', 'Betalingen synchronisatie'),
-        ];
-
+        return match ($this) {
+            self::CONTACT => 'Contacten synchronisatie',
+            self::INVOICE => 'Nota\'s synchronisatie',
+            self::PAYMENT => 'Betalingen synchronisatie',
+        };
     }
 }

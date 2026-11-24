@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import validator from 'validator';
 import moment from 'moment';
-moment.locale('nl');
-
 import ButtonText from '../../../../../components/button/ButtonText';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
@@ -12,6 +10,8 @@ import ViewText from '../../../../../components/form/ViewText';
 import InputReactSelectLong from '../../../../../components/form/InputReactSelectLong';
 import FinancialOverviewDetailsAPI from '../../../../../api/financial/overview/FinancialOverviewDetailsAPI';
 import EmailTemplateAPI from '../../../../../api/email-template/EmailTemplateAPI';
+import { setError } from '../../../../../actions/general/ErrorActions';
+moment.locale('nl');
 
 class FinancialOverviewDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -186,7 +186,11 @@ class FinancialOverviewDetailsFormGeneralEdit extends Component {
                     this.props.switchToView();
                 })
                 .catch(error => {
-                    alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
+                    this.props.setError(
+                        error?.response?.status ?? 500,
+                        error?.response?.data?.message ??
+                            'Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.'
+                    );
                 });
     };
 
@@ -324,4 +328,11 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(FinancialOverviewDetailsFormGeneralEdit);
+const mapDispatchToProps = dispatch => {
+    return {
+        setError: (httpCode, message) => {
+            dispatch(setError(httpCode, message));
+        },
+    };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(FinancialOverviewDetailsFormGeneralEdit);

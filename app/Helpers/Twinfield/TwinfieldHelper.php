@@ -10,7 +10,7 @@ namespace App\Helpers\Twinfield;
 
 
 use App\Eco\Administration\Administration;
-use App\Eco\Twinfield\TwinfieldConnectionTypeWithIdAndName;
+use App\Eco\Twinfield\TwinfieldConnectionType;
 use Illuminate\Support\Facades\Log;
 use PhpTwinfield\ApiConnectors\OfficeApiConnector;
 use PhpTwinfield\Exception;
@@ -36,7 +36,7 @@ class TwinfieldHelper
         $this->office = Office::fromCode($administration->twinfield_office_code);
         $this->redirectUri = \Config::get('app.url_api') . '/twinfield';
 
-        if ($administration->twinfield_connection_type === "openid") {
+        if ($administration->twinfield_connection_type === TwinfieldConnectionType::OPENID) {
 
             $provider = new OAuthProvider([
                 'clientId'                => $administration ? $administration->twinfield_client_id : '',    // The client ID assigned to you by the provider
@@ -58,7 +58,7 @@ class TwinfieldHelper
      */
     public function testConnection()
     {
-        if($this->administration->twinfield_connection_type === TwinfieldConnectionTypeWithIdAndName::OPENID && empty($this->administration->twinfield_refresh_token)){
+        if($this->administration->twinfield_connection_type === TwinfieldConnectionType::OPENID && empty($this->administration->twinfield_refresh_token)){
             return false;
         }
 

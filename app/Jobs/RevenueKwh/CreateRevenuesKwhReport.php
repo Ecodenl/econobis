@@ -60,7 +60,6 @@ class CreateRevenuesKwhReport implements ShouldQueue
 
     public function handle()
     {
-        //user voor observer
         Auth::setUser(User::find($this->userId));
 
         $revenuesKwhController = new RevenuesKwhController();

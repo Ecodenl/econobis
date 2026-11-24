@@ -10,6 +10,7 @@ namespace App\Helpers\Twinfield;
 
 use App\Eco\Administration\Administration;
 use App\Eco\Invoice\Invoice;
+use App\Eco\Twinfield\TwinfieldConnectionType;
 use App\Eco\Twinfield\TwinfieldLog;
 use App\Helpers\Invoice\InvoiceHelper;
 use Carbon\Carbon;
@@ -72,6 +73,32 @@ class TwinfieldSalesTransactionHelper
         $this->grootboekDebiteuren = config('services.twinfield.verkoop_grootboek_debiteuren');
         $this->messages = [];
         $this->logStartSync();
+    }
+
+    private function determineInvoiceDateSent()
+    {
+        if($this->administration->date_sync_twinfield_invoices){
+            return $this->administration->date_sync_twinfield_invoices;
+        }
+
+        return '2019-01-01';
+    }
+
+    private function initializeConnection()
+    {
+        if ($this->administration->twinfield_connection_type === TwinfieldConnectionType::OPENID) {
+            $provider = new OAuthProvider([
+                'clientId'     => $this->administration->twinfield_client_id,
+                'clientSecret' => $this->administration->twinfield_client_secret,
+                'redirectUri'  => $this->redirectUri,
+            ]);
+
+            if (!empty($this->administration->twinfield_refresh_token)) {
+                $this->connection = new OpenIdConnectAuthentication($provider, $this->administration->twinfield_refresh_token, $this->office);
+            } else {
+                $this->connection = null;
+            }
+        }
     }
 
     public function procesTwinfieldSalesTransaction()

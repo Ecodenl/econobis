@@ -8,6 +8,7 @@
 
 namespace App\Helpers\CSV;
 
+use App\Eco\Contact\ContactType;
 use Carbon\Carbon;
 use League\Csv\Reader;
 
@@ -86,7 +87,7 @@ class QuotationRequestCSVHelper
                 $quotationRequest->country = (($address && $address->country) ? $address->country->name : '');
 
                 // person/$quotationRequest fields
-                if ($quotationRequest->opportunity->intake->contact->type_id === 'person') {
+                if ($quotationRequest->opportunity->intake->contact->type_id === ContactType::PERSON) {
                     $quotationRequest->title = $quotationRequest->opportunity->intake->contact->person->title;
                     $quotationRequest->initials = $quotationRequest->opportunity->intake->contact->person->initials;
                     $quotationRequest->first_name = $quotationRequest->opportunity->intake->contact->person->first_name;

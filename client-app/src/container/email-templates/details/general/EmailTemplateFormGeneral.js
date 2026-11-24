@@ -18,6 +18,10 @@ class EmailTemplateFormGeneral extends Component {
     }
 
     switchToEdit = () => {
+        if (!this.props.permissions.manageEmailTemplate) {
+            return;
+        }
+
         this.setState({
             showEdit: true,
         });
@@ -31,6 +35,10 @@ class EmailTemplateFormGeneral extends Component {
     };
 
     onDivEnter() {
+        if (!this.props.permissions.manageEmailTemplate) {
+            return;
+        }
+
         this.setState({
             activeDiv: 'panel-grey',
         });
@@ -52,10 +60,12 @@ class EmailTemplateFormGeneral extends Component {
                 onMouseLeave={() => this.onDivLeave()}
             >
                 <PanelBody>
-                    {this.state.showEdit /*&& this.props.permissions.manageOpportunity*/ ? (
+                    {this.state.showEdit && this.props.permissions.manageEmailTemplate ? (
                         <EmailTemplateFormEdit switchToView={this.switchToView} />
                     ) : (
-                        <EmailTemplateFormView switchToEdit={this.switchToEdit} />
+                        <EmailTemplateFormView
+                            switchToEdit={this.props.permissions.manageEmailTemplate ? this.switchToEdit : null}
+                        />
                     )}
                 </PanelBody>
             </Panel>
@@ -66,7 +76,7 @@ class EmailTemplateFormGeneral extends Component {
 const mapStateToProps = state => {
     return {
         emailTemplate: state.emailTemplateDetails,
-        // permissions: state.meDetails.permissions
+        permissions: state.meDetails.permissions,
     };
 };
 

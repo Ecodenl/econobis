@@ -363,7 +363,7 @@ class ParticipationProjectController extends Controller
         //max length name 25
         $fileName = substr($fileName, 0, 25);
         $fileName = $fileName
-            . substr($document->getDocumentGroup()->name, 0, 1)
+            . substr($document->getDocumentGroup()->getName(), 0, 1)
             . (Document::where('document_group', 'registration')->count()
                 + 1) . '_' . $time->format('Ymd') . '.pdf';
 

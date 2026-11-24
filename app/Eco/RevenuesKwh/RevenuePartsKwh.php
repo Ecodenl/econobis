@@ -5,11 +5,12 @@ namespace App\Eco\RevenuesKwh;
 use App\Helpers\Project\RevenueDistributionKwhHelper;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class RevenuePartsKwh extends Model
 {
-    use RevisionableTrait;
+    use RevisionableTrait, SoftDeletes;
 
     protected $table = 'revenue_parts_kwh';
 

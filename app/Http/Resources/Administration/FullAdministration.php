@@ -4,7 +4,6 @@ namespace App\Http\Resources\Administration;
 
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\EmailTemplate\FullEmailTemplate;
-use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Product\FullProduct;
 use App\Http\Resources\User\FullUser;
@@ -118,7 +117,6 @@ class FullAdministration extends JsonResource
 
                 'usesTwinfield' => $this->uses_twinfield,
 //                'twinfieldConnectionType' => $this->twinfield_connection_type,
-//                'twinfieldConnectionTypeWithIdAndName' => FullEnumWithIdAndName::make($this->getTwinfieldConnectionTypeWithIdAndName()),
                 'twinfieldHasRefreshToken' => (!empty($this->twinfield_refresh_token) ? 'Ja' : 'Nee'),
                 'twinfieldRedirectUri' => $this->uses_twinfield ? (\Config::get('app.url_api') . '/twinfield') : '',
                 'twinfieldUsername' => $this->twinfield_username,

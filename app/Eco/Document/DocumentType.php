@@ -1,30 +1,21 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Beheerder
- * Date: 26-10-2017
- * Time: 11:55
- */
 
 namespace App\Eco\Document;
 
+use App\Support\Enum\HasLegacyEnumHelpers;
 
-use JosKolenberg\Enum\Enum;
-use JosKolenberg\Enum\EnumWithIdAndName;
-
-class DocumentType extends EnumWithIdAndName
+enum DocumentType: string
 {
+    use HasLegacyEnumHelpers;
 
-    /**
-     * Seed the class with Enum instances
-     *
-     * @return array
-     */
-    protected static function seed()
+    case INTERNAL = 'internal';
+    case UPLOAD = 'upload';
+
+    public function getName(): string
     {
-        return [
-            new static('internal', 'Intern'),
-            new static('upload', 'Upload'),
-        ];
+        return match ($this) {
+            self::INTERNAL => 'Intern',
+            self::UPLOAD => 'Upload',
+        };
     }
 }

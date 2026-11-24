@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+
 import axios from 'axios';
 import moment from 'moment';
 
@@ -19,11 +21,13 @@ import ButtonText from '../../../../../components/button/ButtonText';
 import { connect } from 'react-redux';
 import { previewFinancialOverview } from '../../../../../actions/financial-overview/FinancialOverviewActions';
 import FinancialOverviewCreateInterimModal from '../../create/FinancialOverviewCreateInterimModal';
+import { setError } from '../../../../../actions/general/ErrorActions';
 
 const recordsPerPage = 50;
 // const maxRecordsPost = 50;
 
 function FinancialOverviewContactList({ financialOverview, previewFinancialOverview }) {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const [showSelectFinancialOverviewContactsToSend, setShowSelectFinancialOverviewContactsToSend] = useState(false);
@@ -111,7 +115,13 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
             )
             .catch(error => {
                 setLoading(false);
-                alert('Er is iets misgegaan met ophalen van de gegevens.');
+
+                dispatch(
+                    setError(
+                        error?.response?.status ?? 500,
+                        error?.response?.data?.message ?? 'Er is iets misgegaan met ophalen van de gegevens.'
+                    )
+                );
             });
     }
 

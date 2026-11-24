@@ -1,28 +1,21 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Beheerder
- * Date: 26-10-2017
- * Time: 11:55
- */
 
 namespace App\Eco\Product;
 
-use JosKolenberg\Enum\EnumWithIdAndName;
+use App\Support\Enum\HasLegacyEnumHelpers;
 
-class ProductPaymentType extends EnumWithIdAndName
+enum ProductPaymentType: string
 {
+    use HasLegacyEnumHelpers;
 
-    /**
-     * Seed the class with Enum instances
-     *
-     * @return array
-     */
-    protected static function seed()
+    case COLLECTION = 'collection';
+    case TRANSFER = 'transfer';
+
+    public function getName(): string
     {
-        return [
-            new static('collection', 'Incasso'),
-            new static('transfer', 'Overboeken'),
-        ];
+        return match ($this) {
+            self::COLLECTION => 'Incasso',
+            self::TRANSFER => 'Overboeken',
+        };
     }
 }

@@ -34,41 +34,41 @@ class FinancialOverviewParticipantProjectController extends Controller
         }
     }
 
-    public function recalculateParticipantProjectForFinancialOverviews(ParticipantProject $participant)
-    {
-        $financialOverviewProjects = $participant->project->financialOverviewProjects->where('definitive', false);
-        foreach ($financialOverviewProjects as $financialOverviewProject) {
-            $financialOverview = $financialOverviewProject->financialOverview;
+        public function recalculateParticipantProjectForFinancialOverviews(ParticipantProject $participant)
+        {
+            $financialOverviewProjects = $participant->project->financialOverviewProjects->where('definitive', false);
+            foreach ($financialOverviewProjects as $financialOverviewProject) {
+                $financialOverview = $financialOverviewProject->financialOverview;
 
-            $startDate = Carbon::createFromDate($financialOverview->year, 1, 1);
-            $endDate = Carbon::createFromDate($financialOverview->year, 12, 31);
+                $startDate = Carbon::createFromDate($financialOverview->year, 1, 1);
+                $endDate = Carbon::createFromDate($financialOverview->year, 12, 31);
 
-            if($participant->date_terminated && Carbon::parse($participant->date_terminated)->format('Y-m-d') < Carbon::parse($startDate)->format('Y-m-d') ) {
-                $financialOverviewParticipantProject = FinancialOverviewParticipantProject::where('financial_overview_project_id', $financialOverviewProject->id)->where('participant_project_id', $participant->id)->where('status_id', '!=', 'sent')->first();
-                if($financialOverviewParticipantProject){
-                    try {
-                        DB::beginTransaction();
+                if($participant->date_terminated && Carbon::parse($participant->date_terminated)->format('Y-m-d') < Carbon::parse($startDate)->format('Y-m-d') ) {
+                    $financialOverviewParticipantProject = FinancialOverviewParticipantProject::where('financial_overview_project_id', $financialOverviewProject->id)->where('participant_project_id', $participant->id)->where('status_id', '!=', 'sent')->first();
+                    if($financialOverviewParticipantProject){
+                        try {
+                            DB::beginTransaction();
 
-                        $deleteFinancialOverviewParticipantProject = new DeleteFinancialOverviewParticipantProject($financialOverviewParticipantProject);
-                        $result = $deleteFinancialOverviewParticipantProject->delete();
+                            $deleteFinancialOverviewParticipantProject = new DeleteFinancialOverviewParticipantProject($financialOverviewParticipantProject);
+                            $result = $deleteFinancialOverviewParticipantProject->delete();
 
-                        if(count($result) > 0){
+                            if(count($result) > 0){
+                                DB::rollBack();
+                                abort(412, implode(";", array_unique($result)));
+                            }
+
+                            DB::commit();
+                        } catch (\PDOException $e) {
                             DB::rollBack();
-                            abort(412, implode(";", array_unique($result)));
+                            Log::error($e->getMessage());
+                            abort(500, 'Er is helaas een fout opgetreden.');
                         }
-
-                        DB::commit();
-                    } catch (\PDOException $e) {
-                        DB::rollBack();
-                        Log::error($e->getMessage());
-                        abort(500, 'Er is helaas een fout opgetreden.');
                     }
+                } else {
+                    $this->createFinancialOverviewParticipantProjects($participant, $startDate, $endDate, $financialOverviewProject);
                 }
-            } else {
-                $this->createFinancialOverviewParticipantProjects($participant, $startDate, $endDate, $financialOverviewProject);
             }
         }
-    }
 
     /**
      * @param ParticipantProject $participant

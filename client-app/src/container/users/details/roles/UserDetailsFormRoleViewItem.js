@@ -200,6 +200,26 @@ class UserDetailsFormRoleViewItem extends Component {
                             />
                         </>
                     )}
+                    {name === 'Beheerder e-mail templates' && (
+                        <>
+                            &nbsp;&nbsp;
+                            <FaInfoCircle
+                                color={'blue'}
+                                size={'15px'}
+                                data-tip={
+                                    'Alleen een gebruiker met deze rol of de rol "beheerder" mag nieuwe e-mail templates aanmaken, dupliceren, wijzigen of verwijderen'
+                                }
+                                data-for={`tooltip-note`}
+                            />
+                            <ReactTooltip
+                                id={`tooltip-note`}
+                                effect="float"
+                                place="right"
+                                multiline={true}
+                                aria-haspopup="true"
+                            />
+                        </>
+                    )}
                 </span>
             </div>
         );

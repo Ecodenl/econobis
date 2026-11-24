@@ -75,15 +75,6 @@ class TwinfieldSalesTransactionHelper
         $this->logStartSync();
     }
 
-    private function determineInvoiceDateSent()
-    {
-        if($this->administration->date_sync_twinfield_invoices){
-            return $this->administration->date_sync_twinfield_invoices;
-        }
-
-        return '2019-01-01';
-    }
-
     private function initializeConnection()
     {
         if ($this->administration->twinfield_connection_type === TwinfieldConnectionType::OPENID) {
@@ -398,22 +389,6 @@ class TwinfieldSalesTransactionHelper
         return '2019-01-01';
     }
 
-    private function initializeConnection()
-    {
-        if ($this->administration->twinfield_connection_type === "openid") {
-            $provider = new OAuthProvider([
-                'clientId'     => $this->administration->twinfield_client_id,
-                'clientSecret' => $this->administration->twinfield_client_secret,
-                'redirectUri'  => $this->redirectUri,
-            ]);
-
-            if (!empty($this->administration->twinfield_refresh_token)) {
-                $this->connection = new OpenIdConnectAuthentication($provider, $this->administration->twinfield_refresh_token, $this->office);
-            } else {
-                $this->connection = null;
-            }
-        }
-    }
     private function getInvoicesToBeProcessed()
     {
         $invoicesToBeProcessed = $this->administration->invoices()

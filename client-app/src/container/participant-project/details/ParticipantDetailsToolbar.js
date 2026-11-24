@@ -103,7 +103,8 @@ class ParticipantDetailsToolbar extends Component {
 
             if (
                 canManageParticipant &&
-                (numberOfMutations == 0 ||
+                (isEnergyCommunity ||
+                    numberOfMutations == 0 ||
                     validator.isEmpty(disableBeforeEntryDate) ||
                     moment().format('YYYY-01-01') >= disableBeforeEntryDate)
             ) {

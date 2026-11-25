@@ -4,7 +4,6 @@
 /public/portal-test
 /public/portal
 /storage/*.key
-/storage/fonts/*
 /vendor
 /.idea
 /.vagrant

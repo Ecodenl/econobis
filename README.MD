@@ -61,7 +61,7 @@ React-frontendapplicaties.
 | --- | --- |
 | Backend | PHP / Laravel |
 | Authenticatie | Laravel Passport |
-| Database | MySQL |
+| Database | MariaDB (via MySQL-driver) |
 | Rollen en rechten | Spatie Laravel Permission |
 | PDF-generatie | Dompdf |
 | Econobis frontend | React / Webpack |
@@ -97,11 +97,19 @@ React-frontendapplicaties.
 | Laravel | 12 |
 | Laravel Passport | 13 |
 | Composer | 2.x |
-| MySQL | MySQL-server |
+| Database | MariaDB (productie: 10.11.20) |
 | Node.js | 22.22.3 aanbevolen voor lokale ontwikkeling |
 | NPM | 10.x |
 | React | 18 |
 | Git | Recente versie |
+
+Econobis draait in productie op MariaDB 10.11.
+Lokale ontwikkelomgevingen kunnen een afwijkende databaseversie gebruiken.
+Voor optimale compatibiliteit wordt dezelfde hoofdversie als in
+productie aanbevolen.
+
+Binnen Econobis wordt voor MariaDB de MySQL-driver van Laravel
+gebruikt (`DB_CONNECTION=mysql`).
 
 De exacte PHP- en packagevereisten zijn vastgelegd in
 `composer.json`, `composer.lock` en de packagebestanden van beide

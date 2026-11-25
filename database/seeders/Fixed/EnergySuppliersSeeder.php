@@ -97,6 +97,7 @@ class EnergySuppliersSeeder extends Seeder
             ['id' => 81, 'name' => 'GroenStroomLokaal', 'does_postal_code_links' => 1, 'excel_template_id' => 2, 'abbreviation' => 'GSL', 'file_format_id' => null, 'order' => null, 'end_date' => null],
             ['id' => 82, 'name' => 'Volti', 'does_postal_code_links' => 1, 'excel_template_id' => 2, 'abbreviation' => 'VLT', 'file_format_id' => null, 'order' => null, 'end_date' => null],
             ['id' => 83, 'name' => 'Audax Renewables', 'does_postal_code_links' => 1, 'excel_template_id' => 2, 'abbreviation' => 'AUD', 'file_format_id' => null, 'order' => null, 'end_date' => null],
+            ['id' => 84, 'name' => 'Hegg Energie', 'does_postal_code_links' => 1, 'excel_template_id' => 2, 'abbreviation' => 'HEG', 'file_format_id' => null, 'order' => null, 'end_date' => null],
         ];
 
         foreach ($energySuppliers as $energySupplier) {

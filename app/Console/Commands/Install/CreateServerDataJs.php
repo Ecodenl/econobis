@@ -3,7 +3,6 @@
 namespace App\Console\Commands\Install;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -40,7 +39,6 @@ class CreateServerDataJs extends Command
      */
     public function handle()
     {
-        $oauthClient = DB::table('oauth_clients')->where('id', 2)->first();
         $xml = view('portal.server-data', [
             'internalPortalUrl' => config('app.url') . '/portal',
             'captchaSiteKeyNl' => config('services.privatecaptcha.sitekey_nl'),

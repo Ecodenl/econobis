@@ -12,9 +12,10 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(FixedSeeder::class);
 
-        if (app()->environment(['local', 'testing']) && env('SEED_DEMO', false)) {
-            $this->call(DemoSeeder::class);
-        }
+// Demo seeding is temporarily disabled because the demo data is outdated.
+//        if (app()->environment(['local', 'testing']) && env('SEED_DEMO', false)) {
+//            $this->call(DemoSeeder::class);
+//        }
     }
 }
 

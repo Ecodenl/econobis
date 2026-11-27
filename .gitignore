@@ -4,10 +4,10 @@
 /public/portal-test
 /public/portal
 /storage/*.key
-/storage/fonts/*
 /vendor
 /.idea
 /.vagrant
+/bigstorage/
 Homestead.json
 Homestead.yaml
 npm-debug.log

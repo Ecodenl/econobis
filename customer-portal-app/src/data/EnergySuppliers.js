@@ -36,6 +36,7 @@ export default [
     { id: 40, name: 'Groenpand' },
     { id: 81, name: 'GroenStroomLokaal' },
     { id: 78, name: 'Gulf Gas and Power' },
+    { id: 84, name: 'Hegg Energie' },
     { id: 44, name: 'Hezelaer' },
     { id: 69, name: 'HollandsStroom' },
     { id: 9, name: 'Holland Wind' },

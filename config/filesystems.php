@@ -1,5 +1,11 @@
 <?php
 
+$bigstoragePath = env('BIGSTORAGE_PATH', env('APP_ENV') === 'local'
+    ? base_path('bigstorage')
+    : '/home/econobis/domains/econobis.nl/bigstorage');
+
+$bigstorageCoopPath = rtrim($bigstoragePath, '/\\') . '/' . env('APP_COOP_NAME', 'missing_coop_name');
+
 return [
 
     /*
@@ -75,48 +81,19 @@ return [
             'root' => storage_path('app-intern' . DIRECTORY_SEPARATOR . 'documents-temp'),
         ],
 
-//        'documents' => [
-//            'driver' => 'local',
-//            'root' => storage_path('app' . DIRECTORY_SEPARATOR . 'documents'),
-//        ],
-//        'mail_attachments' => [
-//            'driver' => 'local',
-//            'root' => storage_path('app' . DIRECTORY_SEPARATOR . 'mails'),
-//        ],
-//
-//        'administrations' => [
-//            'driver' => 'local',
-//            'root' => storage_path('app' . DIRECTORY_SEPARATOR . 'administrations'),
-//        ],
-//        Hierin zaten alleen logo's maar werden nergens gebruikt. Deze disk configuratie voorlopig opgeheven
-//        'cooperation' => [
-//            'driver' => 'local',
-//            'root' => storage_path('app' . DIRECTORY_SEPARATOR . 'cooperation'),
-//        ],
-
-//        'documents' => [
-//            'driver' => 'local',
-//            'root' => base_path('bigstorage/' . env('APP_COOP_NAME') . '/app/documents'),
-//        ],
         'documents' => [
             'driver' => 'local',
-            'root' => (env('APP_ENV') === 'local'
-                ? '/home/vagrant/code/econobis/bigstorage/' . env('APP_COOP_NAME', 'missing_coop_name')
-                : '/home/econobis/domains/econobis.nl/bigstorage/' . env('APP_COOP_NAME', 'missing_coop_name'))  . '/app/documents',
+            'root' => $bigstorageCoopPath . '/app/documents',
         ],
 
         'mail_attachments' => [
             'driver' => 'local',
-            'root' => (env('APP_ENV') === 'local'
-                ? '/home/vagrant/code/econobis/bigstorage/' . env('APP_COOP_NAME', 'missing_coop_name')
-                : '/home/econobis/domains/econobis.nl/bigstorage/' . env('APP_COOP_NAME', 'missing_coop_name')) . '/app/mails',
+            'root' => $bigstorageCoopPath . '/app/mails',
         ],
 
         'administrations' => [
             'driver' => 'local',
-            'root' => (env('APP_ENV') === 'local'
-                    ? '/home/vagrant/code/econobis/bigstorage/' . env('APP_COOP_NAME', 'missing_coop_name')
-                    : '/home/econobis/domains/econobis.nl/bigstorage/' . env('APP_COOP_NAME', 'missing_coop_name'))  . '/app/administrations',
+            'root' => $bigstorageCoopPath . '/app/administrations',
         ],
 
         'public' => [
